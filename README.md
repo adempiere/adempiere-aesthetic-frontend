@@ -23,11 +23,16 @@
   </a>
 </p>
 
-English | [简体中文](./README-zh.md)
+# ADempiere Aesthetic Frontend
+
+ADempiere Aesthetic is a modern user interface and experience (UI/UX) new UI for [ADempiere ERP, CRM &amp; SCM](http://www.adempiere.io/web/guest/welcome). based on [Vue](https://vuejs.org) a progressive framework for building an aesthetic, beautiful, wonderful user interface.  
+
+The Frontend is developed with [TypeScript](https://www.typescriptlang.org) is an open-source language that builds on JavaScript, one of the world’s most used tools, by adding static type definitions
 
 ## Overview
 
-[vue-typescript-admin-template](http://armour.github.io/vue-typescript-admin-template) is a production-ready front-end solution for admin interfaces based on [vue](https://github.com/vuejs/vue), [typescript](https://www.typescriptlang.org/) and UI Toolkit [element-ui](https://github.com/ElemeFE/element). The original Javascript version code [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin/) was written by [PanJiaChen](https://github.com/PanJiaChen), many thanks to him for the awesome open source project! :)
+
+[adempiere-aesthetic-frontend](https://github.com/adempiere/adempiere-aesthetic-frontend) based on work of [vue-typescript-admin-template](http://armour.github.io/vue-typescript-admin-template) and [adempiere-vue](https://github.com/adempiere/adempiere-vue) is a production-ready front-end solution for admin interfaces based on [vue](https://github.com/vuejs/vue), [typescript](https://www.typescriptlang.org/) and UI Toolkit [element-ui](https://github.com/ElemeFE/element). The original Javascript version code [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin/) was written by [PanJiaChen](https://github.com/PanJiaChen), many thanks to him for the awesome open source project! :)
 
 If you want to get started with a minimal template code instead of integration solution, you can take a look at the [minimal](https://github.com/Armour/vue-typescript-admin-template/tree/minimal) branch.
 
