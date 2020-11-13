@@ -177,7 +177,7 @@ export interface IBankAccountData {
   isDefault: boolean
   businessPartner: IBusinessPartnerData
   bankAccountType: BankAccountType
-  bankAccountTypeName: any // Not found data type in message BankAccount proto
+  bankAccountTypeName: string;
 }
 
 export interface IDocumentTypeData {

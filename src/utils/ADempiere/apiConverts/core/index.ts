@@ -15,7 +15,7 @@ import {
   IProductData,
   ISalesRepresentativeData,
   ITaxRateData
-} from './types'
+} from "./types";
 
 export function convertContextInfo(
   contextInfoToConvert: any
@@ -29,7 +29,7 @@ export function convertContextInfo(
       sqlStatement: contextInfoToConvert.sql_statement,
       isActive: contextInfoToConvert.is_active,
       messageText: convertMessageText(contextInfoToConvert.message_text)
-    }
+    };
   }
   return {
     id: undefined,
@@ -39,7 +39,7 @@ export function convertContextInfo(
     sqlStatement: undefined,
     isActive: undefined,
     messageText: convertMessageText(undefined)
-  }
+  };
 }
 
 export function convertMessageText(
@@ -54,7 +54,7 @@ export function convertMessageText(
       messageText: messageTextToConvert.message_text,
       messageTip: messageTextToConvert.message_tip,
       isActive: messageTextToConvert.is_active
-    }
+    };
   }
   return {
     id: undefined,
@@ -64,7 +64,7 @@ export function convertMessageText(
     messageText: undefined,
     messageTip: undefined,
     isActive: undefined
-  }
+  };
 }
 
 export function convertCriteria(criteriaToConvert: any): ICriteriaData {
@@ -78,13 +78,13 @@ export function convertCriteria(criteriaToConvert: any): ICriteriaData {
     valuesList: criteriaToConvert.values,
     orderByColumnList: criteriaToConvert.order_by_columns,
     limit: criteriaToConvert.limit
-  }
+  };
 }
 
 export function convertOrganization(
   organizationToConvert: any
 ): IOrganizationData {
-  const { id, uuid, name, description } = organizationToConvert
+  const { id, uuid, name, description } = organizationToConvert;
 
   return {
     id,
@@ -97,7 +97,7 @@ export function convertOrganization(
     phone: organizationToConvert.phone,
     phone2: organizationToConvert.phone2,
     fax: organizationToConvert.fax
-  }
+  };
 }
 
 export function convertLanguage(languageToConvert: any): ILanguageData {
@@ -111,11 +111,11 @@ export function convertLanguage(languageToConvert: any): ILanguageData {
     isDecimalPoint: languageToConvert.is_decimal_point,
     datePattern: languageToConvert.date_pattern,
     timePattern: languageToConvert.time_pattern
-  }
+  };
 }
 
 export function convertCountry(countryToConvert: any): ICountryData {
-  const { id, uuid, name, description } = countryToConvert
+  const { id, uuid, name, description } = countryToConvert;
 
   return {
     id,
@@ -140,7 +140,7 @@ export function convertCountry(countryToConvert: any): ICountryData {
     allowCitiesOutOfList: countryToConvert.allow_cities_out_of_list,
     isPostcodeLookup: countryToConvert.is_post_code_lookup,
     currency: convertCurrency(countryToConvert.currency)
-  }
+  };
 }
 
 export function convertCurrency(currencyToConvert: any): ICurrencyData {
@@ -152,13 +152,13 @@ export function convertCurrency(currencyToConvert: any): ICurrencyData {
     description: currencyToConvert.description,
     standardPrecision: currencyToConvert.standard_precision,
     costingPrecision: currencyToConvert.costing_precision
-  }
+  };
 }
 
 export function convertBusinessPartner(
   businessPartnerToConvert: any
 ): IBusinessPartnerData {
-  const { id, uuid, name, description } = businessPartnerToConvert
+  const { id, uuid, name, description } = businessPartnerToConvert;
 
   return {
     uuid,
@@ -170,30 +170,30 @@ export function convertBusinessPartner(
     name,
     lastName: businessPartnerToConvert.last_name,
     description
-  }
+  };
 }
 
 export function convertSalesRepresentative(
   salesRepresentativeToConvert: any
 ): ISalesRepresentativeData {
-  const { uuid, id, name, description } = salesRepresentativeToConvert
+  const { uuid, id, name, description } = salesRepresentativeToConvert;
 
   return {
     uuid,
     id,
     name,
     description
-  }
+  };
 }
 
 export function convertBankAccount(
   bankAccountToConvert: any
 ): IBankAccountData | undefined {
   if (!bankAccountToConvert) {
-    return undefined
+    return undefined;
   }
 
-  const { uuid, id, name, description } = bankAccountToConvert
+  const { uuid, id, name, description } = bankAccountToConvert;
   return {
     uuid,
     id,
@@ -204,23 +204,23 @@ export function convertBankAccount(
     bban: bankAccountToConvert.bban,
     iban: bankAccountToConvert.iban,
     creditLimit: bankAccountToConvert.credit_limit,
-    current_balance: bankAccountToConvert.current_balance,
+    currentBalance: bankAccountToConvert.current_balance,
     isDefault: bankAccountToConvert.is_default,
     businessPartner: convertBusinessPartner(
       bankAccountToConvert.business_partner
     ),
     bankAccountType: bankAccountToConvert.bank_account_type,
     bankAccountTypeName: bankAccountToConvert.bank_account_type_name
-  }
+  };
 }
 
 export function convertDocumentType(
   documentTypeToConvert: any
 ): IDocumentTypeData | undefined {
   if (!documentTypeToConvert) {
-    return undefined
+    return undefined;
   }
-  const { uuid, id, name, description } = documentTypeToConvert
+  const { uuid, id, name, description } = documentTypeToConvert;
 
   return {
     uuid,
@@ -228,23 +228,23 @@ export function convertDocumentType(
     name,
     description,
     printName: documentTypeToConvert.print_name
-  }
+  };
 }
 
 export function convertDocumentStatus(
   documentStatusToConvert: any
 ): IDocumentStatusData {
-  const { name, description } = documentStatusToConvert
+  const { name, description } = documentStatusToConvert;
 
   return {
     name,
     description,
     value: documentStatusToConvert.value
-  }
+  };
 }
 
 export function convertPriceList(priceListToConvert: any): IPriceListData {
-  const { uuid, id, name, description } = priceListToConvert
+  const { uuid, id, name, description } = priceListToConvert;
 
   return {
     uuid,
@@ -257,7 +257,7 @@ export function convertPriceList(priceListToConvert: any): IPriceListData {
     isEnforcePriceLimit: priceListToConvert.is_enforce_price_limit,
     isNetPrice: priceListToConvert.is_net_price,
     pricePrecision: priceListToConvert.price_precision
-  }
+  };
 }
 
 export function convertProductPrice(
@@ -272,13 +272,13 @@ export function convertProductPrice(
     priceLimit: productPriceToConvert.price_limit,
     priceListName: productPriceToConvert.price_list_name,
     isTaxIncluded: productPriceToConvert.is_tax_included,
-    valid_from: productPriceToConvert.validFrom,
+    validFrom: productPriceToConvert.valid_from,
     pricePrecision: productPriceToConvert.price_precision,
     quantityOnHand: productPriceToConvert.quantity_on_hand,
     quantityReserved: productPriceToConvert.quantity_reserved,
     quantityOrdered: productPriceToConvert.quantity_ordered,
     quantityAvailable: productPriceToConvert.quantity_available
-  }
+  };
 }
 
 export function convertTaxRate(taxRateToConvert: any): ITaxRateData {
@@ -287,11 +287,11 @@ export function convertTaxRate(taxRateToConvert: any): ITaxRateData {
     description: taxRateToConvert.description,
     taxIndicator: taxRateToConvert.tax_indicator,
     rate: taxRateToConvert.rate
-  }
+  };
 }
 
 export function convertProduct(productToConvert: any): IProductData {
-  const { uuid, id, name, description, help } = productToConvert
+  const { uuid, id, name, description, help } = productToConvert;
 
   return {
     uuid,
@@ -310,7 +310,7 @@ export function convertProduct(productToConvert: any): IProductData {
     productCategoryName: productToConvert.product_category_name,
     productGroupName: productToConvert.product_group_name,
     productClassName: productToConvert.product_class_name,
-    productClassification_name: productToConvert.product_classification_name,
+    productClassificationName: productToConvert.product_classification_name,
     weight: productToConvert.weight,
     volume: productToConvert.volume,
     upc: productToConvert.upc,
@@ -325,5 +325,5 @@ export function convertProduct(productToConvert: any): IProductData {
     versionNo: productToConvert.version_no,
     taxCategory: productToConvert.tax_category,
     description
-  }
+  };
 }
