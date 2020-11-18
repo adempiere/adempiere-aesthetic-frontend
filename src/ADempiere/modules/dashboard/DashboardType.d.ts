@@ -1,4 +1,4 @@
-import { ICriteriaData } from "@/modules/core";
+import { ICriteriaData } from "@/ADempiere/modules/core";
 
 
 interface IRecentItemResponseData {

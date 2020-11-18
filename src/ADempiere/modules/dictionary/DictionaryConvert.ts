@@ -1,5 +1,5 @@
-import { convertContextInfo } from "@/modules/core";
-import { convertField, convertFieldGroup } from "@/modules/field";
+import { convertContextInfo } from "@/ADempiere/modules/core";
+import { convertField, convertFieldGroup } from "@/ADempiere/modules/field";
 import {
   IProcessData,
   IReportExportTypeData,

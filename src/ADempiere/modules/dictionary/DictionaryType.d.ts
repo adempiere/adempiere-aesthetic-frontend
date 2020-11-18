@@ -1,5 +1,5 @@
-import { IFieldData, IFieldGroupData } from "@/modules/field";
-import { IContextInfoData } from "@/modules/core";
+import { IFieldData, IFieldGroupData } from "@/ADempiere/modules/field";
+import { IContextInfoData } from "@/ADempiere/modules/core";
 
 export interface IReportExportTypeData {
   name: string;
@@ -121,4 +121,21 @@ export interface IValidationRule {
   description: string;
   validationCode: string;
   type: string;
+}
+
+//Request API Services
+export interface IDictionaryRequest {
+  uuid: string;
+  id: number;
+}
+
+export interface IDictionaryFieldRequest {
+  uuid: string;
+  columnUuid: string;
+  elementUuid: string;
+  fieldUuid: string;
+  // TableName + ColumnName
+  tableName: string;
+  columnName: string;
+  elementColumnName: string;
 }

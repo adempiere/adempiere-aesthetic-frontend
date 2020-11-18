@@ -7,7 +7,7 @@ import {
   IProductData,
   ISalesRepresentativeData,
   ITaxRateData
-} from "@/modules/core";
+} from "@/ADempiere/modules/core";
 
 interface IChargeData {
   uuid: string;

@@ -7,7 +7,7 @@ import {
   convertDocumentStatus,
   convertProduct,
   convertTaxRate
-} from "@/modules/core";
+} from "@/ADempiere/modules/core";
 import {
   IPointOfSalesData,
   IOrderData,

@@ -1,4 +1,4 @@
-import { convertContextInfo } from "@/modules/core";
+import { convertContextInfo } from "@/ADempiere/modules/core";
 import {
   IFieldConditionData,
   IFieldData,

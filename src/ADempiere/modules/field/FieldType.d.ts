@@ -1,4 +1,4 @@
-import { IContextInfoData } from '@/modules/core';
+import { IContextInfoData } from '@/ADempiere/modules/core';
 
 interface IFieldGroupData {
   id?: number

@@ -1,4 +1,4 @@
-import { convertArrayKeyValueToObject } from "@/utils/ADempiere/valueFormat";
+import { convertArrayKeyValueToObject } from "@/ADempiere/shared/utils/valueFormat";
 import { IEntityListData, IEntityData, ITranslationData } from '.';
 
 export function convertEntityList(entityListToConvert: any): IEntityListData {

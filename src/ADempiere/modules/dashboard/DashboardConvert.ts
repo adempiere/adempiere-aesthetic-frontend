@@ -1,4 +1,4 @@
-import { convertCriteria } from "@/modules/core";
+import { convertCriteria } from "@/ADempiere/modules/core";
 import {
   IRecentItemResponseData,
   IRecentItemData,
