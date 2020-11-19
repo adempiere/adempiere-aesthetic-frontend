@@ -1,4 +1,4 @@
-import { convertArrayKeyValueToObject } from "@/ADempiere/shared/utils/valueFormat";
+import { convertArrayKeyValueToObject } from '@/ADempiere/shared/utils/valueFormat';
 import { IEntityListData, IEntityData, ITranslationData } from '.';
 
 export function convertEntityList(entityListToConvert: any): IEntityListData {
@@ -18,7 +18,7 @@ export function convertEntity(entityToConvert: any): IEntityData {
     tableName: entityToConvert.table_name,
     attributes: convertArrayKeyValueToObject({
       array: entityToConvert.attributes,
-      keyName: "key"
+      keyName: 'key'
     })
   };
 }
@@ -29,4 +29,4 @@ export function convertTranslation(translationToConvert: any): ITranslationData 
     uuid: translationToConvert.uuid,
     values: translationToConvert.values
   };
-};
+}

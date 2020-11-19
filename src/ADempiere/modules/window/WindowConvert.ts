@@ -9,7 +9,7 @@ import {
   IWorkflowNodeData,
   IWorkflowTransitionData,
   IWorkflowConditionData
-} from ".";
+} from '.';
 
 export function convertEntityLog(entityLogToConvert: any): IEntityLogData {
   const { id, uuid } = entityLogToConvert;

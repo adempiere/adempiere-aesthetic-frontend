@@ -1,5 +1,5 @@
-import * as config from "@/../config/default.json";
+import * as config from '@/../config/default.json';
 
 export function getConfig() : IConfigData {
-    return config;
+  return config;
 }

@@ -1,14 +1,14 @@
 import {
   ApiRest as requestRest,
   evaluateResponse
-} from "@/ADempiere/shared/services/instances";
+} from '@/ADempiere/shared/services/instances';
 import {
   IProcessRequestData,
   convertProcessLog,
   IProcessLogData,
   IProcessListData,
   IProcessLogListData
-} from ".";
+} from '.';
 
 /**
  * Request a process
@@ -18,7 +18,7 @@ export function requestRunProcess(
   requestData: IProcessRequestData
 ): Promise<IProcessLogData> {
   return requestRest({
-    url: "/data/process",
+    url: '/data/process',
     data: requestData
   })
     .then(evaluateResponse)
@@ -31,7 +31,7 @@ export function requestListProcessesLogs(
   requestData: IProcessListData
 ): Promise<IProcessLogListData> {
   return requestRest({
-    url: "/logs/list-process-logs",
+    url: '/logs/list-process-logs',
     data: {
       instance_uuid: requestData.instanceUuid,
       user_uuid: requestData.userUuid,

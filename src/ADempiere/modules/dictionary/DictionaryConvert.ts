@@ -1,5 +1,5 @@
-import { convertContextInfo } from "@/ADempiere/modules/core";
-import { convertField, convertFieldGroup } from "@/ADempiere/modules/field";
+import { convertContextInfo } from '@/ADempiere/modules/core';
+import { convertField, convertFieldGroup } from '@/ADempiere/modules/field';
 import {
   IProcessData,
   IReportExportTypeData,
@@ -8,7 +8,7 @@ import {
   IWindowData,
   ITabData,
   IValidationRule
-} from ".";
+} from '.';
 
 export function convertProcess(processToConvert: any): IProcessData {
   return {

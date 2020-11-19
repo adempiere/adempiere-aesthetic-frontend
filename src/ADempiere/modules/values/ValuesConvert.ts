@@ -1,4 +1,4 @@
-import { IReferenceListData, IReferenceData } from ".";
+import { IReferenceListData, IReferenceData } from '.';
 
 export function convertReferencesList(
   listReferencesToConvert: any

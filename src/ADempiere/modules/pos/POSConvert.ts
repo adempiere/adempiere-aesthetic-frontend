@@ -7,7 +7,7 @@ import {
   convertDocumentStatus,
   convertProduct,
   convertTaxRate
-} from "@/ADempiere/modules/core";
+} from '@/ADempiere/modules/core';
 import {
   IPointOfSalesData,
   IOrderData,
@@ -15,7 +15,7 @@ import {
   IKeyLayoutData,
   IKeyData,
   IResourceReferenceData
-} from ".";
+} from '.';
 
 export function convertPointOfSales(posToConvert: any): IPointOfSalesData {
   const { uuid, id, name, description, help } = posToConvert;

@@ -15,7 +15,7 @@ import {
   IProductData,
   ISalesRepresentativeData,
   ITaxRateData
-} from ".";
+} from '.';
 
 export function convertContextInfo(
   contextInfoToConvert: any

@@ -1,4 +1,4 @@
-import { convertContextInfo } from "@/ADempiere/modules/core";
+import { convertContextInfo } from '@/ADempiere/modules/core';
 import {
   IFieldConditionData,
   IFieldData,
@@ -6,7 +6,7 @@ import {
   IFieldGroupData,
   IReferenceData,
   IZoomWindowData
-} from ".";
+} from '.';
 
 export function convertField(fieldToConvert: any): IFieldData {
   return {

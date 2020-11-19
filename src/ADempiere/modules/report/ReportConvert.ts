@@ -4,7 +4,7 @@ import {
   IPrintFormatData,
   IReportOutputData,
   IReportViewData
-} from ".";
+} from '.';
 
 export function convertListPrintFormats(
   listPrintFormatsToConvert: any

@@ -1,11 +1,11 @@
-import { convertCriteria } from "@/ADempiere/modules/core";
+import { convertCriteria } from '@/ADempiere/modules/core';
 import {
   IRecentItemResponseData,
   IRecentItemData,
   IFavoriteData,
   IDashboardData,
   IPendingDocumentData
-} from ".";
+} from '.';
 
 export function convertRecentItemsList(
   recentItemsListToConvert: any

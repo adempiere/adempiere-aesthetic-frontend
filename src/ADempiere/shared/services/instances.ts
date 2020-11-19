@@ -1,6 +1,6 @@
-import { getConfig } from "@/ADempiere/shared/utils/config";
-import axios, { AxiosRequestConfig, AxiosInstance, AxiosResponse } from "axios";
-import { getLanguage, getToken } from "@/utils/cookies";
+import { getConfig } from '@/ADempiere/shared/utils/config';
+import axios, { AxiosRequestConfig, AxiosInstance, AxiosResponse } from 'axios';
+import { getLanguage, getToken } from '@/utils/cookies';
 
 export function ApiRest(requestConfig: AxiosRequestConfig) {
   const setInterceptor = (instance: AxiosInstance) => {
@@ -15,18 +15,18 @@ export function ApiRest(requestConfig: AxiosRequestConfig) {
     return instance.interceptors;
   };
 
-  let config: IConfigData = getConfig();
+  const config: IConfigData = getConfig();
   const apiRestAddress: string =
     config.adempiere.api.url + config.adempiere.api.service;
   const instance: AxiosInstance = axios.create({
     baseURL: apiRestAddress,
     headers: {
-      "Content-Type": "application/json;charset=UTF-8"
+      'Content-Type': 'application/json charset=UTF-8'
     },
     responseType: requestConfig.responseType
   });
   instance.interceptors = setInterceptor(instance);
-  const language = getLanguage || "en_US";
+  const language = getLanguage || 'en_US';
   requestConfig.params = {
     token: getToken(),
     language,
