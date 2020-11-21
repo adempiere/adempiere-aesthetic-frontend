@@ -1,13 +1,34 @@
 import {
   ApiRest as requestRest,
   evaluateResponse
-} from '@/ADempiere/shared/services/instances';
-import { convertField, convertReference, IFieldData, IReferenceData } from '@/ADempiere/modules/field';
-import { convertWindow, convertProcess, convertBrowser, convertForm, convertValidationRule } from '.';
-import { IBrowserData, IDictionaryFieldRequest, IDictionaryRequest, IFormData, IProcessData, IValidationRule, IWindowData } from './DictionaryType';
+} from '@/ADempiere/shared/services/instances'
+import {
+  convertField,
+  convertReference,
+  IFieldData,
+  IReferenceData
+} from '@/ADempiere/modules/field'
+import {
+  convertWindow,
+  convertProcess,
+  convertBrowser,
+  convertForm,
+  convertValidationRule
+} from '.'
+import {
+  IBrowserData,
+  IDictionaryFieldRequest,
+  IDictionaryRequest,
+  IFormData,
+  IProcessData,
+  IValidationRule,
+  IWindowData
+} from './DictionaryType'
 
-export const requestWindowMetadata = (data: IDictionaryRequest) : Promise<IWindowData> => {
-  const { id, uuid } = data;
+export const requestWindowMetadata = (
+  data: IDictionaryRequest
+): Promise<IWindowData> => {
+  const { id, uuid } = data
   return requestRest({
     url: '/dictionary/window',
     method: 'get',
@@ -18,17 +39,19 @@ export const requestWindowMetadata = (data: IDictionaryRequest) : Promise<IWindo
   })
     .then(evaluateResponse)
     .then(response => {
-      return convertWindow(response);
-    });
-};
+      return convertWindow(response)
+    })
+}
 
 /**
-   * Request dictionary Process/Report metadata
-   * @param {string} uuid universally unique identifier
-   * @param {number} id, identifier
-   */
-export function requestProcessMetadata(data: IDictionaryRequest): Promise<IProcessData> {
-  const { id, uuid } = data;
+ * Request dictionary Process/Report metadata
+ * @param {string} uuid universally unique identifier
+ * @param {number} id, identifier
+ */
+export function requestProcessMetadata(
+  data: IDictionaryRequest
+): Promise<IProcessData> {
+  const { id, uuid } = data
   return requestRest({
     url: '/dictionary/process',
     method: 'get',
@@ -39,17 +62,19 @@ export function requestProcessMetadata(data: IDictionaryRequest): Promise<IProce
   })
     .then(evaluateResponse)
     .then(response => {
-      return convertProcess(response);
-    });
+      return convertProcess(response)
+    })
 }
 
 /**
-   * Request dictionary Smart Browser metadata
-   * @param {string} uuid universally unique identifier
-   * @param {number} id, identifier
-   */
-export function requestBrowserMetadata(data: IDictionaryRequest) : Promise<IBrowserData> {
-  const { id, uuid } = data;
+ * Request dictionary Smart Browser metadata
+ * @param {string} uuid universally unique identifier
+ * @param {number} id, identifier
+ */
+export function requestBrowserMetadata(
+  data: IDictionaryRequest
+): Promise<IBrowserData> {
+  const { id, uuid } = data
   return requestRest({
     url: '/dictionary/browser',
     method: 'get',
@@ -60,17 +85,17 @@ export function requestBrowserMetadata(data: IDictionaryRequest) : Promise<IBrow
   })
     .then(evaluateResponse)
     .then(response => {
-      return convertBrowser(response);
-    });
+      return convertBrowser(response)
+    })
 }
 
 /**
-   * Request dictionary Form metadata
-   * @param {string} uuid universally unique identifier
-   * @param {number} id, integer identifier
-   */
-export function requestForm(data: IDictionaryRequest) : Promise<IFormData> {
-  const { id, uuid } = data;
+ * Request dictionary Form metadata
+ * @param {string} uuid universally unique identifier
+ * @param {number} id, integer identifier
+ */
+export function requestForm(data: IDictionaryRequest): Promise<IFormData> {
+  const { id, uuid } = data
   return requestRest({
     url: '/dictionary/form',
     method: 'get',
@@ -81,11 +106,13 @@ export function requestForm(data: IDictionaryRequest) : Promise<IFormData> {
   })
     .then(evaluateResponse)
     .then(response => {
-      return convertForm(response);
-    });
+      return convertForm(response)
+    })
 }
 
-export function requestFieldMetadata(data: IDictionaryFieldRequest) : Promise<IFieldData> {
+export function requestFieldMetadata(
+  data: IDictionaryFieldRequest
+): Promise<IFieldData> {
   return requestRest({
     url: '/dictionary/field',
     method: 'get',
@@ -102,11 +129,14 @@ export function requestFieldMetadata(data: IDictionaryFieldRequest) : Promise<IF
   })
     .then(evaluateResponse)
     .then(response => {
-      return convertField(response);
-    });
+      return convertField(response)
+    })
 }
 
-export function requestReference(data: { uuid: string, columnName: string }) : Promise<IReferenceData> {
+export function requestReference(data: {
+    uuid: string
+    columnName: string
+}): Promise<IReferenceData> {
   return requestRest({
     url: '/dictionary/reference',
     method: 'get',
@@ -117,12 +147,14 @@ export function requestReference(data: { uuid: string, columnName: string }) : P
   })
     .then(evaluateResponse)
     .then(response => {
-      return convertReference(response);
-    });
+      return convertReference(response)
+    })
 }
 
-export function requestValidationRule(data: IDictionaryRequest) : Promise<IValidationRule> {
-  const { id, uuid } = data;
+export function requestValidationRule(
+  data: IDictionaryRequest
+): Promise<IValidationRule> {
+  const { id, uuid } = data
   return requestRest({
     url: '/dictionary/validation',
     method: 'get',
@@ -133,6 +165,6 @@ export function requestValidationRule(data: IDictionaryRequest) : Promise<IValid
   })
     .then(evaluateResponse)
     .then(response => {
-      return convertValidationRule(response);
-    });
+      return convertValidationRule(response)
+    })
 }

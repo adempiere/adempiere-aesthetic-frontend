@@ -1,5 +1,5 @@
-import { convertContextInfo } from '@/ADempiere/modules/core';
-import { convertField, convertFieldGroup } from '@/ADempiere/modules/field';
+import { convertContextInfo } from '@/ADempiere/modules/core'
+import { convertField, convertFieldGroup } from '@/ADempiere/modules/field'
 import {
   IProcessData,
   IReportExportTypeData,
@@ -8,7 +8,7 @@ import {
   IWindowData,
   ITabData,
   IValidationRule
-} from '.';
+} from '.'
 
 export function convertProcess(processToConvert: any): IProcessData {
   return {
@@ -21,12 +21,12 @@ export function convertProcess(processToConvert: any): IProcessData {
     isReport: processToConvert.is_report,
     name: processToConvert.name,
     parameters: processToConvert.parameters.map((parameter: any) => {
-      return convertField(parameter);
+      return convertField(parameter)
     }),
     reportExportTypes: processToConvert.report_export_types as IReportExportTypeData[], // no convert content
     showHelp: processToConvert.show_help,
     uuid: processToConvert.uuid
-  };
+  }
 }
 
 // Convert report export type
@@ -37,7 +37,7 @@ export function convertReportExportType(
     name: reportExportType.name,
     description: reportExportType.description,
     type: reportExportType.type
-  };
+  }
 }
 
 export function convertBrowser(browserToConvert: any): IBrowserData {
@@ -70,9 +70,9 @@ export function convertBrowser(browserToConvert: any): IBrowserData {
     process: convertProcess(browserToConvert.process),
     //
     fields: browserToConvert.fields.map((fieldItem: any) => {
-      return convertField(fieldItem);
+      return convertField(fieldItem)
     })
-  };
+  }
 }
 
 export function convertForm(formToConvert: any): IFormData {
@@ -85,7 +85,7 @@ export function convertForm(formToConvert: any): IFormData {
     accessLevel: formToConvert.access_level,
     fileName: formToConvert.file_name,
     isActive: formToConvert.is_active
-  };
+  }
 }
 
 export function convertWindow(windowToConvert: any): IWindowData {
@@ -100,9 +100,9 @@ export function convertWindow(windowToConvert: any): IWindowData {
     windowType: windowToConvert.window_type,
     contextInfo: convertContextInfo(windowToConvert.context_info),
     tabs: windowToConvert.tabs.map((tab: any) => {
-      return convertTab(tab);
+      return convertTab(tab)
     })
-  };
+  }
 }
 
 // convert Tabs
@@ -143,12 +143,12 @@ export function convertTab(tabToConvert: any): ITabData {
     contextInfo: convertContextInfo(tabToConvert.context_info),
     fieldGroup: convertFieldGroup(tabToConvert.field_group),
     processes: tabToConvert.processes.map((process: any) => {
-      return convertProcess(process);
+      return convertProcess(process)
     }),
     fields: tabToConvert.fields.map((field: any) => {
-      return convertField(field);
+      return convertField(field)
     })
-  };
+  }
 }
 
 //  Convert Validation Rule
@@ -162,5 +162,5 @@ export function convertValidationRule(
     description: validationRuleToConvert.description,
     validationCode: validationRuleToConvert.validation_code,
     type: validationRuleToConvert.type
-  };
+  }
 }

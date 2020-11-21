@@ -1,22 +1,24 @@
-import { convertCriteria } from '@/ADempiere/modules/core';
+import { convertCriteria } from '@/ADempiere/modules/core'
 import {
   IRecentItemResponseData,
   IRecentItemData,
   IFavoriteData,
   IDashboardData,
   IPendingDocumentData
-} from '.';
+} from '.'
 
 export function convertRecentItemsList(
   recentItemsListToConvert: any
 ): IRecentItemResponseData {
   return {
     recordCount: recentItemsListToConvert.record_count,
-    recentItemsList: recentItemsListToConvert.records.map((recentItem: any) => {
-      return convertRecentItem(recentItem);
-    }),
+    recentItemsList: recentItemsListToConvert.records.map(
+      (recentItem: any) => {
+        return convertRecentItem(recentItem)
+      }
+    ),
     nextPageToken: recentItemsListToConvert.next_page_token
-  };
+  }
 }
 
 export function convertRecentItem(recentItemToConvert: any): IRecentItemData {
@@ -34,7 +36,7 @@ export function convertRecentItem(recentItemToConvert: any): IRecentItemData {
     updated: recentItemToConvert.updated,
     referenceUuid: recentItemToConvert.reference_uuid,
     action: recentItemToConvert.action
-  };
+  }
 }
 
 export function convertFavorite(favoriteToConvert: any): IFavoriteData {
@@ -44,7 +46,7 @@ export function convertFavorite(favoriteToConvert: any): IFavoriteData {
     menuDescription: favoriteToConvert.menu_description,
     referenceUuid: favoriteToConvert.reference_uuid,
     action: favoriteToConvert.action
-  };
+  }
 }
 
 export function convertDashboard(dashboardToConvert: any): IDashboardData {
@@ -60,7 +62,7 @@ export function convertDashboard(dashboardToConvert: any): IDashboardData {
     isOpenByDefault: dashboardToConvert.is_open_by_default,
     isEventRequired: dashboardToConvert.is_event_required,
     fileName: dashboardToConvert.file_name
-  };
+  }
 }
 
 export function convertPendingDocument(
@@ -74,5 +76,5 @@ export function convertPendingDocument(
     sequence: pendingDocumentToConvert.sequence,
     recordCount: pendingDocumentToConvert.record_count,
     criteria: convertCriteria(pendingDocumentToConvert.criteria)
-  };
+  }
 }

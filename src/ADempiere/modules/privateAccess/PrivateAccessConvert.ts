@@ -1,4 +1,4 @@
-import { IPrivateAccessData } from '.';
+import { IPrivateAccessData } from '.'
 
 export function convertPrivateAccess(
   privateAccessToConvert: any
@@ -7,5 +7,5 @@ export function convertPrivateAccess(
     tableName: privateAccessToConvert.table_name,
     recordId: privateAccessToConvert.record_id,
     recordUuid: privateAccessToConvert.record_uuid
-  };
+  }
 }

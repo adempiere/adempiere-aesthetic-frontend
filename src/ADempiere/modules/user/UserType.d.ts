@@ -1,7 +1,6 @@
-
 export interface IRoleData {
     id: number
-    uuid : string
+    uuid: string
     name: string
     description: string
     clientId: number

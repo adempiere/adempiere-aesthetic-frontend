@@ -1,3 +1,3 @@
-export * from './DashboardConvert';
-export * from './DashboardType';
-export * from './DashboardService';
+export * from './DashboardConvert'
+export * from './DashboardType'
+export * from './DashboardService'

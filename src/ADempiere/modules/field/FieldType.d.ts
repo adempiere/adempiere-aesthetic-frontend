@@ -1,5 +1,5 @@
-import { IContextInfoData } from '@/ADempiere/modules/core';
-import { IAttributeData } from '@/ADempiere/modules/persistence';
+import { IContextInfoData } from '@/ADempiere/modules/core'
+import { IAttributeData } from '@/ADempiere/modules/persistence'
 
 export interface IFieldGroupData {
     id?: number
@@ -125,4 +125,4 @@ export interface IGetLocationAddressParams {
 }
 
 export type IUpdateLocationAddressParams = IGetLocationAddressParams &
-    ICreateLocationAddressParams;
+    ICreateLocationAddressParams

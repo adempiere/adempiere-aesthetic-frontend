@@ -1,3 +1,3 @@
-export * from './PersistenceConvert';
-export * from './PersistenceType';
-export * from './PersistenceService';
+export * from './PersistenceConvert'
+export * from './PersistenceType'
+export * from './PersistenceService'

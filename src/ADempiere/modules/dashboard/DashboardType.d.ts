@@ -1,4 +1,4 @@
-import { ICriteriaData } from '@/ADempiere/modules/core';
+import { ICriteriaData } from '@/ADempiere/modules/core'
 
 export interface IRecentItemData {
     menuUuid: string

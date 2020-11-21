@@ -2,7 +2,7 @@
 import {
   ApiRest as requestRest,
   evaluateResponse
-} from '@/ADempiere/shared/services/instances';
+} from '@/ADempiere/shared/services/instances'
 import {
   convertBusinessPartner,
   convertConversionRate,
@@ -10,7 +10,7 @@ import {
   convertLanguage,
   convertOrganization,
   convertProductPrice
-} from '@/ADempiere/modules/core';
+} from '@/ADempiere/modules/core'
 import {
   IProductPriceData,
   IGetProductPriceParams,
@@ -29,7 +29,7 @@ import {
   IOrganizationsListResponse,
   IWarehousesListParams,
   IWarehousesListResponse
-} from './CoreType';
+} from './CoreType'
 
 // List Point of sales
 export function requestGetProductPrice(
@@ -43,7 +43,7 @@ export function requestGetProductPrice(
     businessPartnerUuid,
     warehouseUuid,
     validFrom
-  } = data;
+  } = data
   return requestRest({
     url: '/pos/get-product-price',
     data: {
@@ -59,15 +59,15 @@ export function requestGetProductPrice(
   })
     .then(evaluateResponse)
     .then(productPriceResponse => {
-      return convertProductPrice(productPriceResponse);
-    });
+      return convertProductPrice(productPriceResponse)
+    })
 }
 
 // Get Organization list from role
 export function requestOrganizationsList(
   data: IOrganizationsListParams
 ): Promise<IOrganizationsListResponse> {
-  const { roleId, roleUuid, pageSize, pageToken } = data;
+  const { roleId, roleUuid, pageSize, pageToken } = data
   return requestRest({
     url: '/core/list-organizations',
     data: {
@@ -86,18 +86,18 @@ export function requestOrganizationsList(
         recordCount: organizationsListResponse.record_count,
         organizationsList: organizationsListResponse.records.map(
           (organization: any) => {
-            return convertOrganization(organization);
+            return convertOrganization(organization)
           }
         )
-      };
-    });
+      }
+    })
 }
 
 // Get Warehouses of Organization
 export function requestWarehousesList(
   data: IWarehousesListParams
 ): Promise<IWarehousesListResponse> {
-  const { organizationId, organizationUuid, pageToken, pageSize } = data;
+  const { organizationId, organizationUuid, pageToken, pageSize } = data
   return requestRest({
     url: '/core/list-warehouses',
     data: {
@@ -116,14 +116,14 @@ export function requestWarehousesList(
         nextPageToken: warehousesListResponse.next_page_token,
         recordCount: warehousesListResponse.record_count,
         warehousesList: warehousesListResponse.records
-      };
-    });
+      }
+    })
 }
 
 export function requestGetCountryDefinition(
   data: IGetCountryDefinitionParams
 ): Promise<ICountryData> {
-  const { id, uuid } = data;
+  const { id, uuid } = data
   return requestRest({
     url: '/core/country',
     method: 'get',
@@ -134,14 +134,14 @@ export function requestGetCountryDefinition(
   })
     .then(evaluateResponse)
     .then(countryResponse => {
-      return convertCountry(countryResponse);
-    });
+      return convertCountry(countryResponse)
+    })
 }
 
 export function requestLanguagesList(
   data: ILanguagesListParams
 ): Promise<ILanguajesListResponse> {
-  const { pageToken, pageSize } = data;
+  const { pageToken, pageSize } = data
   return requestRest({
     url: '/core/list-languages',
     params: {
@@ -156,11 +156,11 @@ export function requestLanguagesList(
         recordCount: languagesListResponse.record_count,
         languagesList: languagesListResponse.records.map(
           (language: any) => {
-            return convertLanguage(language);
+            return convertLanguage(language)
           }
         )
-      };
-    });
+      }
+    })
 }
 
 export function requestCreateBusinessPartner(
@@ -190,7 +190,7 @@ export function requestCreateBusinessPartner(
     regionName,
     countryUuid,
     posUuid
-  } = data;
+  } = data
   return requestRest({
     url: '/core/create-business-partner',
     data: {
@@ -221,14 +221,14 @@ export function requestCreateBusinessPartner(
   })
     .then(evaluateResponse)
     .then(businessPartnerResponse => {
-      return convertBusinessPartner(businessPartnerResponse);
-    });
+      return convertBusinessPartner(businessPartnerResponse)
+    })
 }
 
 export function requestGetBusinessPartner(
   data: IGetBusinessPartnerParams
 ): Promise<IBusinessPartnerData> {
-  const { searchValue } = data;
+  const { searchValue } = data
   return requestRest({
     url: '/core/get-business-partner',
     method: 'get',
@@ -238,8 +238,8 @@ export function requestGetBusinessPartner(
   })
     .then(evaluateResponse)
     .then(businessPartnerResponse => {
-      return convertBusinessPartner(businessPartnerResponse);
-    });
+      return convertBusinessPartner(businessPartnerResponse)
+    })
 }
 
 export function requestListBusinessPartner(
@@ -255,7 +255,7 @@ export function requestListBusinessPartner(
     phone,
     pageSize,
     pageToken
-  } = data;
+  } = data
   return requestRest({
     url: '/core/list-business-partner',
     data: {
@@ -280,11 +280,11 @@ export function requestListBusinessPartner(
         recordCount: businessPartnerResponse.record_count,
         businessPartnersList: businessPartnerResponse.records.map(
           (businessPartner: any) => {
-            return convertBusinessPartner(businessPartner);
+            return convertBusinessPartner(businessPartner)
           }
         )
-      };
-    });
+      }
+    })
 }
 
 /**
@@ -303,7 +303,7 @@ export function requestGetConversionRate(
     conversionTypeUuid,
     currencyFromUuid,
     currencyToUuid
-  } = data;
+  } = data
   return requestRest({
     url: '/core/get-conversion-rate',
     data: {
@@ -315,6 +315,6 @@ export function requestGetConversionRate(
   })
     .then(evaluateResponse)
     .then(conversionRateResponse => {
-      return convertConversionRate(conversionRateResponse);
-    });
+      return convertConversionRate(conversionRateResponse)
+    })
 }

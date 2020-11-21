@@ -1,14 +1,14 @@
 import {
   ApiRest as requestRest,
   evaluateResponse
-} from '@/ADempiere/shared/services/instances';
-import { IFavoriresFromServerParams } from '.';
+} from '@/ADempiere/shared/services/instances'
+import { IFavoriresFromServerParams } from '.'
 import {
   convertRecentItemsList,
   convertFavorite,
   convertPendingDocument,
   convertDashboard
-} from './DashboardConvert';
+} from './DashboardConvert'
 import {
   IFavoriresFromServerResponse,
   IListDashboardsParams,
@@ -17,12 +17,12 @@ import {
   IPendingDocumentsFromServerResponse,
   IRecentItemResponseData,
   ListRecentItemsParams
-} from './DashboardType';
+} from './DashboardType'
 
 export function requestListRecentItems(
   data: ListRecentItemsParams
 ): Promise<IRecentItemResponseData> {
-  const { userUuid, roleUuid, pageToken, pageSize } = data;
+  const { userUuid, roleUuid, pageToken, pageSize } = data
   return requestRest({
     url: '/logs/list-recent-items',
     data: {
@@ -38,14 +38,14 @@ export function requestListRecentItems(
   })
     .then(evaluateResponse)
     .then(recentItmesReponse => {
-      return convertRecentItemsList(recentItmesReponse);
-    });
+      return convertRecentItemsList(recentItmesReponse)
+    })
 }
 
 export function getFavoritesFromServer(
   data: IFavoriresFromServerParams
 ): Promise<IFavoriresFromServerResponse> {
-  const { userId, userUuid, pageToken, pageSize } = data;
+  const { userId, userUuid, pageToken, pageSize } = data
   return requestRest({
     url: '/dashboard/list-favorites',
     data: {
@@ -64,19 +64,19 @@ export function getFavoritesFromServer(
         recordCount: favoritesListReponse.record_count,
         favoritesList: favoritesListReponse.records.map(
           (favorite: any) => {
-            return convertFavorite(favorite);
+            return convertFavorite(favorite)
           }
         ),
         nextPageToken: favoritesListReponse.next_page_token
-      };
-    });
+      }
+    })
 }
 
 // Get pending documents
 export function getPendingDocumentsFromServer(
   data: IPendingDocumentsFromServerParams
 ): Promise<IPendingDocumentsFromServerResponse> {
-  const { userId, userUuid, roleId, roleUuid, pageToken, pageSize } = data;
+  const { userId, userUuid, roleId, roleUuid, pageToken, pageSize } = data
   return requestRest({
     url: '/dashboard/list-pending-documents',
     data: {
@@ -97,19 +97,19 @@ export function getPendingDocumentsFromServer(
         recordCount: pendingDocumentsListResponse.record_count,
         pendingDocumentsList: pendingDocumentsListResponse.records.map(
           (pendingDocument: any) => {
-            return convertPendingDocument(pendingDocument);
+            return convertPendingDocument(pendingDocument)
           }
         ),
         nextPageToken: pendingDocumentsListResponse.next_page_token
-      };
-    });
+      }
+    })
 }
 
 // List all dashboard for role
 export function requestLisDashboards(
   data: IListDashboardsParams
 ): Promise<IListDashboardsResponse> {
-  const { roleId, roleUuid, pageToken, pageSize } = data;
+  const { roleId, roleUuid, pageToken, pageSize } = data
   return requestRest({
     url: '/dashboard/list-dashboards',
     data: {
@@ -128,10 +128,10 @@ export function requestLisDashboards(
         recordCount: dashboardsListResponse.record_count,
         dashboardsList: dashboardsListResponse.records.map(
           (dashboard: any) => {
-            return convertDashboard(dashboard);
+            return convertDashboard(dashboard)
           }
         ),
         nextPageToken: dashboardsListResponse.next_page_token
-      };
-    });
+      }
+    })
 }

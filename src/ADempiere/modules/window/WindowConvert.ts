@@ -9,10 +9,10 @@ import {
   IWorkflowNodeData,
   IWorkflowTransitionData,
   IWorkflowConditionData
-} from '.';
+} from '.'
 
 export function convertEntityLog(entityLogToConvert: any): IEntityLogData {
-  const { id, uuid } = entityLogToConvert;
+  const { id, uuid } = entityLogToConvert
 
   return {
     logId: entityLogToConvert.log_id,
@@ -27,9 +27,9 @@ export function convertEntityLog(entityLogToConvert: any): IEntityLogData {
     eventTypeName: entityLogToConvert.event_type_name,
     logDate: entityLogToConvert.log_date,
     changeLogsList: entityLogToConvert.change_logs.map((changeLog: any) => {
-      return convertChangeLog(changeLog);
+      return convertChangeLog(changeLog)
     })
-  };
+  }
 }
 
 export function convertChangeLog(changeLogToConvert: any): IChangeLogData {
@@ -41,11 +41,11 @@ export function convertChangeLog(changeLogToConvert: any): IChangeLogData {
     oldDisplayValue: changeLogToConvert.old_display_value,
     newDisplayValue: changeLogToConvert.new_display_value,
     description: changeLogToConvert.description
-  };
+  }
 }
 
 export function convertEntityChat(entityChatToConvert: any): IEntityChatData {
-  const { id, uuid, description } = entityChatToConvert;
+  const { id, uuid, description } = entityChatToConvert
 
   return {
     chatUuid: entityChatToConvert.chat_uuid,
@@ -59,7 +59,7 @@ export function convertEntityChat(entityChatToConvert: any): IEntityChatData {
     moderationType: entityChatToConvert.moderation_type,
     moderationTypeName: entityChatToConvert.moderation_type_name,
     logDate: entityChatToConvert.log_date
-  };
+  }
 }
 
 export function convertChatEntry(chatEntryToConvert: any): IChatEntryData {
@@ -77,7 +77,7 @@ export function convertChatEntry(chatEntryToConvert: any): IChatEntryData {
     moderatorStatus: chatEntryToConvert.moderator_status,
     moderatorStatusName: chatEntryToConvert.moderator_status_name,
     logDate: chatEntryToConvert.log_date
-  };
+  }
 }
 
 export function convertWorkflowProcess(
@@ -101,11 +101,11 @@ export function convertWorkflowProcess(
     priorityName: workflowProcessToConvert.priority_name,
     workflowEventsList: workflowProcessToConvert.workflow_events.map(
       (itemEvent: any) => {
-        return convertWorkflowEvent(itemEvent);
+        return convertWorkflowEvent(itemEvent)
       }
     ),
     logDate: workflowProcessToConvert.log_date
-  };
+  }
 }
 
 export function convertWorkflowEvent(
@@ -130,13 +130,13 @@ export function convertWorkflowEvent(
     eventType: workflowEventToConvert.event_type,
     eventTypeName: workflowEventToConvert.event_type_name,
     logDate: workflowEventToConvert.log_date
-  };
+  }
 }
 
 export function convertWorkflowDefinition(
   workflowDefinitionToConvert: any
 ): IWorkflowDefinitionData {
-  const { uuid, name, description, help } = workflowDefinitionToConvert;
+  const { uuid, name, description, help } = workflowDefinitionToConvert
 
   return {
     uuid,
@@ -157,16 +157,16 @@ export function convertWorkflowDefinition(
     startNode: convertWorkflowNode(workflowDefinitionToConvert.start_node),
     workflowNodesList: workflowDefinitionToConvert.workflow_nodes.map(
       (itemWorkflowNode: any) => {
-        return convertWorkflowNode(itemWorkflowNode);
+        return convertWorkflowNode(itemWorkflowNode)
       }
     )
-  };
+  }
 }
 
 export function convertWorkflowNode(
   workflowNodeToConvert: any
 ): IWorkflowNodeData {
-  const { uuid, name, description, help } = workflowNodeToConvert;
+  const { uuid, name, description, help } = workflowNodeToConvert
 
   return {
     uuid,
@@ -184,10 +184,10 @@ export function convertWorkflowNode(
     actionName: workflowNodeToConvert.action_name,
     transitionsList: workflowNodeToConvert.transitions.map(
       (itemTransition: any) => {
-        return convertWorkflowTransition(itemTransition);
+        return convertWorkflowTransition(itemTransition)
       }
     )
-  };
+  }
 }
 
 export function convertWorkflowTransition(
@@ -196,16 +196,17 @@ export function convertWorkflowTransition(
   return {
     nodeNextUuid: workflowTransitionToConvert.node_next_uuid,
     description: workflowTransitionToConvert.description,
-    isStdUserWorkflow: workflowTransitionToConvert.is_standard_user_workflow,
+    isStdUserWorkflow:
+            workflowTransitionToConvert.is_standard_user_workflow,
     isSandardUserWorkflow:
-      workflowTransitionToConvert.is_standard_user_workflow,
+            workflowTransitionToConvert.is_standard_user_workflow,
     sequence: workflowTransitionToConvert.sequence,
     workflowConditionsList: workflowTransitionToConvert.workflow_conditions.map(
       (conditionItem: any) => {
-        return convertWorkflowCondition(conditionItem);
+        return convertWorkflowCondition(conditionItem)
       }
     )
-  };
+  }
 }
 
 export function convertWorkflowCondition(
@@ -219,5 +220,5 @@ export function convertWorkflowCondition(
     conditionTypeName: workflowConditionToConvert.confidential_type_name,
     operation: workflowConditionToConvert.operation,
     operationName: workflowConditionToConvert.operation_name
-  };
+  }
 }

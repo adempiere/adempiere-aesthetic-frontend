@@ -1,2 +1,2 @@
-export * from './PrivateAccessConvert';
-export * from './PrivateAccessType';
+export * from './PrivateAccessConvert'
+export * from './PrivateAccessType'

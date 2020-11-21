@@ -1,4 +1,4 @@
-import { EventType } from '@/ADempiere/modules/window';
+import { EventType } from '@/ADempiere/modules/window'
 
 export interface IEntityData {
     id: number
@@ -24,12 +24,12 @@ export interface ITranslationData {
 export type IAttributeData = {
     columnName: string
     value: any
-};
+}
 
 export type KeyValueData = {
     key: string
     value: any
-};
+}
 
 export interface IEntityRequestParams {
     tableName: string

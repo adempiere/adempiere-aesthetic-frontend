@@ -2,13 +2,13 @@
 import {
   ApiRest as requestRest,
   evaluateResponse
-} from '@/ADempiere/shared/services/instances';
+} from '@/ADempiere/shared/services/instances'
 import {
   convertReportView,
   convertReportOutput,
   convertDrillTables,
   convertListPrintFormats
-} from '@/ADempiere/modules/report/ReportConvert';
+} from '@/ADempiere/modules/report/ReportConvert'
 import {
   IListPrintsFormatsData,
   IListReportsViewsRequest,
@@ -18,7 +18,7 @@ import {
   IReportDrillTableResponse,
   IListReportOutputRequest,
   IReportOutputData
-} from './ReportType';
+} from './ReportType'
 
 /**
  * Request Pending Documents List
@@ -29,7 +29,7 @@ import {
 export function requestListReportsViews(
   data: IListReportsViewsRequest
 ): Promise<IReportsViewResponse> {
-  const { tableName, processUuid, pageToken, pageSize } = data;
+  const { tableName, processUuid, pageToken, pageSize } = data
   return requestRest({
     url: '/ui/list-report-views',
     data: {
@@ -46,18 +46,20 @@ export function requestListReportsViews(
       return {
         nextPageToken: reportViewResponse.next_page_token,
         recordCount: reportViewResponse.record_count,
-        reportViewsList: reportViewResponse.records.map((drill: any) => {
-          return convertReportView(drill);
-        })
-      };
-    });
+        reportViewsList: reportViewResponse.records.map(
+          (drill: any) => {
+            return convertReportView(drill)
+          }
+        )
+      }
+    })
 }
 
 // Get print formats from table name, report view uuid or process uuid
 export function requestListPrintFormats(
   data: IListPrintsFormatsRequest
 ): Promise<IListPrintsFormatsData> {
-  const { tableName, processUuid, reportViewUuid, pageToken, pageSize } = data;
+  const { tableName, processUuid, reportViewUuid, pageToken, pageSize } = data
   return requestRest({
     url: '/ui/list-print-formats',
     data: {
@@ -72,15 +74,15 @@ export function requestListPrintFormats(
   })
     .then(evaluateResponse)
     .then(responseListPrintFormats => {
-      return convertListPrintFormats(responseListPrintFormats);
-    });
+      return convertListPrintFormats(responseListPrintFormats)
+    })
 }
 
 // Get drill tables for a report
 export function requestListDrillTables(
   data: IListReportDrillTablesRequest
 ): Promise<IReportDrillTableResponse> {
-  const { tableName, pageToken, pageSize } = data;
+  const { tableName, pageToken, pageSize } = data
   return requestRest({
     url: '/ui/list-drill-tables',
     data: {
@@ -94,13 +96,15 @@ export function requestListDrillTables(
     .then(evaluateResponse)
     .then(drillTablesResponse => {
       return {
-        drillTablesList: drillTablesResponse.records.map((drill: any) => {
-          return convertDrillTables(drill);
-        }),
+        drillTablesList: drillTablesResponse.records.map(
+          (drill: any) => {
+            return convertDrillTables(drill)
+          }
+        ),
         nextPageToken: drillTablesResponse.next_page_token,
         recordCount: drillTablesResponse.record_count
-      };
-    });
+      }
+    })
 }
 
 // Get report output from parameters
@@ -127,6 +131,6 @@ export function requestGetReportOutput(
   })
     .then(evaluateResponse)
     .then(reportOutpuResponse => {
-      return convertReportOutput(reportOutpuResponse);
-    });
+      return convertReportOutput(reportOutpuResponse)
+    })
 }

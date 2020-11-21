@@ -2,14 +2,14 @@
 import {
   ApiRest as requestRest,
   evaluateResponse
-} from '@/ADempiere/shared/services/instances';
-import { convertProductPrice } from '@/ADempiere/modules/core';
+} from '@/ADempiere/shared/services/instances'
+import { convertProductPrice } from '@/ADempiere/modules/core'
 import {
   convertKeyLayout,
   convertOrder,
   convertOrderLine,
   convertPointOfSales
-} from './POSConvert';
+} from './POSConvert'
 import {
   ICreateOrderLineParams,
   ICreateOrderParams,
@@ -33,14 +33,14 @@ import {
   IPrintOrderParams,
   IUpdateOrderParams,
   UpdateOrderLineParams
-} from './POSType';
-import { AxiosPromise } from 'axios';
+} from './POSType'
+import { AxiosPromise } from 'axios'
 
 // List Point of sales
 export function requestGetPointOfSales(
   data: IGetPointOfSalesParams
 ): Promise<IPointOfSalesData> {
-  const { posUuid } = data;
+  const { posUuid } = data
   return requestRest({
     url: '/pos/get-point-of-sales',
     data: {
@@ -49,14 +49,14 @@ export function requestGetPointOfSales(
   })
     .then(evaluateResponse)
     .then(posResponse => {
-      return convertPointOfSales(posResponse);
-    });
+      return convertPointOfSales(posResponse)
+    })
 }
 
 export function requestListPointOfSales(
   data: IListPointOfSalesParams
 ): Promise<IListPointOfSalesResponse> {
-  const { userUuid, pageToken, pageSize } = data;
+  const { userUuid, pageToken, pageSize } = data
   return requestRest({
     url: '/pos/list-point-of-sales',
     data: {
@@ -73,10 +73,10 @@ export function requestListPointOfSales(
         nextPageToken: posListResponse.next_page_token,
         recordCount: posListResponse.record_count,
         sellingPointsList: posListResponse.records.map((pos: any) => {
-          return convertPointOfSales(pos);
+          return convertPointOfSales(pos)
         })
-      };
-    });
+      }
+    })
 }
 
 export function requestCreateOrder(
@@ -87,7 +87,7 @@ export function requestCreateOrder(
     customerUuid,
     documentTypeUuid,
     salesRepresentativeUuid
-  } = data;
+  } = data
   return requestRest({
     url: '/pos/create-order',
     data: {
@@ -99,15 +99,15 @@ export function requestCreateOrder(
   })
     .then(evaluateResponse)
     .then(createOrderResponse => {
-      return convertOrder(createOrderResponse);
-    });
+      return convertOrder(createOrderResponse)
+    })
 }
 
 // Update order from POS
 export function requestUpdateOrder(
   data: IUpdateOrderParams
 ): Promise<IOrderData> {
-  const { orderUuid, posUuid, customerUuid, description } = data;
+  const { orderUuid, posUuid, customerUuid, description } = data
   return requestRest({
     url: '/pos/update-order',
     data: {
@@ -119,8 +119,8 @@ export function requestUpdateOrder(
   })
     .then(evaluateResponse)
     .then(updateOrderResponse => {
-      return convertOrder(updateOrderResponse);
-    });
+      return convertOrder(updateOrderResponse)
+    })
 }
 
 export function requestGetOrder(orderUuid: string): Promise<IOrderData> {
@@ -132,8 +132,8 @@ export function requestGetOrder(orderUuid: string): Promise<IOrderData> {
   })
     .then(evaluateResponse)
     .then(getOrderResponse => {
-      return convertOrder(getOrderResponse);
-    });
+      return convertOrder(getOrderResponse)
+    })
 }
 
 export function requestDeleteOrder(
@@ -144,7 +144,7 @@ export function requestDeleteOrder(
     customerUuid,
     documentTypeUuid,
     salesRepresentativeUuid
-  } = data;
+  } = data
   return requestRest({
     url: '/pos/delete-order',
     data: {
@@ -153,7 +153,7 @@ export function requestDeleteOrder(
       document_type_uuid: documentTypeUuid,
       sales_representative_uuid: salesRepresentativeUuid
     }
-  }).then(evaluateResponse);
+  }).then(evaluateResponse)
 }
 
 // List orders from pos uuid
@@ -175,7 +175,7 @@ export function requestListOrders(
     salesRepresentativeUuid,
     pageSize,
     pageToken
-  } = data;
+  } = data
   /*
     const Criteria = require('@/utils/ADempiere/criteria.js')
     const criteria = new Criteria({
@@ -246,11 +246,11 @@ export function requestListOrders(
         recordCount: ordersListResponse.record_count,
         ordersList: ordersListResponse.records.map(
           (productPrice: any) => {
-            return convertOrder(productPrice);
+            return convertOrder(productPrice)
           }
         )
-      };
-    });
+      }
+    })
 }
 
 export function requestCreateOrderLine(
@@ -265,7 +265,7 @@ export function requestCreateOrderLine(
     quantity,
     price,
     discountRate
-  } = data;
+  } = data
   return requestRest({
     url: '/pos/create-order-line',
     data: {
@@ -281,14 +281,14 @@ export function requestCreateOrderLine(
   })
     .then(evaluateResponse)
     .then(createOrderLineResponse => {
-      return convertOrderLine(createOrderLineResponse);
-    });
+      return convertOrderLine(createOrderLineResponse)
+    })
 }
 
 export function requestUpdateOrderLine(
   data: UpdateOrderLineParams
 ): Promise<IOrderLineData> {
-  const { orderLineUuid, description, quantity, price, discountRate } = data;
+  const { orderLineUuid, description, quantity, price, discountRate } = data
   return requestRest({
     url: '/pos/update-order-line',
     data: {
@@ -302,26 +302,26 @@ export function requestUpdateOrderLine(
   })
     .then(evaluateResponse)
     .then(createOrderLineResponse => {
-      return convertOrderLine(createOrderLineResponse);
-    });
+      return convertOrderLine(createOrderLineResponse)
+    })
 }
 
 export function requestDeleteOrderLine(
   data: IDeleteOrderLineParams
 ): Promise<any> {
-  const { orderLineUuid } = data;
+  const { orderLineUuid } = data
   return requestRest({
     url: '/pos/delete-order-line',
     data: {
       order_line_uuid: orderLineUuid
     }
-  }).then(evaluateResponse);
+  }).then(evaluateResponse)
 }
 
 export function requestListOrderLines(
   data: IListOrderLinesParams
 ): Promise<IListOrderLinesResponse> {
-  const { orderUuid, pageSize, pageToken } = data;
+  const { orderUuid, pageSize, pageToken } = data
   return requestRest({
     url: '/pos/list-order-lines',
     data: {
@@ -339,17 +339,17 @@ export function requestListOrderLines(
         recordCount: ordersLineListResponse.record_count,
         orderLineList: ordersLineListResponse.records.map(
           (productPrice: any) => {
-            return convertOrderLine(productPrice);
+            return convertOrderLine(productPrice)
           }
         )
-      };
-    });
+      }
+    })
 }
 
 export function getKeyLayout(
   data: IGetKeyLayoutParams
 ): Promise<IKeyLayoutData> {
-  const { keyLayoutUuid } = data;
+  const { keyLayoutUuid } = data
   return requestRest({
     url: '/pos/get-key-layout',
     data: {
@@ -358,8 +358,8 @@ export function getKeyLayout(
   })
     .then(evaluateResponse)
     .then(keyLayoutResponse => {
-      return convertKeyLayout(keyLayoutResponse);
-    });
+      return convertKeyLayout(keyLayoutResponse)
+    })
 }
 
 export function requestListProductPrice(
@@ -373,7 +373,7 @@ export function requestListProductPrice(
     warehouseUuid,
     pageToken,
     pageSize
-  } = data;
+  } = data
   return requestRest({
     url: '/pos/list-product-prices',
     data: {
@@ -395,46 +395,46 @@ export function requestListProductPrice(
         recordCount: productPriceListResponse.record_count,
         productPricesList: productPriceListResponse.records.map(
           (productPrice: any) => {
-            return convertProductPrice(productPrice);
+            return convertProductPrice(productPrice)
           }
         )
-      };
-    });
+      }
+    })
 }
 
 export function requestPrintOrder(data: IPrintOrderParams) {
-  const { orderUuid } = data;
-  console.info(`Print order ${orderUuid}`);
+  const { orderUuid } = data
+  console.info(`Print order ${orderUuid}`)
 }
 
 export function requestGenerateImmediateInvoice(data: IGenerateInvoiceParams) {
-  const { posUuid, posId } = data;
+  const { posUuid, posId } = data
   console.info(
         `Generate imediate invoice with POS id ${posId}, and uuid ${posUuid}`
-  );
+  )
 }
 
 export function requestCompletePreparedOrder(data: IPrintOrderParams) {
-  const { orderUuid } = data;
-  console.info(`Complete prepared order ${orderUuid}`);
+  const { orderUuid } = data
+  console.info(`Complete prepared order ${orderUuid}`)
 }
 
 export function requestReverseSalesTransaction(data: IPrintOrderParams) {
-  const { orderUuid } = data;
-  console.info(`Reverse sales transaction ${orderUuid}`);
+  const { orderUuid } = data
+  console.info(`Reverse sales transaction ${orderUuid}`)
 }
 
 export function requestCreateWithdrawal(data: IGenerateInvoiceParams) {
-  const { posUuid, posId } = data;
-  console.info(`Withdrall cash with POS id ${posId}, and uuid ${posUuid}`);
+  const { posUuid, posId } = data
+  console.info(`Withdrall cash with POS id ${posId}, and uuid ${posUuid}`)
 }
 
 export function requestCreateNewCustomerReturnOrder(data: IPrintOrderParams) {
-  const { orderUuid } = data;
-  console.info(`New Customer Return Order ${orderUuid}`);
+  const { orderUuid } = data
+  console.info(`New Customer Return Order ${orderUuid}`)
 }
 
 export function requestCashClosing(data: IGenerateInvoiceParams) {
-  const { posUuid, posId } = data;
-  console.info(`Cash closing with POS id ${posId}, and uuid ${posUuid}`);
+  const { posUuid, posId } = data
+  console.info(`Cash closing with POS id ${posId}, and uuid ${posUuid}`)
 }

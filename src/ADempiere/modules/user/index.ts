@@ -1,2 +1,2 @@
-export * from './UserConvert';
-export * from './UserType';
+export * from './UserConvert'
+export * from './UserType'

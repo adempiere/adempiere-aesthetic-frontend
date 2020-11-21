@@ -1,2 +1,2 @@
-export * from './DictionaryConvert';
-export * from './DictionaryType';
+export * from './DictionaryConvert'
+export * from './DictionaryType'

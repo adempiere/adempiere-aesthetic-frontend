@@ -1,4 +1,4 @@
-import { IReferenceListData, IReferenceData } from '.';
+import { IReferenceListData, IReferenceData } from '.'
 
 export function convertReferencesList(
   listReferencesToConvert: any
@@ -6,14 +6,14 @@ export function convertReferencesList(
   return {
     recordCount: listReferencesToConvert.record_count,
     referencesList: listReferencesToConvert.records.map((record: any) => {
-      return convertReference(record);
+      return convertReference(record)
     }),
     nextPageToken: listReferencesToConvert.next_page_token
-  };
+  }
 }
 
 export function convertReference(referenceToConvert: any): IReferenceData {
-  const { uuid } = referenceToConvert;
+  const { uuid } = referenceToConvert
 
   return {
     uuid,
@@ -22,5 +22,5 @@ export function convertReference(referenceToConvert: any): IReferenceData {
     displayName: referenceToConvert.display_name,
     whereClause: referenceToConvert.where_clause,
     recordCount: referenceToConvert.record_count
-  };
+  }
 }
