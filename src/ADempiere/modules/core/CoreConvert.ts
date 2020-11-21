@@ -14,7 +14,8 @@ import {
   IPriceListData,
   IProductData,
   ISalesRepresentativeData,
-  ITaxRateData
+  ITaxRateData,
+  IConversionRateData
 } from '.';
 
 export function convertContextInfo(
@@ -129,7 +130,8 @@ export function convertCountry(countryToConvert: any): ICountryData {
     isAddressLinesReverse: countryToConvert.is_address_lines_reverse,
     captureSequence: countryToConvert.capture_sequence,
     displaySequenceLocal: countryToConvert.display_sequence_local,
-    isAddressLinesLocalReverse: countryToConvert.is_address_lines_local_reverse,
+    isAddressLinesLocalReverse:
+            countryToConvert.is_address_lines_local_reverse,
     expressionPostal: countryToConvert.expression_postal,
     hasPostalAdd: countryToConvert.has_postal_add,
     expressionPhone: countryToConvert.expression_phone,
@@ -278,6 +280,23 @@ export function convertProductPrice(
     quantityReserved: productPriceToConvert.quantity_reserved,
     quantityOrdered: productPriceToConvert.quantity_ordered,
     quantityAvailable: productPriceToConvert.quantity_available
+  };
+}
+
+export function convertConversionRate(
+  conversionRateToConvert: any
+): IConversionRateData {
+  const { id, uuid } = conversionRateToConvert;
+  return {
+    uuid,
+    id,
+    conversionTypeUuid: conversionRateToConvert.conversion_type_uuid,
+    validFrom: conversionRateToConvert.valid_from,
+    validTo: conversionRateToConvert.valid_to,
+    currencyFrom: convertCurrency(conversionRateToConvert.currency_from),
+    currencyTo: convertCurrency(conversionRateToConvert.currency_to),
+    multiplyRate: conversionRateToConvert.multiply_rate,
+    divideRate: conversionRateToConvert.divide_rate
   };
 }
 
