@@ -11,7 +11,7 @@ export interface IRoleData {
     isPersonalLock: boolean
 }
 
-interface IUserInfoData {
+export interface IUserInfoData {
     id: number
     uuid: string
     name: string
@@ -39,4 +39,25 @@ export interface ISessionData {
     displaySequence: string
     language: string
     standardPrecision: number
+}
+
+export interface IMenuData {
+    id: number
+    uuid: string
+    parentUuid: string
+    name: string
+    description: string
+    sequence: string
+    isReadOnly: boolean
+    isSummary: boolean
+    isSalesTransaction?: boolean
+    action: string
+    referenceUuid: string
+    childs: IMenuData[]
+    isActive: boolean
+}
+
+// service
+export interface IMenuParams {
+    sessionUuid: string
 }
