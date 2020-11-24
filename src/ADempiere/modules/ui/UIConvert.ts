@@ -1,4 +1,19 @@
+import { convertResourceReference } from '@/ADempiere/modules/pos'
+import { IAttachmentData } from './UITypes'
+
 import { IReferenceListData, IReferenceData } from '.'
+
+export const convertAttachment = (data: any): IAttachmentData => {
+  const { title } = data
+  return {
+    attachmentUuid: data.attachment_uuid,
+    title,
+    textMsg: data.text_msg,
+    resourceReferences: data.resource_reference.map((e: any) => {
+      return convertResourceReference(e)
+    })
+  }
+}
 
 export function convertReferencesList(
   listReferencesToConvert: any
