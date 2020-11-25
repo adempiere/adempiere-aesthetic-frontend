@@ -1,3 +1,5 @@
+import { ISystemInfoData } from '@/ADempiere/modules/user'
+
 export interface IMessageTextData {
     id?: number
     uuid?: string
@@ -100,8 +102,8 @@ export interface ILanguageData {
     isBaseLanguage: boolean
     isSystemLanguage: boolean
     isDecimalPoint: boolean
-    datePattern: string
-    timePattern: string
+    datePattern: string | Date
+    timePattern: string | Date
 }
 
 export interface ICurrencyData {
@@ -325,14 +327,14 @@ export interface IGetCountryDefinitionParams {
 }
 
 export interface ILanguagesListParams {
-    pageToken: string
-    pageSize: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface ILanguajesListResponse {
     nextPageToken: string
     recordCount: number
-    languagesList: ILanguageData[]
+    list: ILanguageData[]
 }
 
 export interface ICreateBusinessPartnerParams {
@@ -391,3 +393,13 @@ export interface IGetConversionRateParams {
     currencyToUuid: string
     conversionDate: any
 }
+
+// VUEX State
+
+export interface SystemState {
+    systemDefinition: ISystemInfoData | null
+    country: ICountryData | null
+    languagesList: ILanguageData[]
+}
+
+export enum SystemMutationTypes {}
