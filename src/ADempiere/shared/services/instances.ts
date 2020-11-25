@@ -23,8 +23,10 @@ export function ApiRest(requestConfig: AxiosRequestConfig): AxiosPromise<any> {
   }
 
   const config: IConfigData = getConfig()
-  const apiRestAddress: string =
-        config.adempiere.api.url + config.adempiere.api.service
+  const { adempiere } = config
+  const { api } = adempiere
+  const apiRestAddress = 'http://localhost:8085/adempiere-api '
+  // config.adempiere.api.url + config.adempiere.api.service
   const instance: AxiosInstance = axios.create({
     baseURL: apiRestAddress,
     headers: {

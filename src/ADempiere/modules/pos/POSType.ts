@@ -10,14 +10,14 @@ import {
   ITaxRateData
 } from '@/ADempiere/modules/core'
 
-interface IChargeData {
+export interface IChargeData {
     uuid: string
     id: number
     name: string
     description: string
 }
 
-interface IOrderLineData {
+export interface IOrderLineData {
     uuid: string
     orderUuid: string
     line: string
@@ -33,7 +33,7 @@ interface IOrderLineData {
     warehouse: any // Warehouse proto
 }
 
-interface IPointOfSalesData {
+export interface IPointOfSalesData {
     id: number
     uuid: string
     name: string
@@ -53,7 +53,7 @@ interface IPointOfSalesData {
     keyLayoutUuid: string
 }
 
-interface IOrderData {
+export interface IOrderData {
     uuid: string
     id: number
     documentNo: string
@@ -65,7 +65,7 @@ interface IOrderData {
     dateOrdered: number
     businessPartner: IBusinessPartnerData
 }
-interface IResourceReferenceData {
+export interface IResourceReferenceData {
     resourceUuid: string
     fileName: string
     fileSize: number
@@ -74,7 +74,7 @@ interface IResourceReferenceData {
     contentType: string
 }
 
-interface IKeyData {
+export interface IKeyData {
     uuid: string
     id: number
     name: string
@@ -89,7 +89,7 @@ interface IKeyData {
     resourceReference?: IResourceReferenceData
 }
 
-interface IKeyLayoutData {
+export interface IKeyLayoutData {
     uuid: string
     id: number
     name: string
@@ -133,7 +133,7 @@ export interface IUpdateOrderParams {
     description: string
 }
 
-interface IDeleteOrderParams {
+export interface IDeleteOrderParams {
     posUuid: string
     customerUuid: string
     documentTypeUuid: string
@@ -182,23 +182,23 @@ export interface UpdateOrderLineParams {
     discountRate: number
 }
 
-interface IDeleteOrderLineParams {
+export interface IDeleteOrderLineParams {
     orderLineUuid: string
 }
 
-interface IListOrderLinesParams {
+export interface IListOrderLinesParams {
     orderUuid: string
     pageSize: number
     pageToken: string
 }
 
-interface IListOrderLinesResponse {
+export interface IListOrderLinesResponse {
     nextPageToken: string
     recordCount: number
     orderLineList: IOrderLineData[]
 }
 
-interface IGetKeyLayoutParams {
+export interface IGetKeyLayoutParams {
     keyLayoutUuid: string
 }
 
