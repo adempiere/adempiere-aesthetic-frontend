@@ -150,11 +150,11 @@ export function requestLanguagesList(
     }
   })
     .then(evaluateResponse)
-    .then(languagesListResponse => {
+    .then((languagesListResponse: any) => {
       return {
         nextPageToken: languagesListResponse.next_page_token,
         recordCount: languagesListResponse.record_count,
-        languagesList: languagesListResponse.records.map(
+        list: languagesListResponse.records.map(
           (language: any) => {
             return convertLanguage(language)
           }

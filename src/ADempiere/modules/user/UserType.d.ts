@@ -19,16 +19,7 @@ export interface IUserInfoData {
     comments: string
     image: string
 }
-
-export interface ISessionData {
-    id: number
-    uuid: string
-    name: string
-    userInfo: any | IUserInfoData // IUserInfoData  needs convert
-    role: IRoleData
-    processed: boolean
-    defaultContext: any // Map<string, ContextValue>
-    // system info
+export interface ISystemInfoData {
     countryId: number
     costingPrecision: number
     countryCode: string
@@ -39,6 +30,16 @@ export interface ISessionData {
     displaySequence: string
     language: string
     standardPrecision: number
+}
+
+export interface ISessionData extends ISystemInfoData{
+    id: number
+    uuid: string
+    name: string
+    userInfo: any | IUserInfoData // IUserInfoData  needs convert
+    role: IRoleData
+    processed: boolean
+    defaultContext: any // Map<string, ContextValue>
 }
 
 export interface IMenuData {
