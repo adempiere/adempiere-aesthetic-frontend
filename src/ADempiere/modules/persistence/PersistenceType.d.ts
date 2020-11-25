@@ -91,3 +91,27 @@ export interface IResponseImageData {
     method: string
     responseType: string
 }
+
+export interface IBrowserSearchParams {
+    uuid: string
+    parametersList : any[]
+    tableName: string
+    query: string
+    whereClause: string
+    orderByClause: string
+    limit: number
+    pageSize: number
+    pageToken: string
+   }
+
+export type FilterType = {
+    key: string
+    value: any
+    values: any
+   }
+
+export type ParamType = {
+    columnName: string
+    value: any
+    values: any
+   }

@@ -5,10 +5,9 @@ import {
 } from '@/ADempiere/shared/services/instances'
 import { convertEntityList } from '@/ADempiere/modules/persistence'
 import {
-  FiltersType,
+  FilterType,
   IBrowserSearchParams,
-  IEntityListData,
-  ParamType
+  IEntityListData, ParamType
 } from '../PersistenceType'
 /**
  * Request a browser search
@@ -43,7 +42,7 @@ export function requestBrowserSearch(
     orderByClause,
     parametersList
   } = data
-  const filters: FiltersType[] = parametersList.map(
+  const filters: FilterType[] = parametersList.map(
     (parameter: ParamType) => {
       return {
         key: parameter.columnName,
