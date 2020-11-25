@@ -8,7 +8,8 @@ import {
   IMenuData,
   IMenuParams,
   ISessionData,
-  IUserInfoData
+  IUserInfoData,
+  ILoginParams
 } from '../UserType'
 import { convertMenu, convertSession } from '@/ADempiere/modules/user'
 
@@ -17,11 +18,6 @@ import { convertMenu, convertSession } from '@/ADempiere/modules/user'
  * @param {string} userName
  * @param {string} password
  */
-
-interface ILoginParams {
-    userName: string
-    password: string
-}
 
 export function login(data: ILoginParams): AxiosPromise<any> {
   const { userName, password } = data

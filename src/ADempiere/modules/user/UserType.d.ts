@@ -61,3 +61,8 @@ export interface IMenuData {
 export interface IMenuParams {
     sessionUuid: string
 }
+
+export interface ILoginParams {
+    userName: string
+    password: string
+}
