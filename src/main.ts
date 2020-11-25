@@ -8,7 +8,7 @@ import '@/styles/element-variables.scss'
 import '@/styles/index.scss'
 
 import App from '@/App.vue'
-import store from '@/store'
+import store from '@/ADempiere/shared/store'
 import { AppModule } from '@/store/modules/app'
 import router from '@/router'
 import i18n from '@/lang'
