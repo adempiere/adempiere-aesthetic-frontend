@@ -80,13 +80,13 @@ export interface IListReportOutputRequest {
     orderByClause: string
 }
 
-interface IReportDrillTableResponse {
+export interface IReportDrillTableResponse {
     drillTablesList: IDrillTablesData[]
     nextPageToken: string
     recordCount: number
 }
 
-interface IReportsViewResponse {
+export interface IReportsViewResponse {
     reportViewsList: IReportViewData[]
     nextPageToken: string
     recordCount: number

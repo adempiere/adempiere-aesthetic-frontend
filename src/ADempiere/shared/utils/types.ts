@@ -1,4 +1,4 @@
-interface IConfigData {
+export interface IConfigData {
     server: {
         host: string
         port: number
