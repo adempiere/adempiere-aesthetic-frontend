@@ -8,7 +8,7 @@ import { RootState } from '@/ADempiere/shared/store/types'
 
 const namespaced = true
 
-export const coreModule: Module<SystemState, RootState> = {
+export const systemModule: Module<SystemState, RootState> = {
   namespaced,
   state,
   getters,

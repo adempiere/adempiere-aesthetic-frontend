@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex, { StoreOptions } from 'vuex'
 import vuexLocal from '@/ADempiere/shared/plugins/vuex-persist'
 import { RootState } from '@/ADempiere/shared/store/types'
-import { coreModule, businessPartnerModule } from '@/ADempiere/modules/core'
+import { systemModule, businessPartnerModule } from '@/ADempiere/modules/core'
 
 import { name, version } from '@/../package.json'
 
@@ -14,7 +14,7 @@ const store: StoreOptions<RootState> = {
     appVersion: version
   },
   modules: {
-    coreModule,
+    systemModule,
     businessPartnerModule
   },
   plugins: [vuexLocal.plugin]
