@@ -384,7 +384,7 @@ export interface IListBusinessPartnerParams {
 export interface IListBusinessPartnerResponse {
     nextPageToken: string
     recordCount: number
-    businessPartnersList: IBusinessPartnerData[]
+    list: IBusinessPartnerData[]
 }
 
 export interface IGetConversionRateParams {
@@ -402,4 +402,15 @@ export interface SystemState {
     languagesList: ILanguageData[]
 }
 
-export enum SystemMutationTypes {}
+export interface BusinessPartnerState {
+    isLoaded: boolean
+    isReload: boolean
+    isShowList: boolean
+    isShowCreate: boolean
+    recordCount: number
+    nextPageToken?: string
+    businessPartnersList: IBusinessPartnerData[]
+
+    pageNumber?: number
+    token?: string
+}
