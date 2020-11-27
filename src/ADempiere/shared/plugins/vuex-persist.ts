@@ -3,6 +3,7 @@ export default new VuexPersistence({
   storage: window.localStorage,
   modules: [
     'systemModule',
-    'businessPartnerModule'
+    'businessPartnerModule',
+    'dashboardModule'
   ]
 })
