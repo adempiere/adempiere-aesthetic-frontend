@@ -399,7 +399,7 @@ export interface IGetConversionRateParams {
 export interface SystemState {
     systemDefinition: ISystemInfoData | null
     country: ICountryData | null
-    languagesList: ILanguageData[]
+    languagesList: ILanguageData[] | null
 }
 
 export interface BusinessPartnerState {
