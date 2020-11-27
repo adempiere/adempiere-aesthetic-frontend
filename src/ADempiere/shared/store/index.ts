@@ -3,6 +3,7 @@ import Vuex, { StoreOptions } from 'vuex'
 import vuexLocal from '@/ADempiere/shared/plugins/vuex-persist'
 import { RootState } from '@/ADempiere/shared/store/types'
 import { systemModule, businessPartnerModule } from '@/ADempiere/modules/core'
+import { fieldModule } from '@/ADempiere/modules/dictionary'
 import { dashboardModule } from '@/ADempiere/modules/dashboard'
 import { name, version } from '@/../package.json'
 
@@ -16,7 +17,8 @@ const store: StoreOptions<RootState> = {
   modules: {
     systemModule,
     businessPartnerModule,
-    dashboardModule
+    dashboardModule,
+    fieldModule
 
   },
   plugins: [vuexLocal.plugin]
