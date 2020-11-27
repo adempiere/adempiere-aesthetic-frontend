@@ -94,12 +94,20 @@ export interface IPendingDocumentsFromServerResponse {
 export interface IListDashboardsParams {
     roleId: number
     roleUuid: string
-    pageToken: string
-    pageSize: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface IListDashboardsResponse {
     recordCount: number
-    dashboardsList: IDashboardData[]
+    list: IDashboardData[]
     nextPageToken: string
+}
+
+export type IDashboardDataExtended = IDashboardData & { roleUuid: string }
+
+export interface DashboardState {
+    roleUuid?: string
+    dashboard: IDashboardDataExtended[]
+    recenItems: IRecentItemData[] | null
 }

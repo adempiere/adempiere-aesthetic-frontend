@@ -106,7 +106,7 @@ export function getPendingDocumentsFromServer(
 }
 
 // List all dashboard for role
-export function requestLisDashboards(
+export function requestListDashboards(
   data: IListDashboardsParams
 ): Promise<IListDashboardsResponse> {
   const { roleId, roleUuid, pageToken, pageSize } = data
@@ -126,11 +126,9 @@ export function requestLisDashboards(
     .then(dashboardsListResponse => {
       return {
         recordCount: dashboardsListResponse.record_count,
-        dashboardsList: dashboardsListResponse.records.map(
-          (dashboard: any) => {
-            return convertDashboard(dashboard)
-          }
-        ),
+        list: dashboardsListResponse.records.map((dashboard: any) => {
+          return convertDashboard(dashboard)
+        }),
         nextPageToken: dashboardsListResponse.next_page_token
       }
     })
