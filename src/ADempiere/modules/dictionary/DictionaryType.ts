@@ -131,11 +131,26 @@ export interface IDictionaryRequest {
 
 export interface IDictionaryFieldRequest {
     uuid: string
-    columnUuid: string
-    elementUuid: string
+    columnUuid?: string
+    elementUuid?: string
     fieldUuid: string
     // TableName + ColumnName
-    tableName: string
-    columnName: string
-    elementColumnName: string
+    tableName?: string
+    columnName?: string
+    elementColumnName?: string
+}
+
+export type IFieldDataExtended = IFieldData & {
+    columnUuid?: string
+    elementUuid?: string
+    elementColumnName?: string
+    tableName?: string
+}
+
+export interface FieldState {
+    referenceList: []
+    fieldsList: IFieldDataExtended[]
+    validationRuleList: []
+    fieldsListLocation: []
+    isShowedLocation: boolean
 }
