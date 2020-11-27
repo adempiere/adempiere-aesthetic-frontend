@@ -27,7 +27,7 @@ export const getters: SystemGetter = {
     if (language) {
       language = 'en_US'
     }
-    return state.languagesList.find(definition => {
+    return state.languagesList!.find(definition => {
       return definition.language === language
     })
   }
