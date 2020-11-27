@@ -4,6 +4,7 @@ export default new VuexPersistence({
   modules: [
     'systemModule',
     'businessPartnerModule',
-    'dashboardModule'
+    'dashboardModule',
+    'fieldModule'
   ]
 })
