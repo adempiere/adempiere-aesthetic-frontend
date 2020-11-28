@@ -140,6 +140,8 @@ export interface IDictionaryFieldRequest {
     elementColumnName?: string
 }
 
+// State
+
 export type IFieldDataExtended = IFieldData & {
     columnUuid?: string
     elementUuid?: string
@@ -153,4 +155,15 @@ export interface FieldState {
     validationRuleList: []
     fieldsListLocation: []
     isShowedLocation: boolean
+}
+
+export type IFormDataExtended = IFormData & {
+    containerUuid: string
+    fieldsList: any[]
+    panelType: string
+}
+
+export interface FormDefinitionState {
+    isShowedTitleForm: boolean
+    form: IFormDataExtended[]
 }
