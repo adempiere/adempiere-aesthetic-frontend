@@ -1,9 +1,12 @@
 import Vue from 'vue'
+import {
+  fieldModule,
+  formDefinitionModule
+} from '@/ADempiere/modules/dictionary'
 import Vuex, { StoreOptions } from 'vuex'
 import vuexLocal from '@/ADempiere/shared/plugins/vuex-persist'
 import { RootState } from '@/ADempiere/shared/store/types'
 import { systemModule, businessPartnerModule } from '@/ADempiere/modules/core'
-import { fieldModule } from '@/ADempiere/modules/dictionary'
 import { dashboardModule } from '@/ADempiere/modules/dashboard'
 import { name, version } from '@/../package.json'
 
@@ -18,8 +21,8 @@ const store: StoreOptions<RootState> = {
     systemModule,
     businessPartnerModule,
     dashboardModule,
-    fieldModule
-
+    fieldModule,
+    formDefinitionModule
   },
   plugins: [vuexLocal.plugin]
 }
