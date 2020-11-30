@@ -1,8 +1,5 @@
 import Vue from 'vue'
-import {
-  fieldModule,
-  formDefinitionModule
-} from '@/ADempiere/modules/dictionary'
+import { fieldModule, formDefinitionModule } from '@/ADempiere/modules/dictionary'
 import Vuex, { StoreOptions } from 'vuex'
 import vuexLocal from '@/ADempiere/shared/plugins/vuex-persist'
 import { RootState } from '@/ADempiere/shared/store/types'

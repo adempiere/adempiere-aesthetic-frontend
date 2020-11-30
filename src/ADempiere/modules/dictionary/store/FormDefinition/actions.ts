@@ -4,7 +4,6 @@ import {
   IFormDataExtended,
   requestForm
 } from '@/ADempiere/modules/dictionary'
-import router from '@/router'
 import language from '@/lang'
 import { ActionTree, ActionContext } from 'vuex'
 import { RootState } from '@/ADempiere/shared/store/types'
@@ -31,7 +30,7 @@ export const actions: FormDefinitionActionTree = {
         }
   ) {
     const { id, containerUuid, routeToDelete } = payload
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       requestForm({
         uuid: containerUuid,
         id
@@ -62,12 +61,14 @@ export const actions: FormDefinitionActionTree = {
           })
         })
         .catch(error => {
-          router.push(
-            {
-              path: '/dashboard'
-            },
-            () => { return true }
-          )
+          // router.push(
+          //   {
+          //     path: '/dashboard'
+          //   },
+          //   () => {
+          //     return true
+          //   }
+          // )
           context.dispatch('tagsView/delView', routeToDelete)
           showMessage({
             message: language.t('login.unexpectedError').toString(),

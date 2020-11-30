@@ -150,10 +150,10 @@ export type IFieldDataExtended = IFieldData & {
 }
 
 export interface FieldState {
-    referenceList: []
+    referenceList: any[]
     fieldsList: IFieldDataExtended[]
-    validationRuleList: []
-    fieldsListLocation: []
+    validationRuleList: any[]
+    fieldsListLocation: any[]
     isShowedLocation: boolean
 }
 

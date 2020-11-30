@@ -22,7 +22,7 @@ export const actions: DashboardActionTree = {
     if (payload.roleUuid) {
       payload.roleUuid = context.rootGetters.getRoleUuid
       if (payload.roleUuid) {
-        payload.roleUuid = getCurrentRole()
+        payload.roleUuid = getCurrentRole()!
       }
     }
 

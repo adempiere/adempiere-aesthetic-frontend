@@ -4,7 +4,7 @@ import { getters } from './getters'
 import { mutations } from './mutations'
 import { actions } from './actions'
 import { RootState } from '@/ADempiere/shared/store/types'
-import { DashboardState } from '../../DashboardType'
+import { DashboardState } from '@/ADempiere/modules/dashboard'
 
 const namespaced = true
 

@@ -5,7 +5,7 @@ export const setCurrentRole = (currentRole: string): void => {
   Cookies.set(roleKey, currentRole)
 }
 export const getCurrentRole = () => {
-  return Cookies.get(roleKey)!
+  return Cookies.get(roleKey)
 }
 
 export function removeCurrentRole() {
