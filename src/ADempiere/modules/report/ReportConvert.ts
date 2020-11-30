@@ -4,7 +4,7 @@ import {
   IPrintFormatData,
   IReportOutputData,
   IReportViewData
-} from '.';
+} from '.'
 
 export function convertListPrintFormats(
   listPrintFormatsToConvert: any
@@ -12,16 +12,16 @@ export function convertListPrintFormats(
   return {
     recordCount: listPrintFormatsToConvert.record_count,
     records: listPrintFormatsToConvert.records.map((record: any) => {
-      return convertPrintFormat(record);
+      return convertPrintFormat(record)
     }),
     nextPageToken: listPrintFormatsToConvert.next_page_token
-  };
+  }
 }
 
 export function convertPrintFormat(
   printFormatToConvert: any
 ): IPrintFormatData {
-  const { id, uuid, name, description } = printFormatToConvert;
+  const { id, uuid, name, description } = printFormatToConvert
 
   return {
     id,
@@ -31,13 +31,13 @@ export function convertPrintFormat(
     tableName: printFormatToConvert.table_name,
     isDefault: printFormatToConvert.is_default,
     reportViewUuid: printFormatToConvert.report_view_uuid
-  };
+  }
 }
 
 export function convertReportOutput(
   reportOutputToConvert: any
 ): IReportOutputData {
-  const { uuid, name, description } = reportOutputToConvert;
+  const { uuid, name, description } = reportOutputToConvert
 
   return {
     uuid,
@@ -55,11 +55,11 @@ export function convertReportOutput(
     tableName: reportOutputToConvert.table_name,
     outputStream: reportOutputToConvert.output_stream,
     // outputStreamAsB64
-    outputStream_asB64: reportOutputToConvert.output_stream_asB64,
+    outputStreamAsB64: reportOutputToConvert.output_stream_asB64,
     // outputStreamAsU8
-    outputStream_asU8: reportOutputToConvert.output_stream_asU8,
+    outputStreamAsU8: reportOutputToConvert.output_stream_asU8,
     reportType: reportOutputToConvert.report_type
-  };
+  }
 }
 
 export function convertDrillTables(
@@ -68,11 +68,11 @@ export function convertDrillTables(
   return {
     tableName: drillTablesToConvert.table_name,
     printName: drillTablesToConvert.print_name
-  };
+  }
 }
 
 export function convertReportView(reportViewToConvert: any): IReportViewData {
-  const { uuid, name, description } = reportViewToConvert;
+  const { uuid, name, description } = reportViewToConvert
 
   return {
     uuid,
@@ -80,5 +80,5 @@ export function convertReportView(reportViewToConvert: any): IReportViewData {
     description,
     tableName: reportViewToConvert.table_name,
     reportViewUuid: reportViewToConvert.report_view_uuid
-  };
+  }
 }

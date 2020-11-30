@@ -7,7 +7,7 @@ import {
   convertDocumentStatus,
   convertProduct,
   convertTaxRate
-} from '@/ADempiere/modules/core';
+} from '@/ADempiere/modules/core'
 import {
   IPointOfSalesData,
   IOrderData,
@@ -15,10 +15,10 @@ import {
   IKeyLayoutData,
   IKeyData,
   IResourceReferenceData
-} from '.';
+} from '.'
 
 export function convertPointOfSales(posToConvert: any): IPointOfSalesData {
-  const { uuid, id, name, description, help } = posToConvert;
+  const { uuid, id, name, description, help } = posToConvert
 
   return {
     id,
@@ -42,7 +42,7 @@ export function convertPointOfSales(posToConvert: any): IPointOfSalesData {
     priceList: convertPriceList(posToConvert.price_list),
     conversionTypeUuid: posToConvert.conversion_type_uuid,
     keyLayoutUuid: posToConvert.key_layout_uuid
-  };
+  }
 }
 
 export function convertOrder(orderToConvert: any): IOrderData {
@@ -59,7 +59,7 @@ export function convertOrder(orderToConvert: any): IOrderData {
     grandTotal: orderToConvert.grand_total,
     dateOrdered: orderToConvert.date_ordered,
     businessPartner: convertBusinessPartner(orderToConvert.business_partner)
-  };
+  }
 }
 
 export function convertOrderLine(orderLineToConvert: any): IOrderLineData {
@@ -77,7 +77,7 @@ export function convertOrderLine(orderLineToConvert: any): IOrderLineData {
     lineNetAmount: orderLineToConvert.line_net_amount,
     taxRate: convertTaxRate(orderLineToConvert.tax_rate),
     warehouse: orderLineToConvert.warehouse
-  };
+  }
 }
 
 export function convertKeyLayout(keyLayoutToConvert: any): IKeyLayoutData {
@@ -91,9 +91,9 @@ export function convertKeyLayout(keyLayoutToConvert: any): IKeyLayoutData {
     columns: keyLayoutToConvert.columns,
     color: keyLayoutToConvert.color,
     keysList: keyLayoutToConvert.keys.map((itemKey: any) => {
-      return convertKey(itemKey);
+      return convertKey(itemKey)
     })
-  };
+  }
 }
 
 export function convertKey(keyToConvert: any): IKeyData {
@@ -109,8 +109,10 @@ export function convertKey(keyToConvert: any): IKeyData {
     spanY: keyToConvert.span_y,
     productUuid: keyToConvert.product_uuid,
     quantity: keyToConvert.quantity,
-    resourceReference: convertResourceReference(keyToConvert.resource_reference)
-  };
+    resourceReference: convertResourceReference(
+      keyToConvert.resource_reference
+    )
+  }
 }
 
 export function convertResourceReference(
@@ -124,7 +126,7 @@ export function convertResourceReference(
       description: resourceReferenceToConvert.description,
       textMsg: resourceReferenceToConvert.text_msg,
       contentType: resourceReferenceToConvert.content_type
-    };
+    }
   }
-  return undefined;
+  return undefined
 }

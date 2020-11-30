@@ -1,5 +1,5 @@
-import { convertReportOutput } from '@/ADempiere/modules/report';
-import { IProcessLogData } from '.';
+import { convertReportOutput } from '@/ADempiere/modules/report'
+import { IProcessLogData } from '.'
 
 export function convertProcessLog(processLogToConvert: any): IProcessLogData {
   return {
@@ -15,5 +15,5 @@ export function convertProcessLog(processLogToConvert: any): IProcessLogData {
     // }),
     parameters: [],
     output: convertReportOutput(processLogToConvert.output)
-  };
+  }
 }

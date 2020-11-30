@@ -1,4 +1,4 @@
-import { convertContextInfo } from '@/ADempiere/modules/core';
+import { convertContextInfo } from '@/ADempiere/modules/core'
 import {
   IFieldConditionData,
   IFieldData,
@@ -6,7 +6,7 @@ import {
   IFieldGroupData,
   IReferenceData,
   IZoomWindowData
-} from '.';
+} from '.'
 
 export function convertField(fieldToConvert: any): IFieldData {
   return {
@@ -71,7 +71,7 @@ export function convertField(fieldToConvert: any): IFieldData {
     reference: convertReference(fieldToConvert.reference),
     contextInfo: convertContextInfo(fieldToConvert.context_info),
     fieldDefinition: convertFieldDefinition(fieldToConvert.Fielddefinition)
-  };
+  }
 }
 
 export function convertFieldGroup(fieldGroupToConvert: any): IFieldGroupData {
@@ -85,7 +85,7 @@ export function convertFieldGroup(fieldGroupToConvert: any): IFieldGroupData {
       //
       groupName: fieldGroupToConvert.name,
       groupType: fieldGroupToConvert.field_group_type
-    };
+    }
   }
   return {
     id: undefined,
@@ -96,7 +96,7 @@ export function convertFieldGroup(fieldGroupToConvert: any): IFieldGroupData {
     //
     groupName: undefined,
     groupType: undefined
-  };
+  }
 }
 
 export function convertReference(referenceToConvert: any): IReferenceData {
@@ -110,10 +110,10 @@ export function convertReference(referenceToConvert: any): IReferenceData {
       validationCode: referenceToConvert.validation_code,
       zoomWindows: referenceToConvert.zoom_windows.map(
         (zoomWindowItem: any) => {
-          return convertZoomWindow(zoomWindowItem);
+          return convertZoomWindow(zoomWindowItem)
         }
       )
-    };
+    }
   }
   return {
     tableName: undefined,
@@ -123,7 +123,7 @@ export function convertReference(referenceToConvert: any): IReferenceData {
     directQuery: undefined,
     validationCode: undefined,
     zoomWindows: []
-  };
+  }
 }
 
 export function convertZoomWindow(zoomWindowToConvert: any): IZoomWindowData {
@@ -135,7 +135,7 @@ export function convertZoomWindow(zoomWindowToConvert: any): IZoomWindowData {
       description: zoomWindowToConvert.description,
       isSalesTransaction: zoomWindowToConvert.is_sales_transaction,
       isActive: zoomWindowToConvert.is_active
-    };
+    }
   }
   return {
     id: undefined,
@@ -144,7 +144,7 @@ export function convertZoomWindow(zoomWindowToConvert: any): IZoomWindowData {
     description: undefined,
     isSalesTransaction: undefined,
     isActive: undefined
-  };
+  }
 }
 
 export function convertFieldDefinition(
@@ -160,10 +160,10 @@ export function convertFieldDefinition(
       fieldGroupType: fieldDefinitionToConvert.field_group_type,
       conditions: fieldDefinitionToConvert.conditions.map(
         (itemCondition: any) => {
-          return connvertFieldCondition(itemCondition);
+          return connvertFieldCondition(itemCondition)
         }
       )
-    };
+    }
   }
   return {
     id: undefined,
@@ -173,7 +173,7 @@ export function convertFieldDefinition(
     fieldGroupType: undefined,
     isActive: undefined,
     conditions: []
-  };
+  }
 }
 
 export function connvertFieldCondition(
@@ -186,7 +186,7 @@ export function connvertFieldCondition(
       condition: fieldConditionToConvert.condition,
       stylesheet: fieldConditionToConvert.style_sheet,
       isActive: fieldConditionToConvert.is_active
-    };
+    }
   }
   return {
     id: undefined,
@@ -194,5 +194,5 @@ export function connvertFieldCondition(
     condition: undefined,
     stylesheet: undefined,
     isActive: undefined
-  };
+  }
 }

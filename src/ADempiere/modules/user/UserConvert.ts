@@ -1,4 +1,4 @@
-import { ISessionData, IRoleData } from '.';
+import { ISessionData, IRoleData, IMenuData } from '.'
 
 export function convertSession(sessionToConvert: any): ISessionData {
   return {
@@ -20,11 +20,11 @@ export function convertSession(sessionToConvert: any): ISessionData {
     displaySequence: sessionToConvert.display_sequence,
     language: sessionToConvert.language,
     standardPrecision: sessionToConvert.standard_precision
-  };
+  }
 }
 
 export function convertRole(roleToConvert: any): IRoleData {
-  const { id, uuid, name, description } = roleToConvert;
+  const { id, uuid, name, description } = roleToConvert
 
   return {
     id,
@@ -37,5 +37,24 @@ export function convertRole(roleToConvert: any): IRoleData {
     isCanReport: roleToConvert.is_can_report,
     isPersonalAccess: roleToConvert.is_personal_access,
     isPersonalLock: roleToConvert.is_personal_lock
-  };
+  }
+}
+
+export const convertMenu = (data: any): IMenuData => {
+  const { id, uuid, name, description, action, childs, sequence } = data
+  return {
+    id,
+    uuid,
+    parentUuid: data.parent_uuid,
+    name,
+    description,
+    sequence,
+    isReadOnly: data.is_read_only,
+    isSummary: data.is_summary,
+    isSalesTransaction: data.is_sales_transaction,
+    action,
+    referenceUuid: data.reference_uuid,
+    childs,
+    isActive: data.is_active
+  }
 }

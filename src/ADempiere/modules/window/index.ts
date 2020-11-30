@@ -1,2 +1,2 @@
-export * from './WindowConvert';
-export * from './WindowType';
+export * from './WindowConvert'
+export * from './WindowType'

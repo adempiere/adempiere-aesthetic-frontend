@@ -1,14 +1,14 @@
 import {
   ApiRest as requestRest,
   evaluateResponse
-} from '@/ADempiere/shared/services/instances';
+} from '@/ADempiere/shared/services/instances'
 import {
   IProcessRequestData,
   convertProcessLog,
   IProcessLogData,
   IProcessListData,
   IProcessLogListData
-} from '.';
+} from '.'
 
 /**
  * Request a process
@@ -23,8 +23,8 @@ export function requestRunProcess(
   })
     .then(evaluateResponse)
     .then(processRunResponse => {
-      return convertProcessLog(processRunResponse);
-    });
+      return convertProcessLog(processRunResponse)
+    })
 }
 
 export function requestListProcessesLogs(
@@ -49,9 +49,9 @@ export function requestListProcessesLogs(
       return {
         recordCount: response.record_count,
         processLogsList: response.records.map((itemProcess: any) => {
-          return convertProcessLog(itemProcess);
+          return convertProcessLog(itemProcess)
         }),
         nextPageToken: response.next_page_token
-      };
-    });
+      }
+    })
 }
