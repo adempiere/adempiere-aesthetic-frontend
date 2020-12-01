@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex'
-import { IPrefrenceData, PreferenceState } from './state'
+import { IKeyValuePreference, IPrefrenceData, PreferenceState } from './state'
 import { RootState } from '@/ADempiere/shared/store/types'
 import { IPermissionState } from '@/store/modules/permission'
 
@@ -15,7 +15,7 @@ export const getters: PreferenceGetterTree = {
         parentUuid?: string
         containerUuid?: string
         columnName: string
-      }) => {
+      }): IKeyValuePreference => {
     const { parentUuid, containerUuid, columnName } = payload
     let key = ''
     if (parentUuid) {
