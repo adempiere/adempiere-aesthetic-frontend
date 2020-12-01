@@ -30,3 +30,21 @@ export function convertDateFormat(dateFormat: string): Date {
 
   return new Date(output)
 }
+
+export const convertStringToBoolean = (valueToParsed:string): boolean => {
+  const valueString: string = String(valueToParsed).trim()
+  if (valueString === 'N' || valueString === 'false') {
+    return false
+  } else if (valueString === 'Y' || valueString === 'true') {
+    return true
+  }
+
+  return Boolean(valueToParsed).valueOf()
+}
+
+export const convertBooleanToString = (booleanValue: boolean): string => {
+  if (booleanValue) {
+    return 'Y'
+  }
+  return 'N'
+}
