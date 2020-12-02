@@ -5,6 +5,7 @@ export interface IReportExportTypeData {
     name: string
     description: string
     type: string
+    reportExportType?: string
 }
 
 export interface IProcessData {
@@ -166,4 +167,12 @@ export type IFormDataExtended = IFormData & {
 export interface FormDefinitionState {
     isShowedTitleForm: boolean
     form: IFormDataExtended[]
+}
+
+export type IProcessDataExtended = IProcessData & {
+    printFormatsAvailable: any[]
+}
+
+export interface ProcessDefinitionState {
+    process: IProcessData[]
 }
