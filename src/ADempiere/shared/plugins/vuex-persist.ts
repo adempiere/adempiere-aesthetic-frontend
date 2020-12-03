@@ -6,6 +6,8 @@ export default new VuexPersistence({
     'businessPartnerModule',
     'dashboardModule',
     'fieldModule',
-    'formDefinitionModule'
+    'formDefinitionModule',
+    'processDefinitionModule',
+    'preferenceModule'
   ]
 })

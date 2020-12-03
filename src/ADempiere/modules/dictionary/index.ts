@@ -4,3 +4,4 @@ export * from './DictionaryService'
 // Vuex store
 export * from './store/FormDefinition'
 export * from './store/Field'
+export * from './store/ProcessDefinition'
