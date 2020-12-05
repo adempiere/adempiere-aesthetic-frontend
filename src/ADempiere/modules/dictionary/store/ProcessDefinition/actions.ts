@@ -7,7 +7,6 @@ import {
 } from '@/ADempiere/modules/dictionary'
 import { RootState } from '@/ADempiere/shared/store/types'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
-import router from '@/router'
 import { generateProcess } from '@/ADempiere/shared/utils/DictionaryUtils'
 import language from '@/lang'
 
