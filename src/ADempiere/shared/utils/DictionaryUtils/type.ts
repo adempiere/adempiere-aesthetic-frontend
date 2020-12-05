@@ -1,6 +1,6 @@
-import { IProcessDataExtended } from '@/ADempiere/modules/dictionary'
 import { IFieldData } from '@/ADempiere/modules/field'
-import VueI18n from 'vue-i18n'
+import { ISizeData } from '@/ADempiere/shared/utils/references'
+import { PanelContextType } from './ContextMenuType'
 
 /**
  * Generate field to app
@@ -16,7 +16,7 @@ export interface IAdditionalAttributesData {
     containerUuid: string
     isEvaluateValueChanges: boolean
     isShowedFromUser?: boolean
-    panelType: 'report' | 'process'
+    panelType: PanelContextType
     isAdvancedQuery?: boolean
 }
 
@@ -35,13 +35,7 @@ export type IFieldDataExtendedUtils = IFieldData &
         // displayed attributes
         componentPath?: string
         isSupported?: boolean
-        size?: {
-            xs: number
-            sm: number
-            md: number
-            lg: number
-            xl: number
-        }
+        size?: ISizeData
         // TODO: Property 'displayColumn' is @depecated
         displayColumn?: string // link to value from selects and table
         displayColumnName?: string // key to display column
@@ -74,24 +68,30 @@ export type IFieldDataExtendedUtils = IFieldData &
     }
 
 //  Default Action
-export interface IActionsUtils {
-    name: VueI18n.TranslateResult
-    processName: string
-    type: string
-    action: string
-    uuid: string
-    id: number
-    description: string
-    isReport: boolean
-    isDirectPrint: boolean
-    reportExportType?: string
-    printFormatUuid?: string
-}
-export type IActionChildsUtils = IActionsUtils & {
-    childs: IActionsUtils[]
-}
+// export interface IActionsUtils {
+//     name: VueI18n.TranslateResult
+//     uuidParent?: string
+//     processName: string
+//     type: string
+//     action: string
+//     uuid?: string
+//     id?: number
+//     description?: string
+//     isReport?: boolean
+//     isDirectPrint?: boolean
+//     reportExportType?: string
+//     printFormatUuid?: string
+//     disabled?: boolean
+//     hidden?: boolean
+//     tableName?: string
+//     recordId?: number | null
+// }
 
-export type IPrintFormatUtils = IActionChildsUtils & {
-    option: string
-    process: IProcessDataExtended
-}
+// export type IActionChildsUtils = IActionsUtils & {
+//     childs: IActionsUtils[]
+// }
+
+// export type IPrintFormatUtils = IActionChildsUtils & {
+//     option: string
+//     process: IProcessDataExtended
+// }

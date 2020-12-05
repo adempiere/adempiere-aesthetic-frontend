@@ -7,10 +7,6 @@ import REFERENCES, {
 } from '@/ADempiere/shared/utils/references'
 import { FIELD_OPERATORS_LIST } from '@/ADempiere/shared/utils/dataUtils'
 import language from '@/lang'
-import {
-  IProcessDataExtended,
-  IReportExportTypeData
-} from '@/ADempiere/modules/dictionary'
 import { IFieldData } from '@/ADempiere/modules/field'
 import {
   parseContext,
@@ -18,14 +14,12 @@ import {
   getParentFields,
   getContext
 } from '../contextUtils'
-import {
-  IActionChildsUtils,
-  IActionsUtils,
-  IAdditionalAttributesData,
-  IEvaluatedLogicsData,
-  IFieldDataExtendedUtils,
-  IPrintFormatUtils
-} from './type'
+import { ActionContextName, ActionContextType, PanelContextType, PrintFormatOptions, ReportExportContextType } from './ContextMenuType'
+import { IAdditionalAttributesData, IEvaluatedLogicsData, IFieldDataExtendedUtils } from './type'
+import { IReportExportTypeData } from '@/ADempiere/modules/dictionary/DictionaryType/DomainType'
+import { IPrintFormatDataExtended, IProcessDataExtended } from '@/ADempiere/modules/dictionary/DictionaryType/VuexType'
+import { IContextActionData } from '@/ADempiere/modules/window/WindowType/VuexType'
+import { PrintFormatsAction, SummaryAction } from '@/ADempiere/modules/dictionary/DictionaryType/ContextMenuType'
 
 /**
  * Get parsed default value to set into field
@@ -375,9 +369,9 @@ export function generateProcess(data: {
     containerUuidAssociated?: string
 }) {
   const { processToGenerate, containerUuidAssociated } = data
-  const panelType: 'report' | 'process' = processToGenerate.isReport
-    ? 'report'
-    : 'process'
+  const panelType: PanelContextType = processToGenerate.isReport
+    ? PanelContextType.Report
+    : PanelContextType.Process
 
   const additionalAttributes: IAdditionalAttributesData = {
     processUuid: processToGenerate.uuid,
@@ -423,25 +417,25 @@ export function generateProcess(data: {
     fieldDefinitionList = fieldDefinitionList.concat(fieldsRangeList)
   }
 
-  const actions: IActionsUtils[] = []
+  const actions: IContextActionData[] = []
   actions.push(
     {
       name: language.t('components.RunProcess'),
       processName: processToGenerate.name,
-      type: 'action',
-      action: 'startProcess',
+      type: ActionContextType.Action,
+      action: ActionContextName.StartProcess,
       uuid: processToGenerate.uuid,
       id: processToGenerate.id,
       description: processToGenerate.description,
       isReport: processToGenerate.isReport,
       isDirectPrint: processToGenerate.isDirectPrint,
-      reportExportType: 'html'
+      reportExportType: ReportExportContextType.Html
     },
     {
       name: language.t('components.ChangeParameters'),
       processName: processToGenerate.name,
-      type: 'process',
-      action: 'changeParameters',
+      type: ActionContextType.Process,
+      action: ActionContextName.ChangeParameters,
       uuid: processToGenerate.uuid,
       id: processToGenerate.id,
       description: processToGenerate.description,
@@ -450,11 +444,11 @@ export function generateProcess(data: {
     }
   )
 
-  const summaryAction: IActionChildsUtils = {
+  const summaryAction: SummaryAction = {
     name: language.t('components.RunProcessAs'),
     processName: processToGenerate.name,
-    type: 'summary',
-    action: '',
+    type: ActionContextType.Summary,
+    action: ActionContextName.Empty,
     childs: [],
     uuid: processToGenerate.uuid,
     id: processToGenerate.id,
@@ -471,25 +465,25 @@ export function generateProcess(data: {
                     actionValue.name
                 })`,
         processName: processToGenerate.name,
-        type: 'action',
-        action: 'startProcess',
+        type: ActionContextType.Action,
+        action: ActionContextName.StartProcess,
         uuid: processToGenerate.uuid,
         id: processToGenerate.id,
         description: actionValue.description,
         isReport: processToGenerate.isReport,
         isDirectPrint: processToGenerate.isDirectPrint,
-        reportExportType: actionValue.reportExportType
+        reportExportType: <ReportExportContextType>actionValue.reportExportType
       })
     }
   )
 
-  const printFormats: IPrintFormatUtils = {
+  const printFormats: PrintFormatsAction = {
     name: language.t('views.printFormat'),
     processName: processToGenerate.name,
-    type: 'summary',
-    action: '',
+    type: ActionContextType.Summary,
+    action: ActionContextName.Empty,
     childs: [],
-    option: 'printFormat',
+    option: PrintFormatOptions.PrintFormat,
     uuid: processToGenerate.uuid,
     id: processToGenerate.id,
     description: processToGenerate.description,
@@ -498,13 +492,13 @@ export function generateProcess(data: {
     process: processToGenerate
   }
 
-  processToGenerate.printFormatsAvailable.forEach(actionValue => {
+  processToGenerate.printFormatsAvailable.forEach((actionValue: IPrintFormatDataExtended) => {
     //  Push values
     printFormats.childs.push({
       name: actionValue.name,
       processName: processToGenerate.name,
-      type: 'action',
-      action: 'startProcess',
+      type: ActionContextType.Action,
+      action: ActionContextName.StartProcess,
       uuid: processToGenerate.uuid,
       id: processToGenerate.id,
       description: actionValue.description,
