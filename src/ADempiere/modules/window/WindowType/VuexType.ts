@@ -6,14 +6,14 @@ import {
 } from '@/ADempiere/modules/dictionary/DictionaryType/ContextMenuType'
 import { ActionContextName, ActionContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import {
-  WindowTabAssociated,
+  WindowTabAssociatedAction,
   WindowProcessAsociatedAction,
   WindowDefinitionAction
 } from './ContextMenuType'
 import { IDocumentActionData } from './DomainType'
 
 export type IContextActionData =
-    WindowTabAssociated
+    | WindowTabAssociatedAction
     | WindowProcessAsociatedAction
     | WindowDefinitionAction
     | ProcessDefinitionAction
