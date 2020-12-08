@@ -27,7 +27,7 @@ export interface WindowProcessAsociatedAction extends Actionable {
     associated: AssociatedContainer
 }
 
-export interface WindowTabAssociated extends Actionable {
+export interface WindowTabAssociatedAction extends Actionable {
     uuid: string
     id: number
     isSortTab: boolean
