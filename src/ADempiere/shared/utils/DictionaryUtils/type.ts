@@ -10,14 +10,21 @@ import { PanelContextType } from './ContextMenuType'
  */
 export interface IAdditionalAttributesData {
     parentUuid?: string
-    processUuid: string
-    processId: number
-    processName: string
+    processUuid?: string
+    processId?: number
+    processName?: string
     containerUuid: string
     isEvaluateValueChanges: boolean
     isShowedFromUser?: boolean
     panelType: PanelContextType
     isAdvancedQuery?: boolean
+
+    tableName?: string // @deprecated
+    tabTableName?: string
+    tabQuery?: string
+    tabWhereClause?: string
+    isReadOnlyFromForm?: boolean
+    fieldsListIndex?: number
 }
 
 export interface IEvaluatedLogicsData {

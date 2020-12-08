@@ -188,7 +188,7 @@ export function generateField(data: {
     moreAttributes: IAdditionalAttributesData
     typeRange?: boolean // false
     isSOTrxMenu?: boolean
-}) {
+}) : IFieldDataExtendedUtils {
   data.typeRange = data.typeRange || false
   const { fieldToGenerate, moreAttributes, typeRange, isSOTrxMenu } = data
   let isShowedFromUser = false
