@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { fieldModule, formDefinitionModule, processDefinitionModule } from '@/ADempiere/modules/dictionary'
+import { fieldModule, formDefinitionModule, processDefinitionModule, windowDefinitionModule } from '@/ADempiere/modules/dictionary'
 import Vuex, { StoreOptions } from 'vuex'
 import vuexLocal from '@/ADempiere/shared/plugins/vuex-persist'
 import { RootState } from '@/ADempiere/shared/store/types'
@@ -23,7 +23,8 @@ const store: StoreOptions<RootState> = {
     fieldModule,
     formDefinitionModule,
     processDefinitionModule,
-    preferenceModule
+    preferenceModule,
+    windowDefinitionModule
   },
   plugins: [vuexLocal.plugin]
 }
