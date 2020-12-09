@@ -213,7 +213,7 @@ export function requestTranslations(
       return {
         nextPageToken: languageListResponse.next_page_token,
         recordCount: languageListResponse.record_count,
-        translationsList: languageListResponse.records.map(
+        list: languageListResponse.records.map(
           (record: any) => {
             return convertTranslation(record)
           }

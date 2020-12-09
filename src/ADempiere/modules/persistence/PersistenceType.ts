@@ -1,10 +1,17 @@
 import { EventType } from '@/ADempiere/modules/window'
+import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
+import { IValueData } from '../core'
+
+export type KeyValueData<T = any> = {
+    key: string
+    value: T
+}
 
 export interface IEntityData {
-    id: number
+    id?: number
     uuid: string
     tableName: string
-    attributes: any
+    attributes: KeyValueData<IValueData>[]
 }
 
 export interface IEntityListData {
@@ -16,18 +23,13 @@ export interface IEntityListData {
 export interface ITranslationData {
     language: string
     uuid: string
-    values: any
+    values: IKeyValueObject<IValueData>[]
 }
 
 // Service types
 
 export type IAttributeData = {
     columnName: string
-    value: any
-}
-
-export type KeyValueData = {
-    key: string
     value: any
 }
 
@@ -66,14 +68,14 @@ export interface ITranslationRequestParams {
     language: string
     uuid: string
     id: number
-    pageToken: string
-    pageSize: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface ITranslationResponseData {
     nextPageToken: string
     recordCount: number
-    translationsList: ITranslationData[]
+    list: ITranslationData[]
 }
 
 export interface IResourceParams {
@@ -94,7 +96,7 @@ export interface IResponseImageData {
 
 export interface IBrowserSearchParams {
     uuid: string
-    parametersList : any[]
+    parametersList: any[]
     tableName: string
     query: string
     whereClause: string
@@ -102,16 +104,31 @@ export interface IBrowserSearchParams {
     limit: number
     pageSize: number
     pageToken: string
-   }
+}
 
 export type FilterType = {
     key: string
     value: any
     values: any
-   }
+}
 
 export type ParamType = {
     columnName: string
     value: any
     values: any
-   }
+}
+
+// VUEX Types
+
+export interface ITranslationDataExtended {
+    containerUuid: string
+    recordUuid: string
+    tableName: string
+    recordId: number
+    translations: ITranslationData[]
+}
+
+export interface LanguageState {
+    translationsList: ITranslationDataExtended[]
+    currentLanguage: ITranslationDataExtended
+}

@@ -20,23 +20,25 @@ export interface IContextInfoData {
     messageText?: IMessageTextData
 }
 
-export enum ValueType {
-    UNKNOWN,
-    INTEGER,
-    DECIMAL,
-    BOOLEAN,
-    STRING,
-    DATE
-}
+// export enum ValueType {
+//     UNKNOWN,
+//     INTEGER,
+//     DECIMAL,
+//     BOOLEAN,
+//     STRING,
+//     DATE
+// }
 
-export interface IValueData {
-    intValue: number
-    longValue: number
-    booleanValue: boolean
-    stringValue: string
-    decimalValue: number
-    valueType: ValueType
-}
+// // export interface IValueData {
+// //     intValue: number
+// //     longValue: number
+// //     booleanValue: boolean
+// //     stringValue: string
+// //     decimalValue: number
+// //     valueType: ValueType
+// // }
+
+export type IValueData = number | boolean | string | undefined | Date
 
 export enum OperatorType {
     EQUAL,
