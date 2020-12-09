@@ -4,7 +4,7 @@ import Vuex, { StoreOptions } from 'vuex'
 import vuexLocal from '@/ADempiere/shared/plugins/vuex-persist'
 import { RootState } from '@/ADempiere/shared/store/types'
 import { systemModule, businessPartnerModule } from '@/ADempiere/modules/core'
-import { languageModule } from '@/ADempiere/modules/persistence'
+import { languageModule, persistenceModule } from '@/ADempiere/modules/persistence'
 
 import { preferenceModule } from '@/ADempiere/shared/store/modules/preference'
 import { dashboardModule } from '@/ADempiere/modules/dashboard'
@@ -26,7 +26,8 @@ const store: StoreOptions<RootState> = {
     processDefinitionModule,
     preferenceModule,
     windowDefinitionModule,
-    languageModule
+    languageModule,
+    persistenceModule
   },
   plugins: [vuexLocal.plugin]
 }
