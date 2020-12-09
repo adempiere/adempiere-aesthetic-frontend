@@ -1,7 +1,6 @@
 import { IValueData } from '@/ADempiere/modules/core'
 import { MutationTree } from 'vuex'
-import { KeyValueData } from '@/ADempiere/modules/persistence'
-import { PersistenceState } from './state'
+import { PersistenceState, KeyValueData } from '@/ADempiere/modules/persistence'
 
 type PersistenceMutationTree = MutationTree<PersistenceState>
 

@@ -2,8 +2,9 @@ import { Module } from 'vuex'
 import { actions } from './actions'
 import { getters } from './getters'
 import { mutations } from './mutations'
-import { PersistenceState, state } from './state'
+import { state } from './state'
 import { RootState } from '@/ADempiere/shared/store/types'
+import { PersistenceState } from '@/ADempiere/modules/persistence'
 
 const namespaced = true
 

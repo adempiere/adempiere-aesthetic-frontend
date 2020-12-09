@@ -2,7 +2,7 @@ import { IValueData } from '@/ADempiere/modules/core'
 import { RootState } from '@/ADempiere/shared/store/types'
 import { GetterTree } from 'vuex'
 import { KeyValueData } from '../../PersistenceType'
-import { PersistenceState } from './state'
+import { PersistenceState } from '@/ADempiere/modules/persistence'
 
 type PersistenceGetterTree = GetterTree<PersistenceState, RootState>
 

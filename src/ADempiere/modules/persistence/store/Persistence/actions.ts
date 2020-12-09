@@ -4,9 +4,9 @@ import { ActionTree, ActionContext } from 'vuex'
 import {
   KeyValueData,
   requestCreateEntity,
-  requestUpdateEntity
+  requestUpdateEntity,
+  PersistenceState
 } from '@/ADempiere/modules/persistence'
-import { PersistenceState } from './state'
 
 type PersistenceActionTree = ActionTree<PersistenceState, RootState>
 type PersistenceActionContext = ActionContext<PersistenceState, RootState>
