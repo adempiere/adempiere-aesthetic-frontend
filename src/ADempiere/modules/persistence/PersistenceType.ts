@@ -120,6 +120,7 @@ export type ParamType = {
 
 // VUEX Types
 
+// Language
 export interface ITranslationDataExtended {
     containerUuid: string
     recordUuid: string
@@ -131,4 +132,11 @@ export interface ITranslationDataExtended {
 export interface LanguageState {
     translationsList: ITranslationDataExtended[]
     currentLanguage: ITranslationDataExtended
+}
+
+// Persistence
+export interface PersistenceState {
+    persistence: {
+        [columnName: string]: Map<String, KeyValueData<IValueData>>
+    }
 }
