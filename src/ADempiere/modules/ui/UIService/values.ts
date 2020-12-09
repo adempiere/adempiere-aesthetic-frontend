@@ -153,14 +153,7 @@ export function requestDefaultValue(query: any): Promise<IValueData> {
   })
     .then(evaluateResponse)
     .then(response => {
-      return {
-        intValue: response.int_value,
-        longValue: response.long_value,
-        booleanValue: response.boolean_value,
-        stringValue: response.string_value,
-        decimalValue: response.decimal_value,
-        valueType: response.value_type
-      }
+      return <IValueData>response
     })
 }
 
