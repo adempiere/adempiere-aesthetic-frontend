@@ -1,7 +1,6 @@
 import { GetterTree } from 'vuex'
-import { IKeyValuePreference, IPrefrenceData, PreferenceState } from './state'
+import { IKeyValuePreference, PreferenceState } from './state'
 import { RootState } from '@/ADempiere/shared/store/types'
-import { IPermissionState } from '@/store/modules/permission'
 
 type PreferenceGetterTree = GetterTree<PreferenceState, RootState>
 

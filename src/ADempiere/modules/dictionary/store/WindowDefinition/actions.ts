@@ -10,13 +10,13 @@ import {
 import language from '@/lang'
 import { generateField } from '@/ADempiere/shared/utils/DictionaryUtils'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
-import router from '@/router'
-import { requestWindowMetadata } from '../..'
 import {
+  requestWindowMetadata,
   IWindowData,
   ITabData,
   IProcessData
-} from '../../DictionaryType/DomainType'
+} from '@/ADempiere/modules/dictionary'
+
 import {
   IContextActionData,
   WindowProcessAsociatedAction,

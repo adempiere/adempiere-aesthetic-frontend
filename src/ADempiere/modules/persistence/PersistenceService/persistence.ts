@@ -63,7 +63,7 @@ export function requestCreateEntity(
 
 export function requestUpdateEntity(data: IEntityData): Promise<IEntityData> {
   const { tableName, id, uuid, attributes } = data
-  const attributesList: KeyValueData<IValueData>[] = data.attributes
+  const attributesList: KeyValueData<IValueData>[] = attributes
   // const attributesList: KeyValueData<IValueData>[] = attributes.map(
   //   (parameter: KeyValueData<IValueData>): KeyValueData<IValueData> => {
   //     return {

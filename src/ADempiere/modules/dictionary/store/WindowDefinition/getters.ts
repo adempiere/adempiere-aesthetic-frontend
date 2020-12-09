@@ -1,4 +1,4 @@
-import { GetterTree, Store } from 'vuex'
+import { GetterTree } from 'vuex'
 import { RootState } from '@/ADempiere/shared/store/types'
 import { WindowDefinitionState } from '@/ADempiere/modules/dictionary'
 import { ITabData, IWindowDataExtended } from '../../DictionaryType'

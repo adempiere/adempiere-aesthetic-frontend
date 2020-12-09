@@ -1,5 +1,5 @@
 import { ActionTree, ActionContext } from 'vuex'
-import { IPrefrenceData, PreferenceState } from './state'
+import { PreferenceState } from './state'
 import { RootState } from '@/ADempiere/shared/store/types'
 import { typeValue } from '@/ADempiere/shared/utils/valueUtils'
 

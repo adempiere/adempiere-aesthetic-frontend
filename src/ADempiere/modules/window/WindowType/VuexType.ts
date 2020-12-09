@@ -4,7 +4,6 @@ import {
   ProcessDefinitionAction,
   SummaryAction
 } from '@/ADempiere/modules/dictionary/DictionaryType/ContextMenuType'
-import { ActionContextName, ActionContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import {
   WindowTabAssociatedAction,
   WindowProcessAsociatedAction,
@@ -19,18 +18,6 @@ export type IContextActionData =
     | ProcessDefinitionAction
     | PrintFormatsAction
     | SummaryAction
-
-export const item: IContextActionData = {
-  action: ActionContextName.ChangeParameters,
-  disabled: true,
-  name: '',
-  processName: '',
-  type: ActionContextType.Application
-}
-const x: IContextActionData[] = []
-function add(item: IContextActionData) {
-  x.push(item)
-}
 
 export type IContextRelationData = any
 
