@@ -1,5 +1,6 @@
-import { convertArrayKeyValueToObject } from '@/ADempiere/shared/utils/valueFormat'
 import { IEntityListData, IEntityData, ITranslationData } from '.'
+import { IValueData } from '../core'
+import { KeyValueData } from './PersistenceType'
 
 export function convertEntityList(entityListToConvert: any): IEntityListData {
   return {
@@ -16,10 +17,11 @@ export function convertEntity(entityToConvert: any): IEntityData {
     id: entityToConvert.id,
     uuid: entityToConvert.uuid,
     tableName: entityToConvert.table_name,
-    attributes: convertArrayKeyValueToObject({
-      array: entityToConvert.attributes,
-      keyName: 'key'
-    })
+    attributes: <KeyValueData<IValueData>[]>entityToConvert.attributes
+    // attributes: convertArrayKeyValueToObject({
+    //   array: entityToConvert.attributes,
+    //   keyName: 'key'
+    // })
   }
 }
 
