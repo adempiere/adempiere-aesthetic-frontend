@@ -29,3 +29,7 @@ export interface IRequestImageData {
     height: number
     operation: string
 }
+
+export interface IKeyValueObject<T = any> {
+    [key: string]: T
+}
