@@ -28,14 +28,14 @@ export interface ITranslationData {
 
 // Service types
 
-export type IAttributeData = {
+export type IAttributeData<T = any> = {
     columnName: string
-    value: any
+    value: T
 }
 
 export interface IEntityRequestParams {
     tableName: string
-    attributesList: IAttributeData[]
+    attributesList: KeyValueData<IValueData>[]
 }
 
 export interface IDeleteEntityParams {
