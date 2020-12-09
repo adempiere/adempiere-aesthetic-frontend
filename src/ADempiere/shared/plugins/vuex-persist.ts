@@ -10,6 +10,7 @@ export default new VuexPersistence({
     'processDefinitionModule',
     'preferenceModule',
     'windowDefinitionModule',
-    'languageModule'
+    'languageModule',
+    'persistenceModule'
   ]
 })
