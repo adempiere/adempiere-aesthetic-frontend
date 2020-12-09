@@ -9,6 +9,7 @@ export default new VuexPersistence({
     'formDefinitionModule',
     'processDefinitionModule',
     'preferenceModule',
-    'windowDefinitionModule'
+    'windowDefinitionModule',
+    'languageModule'
   ]
 })
