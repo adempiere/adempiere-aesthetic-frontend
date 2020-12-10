@@ -160,7 +160,7 @@ export const specialColumns: string[] = [
 export function parseContext(data: {
     parentUuid: string
     containerUuid: string
-    columnName: string
+    columnName?: string
     value?: string
     isSQL?: boolean
     isBooleanToString?: boolean
@@ -187,7 +187,7 @@ export function parseContext(data: {
 
   if (!value) {
     value = undefined
-    if (specialColumns.includes(columnName)) {
+    if (specialColumns.includes(columnName!)) {
       value = contextInfo = getContext({
         columnName: '$' + columnName
       })

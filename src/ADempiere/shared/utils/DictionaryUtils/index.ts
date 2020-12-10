@@ -525,3 +525,34 @@ export function generateProcess(data: {
     actions
   }
 }
+
+/**
+ * Determinate if field is displayed
+ * @param {boolean} isActive
+ * @param {boolean} isDisplayed
+ * @param {boolean} isDisplayedFromLogic
+ * @param {boolean} isQueryCriteria
+ * @param {string}  panelType
+ * @returns {boolean}
+ */
+export function fieldIsDisplayed(data: {
+  panelType: PanelContextType
+  isActive: boolean
+  isDisplayed: boolean
+  isDisplayedFromLogic: boolean
+  isQueryCriteria: boolean
+}) {
+  const { panelType, isActive, isDisplayed, isDisplayedFromLogic, isQueryCriteria } = data
+  // Verify if field is active
+  if (!isActive) {
+    return false
+  }
+
+  // browser query criteria
+  if (panelType === PanelContextType.Browser) {
+    return isQueryCriteria
+  }
+
+  // window, table (advanced query), process and report, browser (table) result
+  return isDisplayed && isDisplayedFromLogic
+}
