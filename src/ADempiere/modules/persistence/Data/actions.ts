@@ -13,6 +13,7 @@ import { ActionContext, ActionTree } from 'vuex'
 import { IValueData } from '../../core'
 import { IPanelDataExtended } from '../../dictionary'
 import {
+  IContextInfoValuesResponse,
   requestDefaultValue,
   requestGetContextInfoValue
 } from '@/ADempiere/modules/ui'
@@ -987,7 +988,7 @@ export const actions: BusinessDataActionTree = {
       uuid: contextInfoUuid,
       query: sqlStatement
     })
-      .then(contextInfoResponse => {
+      .then((contextInfoResponse: IContextInfoValuesResponse) => {
         context.commit('setContextInfoField', {
           contextInfoUuid,
           sqlStatement,
