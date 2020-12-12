@@ -1,6 +1,9 @@
 import { EventType } from '@/ADempiere/modules/window'
+import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
-import { IValueData } from '../core'
+import { IValueData } from '@/ADempiere/modules/core'
+import { IPrivateAccessData } from '@/ADempiere/modules/privateAccess'
+import { IContextInfoValuesResponse } from '@/ADempiere/modules/ui'
 
 export type KeyValueData<T = any> = {
     key: string
@@ -139,4 +142,75 @@ export interface PersistenceState {
     persistence: {
         [columnName: string]: Map<String, KeyValueData<IValueData>>
     }
+}
+
+// Business Data
+export interface IContextInfoValuesExtends extends IContextInfoValuesResponse {
+    contextInfoUuid: string
+    sqlStatement: string
+}
+
+export interface IRecordObjectListFromCriteria {
+    defaultValues: IKeyValueObject<String>
+    values: KeyValueData<IValueData>[]
+    // datatables attributes
+    isNew: boolean
+    isEdit: boolean
+    isReadOnlyFromRow: boolean
+}
+
+export interface IRecordSelectionData {
+    parentUuid?: string
+    containerUuid: string
+    record: any[]
+    selection: any[]
+    pageNumber: number
+    recordCount: number
+    nextPageToken?: string
+    originalNextPageToken?: string
+    panelType?: PanelContextType
+    isLoaded: boolean
+    isLoadedContext: boolean
+    query?: string
+    whereClause?: string
+    orderByClause?: string
+}
+
+export interface ISelectionToServerData {
+    selectionId: string
+    selectionValues: KeyValueData[]
+}
+
+export interface IPrivateAccessDataExtended extends IPrivateAccessData {
+    isLocked: boolean
+    isPrivateAccess?: boolean
+}
+
+export interface BusinessDataState {
+    recordSelection: IRecordSelectionData[] // record data and selection
+    contextInfoField: IContextInfoValuesExtends[]
+    recordPrivateAccess: Partial<IPrivateAccessDataExtended>
+}
+
+// Window
+export interface WindowState {
+    inCreate: {
+        containerUuid: string
+    }[]
+    references: []
+    currentRecord: {}
+    windowOldRoute: {
+        path: string
+        fullPath: string
+        query: {}
+    }
+    dataLog: {
+        containerUuid: string
+        recordId: number
+        tableName: string
+        eventType?: EventType
+    }
+    tabSequenceRecord: []
+    totalResponse: number
+    totalRequest: number
 }
