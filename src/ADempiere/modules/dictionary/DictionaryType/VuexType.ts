@@ -80,7 +80,7 @@ export interface IPanelData extends ITabData {
         isLoadFieldsList: boolean
         isShowedTotals: boolean
         isTabsChildren: boolean
-  }
+}
 
 export interface ITabDataExtended extends ITabData {
     containerUuid: string
@@ -121,4 +121,26 @@ export interface WindowDefinitionState {
     window: IWindowDataExtended[]
     windowIndex: number
     panelRight: string
+}
+
+// Panel
+export interface IdentifierColumnsData {
+    columnName: string
+    identifierSequence: number
+    componentPath: string
+  }
+
+export interface IPanelDataExtended extends IPanelData {
+    parentUuid: string
+    uuid: string
+    isParentTab: boolean
+    keyColumn?: string
+    isSortTab: boolean
+    selectionColumn?: string[]
+    identifierColumns?: IdentifierColumnsData[]
+    // Tab
+    tabAssociatedUuid: string
+    isCustomForm?: boolean
+    recordUuid: string | null
+    isShowedTableOptionalColumns: boolean
 }
