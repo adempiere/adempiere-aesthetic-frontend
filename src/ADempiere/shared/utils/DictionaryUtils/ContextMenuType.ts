@@ -26,7 +26,9 @@ export enum PanelContextType {
     Window = 'window',
     Process = 'process',
     Browser = 'browser',
-    Report = 'report'
+    Report = 'report',
+    Table = 'table',
+    Form = 'form'
 }
 
 export enum ReportExportContextType {
