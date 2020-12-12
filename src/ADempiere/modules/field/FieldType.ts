@@ -8,8 +8,8 @@ export interface IFieldGroupData {
     fieldGroupType?: string
     isActive?: boolean
     //
-    groupName?: any // Not Found Type in proto
-    groupType?: any // Not found Type in proto
+    groupName?: string // Not Found Type in proto
+    groupType?: string // Not found Type in proto
 }
 
 export interface IZoomWindowData {
