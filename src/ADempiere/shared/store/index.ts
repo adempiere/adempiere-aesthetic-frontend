@@ -1,11 +1,20 @@
 import Vue from 'vue'
-import { fieldModule, formDefinitionModule, processDefinitionModule, windowDefinitionModule } from '@/ADempiere/modules/dictionary'
+import {
+  fieldModule,
+  formDefinitionModule,
+  processDefinitionModule,
+  windowDefinitionModule
+} from '@/ADempiere/modules/dictionary'
 import Vuex, { StoreOptions } from 'vuex'
 import vuexLocal from '@/ADempiere/shared/plugins/vuex-persist'
 import { RootState } from '@/ADempiere/shared/store/types'
 import { systemModule, businessPartnerModule } from '@/ADempiere/modules/core'
-import { languageModule, persistenceModule } from '@/ADempiere/modules/persistence'
+import {
+  languageModule,
+  persistenceModule
+} from '@/ADempiere/modules/persistence'
 
+import { eventModule } from '@/ADempiere/shared/store/modules/Event'
 import { windowModule } from '@/ADempiere/modules/persistence/store/Window'
 import { preferenceModule } from '@/ADempiere/shared/store/modules/preference'
 import { dashboardModule } from '@/ADempiere/modules/dashboard'
@@ -29,7 +38,8 @@ const store: StoreOptions<RootState> = {
     windowDefinitionModule,
     languageModule,
     persistenceModule,
-    windowModule
+    windowModule,
+    eventModule
   },
   plugins: [vuexLocal.plugin]
 }
