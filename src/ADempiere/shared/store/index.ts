@@ -14,6 +14,7 @@ import {
   persistenceModule
 } from '@/ADempiere/modules/persistence'
 
+import { chatEntriesModule } from '@/ADempiere/modules/window/store/ChatEntries'
 import { callOutControlModule } from '@/ADempiere/modules/ui/store/CallOutControl'
 import { lookupModule } from '@/ADempiere/modules/ui/store/Lookup'
 import { utilsModule } from '@/ADempiere/shared/store/modules/Utils'
@@ -45,7 +46,8 @@ const store: StoreOptions<RootState> = {
     eventModule,
     utilsModule,
     lookupModule,
-    callOutControlModule
+    callOutControlModule,
+    chatEntriesModule
   },
   plugins: [vuexLocal.plugin]
 }
