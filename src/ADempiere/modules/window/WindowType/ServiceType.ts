@@ -10,13 +10,13 @@ import {
 
 export interface IWorkflowParams {
     tableName: string
-    pageToken: string
-    pageSize: number
+    pageToken?: string
+    pageSize?: number
 }
 // Get list of log for a records
 export interface IWorkflowExtendedParams extends IWorkflowParams {
     recordId: number
-    recordUuid: string
+    recordUuid?: string
 }
 
 export interface IListEntityLogsResponse {
@@ -48,14 +48,14 @@ export interface IListEntityChatsParams {
 export interface IListEntityChatsResponse {
     nextPageToken: string
     recordCount: number
-    entityChatsList: IEntityChatData[]
+    list: IEntityChatData[]
 }
 
 export interface IListChatEntriesParams {
-    id: number
+    id?: number
     uuid: string
-    pageToken: string
-    pageSize: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface IListChatEntriesResponse {
@@ -67,7 +67,7 @@ export interface IListChatEntriesResponse {
 export interface ICreateChatEntryParams {
     tableName: string
     recordId: number
-    recordUuid: string
+    recordUuid?: string
     comment: string
 }
 

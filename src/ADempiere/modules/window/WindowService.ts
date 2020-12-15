@@ -133,7 +133,7 @@ export function requestListEntityChats(
       return {
         nextPageToken: entityChatListResponse.next_page_token,
         recordCount: entityChatListResponse.record_count,
-        entityChatsList: entityChatListResponse.records.map(
+        list: entityChatListResponse.records.map(
           (entityChat: any) => {
             return convertEntityChat(entityChat)
           }

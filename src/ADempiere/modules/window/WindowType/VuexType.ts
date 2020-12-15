@@ -9,7 +9,8 @@ import {
   WindowProcessAsociatedAction,
   WindowDefinitionAction
 } from './ContextMenuType'
-import { IDocumentActionData } from './DomainType'
+import { IChatEntryData, IDocumentActionData } from './DomainType'
+import { IListEntityChatsResponse } from './ServiceType'
 
 export type IContextActionData =
     | WindowTabAssociatedAction
@@ -48,4 +49,12 @@ export interface ContextMenuState {
     contextMenu: IContextMenuData[]
     listDocumentStatus: IListDocumentStatus
     listDocumentAction: IListDocumentAction
+}
+
+// Chat Entries
+export interface ChatEntriesState {
+    listRecordChats: IListEntityChatsResponse
+    listChatEntries: IChatEntryData[]
+    chatText: string
+    isNote: boolean
 }
