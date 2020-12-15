@@ -13,6 +13,7 @@ export default new VuexPersistence({
     'languageModule',
     'persistenceModule',
     'windowModule',
-    'eventModule'
+    'eventModule',
+    'utilsModule'
   ]
 })
