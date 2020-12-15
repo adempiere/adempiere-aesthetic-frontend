@@ -1,6 +1,7 @@
 import { IResourceReferenceData } from '@/ADempiere/modules/pos'
 import { IValueData } from '@/ADempiere/modules/core'
 import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
+import { IPanelParameters } from '@/ADempiere/shared/store/modules/panel/type'
 
 export interface IResourceReferenceParams {
     recordId: number
@@ -36,7 +37,7 @@ export interface ICallOutParams {
     value: any
     oldValue: any
     callout: string
-    attributesList?: any[]
+    attributesList?: IPanelParameters[]
 }
 
 export interface ICallOutData {
@@ -132,3 +133,6 @@ export interface LookupState {
     lookupItem: ILookupItemDataExtended[]
     lookupList: ILookupListExtended[]
 }
+
+// CallOut
+export type CallOutControlState = any
