@@ -1,13 +1,19 @@
-import { EventType } from '@/ADempiere/modules/window'
+import { EntityEventType, EventType } from '@/ADempiere/modules/window'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
 import { IValueData } from '@/ADempiere/modules/core'
 import { IPrivateAccessData } from '@/ADempiere/modules/privateAccess'
-import { IContextInfoValuesResponse } from '@/ADempiere/modules/ui'
+import {
+  IContextInfoValuesResponse,
+  IReferenceListData
+} from '@/ADempiere/modules/ui'
+import { IReferenceData } from '../field'
 
 export type KeyValueData<T = any> = {
     key: string
     value: T
+    // Optional
+    valueType?: string
 }
 
 export interface IEntityData {
@@ -43,7 +49,7 @@ export interface IEntityRequestParams {
 
 export interface IDeleteEntityParams {
     tableName: string
-    id: number
+    id?: number
     uuid: string
 }
 
@@ -193,23 +199,39 @@ export interface BusinessDataState {
 }
 
 // Window
+export interface IDataLog {
+    recordUuid: string
+    containerUuid: string
+    recordId: number
+    tableName: string
+    eventType?: EntityEventType
+}
+
+export interface IReferenceDataExtended extends IReferenceData {
+    recordUuid: string
+    type: string
+}
+
+export interface IReferenceListDataExtended extends IReferenceListData {
+    windowUuid: string
+    recordUuid: string
+    referencesList: IReferenceDataExtended[]
+}
+
+export interface IWindowOldRoute {
+    path: string
+    fullPath: string
+    query: {}
+}
+
 export interface WindowState {
     inCreate: {
         containerUuid: string
     }[]
-    references: []
+    references: IReferenceListDataExtended[]
     currentRecord: {}
-    windowOldRoute: {
-        path: string
-        fullPath: string
-        query: {}
-    }
-    dataLog: {
-        containerUuid: string
-        recordId: number
-        tableName: string
-        eventType?: EventType
-    }
+    windowOldRoute: IWindowOldRoute
+    dataLog: IDataLog
     tabSequenceRecord: []
     totalResponse: number
     totalRequest: number
