@@ -1,5 +1,5 @@
 import { convertResourceReference } from '@/ADempiere/modules/pos'
-import { IAttachmentData } from './UITypes'
+import { IAttachmentData, ILookupItemData } from './UITypes'
 
 import { IReferenceListData, IReferenceData } from '.'
 
@@ -37,5 +37,13 @@ export function convertReference(referenceToConvert: any): IReferenceData {
     displayName: referenceToConvert.display_name,
     whereClause: referenceToConvert.where_clause,
     recordCount: referenceToConvert.record_count
+  }
+}
+export function convertLookupItem(item: any): ILookupItemData {
+  return {
+    id: item.id,
+    tableName: item.table_name,
+    uuid: item.uuid,
+    values: item.values
   }
 }

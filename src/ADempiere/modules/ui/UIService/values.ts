@@ -4,10 +4,11 @@ import {
   evaluateResponse
 } from '@/ADempiere/shared/services/instances'
 import { IValueData } from '@/ADempiere/modules/core'
-import { convertReferencesList } from '../UIConvert'
+import { convertLookupItem, convertReferencesList } from '../UIConvert'
 import {
   IContextInfoValueParams,
   IContextInfoValuesResponse,
+  ILookupItemData,
   ILookupListParams,
   ILookupListResponse,
   ILookupParams,
@@ -24,7 +25,7 @@ import {
  * @param {string|number} value
  */
 
-export function requestLookup(data: ILookupParams) {
+export function requestLookup(data: ILookupParams): Promise<ILookupItemData> {
   const { columnName, tableName, directQuery, value } = data
   let filters: any[] = []
   if (!value) {
@@ -42,7 +43,9 @@ export function requestLookup(data: ILookupParams) {
       query: directQuery,
       filters
     }
-  }).then(evaluateResponse)
+  }).then(evaluateResponse).then((response: any) => {
+    return convertLookupItem(response)
+  })
 }
 
 /**
@@ -99,7 +102,9 @@ export function requestLookupList(
       return {
         nextPageToken: lookupListResponse.next_page_token,
         recordCount: lookupListResponse.record_count,
-        recordsList: lookupListResponse.records
+        list: lookupListResponse.records.map((element: any) => {
+          return convertLookupItem(element)
+        })
       }
     })
 }
