@@ -11,6 +11,7 @@ export default new VuexPersistence({
     'preferenceModule',
     'windowDefinitionModule',
     'languageModule',
-    'persistenceModule'
+    'persistenceModule',
+    'windowModule'
   ]
 })
