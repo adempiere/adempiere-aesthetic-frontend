@@ -1,3 +1,5 @@
+import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
+
 export interface IPrefrenceData {
     parentUuid?: string
     containerUuid?: string
@@ -5,12 +7,8 @@ export interface IPrefrenceData {
     value: any
 }
 
-export interface IKeyValuePreference {
-    [key: string]: any
-}
-
 export interface PreferenceState {
-    preference: IKeyValuePreference
+    preference: IKeyValueObject<any>
 }
 
 export const state: PreferenceState = {

@@ -1,7 +1,7 @@
 import { GetterTree } from 'vuex'
 import { RootState } from '@/ADempiere/shared/store/types'
 import { WindowDefinitionState } from '@/ADempiere/modules/dictionary'
-import { ITabData, IWindowDataExtended } from '../../DictionaryType'
+import { ITabData, ITabDataExtended, IWindowDataExtended } from '../../DictionaryType'
 import store from '@/ADempiere/shared/store'
 
 type WindowDefinitionGetterTree = GetterTree<WindowDefinitionState, RootState>
@@ -29,10 +29,10 @@ export const getters: WindowDefinitionGetterTree = {
   getTab: () => (
     windowUuid: string,
     tabUuid: string
-  ): ITabData | undefined => {
-    const window = store.getters.getwindow(windowUuid)
+  ): ITabDataExtended | undefined => {
+    const window = <IWindowDataExtended | undefined>store.getters.getwindow(windowUuid)
     if (window) {
-      return window.tabsList.find((tabItem: ITabData) => {
+      return window.tabsList.find((tabItem: ITabDataExtended) => {
         return tabItem.uuid === tabUuid
       })
     }

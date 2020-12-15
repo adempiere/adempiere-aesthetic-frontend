@@ -47,7 +47,7 @@ export interface IReferenceData {
 
 export interface IReferenceListData {
     recordCount: number
-    referencesList: IReferenceData[]
+    list: IReferenceData[]
     nextPageToken: string
 }
 
@@ -77,10 +77,10 @@ export interface ILookupListResponse {
 export interface IReferencesListParams {
     windowUuid: string
     tableName: string
-    recordId: number
+    recordId?: number
     recordUuid: string
-    pageToken: string
-    pageSize: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface IContextInfoValueParams {

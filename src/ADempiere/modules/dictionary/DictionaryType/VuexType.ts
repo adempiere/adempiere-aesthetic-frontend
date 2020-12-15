@@ -102,7 +102,7 @@ export interface ITabDataExtended extends ITabData {
   }
 
 export interface IWindowDataExtended extends IWindowData {
-    tabsList: ITabData[]
+    tabsList: ITabDataExtended[]
     currentTab: ITabDataExtended
     tabsListParent: ITabDataExtended[]
     tabsListChildren: ITabDataExtended[]

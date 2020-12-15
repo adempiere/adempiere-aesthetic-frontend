@@ -1,6 +1,7 @@
 import { GetterTree } from 'vuex'
-import { IKeyValuePreference, PreferenceState } from './state'
+import { PreferenceState } from './state'
 import { RootState } from '@/ADempiere/shared/store/types'
+import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
 
 type PreferenceGetterTree = GetterTree<PreferenceState, RootState>
 
@@ -14,7 +15,7 @@ export const getters: PreferenceGetterTree = {
         parentUuid?: string
         containerUuid?: string
         columnName: string
-      }): IKeyValuePreference => {
+      }): any => {
     const { parentUuid, containerUuid, columnName } = payload
     let key = ''
     if (parentUuid) {
@@ -34,7 +35,7 @@ export const getters: PreferenceGetterTree = {
 
     return state.preference[key]
   },
-  getAllPreference: (state: PreferenceState) => {
+  getAllPreference: (state: PreferenceState): IKeyValueObject => {
     return state.preference
   },
   getPreferenceClientId: (state: PreferenceState): number => {

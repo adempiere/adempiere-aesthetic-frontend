@@ -74,7 +74,7 @@ export const actions: WindowDefinitionActionTree = {
         let tabParentIndex = 0
         let tabChildrenIndex = 0
         // TODO Add source tab on the server for tabs Translation and Sort
-        const tabs: ITabData[] = responseWindow.tabs
+        const tabs: ITabDataExtended[] = responseWindow.tabs
           .filter((itemTab: ITabData) => {
             if (itemTab.isSortTab) {
               // TODO: Add convert tab as process function

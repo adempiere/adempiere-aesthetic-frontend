@@ -530,7 +530,7 @@ export const actions: BusinessDataActionTree = {
   getEntity(
     context: BusinessDataActionContext,
     parameters: { tableName: string, recordUuid: string, recordId: number }
-  ) {
+  ): Promise<KeyValueData<IValueData>[]> {
     const { tableName, recordId, recordUuid } = parameters
 
     return new Promise<KeyValueData<IValueData>[]>(resolve => {
@@ -579,7 +579,7 @@ export const actions: BusinessDataActionTree = {
             isAddRecord?: boolean
             isAddDefaultValues?: boolean
         }
-  ) {
+  ): Promise<void | IRecordObjectListFromCriteria[]> {
     let { parentUuid, containerUuid } = parameters
     const {
       tableName,
@@ -596,7 +596,7 @@ export const actions: BusinessDataActionTree = {
     if (isShowNotification) {
       showMessage({
         // title: language.t('notifications.loading').toString(),
-        message: language.t('notifications.searching'),
+        message: language.t('notifications.searching').toString(),
         type: 'info'
       })
     }
@@ -691,7 +691,7 @@ export const actions: BusinessDataActionTree = {
           }
           showMessage({
             // title: language.t('notifications.succesful'),
-            message: language.t(`notifications.${searchMessage}`),
+            message: language.t(`notifications.${searchMessage}`).toString(),
             type: 'success'
           })
         }
@@ -1055,7 +1055,7 @@ export const actions: BusinessDataActionTree = {
           }
           showMessage({
             // title: language.t('notifications.succesful'),
-            message: language.t('notifications.recordLocked'),
+            message: language.t('notifications.recordLocked').toString(),
             type: 'success'
           })
           return recordLocked
@@ -1064,7 +1064,7 @@ export const actions: BusinessDataActionTree = {
       .catch(error => {
         showMessage({
           // title: language.t('notifications.error'),
-          message: language.t('login.unexpectedError'),
+          message: language.t('login.unexpectedError').toString(),
           type: 'error'
         })
         console.warn(
@@ -1091,7 +1091,7 @@ export const actions: BusinessDataActionTree = {
           }
           showMessage({
             // title: language.t('notifications.succesful'),
-            message: language.t('notifications.recordUnlocked'),
+            message: language.t('notifications.recordUnlocked').toString(),
             type: 'success'
           })
           return recordUnlocked
@@ -1100,7 +1100,7 @@ export const actions: BusinessDataActionTree = {
       .catch(error => {
         showMessage({
           // title: language.t('notifications.error'),
-          message: language.t('login.unexpectedError'),
+          message: language.t('login.unexpectedError').toString(),
           type: 'error'
         })
         console.warn(

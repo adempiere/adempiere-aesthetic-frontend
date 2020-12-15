@@ -20,7 +20,7 @@ export function convertReferencesList(
 ): IReferenceListData {
   return {
     recordCount: listReferencesToConvert.record_count,
-    referencesList: listReferencesToConvert.records.map((record: any) => {
+    list: listReferencesToConvert.records.map((record: any) => {
       return convertReference(record)
     }),
     nextPageToken: listReferencesToConvert.next_page_token

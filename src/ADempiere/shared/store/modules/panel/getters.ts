@@ -17,6 +17,13 @@ export const getters: PanelGetterTree = {
       return item.containerUuid === containerUuid
     })
   },
+  getFieldsListFromPanel: (state: PanelState, getters) => (containerUuid: string) => {
+    const panel = <IPanelDataExtended | undefined>getters.getPanel(containerUuid)
+    if (!panel) {
+      return []
+    }
+    return panel.fieldsList
+  },
   getParsedDefaultValues: (state: PanelState, getters) => (payload: {
         parentUuid: string
         containerUuid: string
