@@ -10,7 +10,7 @@ export const getContext = (data: {
     parentUuid?: string
     containerUuid?: string
     columnName: string
-}) => {
+}): any => {
   const { parentUuid, containerUuid, columnName } = data
   let value: any
   const isPreferenceValue: boolean =

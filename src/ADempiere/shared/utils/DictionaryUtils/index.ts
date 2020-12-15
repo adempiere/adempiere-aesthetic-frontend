@@ -14,12 +14,28 @@ import {
   getParentFields,
   getContext
 } from '../contextUtils'
-import { ActionContextName, ActionContextType, PanelContextType, PrintFormatOptions, ReportExportContextType } from './ContextMenuType'
-import { IAdditionalAttributesData, IEvaluatedLogicsData, IFieldDataExtendedUtils } from './type'
+import {
+  ActionContextName,
+  ActionContextType,
+  PanelContextType,
+  PrintFormatOptions,
+  ReportExportContextType
+} from './ContextMenuType'
+import {
+  IAdditionalAttributesData,
+  IEvaluatedLogicsData,
+  IFieldDataExtendedUtils
+} from './type'
 import { IReportExportTypeData } from '@/ADempiere/modules/dictionary/DictionaryType/DomainType'
-import { IPrintFormatDataExtended, IProcessDataExtended } from '@/ADempiere/modules/dictionary/DictionaryType/VuexType'
+import {
+  IPrintFormatDataExtended,
+  IProcessDataExtended
+} from '@/ADempiere/modules/dictionary/DictionaryType/VuexType'
 import { IContextActionData } from '@/ADempiere/modules/window/WindowType/VuexType'
-import { PrintFormatsAction, SummaryAction } from '@/ADempiere/modules/dictionary/DictionaryType/ContextMenuType'
+import {
+  PrintFormatsAction,
+  SummaryAction
+} from '@/ADempiere/modules/dictionary/DictionaryType/ContextMenuType'
 
 /**
  * Get parsed default value to set into field
@@ -188,7 +204,7 @@ export function generateField(data: {
     moreAttributes: IAdditionalAttributesData
     typeRange?: boolean // false
     isSOTrxMenu?: boolean
-}) : IFieldDataExtendedUtils {
+}): IFieldDataExtendedUtils {
   data.typeRange = data.typeRange || false
   const { fieldToGenerate, moreAttributes, typeRange, isSOTrxMenu } = data
   let isShowedFromUser = false
@@ -472,7 +488,9 @@ export function generateProcess(data: {
         description: actionValue.description,
         isReport: processToGenerate.isReport,
         isDirectPrint: processToGenerate.isDirectPrint,
-        reportExportType: <ReportExportContextType>actionValue.reportExportType
+        reportExportType: <ReportExportContextType>(
+                    actionValue.reportExportType
+                )
       })
     }
   )
@@ -492,22 +510,24 @@ export function generateProcess(data: {
     process: processToGenerate
   }
 
-  processToGenerate.printFormatsAvailable.forEach((actionValue: IPrintFormatDataExtended) => {
-    //  Push values
-    printFormats.childs.push({
-      name: actionValue.name,
-      processName: processToGenerate.name,
-      type: ActionContextType.Action,
-      action: ActionContextName.StartProcess,
-      uuid: processToGenerate.uuid,
-      id: processToGenerate.id,
-      description: actionValue.description,
-      isReport: processToGenerate.isReport,
-      isDirectPrint: processToGenerate.isDirectPrint,
-      reportExportType: undefined,
-      printFormatUuid: actionValue.printFormatUuid
-    })
-  })
+  processToGenerate.printFormatsAvailable.forEach(
+    (actionValue: IPrintFormatDataExtended) => {
+      //  Push values
+      printFormats.childs.push({
+        name: actionValue.name,
+        processName: processToGenerate.name,
+        type: ActionContextType.Action,
+        action: ActionContextName.StartProcess,
+        uuid: processToGenerate.uuid,
+        id: processToGenerate.id,
+        description: actionValue.description,
+        isReport: processToGenerate.isReport,
+        isDirectPrint: processToGenerate.isDirectPrint,
+        reportExportType: undefined,
+        printFormatUuid: actionValue.printFormatUuid
+      })
+    }
+  )
   //  Add summary Actions
   actions.push(summaryAction)
   actions.push(printFormats)
@@ -536,13 +556,19 @@ export function generateProcess(data: {
  * @returns {boolean}
  */
 export function fieldIsDisplayed(data: {
-  panelType: PanelContextType
-  isActive: boolean
-  isDisplayed: boolean
-  isDisplayedFromLogic: boolean
-  isQueryCriteria: boolean
+    panelType: PanelContextType
+    isActive: boolean
+    isDisplayed: boolean
+    isDisplayedFromLogic: boolean
+    isQueryCriteria: boolean
 }) {
-  const { panelType, isActive, isDisplayed, isDisplayedFromLogic, isQueryCriteria } = data
+  const {
+    panelType,
+    isActive,
+    isDisplayed,
+    isDisplayedFromLogic,
+    isQueryCriteria
+  } = data
   // Verify if field is active
   if (!isActive) {
     return false
@@ -555,4 +581,109 @@ export function fieldIsDisplayed(data: {
 
   // window, table (advanced query), process and report, browser (table) result
   return isDisplayed && isDisplayedFromLogic
+}
+
+/**
+ * Order the fields, then assign the groups to each field, and finally group
+ * in an array according to each field group to show in panel (or table).
+ * @param {array} arr
+ * @param {string} orderBy
+ * @param {string} type
+ * @param {string} panelType
+ * @returns {array}
+ */
+export function sortFields(params: {
+    fieldsList: IFieldDataExtendedUtils[]
+    orderBy?: string
+    type?: string
+}): IFieldDataExtendedUtils[] {
+  params.orderBy = params.orderBy || 'sequence'
+  params.type = params.type || 'asc'
+  const { fieldsList, type, orderBy } = params
+
+  if (type.toLowerCase() === 'asc') {
+    fieldsList.sort((itemA, itemB) => {
+      return itemA.sequence - itemB.sequence
+      // return itemA[orderBy] - itemB[orderBy]
+      // return itemA[orderBy] > itemB[orderBy]
+    })
+  } else {
+    fieldsList.sort((itemA, itemB) => {
+      return itemA.sequence + itemB.sequence
+      // return itemA[orderBy] + itemB[orderBy]
+      // return itemA[orderBy] > itemB[orderBy]
+    })
+  }
+  // if (type.toLowerCase() === 'desc') {
+  //   return fieldsList.reverse()
+  // }
+  return fieldsList
+}
+
+/**
+ * [assignedGroup]
+ * @param  {array} fieldsList Field of List with
+ * @return {array} fieldsList
+ */
+export function assignedGroup(params: {
+    fieldsList?: IFieldDataExtendedUtils[]
+    groupToAssigned?: string
+    orderBy?: string
+}): IFieldDataExtendedUtils[] | undefined {
+  let { fieldsList, groupToAssigned, orderBy } = params
+  if (fieldsList === undefined || fieldsList.length <= 0) {
+    return fieldsList
+  }
+
+  fieldsList = sortFields({
+    fieldsList,
+    orderBy
+  })
+
+  let firstChangeGroup = false
+  let currentGroup = ''
+  let typeGroup = ''
+
+  fieldsList.forEach(fieldElement => {
+    if (fieldElement.panelType !== PanelContextType.Window) {
+      // fieldElement.groupAssigned = ''
+      // fieldElement.typeGroupAssigned = ''
+      fieldElement.fieldGroup.groupName = ''
+      fieldElement.fieldGroup.groupType = ''
+      return
+    }
+
+    // change the first field group, change the band
+    if (!firstChangeGroup) {
+      if (
+        fieldElement.fieldGroup.name &&
+                currentGroup !== fieldElement.fieldGroup.name &&
+                fieldElement.isDisplayed
+      ) {
+        firstChangeGroup = true
+      }
+    }
+    //  if you change the field group for the first time and it is different
+    //  from 0, updates the field group, since it is another field group and
+    //  assigns the following field items to the current field group whose
+    //  field group is '' or null
+    if (firstChangeGroup) {
+      if (fieldElement.fieldGroup.name) {
+        currentGroup = fieldElement.fieldGroup.name
+        typeGroup = fieldElement.fieldGroup.fieldGroupType!
+      }
+    }
+
+    // fieldElement.groupAssigned = currentGroup
+    // fieldElement.typeGroupAssigned = typeGroup
+    fieldElement.fieldGroup.groupName = currentGroup
+    fieldElement.fieldGroup.groupType = typeGroup
+
+    if (groupToAssigned !== undefined) {
+      // fieldElement.groupAssigned = groupToAssigned
+      fieldElement.fieldGroup.groupName = groupToAssigned
+    }
+  })
+
+  return fieldsList
 }
