@@ -6,6 +6,7 @@ import { RootState } from '@/ADempiere/shared/store/types'
 import { systemModule, businessPartnerModule } from '@/ADempiere/modules/core'
 import { languageModule, persistenceModule } from '@/ADempiere/modules/persistence'
 
+import { windowModule } from '@/ADempiere/modules/persistence/store/Window'
 import { preferenceModule } from '@/ADempiere/shared/store/modules/preference'
 import { dashboardModule } from '@/ADempiere/modules/dashboard'
 import { name, version } from '@/../package.json'
@@ -27,7 +28,8 @@ const store: StoreOptions<RootState> = {
     preferenceModule,
     windowDefinitionModule,
     languageModule,
-    persistenceModule
+    persistenceModule,
+    windowModule
   },
   plugins: [vuexLocal.plugin]
 }
