@@ -1,5 +1,6 @@
 import { IResourceReferenceData } from '@/ADempiere/modules/pos'
 import { IValueData } from '@/ADempiere/modules/core'
+import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
 
 export interface IResourceReferenceParams {
     recordId: number
@@ -10,6 +11,13 @@ export interface IAttachmentParams {
     tableName: string
     recordId: number
     recordUuid: string
+}
+
+export interface ILookupItemData {
+    id: number
+    uuid: string
+    tableName: string
+    values: IKeyValueObject<IValueData>
 }
 
 export interface IAttachmentData {
@@ -64,14 +72,14 @@ export interface ILookupListParams {
     whereClause: string
     columnName: string
     valuesList: any[]
-    pageToken: string
-    pageSize: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface ILookupListResponse {
     nextPageToken: string
     recordCount: number
-    recordsList: any[]
+    list: ILookupItemData[]
 }
 
 export interface IReferencesListParams {
@@ -92,4 +100,35 @@ export interface IContextInfoValueParams {
 export interface IContextInfoValuesResponse {
     messageText: string
     messageTip: string
+}
+
+// VUEX
+
+// Lookup
+export interface ILookupOptions {
+    label: IValueData
+    uuid?: string
+    id: string | number
+}
+
+export interface ILookupItemDataExtended {
+    option: Required<ILookupOptions>
+    value: IValueData
+    parsedDirectQuery: string
+    tableName: string
+    sessionUuid: string
+    clientId: number
+}
+
+export interface ILookupListExtended {
+    list: ILookupOptions[]
+    tableName: string
+    parsedQuery: string
+    sessionUuid: string
+    clientId: number
+}
+
+export interface LookupState {
+    lookupItem: ILookupItemDataExtended[]
+    lookupList: ILookupListExtended[]
 }
