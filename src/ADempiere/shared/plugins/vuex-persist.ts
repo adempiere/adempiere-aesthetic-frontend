@@ -12,6 +12,7 @@ export default new VuexPersistence({
     'windowDefinitionModule',
     'languageModule',
     'persistenceModule',
-    'windowModule'
+    'windowModule',
+    'eventModule'
   ]
 })
