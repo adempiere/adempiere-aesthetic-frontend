@@ -60,8 +60,8 @@ export const mutations: UtilsMutationTree = {
             parameters: any
         }
   ) {
-    Vue.set(state.openRoute, 'definedParameters', payload.parameters)
-    Vue.set(state.openRoute, 'isLoaded', true)
+    // Vue.set(state.openRoute, 'definedParameters', payload.parameters)
+    // Vue.set(state.openRoute, 'isLoaded', true)
   },
   resetStateUtils(state: UtilsState) {
     state = {
