@@ -15,6 +15,7 @@ export default new VuexPersistence({
     'windowModule',
     'eventModule',
     'utilsModule',
-    'lookupModule'
+    'lookupModule',
+    'callOutControlModule'
   ]
 })
