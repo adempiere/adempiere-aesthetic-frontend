@@ -1,5 +1,5 @@
 import { KeyValueData } from '@/ADempiere/modules/persistence'
-import Vue from 'vue/types/umd'
+import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { FieldValueState } from './type'
 
