@@ -17,6 +17,7 @@ export default new VuexPersistence({
     'utilsModule',
     'lookupModule',
     'callOutControlModule',
-    'chatEntriesModule'
+    'chatEntriesModule',
+    'containerInfoModule'
   ]
 })
