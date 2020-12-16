@@ -3,6 +3,7 @@ import {
   ApiRest as requestRest,
   evaluateResponse
 } from '@/ADempiere/shared/services/instances'
+import { IResponseList } from '@/ADempiere/shared/utils/types'
 import {
   convertChatEntry,
   convertEntityChat,
@@ -10,7 +11,7 @@ import {
   convertWorkflowDefinition,
   convertWorkflowProcess
 } from './WindowConvert'
-import { IChatEntryData } from './WindowType/DomainType'
+import { IChatEntryData, IWorkflowProcessData } from './WindowType/DomainType'
 import { IWorkflowExtendedParams, IListEntityLogsResponse, IWorkflowParams, IListWorkflowsResponse, IListEntityChatsResponse, IListChatEntriesParams, IListChatEntriesResponse, ICreateChatEntryParams, IListDocumentsParams, IListDocumentStatusesResponse, IListDocumentActionsResponse } from './WindowType/ServiceType'
 
 export function requestListEntityLogs(
@@ -35,7 +36,7 @@ export function requestListEntityLogs(
       return {
         nextPageToken: entityLogsListResponse.next_page_token,
         recordCount: entityLogsListResponse.record_count,
-        entityLogsList: entityLogsListResponse.records.map(
+        list: entityLogsListResponse.records.map(
           (entityLog: any) => {
             return convertEntityLog(entityLog)
           }
@@ -45,7 +46,7 @@ export function requestListEntityLogs(
 }
 
 // Get workflow log for a record
-export function requestListWorkflowsLogs(data: IWorkflowExtendedParams) {
+export function requestListWorkflowsLogs(data: IWorkflowExtendedParams): Promise<IResponseList<IWorkflowProcessData>> {
   const { tableName, recordUuid, recordId, pageSize, pageToken } = data
   return requestRest({
     url: '/logs/list-workflow-logs',
@@ -65,7 +66,7 @@ export function requestListWorkflowsLogs(data: IWorkflowExtendedParams) {
       return {
         nextPageToken: workflowLogsListResponse.next_page_token,
         recordCount: workflowLogsListResponse.record_count,
-        workflowLogsList: workflowLogsListResponse.records.map(
+        list: workflowLogsListResponse.records.map(
           (workflowLog: any) => {
             return convertWorkflowProcess(workflowLog)
           }
@@ -95,7 +96,7 @@ export function requestListWorkflows(
       return {
         nextPageToken: workflowListResponse.next_page_token,
         recordCount: workflowListResponse.record_count,
-        workflowsList: workflowListResponse.records.map(
+        list: workflowListResponse.records.map(
           (workflowDefinition: any) => {
             return convertWorkflowDefinition(workflowDefinition)
           }

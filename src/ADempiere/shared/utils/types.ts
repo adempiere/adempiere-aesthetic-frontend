@@ -33,3 +33,9 @@ export interface IRequestImageData {
 export interface IKeyValueObject<T = any> {
     [key: string]: T
 }
+
+export interface IResponseList<T> {
+    nextPageToken: string
+    recordCount: number
+    list: T[]
+}

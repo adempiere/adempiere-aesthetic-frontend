@@ -22,7 +22,7 @@ export interface IWorkflowExtendedParams extends IWorkflowParams {
 export interface IListEntityLogsResponse {
     nextPageToken: string
     recordCount: number
-    entityLogsList: IEntityLogData
+    list: IEntityLogData[]
 }
 
 export interface IListWorkflowsLogsResponse {
@@ -34,7 +34,7 @@ export interface IListWorkflowsLogsResponse {
 export interface IListWorkflowsResponse {
     nextPageToken: string
     recordCount: number
-    workflowsList: IWorkflowDefinitionData[]
+    list: IWorkflowDefinitionData[]
 }
 
 export interface IListEntityChatsParams {

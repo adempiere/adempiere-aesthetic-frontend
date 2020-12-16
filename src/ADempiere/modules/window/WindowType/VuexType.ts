@@ -4,13 +4,14 @@ import {
   ProcessDefinitionAction,
   SummaryAction
 } from '@/ADempiere/modules/dictionary/DictionaryType/ContextMenuType'
+import { IResponseList } from '@/ADempiere/shared/utils/types'
 import {
   WindowTabAssociatedAction,
   WindowProcessAsociatedAction,
   WindowDefinitionAction
 } from './ContextMenuType'
-import { IChatEntryData, IDocumentActionData } from './DomainType'
-import { IListEntityChatsResponse } from './ServiceType'
+import { IChatEntryData, IDocumentActionData, IEntityLogData, IWorkflowProcessData } from './DomainType'
+import { IListEntityChatsResponse, IListWorkflowsResponse } from './ServiceType'
 
 export type IContextActionData =
     | WindowTabAssociatedAction
@@ -57,4 +58,14 @@ export interface ChatEntriesState {
     listChatEntries: IChatEntryData[]
     chatText: string
     isNote: boolean
+}
+
+// Container Info
+export interface ContainerInfoState {
+    listworkflowLog: IResponseList<IWorkflowProcessData>
+    listRecordLogs: {
+        recordCount: number
+        entityLogs: IEntityLogData[]
+    }
+    listWorkflows: IListWorkflowsResponse
 }
