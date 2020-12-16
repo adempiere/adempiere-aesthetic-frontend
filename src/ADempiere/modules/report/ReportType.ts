@@ -1,3 +1,7 @@
+import { IPanelParameters } from '@/ADempiere/shared/store/modules/panel/type'
+import { ActionContextType, PrintFormatOptions } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
+import { IPrintFormatDataExtended, PrintFormatsAction } from '../dictionary'
+
 export interface IReportOutputData {
     uuid: string
     name: string
@@ -32,7 +36,7 @@ export interface IPrintFormatData {
 
 export interface IListPrintsFormatsData {
     recordCount: number
-    records: IPrintFormatData[]
+    list: IPrintFormatData[]
     nextPageToken: string
 }
 
@@ -52,9 +56,9 @@ export interface IReportViewData {
 // Services types
 
 export interface IListReportDrillTablesRequest {
-    tableName: string
-    pageToken: string
-    pageSize: number
+    tableName?: string
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface IListReportsViewsRequest
@@ -63,7 +67,7 @@ export interface IListReportsViewsRequest
 }
 
 export interface IListPrintsFormatsRequest extends IListReportsViewsRequest {
-    reportViewUuid: string
+    reportViewUuid?: string
 }
 
 export interface IListReportOutputRequest {
@@ -73,21 +77,76 @@ export interface IListReportOutputRequest {
     isSummary: boolean
     reportName: string
     reportType: string
-    parametersList: any
+    parametersList: IPanelParameters[]
     // query criteria
-    query: string
-    whereClause: string
-    orderByClause: string
+    query?: string
+    whereClause?: string
+    orderByClause?: string
 }
 
 export interface IReportDrillTableResponse {
-    drillTablesList: IDrillTablesData[]
+    list: IDrillTablesData[]
     nextPageToken: string
     recordCount: number
 }
 
 export interface IReportsViewResponse {
-    reportViewsList: IReportViewData[]
+    list: IReportViewData[]
     nextPageToken: string
     recordCount: number
+}
+
+// VUEX
+
+// Report
+
+export interface IReportFormatItemData {
+    containerUuid: string
+    printFormatList: Omit<IPrintFormatDataExtended, 'printFormatUuid'>[]
+}
+
+export interface IReportViewDataExtended extends IReportViewData {
+    type: ActionContextType
+    option: PrintFormatOptions
+    instanceUuid?: string
+    processUuid: string
+    processId?: number
+    printFormatUuid: string
+}
+
+export interface IReportViewItemData {
+    containerUuid: string
+    viewList: IReportViewDataExtended[]
+}
+
+export interface IDrillTablesDataExtended extends IDrillTablesData {
+    name: string
+    type: ActionContextType
+    option: PrintFormatOptions
+    instanceUuid: string
+    printFormatUuid: string
+    reportViewUuid: string
+    processUuid: string
+    processId: number
+}
+
+export interface IDrillTableItemData {
+    containerUuid: string
+    drillTablesList: IDrillTablesDataExtended[]
+}
+
+export interface IReportOutputDataExtended extends IReportOutputData {
+    processId: number
+    processUuid: string
+    isError: boolean
+    instanceUuid: string
+    isReport: boolean
+    option: PrintFormatOptions
+}
+
+export interface ReportState {
+    reportFormatsList: IReportFormatItemData[]
+    reportViewsList: IReportViewItemData[]
+    drillTablesList: IDrillTableItemData[]
+    reportOutput?: IReportOutputDataExtended
 }

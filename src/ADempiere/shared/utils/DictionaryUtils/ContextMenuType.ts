@@ -7,7 +7,9 @@ export enum ActionContextType {
     Summary = 'summary',
     DataAction = 'dataAction',
     Application = 'application',
-    Sequence = 'sequence'
+    Sequence = 'sequence',
+    // Report
+    UpdateReport = 'updateReport'
 }
 
 export enum ActionContextName {
@@ -36,7 +38,9 @@ export enum ReportExportContextType {
 }
 
 export enum PrintFormatOptions {
-    PrintFormat = 'printFormat'
+    PrintFormat = 'printFormat',
+    ReportView = 'reportView',
+    DrillTable = 'drillTable'
 }
 
 export interface Actionable {

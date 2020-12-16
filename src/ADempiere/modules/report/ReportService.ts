@@ -46,7 +46,7 @@ export function requestListReportsViews(
       return {
         nextPageToken: reportViewResponse.next_page_token,
         recordCount: reportViewResponse.record_count,
-        reportViewsList: reportViewResponse.records.map(
+        list: reportViewResponse.records.map(
           (drill: any) => {
             return convertReportView(drill)
           }
@@ -96,7 +96,7 @@ export function requestListDrillTables(
     .then(evaluateResponse)
     .then(drillTablesResponse => {
       return {
-        drillTablesList: drillTablesResponse.records.map(
+        list: drillTablesResponse.records.map(
           (drill: any) => {
             return convertDrillTables(drill)
           }
