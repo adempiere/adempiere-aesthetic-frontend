@@ -14,6 +14,7 @@ import {
   persistenceModule
 } from '@/ADempiere/modules/persistence'
 
+import { fieldValueModule } from '@/ADempiere/shared/store/modules/FieldValue'
 import { reportModule } from '@/ADempiere/modules/report/store/Report'
 import { containerInfoModule } from '@/ADempiere/modules/window/store/ContainerInfo'
 import { chatEntriesModule } from '@/ADempiere/modules/window/store/ChatEntries'
@@ -51,7 +52,8 @@ const store: StoreOptions<RootState> = {
     callOutControlModule,
     chatEntriesModule,
     containerInfoModule,
-    reportModule
+    reportModule,
+    fieldValueModule
   },
   plugins: [vuexLocal.plugin]
 }
