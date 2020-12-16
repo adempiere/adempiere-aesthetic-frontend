@@ -19,6 +19,7 @@ export default new VuexPersistence({
     'callOutControlModule',
     'chatEntriesModule',
     'containerInfoModule',
-    'reportModule'
+    'reportModule',
+    'fieldValueModule'
   ]
 })
