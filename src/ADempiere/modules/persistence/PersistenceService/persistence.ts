@@ -26,6 +26,7 @@ import {
 } from '../PersistenceType'
 import { AxiosPromise } from 'axios'
 import { EventEmitter } from 'events'
+import { IValueData } from '../../core'
 
 /**
  * Create entity
@@ -37,14 +38,15 @@ export function requestCreateEntity(
   data: IEntityRequestParams
 ): Promise<IEntityData> {
   const { attributesList, tableName } = data
-  const newAttributesList = attributesList.map(
-    (parameter: IAttributeData): KeyValueData => {
-      return {
-        key: parameter.columnName,
-        value: parameter.value
-      }
-    }
-  )
+  const newAttributesList = attributesList
+  // const newAttributesList = attributesList.map(
+  //   (parameter: KeyValueData<>): KeyValueData => {
+  //     return {
+  //       key: parameter.columnName,
+  //       value: parameter.value
+  //     }
+  //   }
+  // )
 
   return requestRest({
     url: '/data/create',
@@ -61,14 +63,15 @@ export function requestCreateEntity(
 
 export function requestUpdateEntity(data: IEntityData): Promise<IEntityData> {
   const { tableName, id, uuid, attributes } = data
-  const attributesList = attributes.map(
-    (parameter: IAttributeData): KeyValueData => {
-      return {
-        key: parameter.columnName,
-        value: parameter.value
-      }
-    }
-  )
+  const attributesList: KeyValueData<IValueData>[] = attributes
+  // const attributesList: KeyValueData<IValueData>[] = attributes.map(
+  //   (parameter: KeyValueData<IValueData>): KeyValueData<IValueData> => {
+  //     return {
+  //       key: parameter.columnName,
+  //       value: parameter.value
+  //     }
+  //   }
+  // )
 
   return requestRest({
     url: '/data/update',
@@ -213,7 +216,7 @@ export function requestTranslations(
       return {
         nextPageToken: languageListResponse.next_page_token,
         recordCount: languageListResponse.record_count,
-        translationsList: languageListResponse.records.map(
+        list: languageListResponse.records.map(
           (record: any) => {
             return convertTranslation(record)
           }

@@ -1,5 +1,7 @@
 import { IResourceReferenceData } from '@/ADempiere/modules/pos'
 import { IValueData } from '@/ADempiere/modules/core'
+import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
+import { IPanelParameters } from '@/ADempiere/shared/store/modules/panel/type'
 
 export interface IResourceReferenceParams {
     recordId: number
@@ -10,6 +12,13 @@ export interface IAttachmentParams {
     tableName: string
     recordId: number
     recordUuid: string
+}
+
+export interface ILookupItemData {
+    id: number
+    uuid: string
+    tableName: string
+    values: IKeyValueObject<IValueData>
 }
 
 export interface IAttachmentData {
@@ -28,7 +37,7 @@ export interface ICallOutParams {
     value: any
     oldValue: any
     callout: string
-    attributesList?: any[]
+    attributesList?: IPanelParameters[]
 }
 
 export interface ICallOutData {
@@ -47,7 +56,7 @@ export interface IReferenceData {
 
 export interface IReferenceListData {
     recordCount: number
-    referencesList: IReferenceData[]
+    list: IReferenceData[]
     nextPageToken: string
 }
 
@@ -64,23 +73,23 @@ export interface ILookupListParams {
     whereClause: string
     columnName: string
     valuesList: any[]
-    pageToken: string
-    pageSize: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface ILookupListResponse {
     nextPageToken: string
     recordCount: number
-    recordsList: any[]
+    list: ILookupItemData[]
 }
 
 export interface IReferencesListParams {
     windowUuid: string
     tableName: string
-    recordId: number
+    recordId?: number
     recordUuid: string
-    pageToken: string
-    pageSize: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface IContextInfoValueParams {
@@ -93,3 +102,37 @@ export interface IContextInfoValuesResponse {
     messageText: string
     messageTip: string
 }
+
+// VUEX
+
+// Lookup
+export interface ILookupOptions {
+    label: IValueData
+    uuid?: string
+    id: string | number
+}
+
+export interface ILookupItemDataExtended {
+    option: Required<ILookupOptions>
+    value: IValueData
+    parsedDirectQuery: string
+    tableName: string
+    sessionUuid: string
+    clientId: number
+}
+
+export interface ILookupListExtended {
+    list: ILookupOptions[]
+    tableName: string
+    parsedQuery: string
+    sessionUuid: string
+    clientId: number
+}
+
+export interface LookupState {
+    lookupItem: ILookupItemDataExtended[]
+    lookupList: ILookupListExtended[]
+}
+
+// CallOut
+export type CallOutControlState = any

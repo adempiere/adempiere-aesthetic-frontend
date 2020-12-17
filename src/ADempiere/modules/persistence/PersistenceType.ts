@@ -1,10 +1,26 @@
-import { EventType } from '@/ADempiere/modules/window'
+import { EntityEventType, EventType } from '@/ADempiere/modules/window'
+import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
+import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
+import { IValueData } from '@/ADempiere/modules/core'
+import { IPrivateAccessData } from '@/ADempiere/modules/privateAccess'
+import {
+  IContextInfoValuesResponse,
+  IReferenceListData
+} from '@/ADempiere/modules/ui'
+import { IReferenceData } from '../field'
+
+export type KeyValueData<T = any> = {
+    key: string
+    value: T
+    // Optional
+    valueType?: string
+}
 
 export interface IEntityData {
-    id: number
+    id?: number
     uuid: string
     tableName: string
-    attributes: any
+    attributes: KeyValueData<IValueData>[]
 }
 
 export interface IEntityListData {
@@ -16,29 +32,24 @@ export interface IEntityListData {
 export interface ITranslationData {
     language: string
     uuid: string
-    values: any
+    values: IKeyValueObject<IValueData>[]
 }
 
 // Service types
 
-export type IAttributeData = {
+export type IAttributeData<T = any> = {
     columnName: string
-    value: any
-}
-
-export type KeyValueData = {
-    key: string
-    value: any
+    value: T
 }
 
 export interface IEntityRequestParams {
     tableName: string
-    attributesList: IAttributeData[]
+    attributesList: KeyValueData<IValueData>[]
 }
 
 export interface IDeleteEntityParams {
     tableName: string
-    id: number
+    id?: number
     uuid: string
 }
 
@@ -66,14 +77,14 @@ export interface ITranslationRequestParams {
     language: string
     uuid: string
     id: number
-    pageToken: string
-    pageSize: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface ITranslationResponseData {
     nextPageToken: string
     recordCount: number
-    translationsList: ITranslationData[]
+    list: ITranslationData[]
 }
 
 export interface IResourceParams {
@@ -94,7 +105,7 @@ export interface IResponseImageData {
 
 export interface IBrowserSearchParams {
     uuid: string
-    parametersList : any[]
+    parametersList: any[]
     tableName: string
     query: string
     whereClause: string
@@ -102,16 +113,126 @@ export interface IBrowserSearchParams {
     limit: number
     pageSize: number
     pageToken: string
-   }
+}
 
 export type FilterType = {
     key: string
     value: any
     values: any
-   }
+}
 
 export type ParamType = {
     columnName: string
     value: any
     values: any
-   }
+}
+
+// VUEX Types
+
+// Language
+export interface ITranslationDataExtended {
+    containerUuid: string
+    recordUuid: string
+    tableName: string
+    recordId: number
+    translations: ITranslationData[]
+}
+
+export interface LanguageState {
+    translationsList: ITranslationDataExtended[]
+    currentLanguage: ITranslationDataExtended
+}
+
+// Persistence
+export interface PersistenceState {
+    persistence: {
+        [columnName: string]: Map<String, KeyValueData<IValueData>>
+    }
+}
+
+// Business Data
+export interface IContextInfoValuesExtends extends IContextInfoValuesResponse {
+    contextInfoUuid: string
+    sqlStatement: string
+}
+
+export interface IRecordObjectListFromCriteria {
+    defaultValues: IKeyValueObject<String>
+    values: KeyValueData<IValueData>[]
+    // datatables attributes
+    isNew: boolean
+    isEdit: boolean
+    isReadOnlyFromRow: boolean
+}
+
+export interface IRecordSelectionData {
+    parentUuid?: string
+    containerUuid: string
+    record: any[]
+    selection: any[]
+    pageNumber: number
+    recordCount: number
+    nextPageToken?: string
+    originalNextPageToken?: string
+    panelType?: PanelContextType
+    isLoaded: boolean
+    isLoadedContext: boolean
+    query?: string
+    whereClause?: string
+    orderByClause?: string
+}
+
+export interface ISelectionToServerData {
+    selectionId: string
+    selectionValues: KeyValueData[]
+}
+
+export interface IPrivateAccessDataExtended extends IPrivateAccessData {
+    isLocked: boolean
+    isPrivateAccess?: boolean
+}
+
+export interface BusinessDataState {
+    recordSelection: IRecordSelectionData[] // record data and selection
+    contextInfoField: IContextInfoValuesExtends[]
+    recordPrivateAccess: Partial<IPrivateAccessDataExtended>
+}
+
+// Window
+export interface IDataLog {
+    recordUuid: string
+    containerUuid: string
+    recordId: number
+    tableName: string
+    eventType?: EntityEventType
+}
+
+export interface IReferenceDataExtended extends IReferenceData {
+    recordUuid: string
+    type: string
+}
+
+export interface IReferenceListDataExtended extends IReferenceListData {
+    windowUuid: string
+    recordUuid: string
+    referencesList: IReferenceDataExtended[]
+}
+
+export interface IWindowOldRoute {
+    path: string
+    fullPath: string
+    query: {}
+}
+
+export interface WindowState {
+    inCreate: {
+        containerUuid: string
+    }[]
+    references: IReferenceListDataExtended[]
+    currentRecord: {}
+    windowOldRoute: IWindowOldRoute
+    dataLog: IDataLog
+    tabSequenceRecord: []
+    totalResponse: number
+    totalRequest: number
+}

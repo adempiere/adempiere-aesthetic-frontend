@@ -1,3 +1,6 @@
+import { KeyValueData } from '@/ADempiere/modules/persistence'
+import { IKeyValueObject } from './types'
+
 export function convertArrayKeyValueToObject({
   array = [],
   keyName = 'columnName',
@@ -9,6 +12,23 @@ export function convertArrayKeyValueToObject({
   })
 
   return result
+}
+
+/**
+ * Converts a IKeyValueObject in a KeyValueData array with generics
+ *
+ * @param {IKeyValueObject} object Object to Convert
+ */
+export function convertObjectToKeyValue<T = any>(object: IKeyValueObject<T>): KeyValueData<T>[] {
+  const array : KeyValueData<T>[] = []
+  Object.keys(object).map(key => {
+    array.push({
+      key: key,
+      value: object[key]
+    })
+  })
+
+  return array
 }
 
 export function convertDateFormat(dateFormat: string): Date {
@@ -29,4 +49,22 @@ export function convertDateFormat(dateFormat: string): Date {
       .replace(/\bz\b/g, 'Z')
 
   return new Date(output)
+}
+
+export const convertStringToBoolean = (valueToParsed:string): boolean => {
+  const valueString: string = String(valueToParsed).trim()
+  if (valueString === 'N' || valueString === 'false') {
+    return false
+  } else if (valueString === 'Y' || valueString === 'true') {
+    return true
+  }
+
+  return Boolean(valueToParsed).valueOf()
+}
+
+export const convertBooleanToString = (booleanValue: boolean): string => {
+  if (booleanValue) {
+    return 'Y'
+  }
+  return 'N'
 }

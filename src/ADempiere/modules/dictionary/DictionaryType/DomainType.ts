@@ -1,10 +1,11 @@
-import { IFieldData, IFieldGroupData } from '@/ADempiere/modules/field'
 import { IContextInfoData } from '@/ADempiere/modules/core'
+import { IFieldData, IFieldGroupData } from '@/ADempiere/modules/field'
 
 export interface IReportExportTypeData {
     name: string
     description: string
     type: string
+    reportExportType?: string
 }
 
 export interface IProcessData {
@@ -22,13 +23,20 @@ export interface IProcessData {
     uuid: string
 }
 
-export interface ITabData {
-    id: number
+export type ITabDataReduced = {
     uuid: string
+    id: number
+    isSortTab: boolean
     name: string
     description: string
-    help: string
     tableName: string
+    parentTabUuid: string
+    sortOrderColumnName: string // order column
+    sortYesNoColumnName: string // included column
+}
+
+export interface ITabData extends ITabDataReduced {
+    help: string
     sequence: number
     tabLevel: number
     isActive: boolean
@@ -36,7 +44,6 @@ export interface ITabData {
     isAdvancedTab: boolean
     isHasTree: boolean
     isInfoTab: boolean
-    isSortTab: boolean
     isTranslationTab: boolean
     isReadOnly: boolean
     isInsertRecord: boolean
@@ -46,15 +53,12 @@ export interface ITabData {
     isChangeLog: boolean
     accessLevel: number
     linkColumnName: string
-    sortOrderColumnName: string
-    sortYesNoColumnName: string
     parentColumnName: string
     displayLogic: string
     commitWarning: string
     query: string
     whereClause: string
     orderByClause: string
-    parentTabUuid: string
     contextInfo: IContextInfoData
     fieldGroup: IFieldGroupData
     processes: IProcessData[]
@@ -121,49 +125,4 @@ export interface IValidationRule {
     description: string
     validationCode: string
     type: string
-}
-
-// Request API Services
-export interface IDictionaryRequest {
-    uuid: string
-    id: number
-}
-
-export interface IDictionaryFieldRequest {
-    uuid: string
-    columnUuid?: string
-    elementUuid?: string
-    fieldUuid: string
-    // TableName + ColumnName
-    tableName?: string
-    columnName?: string
-    elementColumnName?: string
-}
-
-// State
-
-export type IFieldDataExtended = IFieldData & {
-    columnUuid?: string
-    elementUuid?: string
-    elementColumnName?: string
-    tableName?: string
-}
-
-export interface FieldState {
-    referenceList: []
-    fieldsList: IFieldDataExtended[]
-    validationRuleList: []
-    fieldsListLocation: []
-    isShowedLocation: boolean
-}
-
-export type IFormDataExtended = IFormData & {
-    containerUuid: string
-    fieldsList: any[]
-    panelType: string
-}
-
-export interface FormDefinitionState {
-    isShowedTitleForm: boolean
-    form: IFormDataExtended[]
 }

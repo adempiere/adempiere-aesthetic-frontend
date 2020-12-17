@@ -1,9 +1,5 @@
-import {
-  DashboardState,
-  IRecentItemData
-} from '@/ADempiere/modules/dashboard'
+import { DashboardState, IRecentItemData, IDashboardDataExtended } from '@/ADempiere/modules/dashboard'
 import { MutationTree } from 'vuex'
-import { IDashboardDataExtended } from '../../DashboardType'
 
 type DashboardMutationTree = MutationTree<DashboardState>
 

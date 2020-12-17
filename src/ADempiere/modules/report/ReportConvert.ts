@@ -11,7 +11,7 @@ export function convertListPrintFormats(
 ): IListPrintsFormatsData {
   return {
     recordCount: listPrintFormatsToConvert.record_count,
-    records: listPrintFormatsToConvert.records.map((record: any) => {
+    list: listPrintFormatsToConvert.records.map((record: any) => {
       return convertPrintFormat(record)
     }),
     nextPageToken: listPrintFormatsToConvert.next_page_token

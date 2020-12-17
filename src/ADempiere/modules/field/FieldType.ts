@@ -1,5 +1,5 @@
-import { IContextInfoData } from '@/ADempiere/modules/core'
-import { IAttributeData } from '@/ADempiere/modules/persistence'
+import { IContextInfoData, IValueData } from '@/ADempiere/modules/core'
+import { KeyValueData } from '@/ADempiere/modules/persistence'
 
 export interface IFieldGroupData {
     id?: number
@@ -8,8 +8,8 @@ export interface IFieldGroupData {
     fieldGroupType?: string
     isActive?: boolean
     //
-    groupName?: any // Not Found Type in proto
-    groupType?: any // Not found Type in proto
+    groupName?: string // Not Found Type in proto
+    groupType?: string // Not found Type in proto
 }
 
 export interface IZoomWindowData {
@@ -116,7 +116,7 @@ export interface IFieldData {
 // Service API Types
 
 export interface ICreateLocationAddressParams {
-    attributesList: IAttributeData[]
+    attributesList: KeyValueData<IValueData>[]
 }
 
 export interface IGetLocationAddressParams {

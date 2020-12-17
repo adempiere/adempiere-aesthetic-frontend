@@ -245,3 +245,15 @@ export interface IWorkflowDefinitionData {
     startNode: IWorkflowNodeData
     workflowNodesList: IWorkflowNodeData[]
 }
+
+export interface IDocumentStatusData {
+    value: string
+    name: string
+    description: string
+}
+
+export interface IDocumentActionData {
+    value: string
+    name: string
+    description: string
+}

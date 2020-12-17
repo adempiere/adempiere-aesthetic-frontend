@@ -6,6 +6,20 @@ export default new VuexPersistence({
     'businessPartnerModule',
     'dashboardModule',
     'fieldModule',
-    'formDefinition'
+    'formDefinitionModule',
+    'processDefinitionModule',
+    'preferenceModule',
+    'windowDefinitionModule',
+    'languageModule',
+    'persistenceModule',
+    'windowModule',
+    'eventModule',
+    'utilsModule',
+    'lookupModule',
+    'callOutControlModule',
+    'chatEntriesModule',
+    'containerInfoModule',
+    'reportModule',
+    'fieldValueModule'
   ]
 })
