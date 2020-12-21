@@ -1,9 +1,11 @@
 import {
   Actionable,
+  PanelContextType,
   PrintFormatOptions,
   ReportExportContextType
 } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
-import { IProcessDataExtended } from './VuexType'
+import { IDrillTablesDataExtended, IReportViewDataExtended } from '../../report'
+import { IPrintFormatDataExtended, IProcessDataExtended } from './VuexType'
 
 // Process Definition
 export interface ProcessDefinitionAction extends Actionable {
@@ -17,7 +19,8 @@ export interface ProcessDefinitionAction extends Actionable {
 }
 
 export interface SummaryAction extends ProcessDefinitionAction {
-    childs: ProcessDefinitionAction[]
+    childs: (ProcessDefinitionAction | IReportViewDataExtended)[]
+    option?: PrintFormatOptions
 }
 
 export interface IPrintFormatChild extends ProcessDefinitionAction {
@@ -27,9 +30,14 @@ export interface IPrintFormatChild extends ProcessDefinitionAction {
 export interface PrintFormatsAction extends ProcessDefinitionAction {
     option: PrintFormatOptions
     process: IProcessDataExtended
-    childs: IPrintFormatChild[]
+    childs: (IPrintFormatChild | Omit<IPrintFormatDataExtended, 'printFormatUuid'>)[]
 }
 
+export interface DrillTableAction extends ProcessDefinitionAction {
+    option: PrintFormatOptions
+    process: IProcessDataExtended
+    childs: (IPrintFormatChild | IDrillTablesDataExtended)[]
+}
 // export interface ITabDataExtended extends ITabData {
 //     parentUuid: string
 //     containerUuid: string

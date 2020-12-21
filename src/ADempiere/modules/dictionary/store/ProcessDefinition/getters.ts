@@ -8,7 +8,7 @@ import { RootState } from '@/ADempiere/shared/store/types'
 type ProcessDefinitionGetterTree = GetterTree<ProcessDefinitionState, RootState>
 
 export const getters: ProcessDefinitionGetterTree = {
-  getProcess: (state: ProcessDefinitionState) => (processUuid: string) => {
+  getProcess: (state: ProcessDefinitionState) => (processUuid: string): IProcessData | undefined => {
     return state.process.find(
       (item: IProcessData) => item.uuid === processUuid
     )

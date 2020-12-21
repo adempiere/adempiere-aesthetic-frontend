@@ -26,10 +26,10 @@ export const mutations: WindowMutationTree = {
   setTabSequenceRecord(state: WindowState, payload) {
     state.tabSequenceRecord = payload
   },
-  setTotalResponse(state: WindowState, payload) {
+  setTotalResponse(state: WindowState, payload: number) {
     state.totalResponse = payload
   },
-  setTotalRequest(state: WindowState, payload) {
+  setTotalRequest(state: WindowState, payload: number) {
     state.totalRequest = payload
   },
   resetStateWindowControl(state: WindowState) {
