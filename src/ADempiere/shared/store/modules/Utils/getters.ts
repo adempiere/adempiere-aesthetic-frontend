@@ -1,7 +1,7 @@
 import { ReportExportContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { GetterTree } from 'vuex'
 import { RootState } from '../../types'
-import { UtilsState } from './type'
+import { ISelectionProcessData, UtilsState } from './type'
 
 type UtilsGetterTree = GetterTree<UtilsState, RootState>
 
@@ -9,7 +9,7 @@ export const getters: UtilsGetterTree = {
   getWidth: (state: UtilsState): number => {
     return state.width
   },
-  getProcessSelect: (state: UtilsState): any[] => {
+  getProcessSelect: (state: UtilsState): Partial<ISelectionProcessData> => {
     return state.selectionProcess
   },
   getWidthLayout: (state: UtilsState, rootGetters): number => {

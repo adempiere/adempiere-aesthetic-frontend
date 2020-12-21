@@ -47,7 +47,10 @@ export const actions: ReportActionTree = {
             processUuid: string
             instanceUuid: string
         }
-  ) {
+  ): Promise<Omit<
+  IPrintFormatDataExtended,
+  'printFormatUuid'
+>[]> {
     const { processId, processUuid, instanceUuid } = payload
     return new Promise(resolve => {
       requestListPrintFormats({

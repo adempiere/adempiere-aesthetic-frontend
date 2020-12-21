@@ -34,7 +34,8 @@ export enum PanelContextType {
 }
 
 export enum ReportExportContextType {
-    Html = 'html'
+    Html = 'html',
+    Pdf = 'pdf'
 }
 
 export enum PrintFormatOptions {

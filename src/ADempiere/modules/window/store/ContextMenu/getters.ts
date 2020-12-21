@@ -13,9 +13,9 @@ type ContextMenuGetterTree = GetterTree<ContextMenuState, RootState>
 type ContextMenuActionContext = ActionContext<ContextMenuState, RootState>
 
 export const getters: ContextMenuGetterTree = {
-  getContextMenu: (state: ContextMenuState) => (containerUuid: string) => {
+  getContextMenu: (state: ContextMenuState) => (containerUuid: string): IContextMenuData | undefined => {
     return state.contextMenu.find(
-      item => item.containerUuid === containerUuid
+      (item: IContextMenuData) => item.containerUuid === containerUuid
     )
   },
   getRelations: (

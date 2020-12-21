@@ -1,6 +1,6 @@
 import { IPanelParameters } from '@/ADempiere/shared/store/modules/panel/type'
 import { ActionContextType, PrintFormatOptions } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
-import { IPrintFormatDataExtended, PrintFormatsAction } from '../dictionary'
+import { IPrintFormatDataExtended } from '../dictionary'
 
 export interface IReportOutputData {
     uuid: string
@@ -8,19 +8,19 @@ export interface IReportOutputData {
     description: string
     fileName: string
     output: string
-    mimeType: string
-    dataCols: number
-    dataRows: number
-    headerName: string
-    footerName: string
-    printFormatUuid: string
-    reportViewUuid: string
-    tableName: string
-    outputStream: any // type byte
+    mimeType?: string
+    dataCols?: number
+    dataRows?: number
+    headerName?: string
+    footerName?: string
+    printFormatUuid?: string
+    reportViewUuid?: string
+    tableName?: string
+    outputStream?: any // type byte
     // outputStreamAsB64
-    outputStreamAsB64: any // Type not found in proto
+    outputStreamAsB64?: any // Type not found in proto
     // outputStreamAsU8
-    outputStreamAsU8: any /// Type not found in proto
+    outputStreamAsU8?: any /// Type not found in proto
     reportType: string
 }
 

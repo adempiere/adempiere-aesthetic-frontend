@@ -463,5 +463,12 @@ export const getters: PanelGetterTree = {
     // parametersList = parametersList.concat(parametersRange)
     parameters.concat(parametersRange)
     return parameters
+  },
+  getFieldFromColumnName: (state: PanelState, getters) => (parameters: { containerUuid: string, columnName: string }): IFieldDataExtendedUtils | undefined => {
+    const { columnName, containerUuid } = parameters
+    const fieldsList: IFieldDataExtendedUtils[] = getters.getFieldsListFromPanel(containerUuid)
+    return fieldsList.find((itemField: IFieldDataExtendedUtils) => {
+      return itemField.columnName === columnName
+    })
   }
 }

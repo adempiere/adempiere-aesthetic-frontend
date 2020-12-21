@@ -1,7 +1,6 @@
 import { ReportExportContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
-import Vue from 'vue/types/umd'
 import { MutationTree } from 'vuex'
-import { UtilsState } from './type'
+import { ISelectionProcessData, UtilsState } from './type'
 
 type UtilsMutationTree = MutationTree<UtilsState>
 
@@ -36,7 +35,7 @@ export const mutations: UtilsMutationTree = {
   setOrder(state: UtilsState, payload: any[]) {
     state.documentAction = payload
   },
-  setProcessSelecetion(state: UtilsState, selectionProcess: any[]) {
+  setProcessSelecetion(state: UtilsState, selectionProcess: ISelectionProcessData) {
     state.selectionProcess = selectionProcess
   },
   setTempShareLink(state: UtilsState, payload: string) {
@@ -76,7 +75,7 @@ export const mutations: UtilsMutationTree = {
       isShowedTable: false,
       isShowedTabChildren: false,
       recordTable: 0,
-      selectionProcess: [],
+      selectionProcess: {},
       isContainerInfo: false,
       documentAction: [],
       openRoute: {
