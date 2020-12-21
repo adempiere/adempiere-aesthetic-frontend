@@ -14,6 +14,7 @@ import {
   persistenceModule
 } from '@/ADempiere/modules/persistence'
 
+import { pointOfSalesModule } from '@/ADempiere/modules/pos'
 import { processModule } from '@/ADempiere/modules/process/store/Process'
 import { fieldValueModule } from '@/ADempiere/shared/store/modules/FieldValue'
 import { reportModule } from '@/ADempiere/modules/report/store/Report'
@@ -56,7 +57,8 @@ const store: StoreOptions<RootState> = {
     containerInfoModule,
     reportModule,
     fieldValueModule,
-    processModule
+    processModule,
+    pointOfSalesModule
   },
   plugins: [vuexLocal.plugin]
 }
