@@ -16,8 +16,10 @@ import {
 
 import {
   pointOfSalesModule,
-  collectionModule
+  collectionModule,
+  keyLayoutModule
 } from '@/ADempiere/modules/pos'
+
 import { processModule } from '@/ADempiere/modules/process/store/Process'
 import { fieldValueModule } from '@/ADempiere/shared/store/modules/FieldValue'
 import { reportModule } from '@/ADempiere/modules/report/store/Report'
@@ -62,7 +64,8 @@ const store: StoreOptions<RootState> = {
     fieldValueModule,
     processModule,
     pointOfSalesModule,
-    collectionModule
+    collectionModule,
+    keyLayoutModule
   },
   plugins: [vuexLocal.plugin]
 }

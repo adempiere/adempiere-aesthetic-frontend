@@ -23,6 +23,7 @@ export default new VuexPersistence({
     'fieldValueModule',
     'processModule',
     'pointOfSalesModule',
-    'collectionModule'
+    'collectionModule',
+    'keyLayoutModule'
   ]
 })
