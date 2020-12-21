@@ -35,7 +35,7 @@ export interface IOrderLineData {
 
 export interface IPointOfSalesData {
     id: number
-    uuid: string
+    uuid?: string
     name: string
     description: string
     help: string
@@ -109,14 +109,14 @@ export interface IGetPointOfSalesParams {
 
 export interface IListPointOfSalesParams {
     userUuid: string
-    pageSize: number
-    pageToken: string
+    pageSize?: number
+    pageToken?: string
 }
 
 export interface IListPointOfSalesResponse {
     nextPageToken: string
     recordCount: number
-    sellingPointsList: IPointOfSalesData
+    list: IPointOfSalesData[]
 }
 
 export interface ICreateOrderParams {
@@ -227,4 +227,22 @@ export interface IPrintOrderParams {
 export interface IGenerateInvoiceParams {
     posId: number
     posUuid: string
+}
+
+// VUEX
+
+// PointOfSales
+export interface IPOSData {
+    userUuid?: string
+    isLoaded: boolean
+    isReload: boolean
+    recordCount: number
+    nextPageToken?: string
+    list?: IPointOfSalesData[]
+}
+export interface PointOfSalesState {
+    showPOSOptions: boolean
+    showPOSKeyLayout: boolean
+    showPOSCollection: boolean
+    pointOfSales: IPOSData
 }
