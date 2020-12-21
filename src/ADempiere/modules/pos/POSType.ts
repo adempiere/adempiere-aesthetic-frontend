@@ -231,7 +231,7 @@ export interface IGenerateInvoiceParams {
 
 // VUEX
 
-// PointOfSales
+// PointOfSales Module
 export interface IPOSData {
     userUuid?: string
     isLoaded: boolean
@@ -239,6 +239,7 @@ export interface IPOSData {
     recordCount: number
     nextPageToken?: string
     list?: IPointOfSalesData[]
+    currentPOS?: IPointOfSalesData
 }
 export interface PointOfSalesState {
     showPOSOptions: boolean
@@ -252,4 +253,23 @@ export interface CollectionState {
     paymentBox: any[]
     multiplyRate: number
     divideRate: number
+}
+
+// Key Layout Module
+export interface IKeyLayoutDataExtended extends IKeyLayoutData {
+    isLoaded: boolean
+    isReload: boolean
+    // token,
+    // pageNumber
+}
+
+export interface KeyLayoutState {
+    keyLayout: {
+        isLoaded: boolean
+        isReload: boolean
+        recordCount: number
+        nextPageToken?: string
+        uuid?: string
+        orderList?: any[]
+    }
 }
