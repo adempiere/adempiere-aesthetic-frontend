@@ -22,6 +22,7 @@ export default new VuexPersistence({
     'reportModule',
     'fieldValueModule',
     'processModule',
-    'pointOfSalesModule'
+    'pointOfSalesModule',
+    'collectionModule'
   ]
 })
