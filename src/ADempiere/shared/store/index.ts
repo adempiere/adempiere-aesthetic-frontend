@@ -14,6 +14,7 @@ import {
   persistenceModule
 } from '@/ADempiere/modules/persistence'
 
+import { processModule } from '@/ADempiere/modules/process/store/Process'
 import { fieldValueModule } from '@/ADempiere/shared/store/modules/FieldValue'
 import { reportModule } from '@/ADempiere/modules/report/store/Report'
 import { containerInfoModule } from '@/ADempiere/modules/window/store/ContainerInfo'
@@ -35,6 +36,7 @@ const store: StoreOptions<RootState> = {
     appVersion: version
   },
   modules: {
+    // Core
     systemModule,
     businessPartnerModule,
     dashboardModule,
@@ -53,7 +55,8 @@ const store: StoreOptions<RootState> = {
     chatEntriesModule,
     containerInfoModule,
     reportModule,
-    fieldValueModule
+    fieldValueModule,
+    processModule
   },
   plugins: [vuexLocal.plugin]
 }
