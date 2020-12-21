@@ -246,3 +246,10 @@ export interface PointOfSalesState {
     showPOSCollection: boolean
     pointOfSales: IPOSData
 }
+
+// Collection Module
+export interface CollectionState {
+    paymentBox: any[]
+    multiplyRate: number
+    divideRate: number
+}
