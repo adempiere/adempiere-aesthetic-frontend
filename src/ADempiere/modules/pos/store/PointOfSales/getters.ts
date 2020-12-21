@@ -19,12 +19,12 @@ export const getters: PointOfSalesGetterTree = {
     return state.pointOfSales
   },
   // current pos info
-  getCurrentPOS: (state: PointOfSalesState): IPOSData | undefined => {
+  getCurrentPOS: (state: PointOfSalesState): IPointOfSalesData | undefined => {
     if (!state.pointOfSales) {
       return undefined
     }
     // return state.pointOfSales.currentPOS
-    return state.pointOfSales
+    return state.pointOfSales.currentPOS
   },
   // current pos uuid
   getPointOfSalesUuid: (

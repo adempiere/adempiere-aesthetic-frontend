@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import Vue from 'vue'
-import { IPOSData, PointOfSalesState } from '@/ADempiere/modules/pos/POSType'
+import { IPointOfSalesData, IPOSData, PointOfSalesState } from '@/ADempiere/modules/pos/POSType'
 
 type PointOfSalesMutationTree = MutationTree<PointOfSalesState>
 
@@ -21,7 +21,7 @@ export const mutations: PointOfSalesMutationTree = {
   setPontOfSales(state: PointOfSalesState, pos: IPOSData) {
     state.pointOfSales = pos
   },
-  setCurrentPOS(state: PointOfSalesState, pos: IPOSData) {
+  setCurrentPOS(state: PointOfSalesState, pos: IPointOfSalesData) {
     Vue.set(state.pointOfSales, 'currentPOS', pos)
   },
   setShowPOSOptions(state: PointOfSalesState, isShowedOptions: boolean) {
