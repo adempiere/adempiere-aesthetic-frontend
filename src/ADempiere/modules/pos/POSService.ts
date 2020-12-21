@@ -72,7 +72,7 @@ export function requestListPointOfSales(
       return {
         nextPageToken: posListResponse.next_page_token,
         recordCount: posListResponse.record_count,
-        sellingPointsList: posListResponse.records.map((pos: any) => {
+        list: posListResponse.records.map((pos: any) => {
           return convertPointOfSales(pos)
         })
       }
