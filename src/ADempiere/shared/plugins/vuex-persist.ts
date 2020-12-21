@@ -21,6 +21,7 @@ export default new VuexPersistence({
     'containerInfoModule',
     'reportModule',
     'fieldValueModule',
-    'processModule'
+    'processModule',
+    'pointOfSalesModule'
   ]
 })
