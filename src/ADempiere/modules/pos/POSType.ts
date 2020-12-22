@@ -153,14 +153,14 @@ export interface IListOrdersParams {
     dateOrderedFrom: number
     dateOrderedTo: number
     salesRepresentativeUuid: string
-    pageSize: number
+    pageSize?: number
     pageToken: string
 }
 
 export interface IListOrdersResponse {
     nextPageToken: string
     recordCount: number
-    ordersList: IOrderData[]
+    list: IOrderData[]
 }
 
 export interface ICreateOrderLineParams {
@@ -272,4 +272,21 @@ export interface KeyLayoutState {
         uuid?: string
         orderList?: any[]
     }
+}
+
+// Order Module
+export interface OrderState {
+    order?: IOrderData
+    findOrder?: IOrderData
+    listOrder: {
+        list?: IOrderData[]
+        posUuid?: string
+        isLoaded: boolean
+        isReload: boolean
+        recordCount: number
+        nextPageToken?: string
+        isShowPopover: boolean
+        pageNumber?: number
+    }
+    currentOrder?: IOrderData
 }
