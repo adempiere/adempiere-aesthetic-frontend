@@ -20,6 +20,7 @@ export interface IChargeData {
 export interface IOrderLineData {
     uuid: string
     orderUuid: string
+    help?: string
     line: string
     product: IProductData
     charge: IChargeData
@@ -188,8 +189,8 @@ export interface IDeleteOrderLineParams {
 
 export interface IListOrderLinesParams {
     orderUuid: string
-    pageSize: number
-    pageToken: string
+    pageSize?: number
+    pageToken?: string
 }
 
 export interface IListOrderLinesResponse {
@@ -289,4 +290,22 @@ export interface OrderState {
         pageNumber?: number
     }
     currentOrder?: IOrderData
+}
+// Order Lines Module
+export interface IProductDataExtended extends IProductData {
+    priceStandard: number
+}
+
+export interface IOrderLineDataExtended extends IOrderLineData {
+    quantityOrdered: number
+    priceActual: number
+    discount: number
+    product: IProductDataExtended
+    taxIndicator: string
+    grandTotal: number
+    help?: string
+}
+
+export interface OrderLinesState {
+    listOrderLine: IOrderLineDataExtended[]
 }
