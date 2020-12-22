@@ -7,7 +7,6 @@ import {
 } from '@/ADempiere/modules/dictionary'
 import Vuex, { StoreOptions } from 'vuex'
 import vuexLocal from '@/ADempiere/shared/plugins/vuex-persist'
-import { RootState } from '@/ADempiere/shared/store/types'
 import { systemModule, businessPartnerModule } from '@/ADempiere/modules/core'
 import {
   languageModule,
@@ -36,14 +35,47 @@ import { windowModule } from '@/ADempiere/modules/persistence/store/Window'
 import { preferenceModule } from '@/ADempiere/shared/store/modules/preference'
 import { dashboardModule } from '@/ADempiere/modules/dashboard'
 import { name, version } from '@/../package.json'
+//
+import { IRootState } from '@/store'
 
 Vue.use(Vuex)
 
-const store: StoreOptions<RootState> = {
-  state: {
-    appName: name,
-    appVersion: version
-  },
+const store: StoreOptions<IRootState> = {
+  // state: {
+  //   app: {
+  //     device: AppModule.device,
+  //     language: AppModule.language,
+  //     sidebar: AppModule.sidebar,
+  //     size: AppModule.size
+  //   },
+  //   errorLog: {
+  //     logs: ErrorLogModule.logs
+  //   },
+  //   permission: {
+  //     dynamicRoutes: PermissionModule.dynamicRoutes,
+  //     routes: PermissionModule.routes
+  //   },
+  //   settings: {
+  //     fixedHeader: SettingsModule.fixedHeader,
+  //     showSettings: SettingsModule.showSettings,
+  //     showSidebarLogo: SettingsModule.showSidebarLogo,
+  //     showTagsView: SettingsModule.showTagsView,
+  //     sidebarTextTheme: SettingsModule.sidebarTextTheme,
+  //     theme: SettingsModule.theme
+  //   },
+  //   tagsView: {
+  //     cachedViews: TagsViewModule.cachedViews,
+  //     visitedViews: TagsViewModule.visitedViews
+  //   },
+  //   user: {
+  //     avatar: UserModule.avatar,
+  //     email: UserModule.email,
+  //     introduction: UserModule.introduction,
+  //     name: UserModule.name,
+  //     roles: UserModule.roles,
+  //     token: UserModule.token
+  //   }
+  // },
   modules: {
     // Core
     systemModule,
@@ -72,8 +104,15 @@ const store: StoreOptions<RootState> = {
     orderModule,
     orderLinesModule,
     listProductPriceModule
+    // AppModule,
+    // ErrorLogModule,
+    // PermissionModule,
+    // SettingsModule,
+    // TagsViewModule,
+    // UserModule,
+
   },
   plugins: [vuexLocal.plugin]
 }
 
-export default new Vuex.Store<RootState>(store)
+export default new Vuex.Store<IRootState>(store)
