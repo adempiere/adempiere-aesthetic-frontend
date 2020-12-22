@@ -18,6 +18,7 @@ import {
   pointOfSalesModule,
   collectionModule,
   keyLayoutModule
+  , orderModule
 } from '@/ADempiere/modules/pos'
 
 import { processModule } from '@/ADempiere/modules/process/store/Process'
@@ -65,7 +66,8 @@ const store: StoreOptions<RootState> = {
     processModule,
     pointOfSalesModule,
     collectionModule,
-    keyLayoutModule
+    keyLayoutModule,
+    orderModule
   },
   plugins: [vuexLocal.plugin]
 }
