@@ -25,6 +25,7 @@ export default new VuexPersistence({
     'pointOfSalesModule',
     'collectionModule',
     'keyLayoutModule',
-    'orderModule'
+    'orderModule',
+    'orderLinesModule'
   ]
 })
