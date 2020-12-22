@@ -244,7 +244,7 @@ export function requestListOrders(
       return {
         nextPageToken: ordersListResponse.next_page_token,
         recordCount: ordersListResponse.record_count,
-        ordersList: ordersListResponse.records.map(
+        list: ordersListResponse.records.map(
           (productPrice: any) => {
             return convertOrder(productPrice)
           }
