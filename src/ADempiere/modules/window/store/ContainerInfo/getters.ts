@@ -1,4 +1,4 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
 import {
   ContainerInfoState,
@@ -7,7 +7,7 @@ import {
   IWorkflowProcessData
 } from '../../WindowType'
 
-type ContainerInfoGetterTree = GetterTree<ContainerInfoState, RootState>
+type ContainerInfoGetterTree = GetterTree<ContainerInfoState, IRootState>
 
 export const getters: ContainerInfoGetterTree = {
   getWorkflow: (state: ContainerInfoState): IWorkflowProcessData[] => {

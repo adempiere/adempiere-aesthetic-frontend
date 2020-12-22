@@ -5,16 +5,16 @@ import {
   ProcessDefinitionState,
   requestProcessMetadata
 } from '@/ADempiere/modules/dictionary'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { generateProcess } from '@/ADempiere/shared/utils/DictionaryUtils'
 import language from '@/lang'
 
 type ProcessDefinitionActionContext = ActionContext<
     ProcessDefinitionState,
-    RootState
+    IRootState
 >
-type ProcessDefinitionActionTree = ActionTree<ProcessDefinitionState, RootState>
+type ProcessDefinitionActionTree = ActionTree<ProcessDefinitionState, IRootState>
 
 export const actions: ProcessDefinitionActionTree = {
   /**

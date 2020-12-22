@@ -3,12 +3,12 @@ import { state } from './state'
 import { getters } from './getters'
 import { mutations } from './mutations'
 import { actions } from './actions'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { OrderLinesState } from '../../POSType'
 
 const namespaced = true
 
-export const orderLinesModule: Module<OrderLinesState, RootState> = {
+export const orderLinesModule: Module<OrderLinesState, IRootState> = {
   namespaced,
   state,
   getters,

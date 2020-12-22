@@ -1,11 +1,11 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { IResponseList } from '@/ADempiere/shared/utils/types'
 import { ActionContext, ActionTree } from 'vuex'
 import { requestListEntityLogs, requestListWorkflows, requestListWorkflowsLogs } from '../../WindowService'
 import { ContainerInfoState, IListEntityLogsResponse, IListWorkflowsResponse, IWorkflowProcessData } from '../../WindowType'
 
-type ContainerInfoActionContext = ActionContext<ContainerInfoState, RootState>
-type ContainerInfoActionTree = ActionTree<ContainerInfoState, RootState>
+type ContainerInfoActionContext = ActionContext<ContainerInfoState, IRootState>
+type ContainerInfoActionTree = ActionTree<ContainerInfoState, IRootState>
 
 export const actions: ContainerInfoActionTree = {
   listRecordLogs(context: ContainerInfoActionContext, payload: {

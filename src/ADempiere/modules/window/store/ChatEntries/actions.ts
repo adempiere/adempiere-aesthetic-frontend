@@ -1,10 +1,10 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { ActionContext, ActionTree } from 'vuex'
 import { requestCreateChatEntry, requestListChatsEntries, requestListEntityChats } from '../../WindowService'
 import { ChatEntriesState, IEntityChatData, IListEntityChatsResponse } from '../../WindowType'
 
-type ChatEntriesActionContext = ActionContext<ChatEntriesState, RootState>
-type ChatEntriesActionTree = ActionTree<ChatEntriesState, RootState>
+type ChatEntriesActionContext = ActionContext<ChatEntriesState, IRootState>
+type ChatEntriesActionTree = ActionTree<ChatEntriesState, IRootState>
 
 export const actions: ChatEntriesActionTree = {
   createChatEntry(context: ChatEntriesActionContext, payload: {

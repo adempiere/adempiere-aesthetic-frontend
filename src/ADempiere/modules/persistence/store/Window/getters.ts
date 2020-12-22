@@ -1,9 +1,9 @@
 import { EntityEventType } from '@/ADempiere/modules/window'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
 import { IDataLog, IReferenceDataExtended, IReferenceListDataExtended, WindowState } from '@/ADempiere/modules/persistence'
 
-type WindowGetterTree = GetterTree<WindowState, RootState>
+type WindowGetterTree = GetterTree<WindowState, IRootState>
 
 export const getters: WindowGetterTree = {
   getCurrentRecord: (state: WindowState) => {

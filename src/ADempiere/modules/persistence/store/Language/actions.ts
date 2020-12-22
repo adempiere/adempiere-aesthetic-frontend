@@ -1,4 +1,4 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { ActionTree, ActionContext } from 'vuex'
 import {
   ITranslationData,
@@ -12,8 +12,8 @@ import { IValueData } from '@/ADempiere/modules/core'
 import { IEntityData } from '../../PersistenceType'
 import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
 
-type LanguageActionTree = ActionTree<LanguageState, RootState>
-type LanguageActionContext = ActionContext<LanguageState, RootState>
+type LanguageActionTree = ActionTree<LanguageState, IRootState>
+type LanguageActionContext = ActionContext<LanguageState, IRootState>
 
 export const actions: LanguageActionTree = {
   setTranslation(

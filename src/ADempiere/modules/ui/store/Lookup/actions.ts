@@ -1,5 +1,5 @@
 import { IValueData } from '@/ADempiere/modules/core'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { parseContext } from '@/ADempiere/shared/utils/contextUtils'
 import { ActionContext, ActionTree } from 'vuex'
 import { requestLookup, requestLookupList } from '@/ADempiere/modules/ui/UIService'
@@ -13,8 +13,8 @@ import {
 } from '@/ADempiere/modules/ui/UITypes'
 import { getToken as getSession } from '@/utils/cookies'
 
-type LookupActionContext = ActionContext<LookupState, RootState>
-type LookupActionTree = ActionTree<LookupState, RootState>
+type LookupActionContext = ActionContext<LookupState, IRootState>
+type LookupActionTree = ActionTree<LookupState, IRootState>
 
 export const actions: LookupActionTree = {
   /**

@@ -1,8 +1,8 @@
 import { GetterTree } from 'vuex'
 import { BusinessPartnerState } from '@/ADempiere/modules/core'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 
-type SystemGetter = GetterTree<BusinessPartnerState, RootState>
+type SystemGetter = GetterTree<BusinessPartnerState, IRootState>
 
 export const getters: SystemGetter = {
   getBusinessPartner: (state: BusinessPartnerState) => {

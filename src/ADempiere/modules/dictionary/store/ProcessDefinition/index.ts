@@ -3,12 +3,12 @@ import { state } from './state'
 import { getters } from './getters'
 import { mutations } from './mutations'
 import { actions } from './actions'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { ProcessDefinitionState } from '@/ADempiere/modules/dictionary'
 
 const namespaced = true
 
-export const processDefinitionModule: Module<ProcessDefinitionState, RootState> = {
+export const processDefinitionModule: Module<ProcessDefinitionState, IRootState> = {
   namespaced,
   state,
   getters,

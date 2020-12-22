@@ -3,7 +3,7 @@ import {
   ITabDataExtended
 } from '@/ADempiere/modules/dictionary'
 import { IReferenceData } from '@/ADempiere/modules/field'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { parseContext } from '@/ADempiere/shared/utils/contextUtils'
 import { fieldIsDisplayed } from '@/ADempiere/shared/utils/DictionaryUtils'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
@@ -40,8 +40,8 @@ import {
 import { IValueData } from '@/ADempiere/modules/core'
 import { convertObjectToKeyValue } from '@/ADempiere/shared/utils/valueFormat'
 
-type WindowActionTree = ActionTree<WindowState, RootState>
-type WindowActionContext = ActionContext<WindowState, RootState>
+type WindowActionTree = ActionTree<WindowState, IRootState>
+type WindowActionContext = ActionContext<WindowState, IRootState>
 
 export const actions: WindowActionTree = {
   tableActionPerformed(

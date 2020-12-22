@@ -1,10 +1,10 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
 import { ITranslationData, ITranslationDataExtended, LanguageState } from '@/ADempiere/modules/persistence'
 import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
 import { IValueData } from '@/ADempiere/modules/core'
 
-type LanguageGetterTree = GetterTree<LanguageState, RootState>
+type LanguageGetterTree = GetterTree<LanguageState, IRootState>
 
 export const getters: LanguageGetterTree = {
   getLanguageByParameter: (state: LanguageState) => (parameter: string): ITranslationDataExtended | undefined => {

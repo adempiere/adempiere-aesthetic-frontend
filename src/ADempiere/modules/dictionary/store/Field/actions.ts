@@ -3,12 +3,12 @@ import {
   FieldState,
   IFieldDataExtended
 } from '@/ADempiere/modules/dictionary'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { ActionTree, ActionContext } from 'vuex'
 import { IFieldData } from '@/ADempiere/modules/field'
 
-type FieldActionTree = ActionTree<FieldState, RootState>
-type FieldActionContext = ActionContext<FieldState, RootState>
+type FieldActionTree = ActionTree<FieldState, IRootState>
+type FieldActionContext = ActionContext<FieldState, IRootState>
 
 export const actions: FieldActionTree = {
   getFieldFromServer(

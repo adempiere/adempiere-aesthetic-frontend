@@ -1,5 +1,5 @@
 import { IValueData } from '@/ADempiere/modules/core'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { parseContext } from '@/ADempiere/shared/utils/contextUtils'
 import { ActionContext, GetterTree } from 'vuex'
 import { getToken as getSession } from '@/utils/cookies'
@@ -10,8 +10,8 @@ import {
   LookupState
 } from '@/ADempiere/modules/ui/UITypes'
 
-type LookupGettersTree = GetterTree<LookupState, RootState>
-type LookupActionContext = ActionContext<LookupState, RootState>
+type LookupGettersTree = GetterTree<LookupState, IRootState>
+type LookupActionContext = ActionContext<LookupState, IRootState>
 
 export const getters: LookupGettersTree = {
   getLookupItem: (

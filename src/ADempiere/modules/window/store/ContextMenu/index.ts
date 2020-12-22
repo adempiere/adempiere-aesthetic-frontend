@@ -3,12 +3,12 @@ import { actions } from './actions'
 import { getters } from './getters'
 import { state } from './state'
 import { mutations } from './mutations'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { ContextMenuState } from '@/ADempiere/modules/window/WindowType/VuexType'
 
 const namespaced = true
 
-export const contextMenuModule: Module<ContextMenuState, RootState> = {
+export const contextMenuModule: Module<ContextMenuState, IRootState> = {
   namespaced,
   state,
   getters,

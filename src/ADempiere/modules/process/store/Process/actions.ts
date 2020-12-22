@@ -1,4 +1,4 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import {
   ActionContextName,
   ActionContextType,
@@ -55,8 +55,8 @@ import {
 import { Route } from 'vue-router'
 import { ISelectionProcessData } from '@/ADempiere/shared/store/modules/Utils/type'
 
-type ProcessActionContext = ActionContext<ProcessState, RootState>
-type ProcessActionTree = ActionTree<ProcessState, RootState>
+type ProcessActionContext = ActionContext<ProcessState, IRootState>
+type ProcessActionTree = ActionTree<ProcessState, IRootState>
 
 export const actions: ProcessActionTree = {
   processActionPerformed(

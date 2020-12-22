@@ -1,10 +1,10 @@
 import { KeyValueData } from '@/ADempiere/modules/persistence'
 import { ActionContext, ActionTree } from 'vuex'
-import { RootState } from '../../types'
+import { IRootState } from '@/store'
 import { FieldValueState } from './type'
 
-type FieldValueActionContext = ActionContext<FieldValueState, RootState>
-type FieldValueActionTree = ActionTree<FieldValueState, RootState>
+type FieldValueActionContext = ActionContext<FieldValueState, IRootState>
+type FieldValueActionTree = ActionTree<FieldValueState, IRootState>
 
 export const actions: FieldValueActionTree = {
   updateValuesOfContainer(

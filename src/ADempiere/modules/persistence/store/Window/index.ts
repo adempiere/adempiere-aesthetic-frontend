@@ -3,12 +3,12 @@ import { state } from './state'
 import { getters } from './getters'
 import { mutations } from './mutations'
 import { actions } from './actions'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { WindowState } from '@/ADempiere/modules/persistence/PersistenceType'
 
 const namespaced = true
 
-export const windowModule: Module<WindowState, RootState> = {
+export const windowModule: Module<WindowState, IRootState> = {
   namespaced,
   state,
   getters,

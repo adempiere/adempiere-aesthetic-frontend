@@ -1,9 +1,9 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { ActionContext, GetterTree } from 'vuex'
 import { IPointOfSalesData, IPOSData, PointOfSalesState } from '../../POSType'
 
-type PointOfSalesGetterTree = GetterTree<PointOfSalesState, RootState>
-type PointOfSalesActionContext = ActionContext<PointOfSalesState, RootState>
+type PointOfSalesGetterTree = GetterTree<PointOfSalesState, IRootState>
+type PointOfSalesActionContext = ActionContext<PointOfSalesState, IRootState>
 
 export const getters: PointOfSalesGetterTree = {
   getPointOfSales: (state: PointOfSalesState): IPOSData => {

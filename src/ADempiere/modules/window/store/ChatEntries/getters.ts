@@ -1,4 +1,4 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
 import {
   ChatEntriesState,
@@ -6,7 +6,7 @@ import {
   IEntityChatData
 } from '@/ADempiere/modules/window/WindowType'
 
-type ChatEntriesGetterTree = GetterTree<ChatEntriesState, RootState>
+type ChatEntriesGetterTree = GetterTree<ChatEntriesState, IRootState>
 
 export const getters: ChatEntriesGetterTree = {
   getChatTextLong: (state: ChatEntriesState): string => {

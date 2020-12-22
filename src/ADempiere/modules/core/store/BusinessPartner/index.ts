@@ -4,11 +4,11 @@ import { getters } from './getters'
 import { mutations } from './mutations'
 import { actions } from './actions'
 import { BusinessPartnerState } from '@/ADempiere/modules/core'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 
 const namespaced = true
 
-export const businessPartnerModule: Module<BusinessPartnerState, RootState> = {
+export const businessPartnerModule: Module<BusinessPartnerState, IRootState> = {
   namespaced,
   state,
   getters,

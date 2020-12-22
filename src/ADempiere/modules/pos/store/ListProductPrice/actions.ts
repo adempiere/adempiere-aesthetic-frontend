@@ -1,12 +1,12 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { extractPagingToken } from '@/ADempiere/shared/utils/valueUtils'
 import { ActionContext, ActionTree } from 'vuex'
 import { requestListProductPrice } from '../../POSService'
 import { IListProductPriceResponse, IPointOfSalesData, ListProductPriceState } from '../../POSType'
 
-type ListProductPriceActionContext = ActionContext<ListProductPriceState, RootState>
-type ListProductPriceActionTree = ActionTree<ListProductPriceState, RootState>
+type ListProductPriceActionContext = ActionContext<ListProductPriceState, IRootState>
+type ListProductPriceActionTree = ActionTree<ListProductPriceState, IRootState>
 
 export const actions: ListProductPriceActionTree = {
   setProductPicePageNumber(context: ListProductPriceActionContext, pageNumber: number) {

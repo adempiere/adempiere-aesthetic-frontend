@@ -1,8 +1,8 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
 import { IPointOfSalesData, KeyLayoutState } from '../../POSType'
 
-type KeyLayoutGetterTree = GetterTree<KeyLayoutState, RootState>
+type KeyLayoutGetterTree = GetterTree<KeyLayoutState, IRootState>
 
 export const getters: KeyLayoutGetterTree = {
   // current pos uuid

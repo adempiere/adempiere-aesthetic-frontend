@@ -1,11 +1,11 @@
 import { ContextMenuState, IContextActionData, IContextMenuData } from '@/ADempiere/modules/window/WindowType/VuexType'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { ActionContext, ActionTree } from 'vuex'
 import { requestListDocumentActions, requestListDocumentStatuses } from '@/ADempiere/modules/window/WindowService'
 import { IListDocumentActionsResponse, IListDocumentStatusesResponse } from '@/ADempiere/modules/window/WindowType/ServiceType'
 
-type ContextMenuActionTree = ActionTree<ContextMenuState, RootState>
-type ContextMenuActionContext = ActionContext<ContextMenuState, RootState>
+type ContextMenuActionTree = ActionTree<ContextMenuState, IRootState>
+type ContextMenuActionContext = ActionContext<ContextMenuState, IRootState>
 
 export const actions: ContextMenuActionTree = {
   /**

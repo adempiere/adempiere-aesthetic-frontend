@@ -1,10 +1,10 @@
 import { GetterTree } from 'vuex'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { WindowDefinitionState } from '@/ADempiere/modules/dictionary'
 import { ITabData, ITabDataExtended, IWindowDataExtended } from '../../DictionaryType'
 import store from '@/ADempiere/shared/store'
 
-type WindowDefinitionGetterTree = GetterTree<WindowDefinitionState, RootState>
+type WindowDefinitionGetterTree = GetterTree<WindowDefinitionState, IRootState>
 
 export const getters: WindowDefinitionGetterTree = {
   getWindow: (state: WindowDefinitionState) => (

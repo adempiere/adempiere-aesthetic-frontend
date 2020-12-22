@@ -1,5 +1,5 @@
 import { ActionContext, ActionTree } from 'vuex'
-import { RootState } from '../../types'
+import { IRootState } from '@/store'
 import {
   EventState,
   IActionEvent,
@@ -7,8 +7,8 @@ import {
   IFieldEventExtended
 } from './type'
 
-type EventActionContext = ActionContext<EventState, RootState>
-type EventActionTree = ActionTree<EventState, RootState>
+type EventActionContext = ActionContext<EventState, IRootState>
+type EventActionTree = ActionTree<EventState, IRootState>
 
 export const actions: EventActionTree = {
   notifyActionPerformed(

@@ -1,6 +1,6 @@
 import { IValueData } from '@/ADempiere/modules/core'
 import { IWindowDataExtended } from '@/ADempiere/modules/dictionary'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
@@ -10,8 +10,8 @@ import { CallOutControlState, ICallOutData } from '../../UITypes'
 import language from '@/lang'
 import { IPanelParameters } from '@/ADempiere/shared/store/modules/panel/type'
 
-type CallOutControlActionContext = ActionContext<CallOutControlState, RootState>
-type CallOutControlActionTree = ActionTree<CallOutControlState, RootState>
+type CallOutControlActionContext = ActionContext<CallOutControlState, IRootState>
+type CallOutControlActionTree = ActionTree<CallOutControlState, IRootState>
 
 export const actions: CallOutControlActionTree = {
   /**

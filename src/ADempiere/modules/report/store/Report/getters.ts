@@ -1,5 +1,5 @@
 import { IPrintFormatDataExtended } from '@/ADempiere/modules/dictionary'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { ActionContext, GetterTree } from 'vuex'
 import {
   IDrillTableItemData,
@@ -10,8 +10,8 @@ import {
   ReportState
 } from '@/ADempiere/modules/report/ReportType'
 
-type ReportGetterTree = GetterTree<ReportState, RootState>
-type ReportActionContext = ActionContext<ReportState, RootState>
+type ReportGetterTree = GetterTree<ReportState, IRootState>
+type ReportActionContext = ActionContext<ReportState, IRootState>
 
 export const getters: ReportGetterTree = {
   getPrintFormatList: (state: ReportState) => (

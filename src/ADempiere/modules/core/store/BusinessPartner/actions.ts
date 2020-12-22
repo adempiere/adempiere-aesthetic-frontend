@@ -2,14 +2,14 @@ import {
   BusinessPartnerState,
   requestListBusinessPartner
 } from '@/ADempiere/modules/core'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { extractPagingToken } from '@/ADempiere/shared/utils/valueUtils'
 import { ActionContext, ActionTree } from 'vuex'
 import { IListBusinessPartnerResponse } from '../../CoreType'
 
-type BPartnerActionContext = ActionContext<BusinessPartnerState, RootState>
-type BPartnerActionTree = ActionTree<BusinessPartnerState, RootState>
+type BPartnerActionContext = ActionContext<BusinessPartnerState, IRootState>
+type BPartnerActionTree = ActionTree<BusinessPartnerState, IRootState>
 
 export const actions: BPartnerActionTree = {
   listBPartnerFromServer(

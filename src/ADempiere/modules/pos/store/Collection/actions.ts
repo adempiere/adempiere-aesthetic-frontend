@@ -1,11 +1,11 @@
 import { IConversionRateData, ICurrencyData, IGetConversionRateParams, requestGetConversionRate } from '@/ADempiere/modules/core'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { ActionContext, ActionTree } from 'vuex'
 import { CollectionState } from '../../POSType'
 
-type CollectionActionContext = ActionContext<CollectionState, RootState>
-type CollectionActionTree = ActionTree<CollectionState, RootState>
+type CollectionActionContext = ActionContext<CollectionState, IRootState>
+type CollectionActionTree = ActionTree<CollectionState, IRootState>
 
 export const actions: CollectionActionTree = {
   /**

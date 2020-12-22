@@ -1,8 +1,8 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
 import { IOrderData, OrderState } from '../../POSType'
 
-type OrderGetterTree = GetterTree<OrderState, RootState>
+type OrderGetterTree = GetterTree<OrderState, IRootState>
 
 export const getters: OrderGetterTree = {
   getOrder: (state: OrderState): IOrderData | undefined => {

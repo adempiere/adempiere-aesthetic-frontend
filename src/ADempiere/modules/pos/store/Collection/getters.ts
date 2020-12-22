@@ -1,8 +1,8 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
 import { CollectionState } from '../../POSType'
 
-type CollectionGetterTree = GetterTree<CollectionState, RootState>
+type CollectionGetterTree = GetterTree<CollectionState, IRootState>
 
 export const getters: CollectionGetterTree = {
   getPaymentBox: (state: CollectionState): any[] => {

@@ -1,4 +1,4 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { ActionTree, ActionContext } from 'vuex'
 import {
   IPanelData,
@@ -35,10 +35,10 @@ import {
 import { IFieldData } from '@/ADempiere/modules/field'
 import { getFieldTemplate } from '@/ADempiere/shared/utils/lookupFactory'
 
-type WindowDefinitionActionTree = ActionTree<WindowDefinitionState, RootState>
+type WindowDefinitionActionTree = ActionTree<WindowDefinitionState, IRootState>
 type WindowDefinitionActionContext = ActionContext<
     WindowDefinitionState,
-    RootState
+    IRootState
 >
 
 export const actions: WindowDefinitionActionTree = {

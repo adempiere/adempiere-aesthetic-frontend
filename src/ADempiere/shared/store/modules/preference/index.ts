@@ -3,11 +3,11 @@ import { state, PreferenceState } from './state'
 import { getters } from './getters'
 import { mutations } from './mutations'
 import { actions } from './actions'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 
 const namespaced = true
 
-export const preferenceModule: Module<PreferenceState, RootState> = {
+export const preferenceModule: Module<PreferenceState, IRootState> = {
   namespaced,
   state,
   getters,

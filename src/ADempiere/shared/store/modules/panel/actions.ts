@@ -2,13 +2,13 @@ import { IdentifierColumnsData, IPanelDataExtended } from '@/ADempiere/modules/d
 import { assignedGroup } from '@/ADempiere/shared/utils/DictionaryUtils'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { ActionContext, ActionTree } from 'vuex'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { PanelState } from './type'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { Route } from 'vue-router'
 
-type PanelActionContext = ActionContext<PanelState, RootState>
-type PanelActionTree = ActionTree<PanelState, RootState>
+type PanelActionContext = ActionContext<PanelState, IRootState>
+type PanelActionTree = ActionTree<PanelState, IRootState>
 
 export const actions: PanelActionTree = {
   addPanel(context: PanelActionContext, params: IPanelDataExtended): IPanelDataExtended {

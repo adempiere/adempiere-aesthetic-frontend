@@ -1,11 +1,11 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { ActionContext, ActionTree } from 'vuex'
 import { getKeyLayout } from '../../POSService'
 import { IKeyLayoutData, KeyLayoutState } from '../../POSType'
 
-type KeyLayoutActionContext = ActionContext<KeyLayoutState, RootState>
-type KeyLayoutActionTree = ActionTree<KeyLayoutState, RootState>
+type KeyLayoutActionContext = ActionContext<KeyLayoutState, IRootState>
+type KeyLayoutActionTree = ActionTree<KeyLayoutState, IRootState>
 
 export const actions: KeyLayoutActionTree = {
   getKeyLayoutFromServer(context: KeyLayoutActionContext, keyLayoutUuid: string) {

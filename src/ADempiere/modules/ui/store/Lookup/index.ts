@@ -3,12 +3,12 @@ import { state } from './state'
 import { getters } from './getters'
 import { mutations } from './mutations'
 import { actions } from './actions'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { LookupState } from '../../UITypes'
 
 const namespaced = true
 
-export const lookupModule: Module<LookupState, RootState> = {
+export const lookupModule: Module<LookupState, IRootState> = {
   namespaced,
   state,
   getters,

@@ -1,8 +1,8 @@
 import { GetterTree } from 'vuex'
 import { DashboardState } from '@/ADempiere/modules/dashboard'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 
-type DashboardGetter = GetterTree<DashboardState, RootState>
+type DashboardGetter = GetterTree<DashboardState, IRootState>
 
 export const getters: DashboardGetter = {
   getDashboard: (state: DashboardState) => (dashboardUuid: string) => {

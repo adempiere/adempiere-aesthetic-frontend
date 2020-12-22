@@ -1,8 +1,8 @@
 import { GetterTree } from 'vuex'
 import { FormDefinitionState } from '@/ADempiere/modules/dictionary'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 
-type FormDefinitionGetter = GetterTree<FormDefinitionState, RootState>
+type FormDefinitionGetter = GetterTree<FormDefinitionState, IRootState>
 
 export const getters: FormDefinitionGetter = {
   getForm: (state: FormDefinitionState) => (formUuid: string) => {

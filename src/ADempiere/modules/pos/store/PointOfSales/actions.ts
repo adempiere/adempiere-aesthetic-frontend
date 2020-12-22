@@ -1,4 +1,4 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { ActionContext, ActionTree } from 'vuex'
 import { requestListPointOfSales } from '../../POSService'
@@ -8,8 +8,8 @@ import {
   PointOfSalesState
 } from '../../POSType'
 
-type PointOfSalesActionContext = ActionContext<PointOfSalesState, RootState>
-type PointOfSalesActionTree = ActionTree<PointOfSalesState, RootState>
+type PointOfSalesActionContext = ActionContext<PointOfSalesState, IRootState>
+type PointOfSalesActionTree = ActionTree<PointOfSalesState, IRootState>
 
 export const actions: PointOfSalesActionTree = {
   /**

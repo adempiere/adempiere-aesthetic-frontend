@@ -1,12 +1,12 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { extractPagingToken } from '@/ADempiere/shared/utils/valueUtils'
 import { ActionContext, ActionTree } from 'vuex'
 import { requestGetOrder, requestListOrders } from '../../POSService'
 import { IListOrdersResponse, IOrderData, OrderState } from '../../POSType'
 
-type OrderActionContext = ActionContext<OrderState, RootState>
-type OrderActionTree = ActionTree<OrderState, RootState>
+type OrderActionContext = ActionContext<OrderState, IRootState>
+type OrderActionTree = ActionTree<OrderState, IRootState>
 
 export const actions: OrderActionTree = {
   /**

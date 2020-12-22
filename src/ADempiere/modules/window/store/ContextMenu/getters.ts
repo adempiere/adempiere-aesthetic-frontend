@@ -1,4 +1,4 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { ActionContext, GetterTree } from 'vuex'
 import {
   ContextMenuState,
@@ -9,8 +9,8 @@ import {
 } from '@/ADempiere/modules/window/WindowType/VuexType'
 import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 
-type ContextMenuGetterTree = GetterTree<ContextMenuState, RootState>
-type ContextMenuActionContext = ActionContext<ContextMenuState, RootState>
+type ContextMenuGetterTree = GetterTree<ContextMenuState, IRootState>
+type ContextMenuActionContext = ActionContext<ContextMenuState, IRootState>
 
 export const getters: ContextMenuGetterTree = {
   getContextMenu: (state: ContextMenuState) => (containerUuid: string): IContextMenuData | undefined => {

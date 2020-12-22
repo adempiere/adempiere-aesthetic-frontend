@@ -2,10 +2,10 @@ import { KeyValueData } from '@/ADempiere/modules/persistence/PersistenceType'
 import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
 import { convertStringToBoolean } from '@/ADempiere/shared/utils/valueFormat'
 import { GetterTree } from 'vuex'
-import { RootState } from '../../types'
+import { IRootState } from '@/store'
 import { FieldValueState } from './type'
 
-type FieldValueGetterTree = GetterTree<FieldValueState, RootState>
+type FieldValueGetterTree = GetterTree<FieldValueState, IRootState>
 
 const UUID_KEY = 'UUID'
 

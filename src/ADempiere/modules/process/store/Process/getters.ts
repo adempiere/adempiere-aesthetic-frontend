@@ -1,8 +1,8 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
 import { INotificationProcessData, ProcessState } from '@/ADempiere/modules/process/ProcessType'
 
-type ProcessGetterTree = GetterTree<ProcessState, RootState>
+type ProcessGetterTree = GetterTree<ProcessState, IRootState>
 
 export const getters: ProcessGetterTree = {
   /**

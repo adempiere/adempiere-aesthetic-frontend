@@ -6,12 +6,12 @@ import {
   requestLanguagesList,
   ILanguajesListResponse
 } from '@/ADempiere/modules/core'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { ActionContext, ActionTree } from 'vuex'
 import { convertDateFormat } from '@/ADempiere/shared/utils/valueFormat'
 
-type SystemActionContext = ActionContext<SystemState, RootState>
-type SystemActionTree = ActionTree<SystemState, RootState>
+type SystemActionContext = ActionContext<SystemState, IRootState>
+type SystemActionTree = ActionTree<SystemState, IRootState>
 
 export const actions: SystemActionTree = {
   getCountryFormServer(
