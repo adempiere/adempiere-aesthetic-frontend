@@ -208,17 +208,17 @@ export interface IListProductPriceParams {
     priceListUuid: string
     businessPartnerUuid: string
     warehouseUuid: string
-    validFrom: string
+    validFrom?: string
     // Query
     // criteria,
-    pageSize: number
-    pageToken: string
+    pageSize?: number
+    pageToken?: string
 }
 
 export interface IListProductPriceResponse {
     nextPageToken: string
     recordCount: number
-    productPricesList: IProductPriceData[]
+    list: IProductPriceData[]
 }
 
 export interface IPrintOrderParams {
@@ -308,4 +308,23 @@ export interface IOrderLineDataExtended extends IOrderLineData {
 
 export interface OrderLinesState {
     listOrderLine: IOrderLineDataExtended[]
+}
+
+export interface IListProductPriceItemData {
+    isLoaded: boolean
+    isReload: boolean
+    recordCount: number
+    nextPageToken?: string
+    isShowPopoverField?: boolean
+    isShowPopoverMenu?: boolean
+    pageNumber?: number
+    token?: string
+    //
+    list?: IProductPriceData[]
+    businessPartnerUuid?: string
+    warehouseUuid?: string
+}
+// List Product Price Module
+export interface ListProductPriceState {
+    productPrice: IListProductPriceItemData
 }

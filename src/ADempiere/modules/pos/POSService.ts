@@ -393,7 +393,7 @@ export function requestListProductPrice(
       return {
         nextPageToken: productPriceListResponse.next_page_token,
         recordCount: productPriceListResponse.record_count,
-        productPricesList: productPriceListResponse.records.map(
+        list: productPriceListResponse.records.map(
           (productPrice: any) => {
             return convertProductPrice(productPrice)
           }

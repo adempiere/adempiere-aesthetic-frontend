@@ -11,7 +11,7 @@ const UUID_KEY = 'UUID'
 
 export const getters: FieldValueGetterTree = {
   getValueOfField: (state: FieldValueState) => (parameters: {
-        parentUuid: string
+        parentUuid?: string
         containerUuid: string
         columnName: string
     }): any => {
