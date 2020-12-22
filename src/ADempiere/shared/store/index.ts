@@ -34,50 +34,14 @@ import { eventModule } from '@/ADempiere/shared/store/modules/Event'
 import { windowModule } from '@/ADempiere/modules/persistence/store/Window'
 import { preferenceModule } from '@/ADempiere/shared/store/modules/preference'
 import { dashboardModule } from '@/ADempiere/modules/dashboard'
-import { name, version } from '@/../package.json'
+import { getters } from './getters'
 //
 import { IRootState } from '@/store'
 
 Vue.use(Vuex)
 
 const store: StoreOptions<IRootState> = {
-  // state: {
-  //   app: {
-  //     device: AppModule.device,
-  //     language: AppModule.language,
-  //     sidebar: AppModule.sidebar,
-  //     size: AppModule.size
-  //   },
-  //   errorLog: {
-  //     logs: ErrorLogModule.logs
-  //   },
-  //   permission: {
-  //     dynamicRoutes: PermissionModule.dynamicRoutes,
-  //     routes: PermissionModule.routes
-  //   },
-  //   settings: {
-  //     fixedHeader: SettingsModule.fixedHeader,
-  //     showSettings: SettingsModule.showSettings,
-  //     showSidebarLogo: SettingsModule.showSidebarLogo,
-  //     showTagsView: SettingsModule.showTagsView,
-  //     sidebarTextTheme: SettingsModule.sidebarTextTheme,
-  //     theme: SettingsModule.theme
-  //   },
-  //   tagsView: {
-  //     cachedViews: TagsViewModule.cachedViews,
-  //     visitedViews: TagsViewModule.visitedViews
-  //   },
-  //   user: {
-  //     avatar: UserModule.avatar,
-  //     email: UserModule.email,
-  //     introduction: UserModule.introduction,
-  //     name: UserModule.name,
-  //     roles: UserModule.roles,
-  //     token: UserModule.token
-  //   }
-  // },
   modules: {
-    // Core
     systemModule,
     businessPartnerModule,
     dashboardModule,
@@ -104,14 +68,8 @@ const store: StoreOptions<IRootState> = {
     orderModule,
     orderLinesModule,
     listProductPriceModule
-    // AppModule,
-    // ErrorLogModule,
-    // PermissionModule,
-    // SettingsModule,
-    // TagsViewModule,
-    // UserModule,
-
   },
+  getters: getters,
   plugins: [vuexLocal.plugin]
 }
 
