@@ -1,7 +1,5 @@
-import Component from 'vue-class-component'
-import Vue from 'vue'
 import { INotificationProcessData } from '@/ADempiere/modules/process/ProcessType'
-import { Prop, Ref, Watch } from 'vue-property-decorator'
+import { Prop, Ref, Watch, Component, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
 
 @Component({
