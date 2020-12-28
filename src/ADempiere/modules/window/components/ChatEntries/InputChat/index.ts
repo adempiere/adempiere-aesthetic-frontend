@@ -6,8 +6,7 @@ import 'codemirror/lib/codemirror.css'
 import '@toast-ui/editor/dist/toastui-editor.css'
 import { Editor } from '@toast-ui/vue-editor'
 import '@toast-ui/editor/dist/i18n/es-es'
-
-const namespace = 'chatEntriesModule'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 @Component({
   name: 'InputChat',
@@ -56,7 +55,7 @@ export default class Dashboard extends Vue {
 
     // Getters & Setters
     get Value() {
-      return this.$store.getters['getChatTextLong' + '/' + namespace]
+      return this.$store.getters[Namespaces.ChatEntries + '/' + 'getChatTextLong']
     }
 
     set Value(newValue: string) {

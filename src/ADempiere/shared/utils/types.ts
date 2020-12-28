@@ -39,3 +39,32 @@ export interface IResponseList<T> {
     recordCount: number
     list: T[]
 }
+
+export enum Namespaces {
+    System = 'systemModule',
+    BusinessPartner = 'businessPartnerModule',
+    Dashboard = 'dashboardModule',
+    Field = 'fieldModule',
+    FormDefinition = 'formDefinitionModule',
+    ProcessDefinition = 'processDefinitionModule',
+    Preference = 'preferenceModule',
+    WindowDefinition = 'windowDefinitionModule',
+    Language = 'languageModule',
+    Persistence = 'persistenceModule',
+    Window = 'windowModule',
+    Event = 'eventModule',
+    Utils = 'utilsModule',
+    Lookup = 'lookupModule',
+    CallOutControl = 'callOutControlModule',
+    ChatEntries = 'chatEntriesModule',
+    ContainerInfo = 'containerInfoModule',
+    Report = 'reportModule',
+    FieldValue = 'fieldValueModule',
+    Process = 'processModule',
+    PointOfSales = 'pointOfSalesModule',
+    Collection = 'collectionModule',
+    KeyLayout = 'keyLayoutModule',
+    Order = 'orderModule',
+    OrderLines = 'orderLinesModule',
+    ListProductPrice = 'listProductPriceModule'
+}
