@@ -7,6 +7,11 @@ type ChatEntriesActionContext = ActionContext<ChatEntriesState, IRootState>
 type ChatEntriesActionTree = ActionTree<ChatEntriesState, IRootState>
 
 export const actions: ChatEntriesActionTree = {
+  setChatText(context: ChatEntriesActionContext, text: string) {
+    if (text) {
+      context.commit('setChatText', text)
+    }
+  },
   createChatEntry(context: ChatEntriesActionContext, payload: {
         tableName: string
         recordId: number
