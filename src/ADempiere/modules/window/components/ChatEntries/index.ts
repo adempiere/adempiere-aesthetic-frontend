@@ -2,7 +2,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
 import InputChat from './InputChat'
 import { IChatEntryData } from '../../WindowType/DomainType'
-import { PropValidator } from 'vue/types/options'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 @Component({
@@ -13,8 +12,8 @@ import { Namespaces } from '@/ADempiere/shared/utils/types'
   mixins: [Template]
 })
 export default class ChatEntries extends Vue {
-  @Prop() private tableName!: PropValidator<string>
-  @Prop() private recordId!: PropValidator<number>
+  @Prop() private tableName?: string = undefined
+  @Prop() private recordId?: number = undefined
   private language!: string
 
   // Computed properties
@@ -45,7 +44,7 @@ export default class ChatEntries extends Vue {
     if (!this.recordId) {
       return Number(this.$route.params.recordId)
     }
-    return Number(this.recordId)
+    return this.recordId
   }
 
   get isNote(): boolean {
