@@ -1,6 +1,6 @@
 import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
-import { BusinessDataState, IContextInfoValuesExtends, IPrivateAccessDataExtended, IRecordSelectionData } from '../PersistenceType'
+import { BusinessDataState, IContextInfoValuesExtends, IPrivateAccessDataExtended, IRecordSelectionData } from '../../PersistenceType'
 
 type BusinessDataGetterTree = GetterTree<BusinessDataState, IRootState>
 

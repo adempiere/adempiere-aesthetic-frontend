@@ -1,4 +1,4 @@
-import { BusinessDataState } from '../PersistenceType'
+import { BusinessDataState } from '../../PersistenceType'
 
 export const state: BusinessDataState = {
   recordSelection: [], // record data and selection

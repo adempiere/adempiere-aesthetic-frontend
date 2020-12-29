@@ -4,7 +4,7 @@ import {
   BusinessDataState,
   IPrivateAccessDataExtended,
   IRecordSelectionData
-} from '../PersistenceType'
+} from '../../PersistenceType'
 
 type BusinessDataMutationTree = MutationTree<BusinessDataState>
 

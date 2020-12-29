@@ -10,14 +10,14 @@ import {
   typeValue
 } from '@/ADempiere/shared/utils/valueUtils'
 import { ActionContext, ActionTree } from 'vuex'
-import { IValueData } from '../../core'
-import { IPanelDataExtended } from '../../dictionary'
+import { IValueData } from '../../../core'
+import { IPanelDataExtended } from '../../../dictionary'
 import {
   IContextInfoValuesResponse,
   requestDefaultValue,
   requestGetContextInfoValue
 } from '@/ADempiere/modules/ui'
-import { requestGetEntity, requestListEntities } from '../PersistenceService'
+import { requestGetEntity, requestListEntities } from '../../PersistenceService'
 import {
   BusinessDataState,
   IContextInfoValuesExtends,
@@ -28,7 +28,7 @@ import {
   IRecordSelectionData,
   ISelectionToServerData,
   KeyValueData
-} from '../PersistenceType'
+} from '../../PersistenceType'
 import language from '@/lang'
 import {
   requestGetPrivateAccess,

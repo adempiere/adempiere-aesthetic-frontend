@@ -4,7 +4,7 @@ import { getters } from './getters'
 import { mutations } from './mutations'
 import { actions } from './actions'
 import { IRootState } from '@/store'
-import { BusinessDataState } from '../PersistenceType'
+import { BusinessDataState } from '../../PersistenceType'
 
 const namespaced = true
 
