@@ -65,7 +65,7 @@ function datenum(v: any, date1904?: boolean): number {
     return (epoch - Number(new Date(Date.UTC(1899, 11, 30)))) / (24 * 60 * 60 * 1000)
 }
 
-function sheet_from_array_of_arrays(data: any[][] | any[]): IKeyValueObject<string | XLSX.CellObject> {
+function sheetFromArrayOfArrays(data: any[][] | any[]): IKeyValueObject<string | XLSX.CellObject> {
     var ws: IKeyValueObject<string | XLSX.CellObject> = {}
     var range: XLSX.Range = {
         s: {
@@ -124,7 +124,7 @@ function s2ab(s: any): ArrayBuffer {
     return buf
 }
 
-export function export_table_to_excel(id: string): void {
+export function exportTableToExcel(id: string): void {
     var theTable: HTMLTableElement = <HTMLTableElement>document.getElementById(id)!
     var oo = generateArray(theTable)
     var ranges = oo[1]
@@ -134,7 +134,7 @@ export function export_table_to_excel(id: string): void {
     var ws_name: string = 'SheetJS'
 
     var wb: XLSX.WorkBook = new Workbook()
-    var ws: IKeyValueObject<any> = sheet_from_array_of_arrays(data)
+    var ws: IKeyValueObject<any> = sheetFromArrayOfArrays(data)
 
     /* add ranges to worksheet */
     // ws['!cols'] = ['apple', 'banan'];
@@ -158,7 +158,7 @@ export function export_table_to_excel(id: string): void {
     )
 }
 
-export function export_json_to_excel(params: {
+export function exportJsonToExcel(params: {
     multiHeader?: any[]
     header?: any[]
     data: any[]
@@ -188,7 +188,7 @@ export function export_json_to_excel(params: {
 
     var ws_name: string = 'SheetJS'
     var wb: Workbook = new Workbook(),
-        ws: IKeyValueObject<any> = sheet_from_array_of_arrays(data)
+        ws: IKeyValueObject<any> = sheetFromArrayOfArrays(data)
 
     if (merges.length > 0) {
         if (!ws['!merges']) ws['!merges'] = []
