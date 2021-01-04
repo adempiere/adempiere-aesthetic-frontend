@@ -135,8 +135,8 @@ export const actions: ProcessActionTree = {
             })
             return reject(
               new Error(
-                                    // error: 0,
-                                    `Required selection data record to run this process (${action.name})`
+                                // error: 0,
+                                `Required selection data record to run this process (${action.name})`
               )
             )
           }
@@ -166,7 +166,7 @@ export const actions: ProcessActionTree = {
                                   columnName: `${tableName}_ID`
                                 })
                             )
-              recordId = field.value!
+              recordId = field.value!.toString()
             }
           }
         }
@@ -792,8 +792,10 @@ export const actions: ProcessActionTree = {
                 const index: number = contextMenuMetadata.actions.findIndex(
                   (action: IContextActionData) => {
                     const printFormatActionItem = action as PrintFormatsAction
-                    return printFormatActionItem.option ===
+                    return (
+                      printFormatActionItem.option ===
                                             PrintFormatOptions.PrintFormat
+                    )
                   }
                 )
                 if (index !== -1) {
@@ -1238,7 +1240,7 @@ export const actions: ProcessActionTree = {
                 uuid: string
             }
         }
-  ) {
+  ): void {
     const { action, type } = payload
     const panels: PanelContextType[] = [
       PanelContextType.Process,
@@ -1287,9 +1289,9 @@ export const actions: ProcessActionTree = {
     payload: {
             processOutput: INotificationProcessData
             routeToDelete: Route
-            procesingMessage: any
+            procesingMessage?: any
         }
-  ) {
+  ): void {
     const { processOutput, routeToDelete, procesingMessage } = payload
     const processMessage: ShowNotificationOptions = {
       name: processOutput.processName,
