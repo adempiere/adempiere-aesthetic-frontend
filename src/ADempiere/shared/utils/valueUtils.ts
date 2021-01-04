@@ -221,3 +221,28 @@ export const recursiveTreeSearch = (data: IRecursiveTreeSearchParams) => {
     return found
   }
 }
+// Note: Check types
+export function convertFieldsListToShareLink(fieldsList: any[]) {
+  let attributesListLink = ''
+  fieldsList.map((fieldItem: any) => {
+    // assign values
+    let value = fieldItem.value
+    let valueTo = fieldItem.valueTo
+
+    if (value) {
+      if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath) || typeof value === 'object') {
+        value = value.getTime()
+      }
+      attributesListLink += `${fieldItem.columnName}=${encodeURIComponent(value)}&`
+    }
+
+    if (fieldItem.isRange && valueTo) {
+      if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath) || typeof value === 'object') {
+        valueTo = valueTo.getTime()
+      }
+      attributesListLink += `${fieldItem.columnName}_To=${encodeURIComponent(valueTo)}&`
+    }
+  })
+
+  return attributesListLink.slice(0, -1)
+}
