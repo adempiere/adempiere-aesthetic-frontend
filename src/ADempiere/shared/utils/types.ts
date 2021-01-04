@@ -66,5 +66,8 @@ export enum Namespaces {
     KeyLayout = 'keyLayoutModule',
     Order = 'orderModule',
     OrderLines = 'orderLinesModule',
-    ListProductPrice = 'listProductPriceModule'
+    ListProductPrice = 'listProductPriceModule',
+    ContextMenu = 'contextMenuModule',
+    Panel = 'panelModule',
+    BusinessData = 'businessDataModule'
 }
