@@ -142,6 +142,7 @@ export interface IReportOutputDataExtended extends IReportOutputData {
     instanceUuid: string
     isReport: boolean
     option: PrintFormatOptions
+    url?: string
 }
 
 export interface ReportState {
