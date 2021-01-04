@@ -28,6 +28,9 @@ export default new VuexPersistence({
     Namespaces.KeyLayout,
     Namespaces.Order,
     Namespaces.OrderLines,
-    Namespaces.ListProductPrice
+    Namespaces.ListProductPrice,
+    Namespaces.ContextMenu,
+    Namespaces.Panel,
+    Namespaces.BusinessData
   ]
 })
