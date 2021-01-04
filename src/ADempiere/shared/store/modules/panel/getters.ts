@@ -470,5 +470,84 @@ export const getters: PanelGetterTree = {
     return fieldsList.find((itemField: IFieldDataExtendedUtils) => {
       return itemField.columnName === columnName
     })
+  },
+  getParametersToShare: (state: PanelState, getters) => (parameters: {
+    containerUuid: string
+    withOut?: any[]
+    isOnlyDisplayed?: boolean
+  }): string => {
+    const { containerUuid, withOut = parameters.withOut || [], isOnlyDisplayed = parameters.isOnlyDisplayed || false } = parameters
+    let fieldsList: IFieldDataExtendedUtils[] = getters.getFieldsListFromPanel(containerUuid)
+    let attributesListLink = ''
+    if (withOut.length) {
+      fieldsList = fieldsList.filter((fieldItem: IFieldDataExtendedUtils) => {
+        // columns to exclude
+        if (withOut.includes(fieldItem.columnName)) {
+          return false
+        }
+        return true
+      })
+    }
+
+    if (isOnlyDisplayed) {
+      fieldsList = fieldsList.filter((fieldItem: IFieldDataExtendedUtils) => {
+        const isMandatory = Boolean(fieldItem.isMandatory || fieldItem.isMandatoryFromLogic) && !fieldItem.isAdvancedQuery
+        const isDisplayed = fieldIsDisplayed(fieldItem) && (fieldItem.isShowedFromUser || isMandatory)
+        if (isDisplayed) {
+          return true
+        }
+        return false
+      })
+    }
+
+    fieldsList.map((fieldItem: IFieldDataExtendedUtils) => {
+      // assign values
+      let value: Date | number = new Date(fieldItem.value!)
+      let valueTo: Date | number = new Date(fieldItem.valueTo!)
+
+      if (value) {
+        if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath!)) {
+          value = value.getTime()
+        }
+        attributesListLink += `${fieldItem.columnName}=${encodeURIComponent(Number(value))}&`
+      }
+
+      if (fieldItem.isRange && (valueTo)) {
+        if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath!)) {
+          valueTo = valueTo.getTime()
+        }
+        attributesListLink += `${fieldItem.columnName}_To=${encodeURIComponent(Number(valueTo))}&`
+      }
+    })
+
+    return attributesListLink.slice(0, -1)
+  },
+  // Obtain empty obligatory fields
+  getFieldsListEmptyMandatory: (state: PanelState, getters) => (parameters: {
+    containerUuid: string
+    fieldsList?: IFieldDataExtendedUtils[]
+  }): string[] => {
+    const { containerUuid } = parameters
+    let { fieldsList } = parameters
+
+    if (!fieldsList) {
+      fieldsList = getters.getFieldsListFromPanel(containerUuid)
+    }
+    const fieldsEmpty: string[] = []
+    // all optionals (not mandatory) fields
+    fieldsList!.forEach((fieldItem: IFieldDataExtendedUtils) => {
+      const value: any = getters.getValueOfField({
+        parentUuid: fieldItem.parentUuid,
+        containerUuid,
+        columnName: fieldItem.columnName
+      })
+      if (!value) {
+        const isMandatory: boolean = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
+        if (fieldIsDisplayed(fieldItem) && isMandatory) {
+          fieldsEmpty.push(fieldItem.name)
+        }
+      }
+    })
+    return fieldsEmpty
   }
 }
