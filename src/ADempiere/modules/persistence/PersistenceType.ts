@@ -13,6 +13,7 @@ export type KeyValueData<T = any> = {
     key: string
     value: T
     // Optional
+    valueTo?: T
     valueType?: string
 }
 
@@ -221,7 +222,7 @@ export interface IReferenceListDataExtended extends IReferenceListData {
 export interface IWindowOldRoute {
     path: string
     fullPath: string
-    query: {}
+    query: any
 }
 
 export interface WindowState {
