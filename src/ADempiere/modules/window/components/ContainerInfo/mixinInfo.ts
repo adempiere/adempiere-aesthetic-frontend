@@ -5,7 +5,7 @@ import { Component, Vue } from 'vue-property-decorator'
 })
 export default class MixinInfo extends Vue {
   get language() {
-    return this.$store.getters.getters.language
+    return this.$store.getters.language
   }
 
   translateDate(value: Date | number | string) {
