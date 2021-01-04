@@ -11,17 +11,25 @@ import {
   WindowProcessAsociatedAction,
   WindowDefinitionAction
 } from './ContextMenuType'
-import { IChatEntryData, IDocumentActionData, IEntityLogData, IWorkflowProcessData } from './DomainType'
+import {
+  IChatEntryData,
+  IDocumentActionData,
+  IEntityLogData,
+  IWorkflowProcessData
+} from './DomainType'
 import { IListEntityChatsResponse, IListWorkflowsResponse } from './ServiceType'
+
+export type ReportableActions =
+    | ProcessDefinitionAction
+    | PrintFormatsAction
+    | SummaryAction
+    | DrillTableAction
 
 export type IContextActionData =
     | WindowTabAssociatedAction
     | WindowProcessAsociatedAction
     | WindowDefinitionAction
-    | ProcessDefinitionAction
-    | PrintFormatsAction
-    | SummaryAction
-    | DrillTableAction
+    | ReportableActions
 
 export const cod: IContextActionData[] = []
 
