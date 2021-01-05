@@ -1,0 +1,103 @@
+<template>
+    <el-card class="box-card" :body-style="{padding: '0px'}" shadow="never">
+        <div class="recent-items">
+            <el-table
+                :data="dataResult"
+                max-height="455"
+                @row-click="handleClick"
+            >
+                <el-table-column width="40">
+                    <template slot-scope="{row}">
+                        <svg-icon :icon-class="row.icon" class="icon-window" />
+                    </template>
+                </el-table-column>
+                <el-table-column>
+                    <template slot="header" slot-scope="scope">
+                        <el-input
+                            v-model="search"
+                            size="mini"
+                            :metadata="scope"
+                            :placeholder="$t('table.dataTable.search')"
+                        >
+                            <svg-icon slot="prefix" icon-class="search" />
+                        </el-input>
+                    </template>
+                    <template slot-scope="{row}">
+                        <span>{{ row.name }}</span>
+                        <el-tag size="mini" class="action-tag">
+                            {{ $t(`views.${row.action}`) }}
+                        </el-tag>
+                        <br />
+                        <el-button-group class="actions-buttons">
+                            <el-tooltip
+                                :content="$t('quickAccess.newRecord')"
+                                placement="top"
+                            >
+                                <el-button
+                                    v-if="row.action === 'window'"
+                                    size="mini"
+                                    circle
+                                    @click.stop="
+                                        windowAction(row, 'create-new')
+                                    "
+                                >
+                                    <i class="el-icon-circle-plus-outline" />
+                                </el-button>
+                            </el-tooltip>
+                            <el-tooltip
+                                :content="$t('quickAccess.listRecords')"
+                                placement="top"
+                            >
+                                <el-button
+                                    v-if="row.action === 'window'"
+                                    size="mini"
+                                    circle
+                                    @click.stop="
+                                        windowAction(row, 'listRecords')
+                                    "
+                                >
+                                    <i class="el-icon-search" />
+                                </el-button>
+                            </el-tooltip>
+                        </el-button-group>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+    </el-card>
+</template>
+
+<style scoped>
+.search_recent {
+    width: 50% !important;
+    float: right;
+}
+.header {
+    padding-bottom: 10px;
+}
+.recent-items {
+    height: 455px;
+    overflow: auto;
+}
+.time {
+    float: left;
+    font-size: 11px;
+    color: #999;
+}
+.card-box {
+    cursor: pointer;
+}
+.card-content {
+    font-size: 15px;
+}
+.icon-window {
+    font-size: x-large;
+    color: #36a3f7;
+}
+.action-tag {
+    float: right;
+}
+.actions-buttons {
+    float: right;
+}
+</style>
