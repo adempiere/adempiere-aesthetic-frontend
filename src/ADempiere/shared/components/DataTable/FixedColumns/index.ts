@@ -1,9 +1,11 @@
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import Template from './template.vue'
 
 @Component({
-  name: 'FixedColumns'
+  name: 'FixedColumns',
+  mixins: [Template]
 })
 export default class FixedColumns extends Vue {
     @Prop({ type: String, required: true }) containerUuid!: string
