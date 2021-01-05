@@ -50,8 +50,8 @@ export const actions: BusinessDataActionTree = {
             containerUuid: string
             panelType: PanelContextType
             pageNumber: number
-            isShowNotification: boolean
-            isAddRecord: boolean
+            isShowNotification?: boolean
+            isAddRecord?: boolean
         }
   ) {
     const {
@@ -111,11 +111,11 @@ export const actions: BusinessDataActionTree = {
     payload: {
             parentUuid: string
             containerUuid: string
-            isPanelValues: boolean
+            isPanelValues?: boolean
             isEdit: boolean
-            isNew: boolean
+            isNew?: boolean
             fieldsList: IFieldDataExtendedUtils[]
-            row: any
+            row?: any
         }
   ) {
     payload.isPanelValues = payload.isPanelValues || false
