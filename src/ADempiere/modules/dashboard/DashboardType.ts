@@ -11,7 +11,7 @@ export interface IRecentItemData {
     id: number
     uuid: string
     displayName: string
-    updated: number
+    updated: number | Date
     referenceUuid: string
     action: string
 }
@@ -59,15 +59,15 @@ export interface IPendingDocumentData {
 export interface ListRecentItemsParams {
     userUuid: string
     roleUuid: string
-    pageToken: string
-    pageSize: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface IFavoriresFromServerParams {
-    userId: number
+    userId?: number
     userUuid: string
-    pageToken: string
-    pageSize: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface IFavoriresFromServerResponse {
@@ -77,12 +77,12 @@ export interface IFavoriresFromServerResponse {
 }
 
 export interface IPendingDocumentsFromServerParams {
-    userId: number
+    userId?: number
     userUuid: string
-    roleId: number
+    roleId?: number
     roleUuid: string
-    pageToken: string
-    pageSize: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface IPendingDocumentsFromServerResponse {
@@ -110,4 +110,26 @@ export interface DashboardState {
     roleUuid?: string
     dashboard: IDashboardDataExtended[]
     recenItems: IRecentItemData[] | null
+}
+
+// Component
+
+export interface IRecentItemDataExtended extends IRecentItemData {
+    icon: string
+    uuidRecord: string
+    name: string
+    description: string
+}
+
+export interface IFavoriteDataExtended extends IFavoriteData {
+    uuid: string
+    name: string
+    description: string
+    action: string
+    icon: string
+}
+
+export interface IPendingDocumentDataExtended extends IPendingDocumentData {
+    name: string
+    description: string
 }
