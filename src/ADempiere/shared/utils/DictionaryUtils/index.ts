@@ -22,6 +22,7 @@ import {
   ReportExportContextType
 } from './ContextMenuType'
 import {
+  IActionAttributesData,
   IAdditionalAttributesData,
   IEvaluatedLogicsData,
   IFieldDataExtendedUtils
@@ -686,4 +687,69 @@ export function assignedGroup(params: {
   })
 
   return fieldsList
+}
+
+export function convertAction(action: any): IActionAttributesData {
+  const actionAttributes: IActionAttributesData = {
+    name: '',
+    icon: '',
+    hidden: false,
+    isIndex: false,
+    // component: () => import('@/views/ADempiere/Unsupported')
+    component: () => undefined
+  }
+
+  switch (action) {
+    case 'B':
+      actionAttributes.name = 'workbech'
+      actionAttributes.icon = 'peoples'
+      break
+    case 'F':
+      actionAttributes.name = 'workflow'
+      actionAttributes.icon = 'example'
+      break
+    case 'P':
+      actionAttributes.name = 'process'
+      actionAttributes.icon = 'component'
+      // actionAttributes.component = () => import('@/views/ADempiere/Process')
+      actionAttributes.component = () => undefined
+      break
+    case 'R':
+      actionAttributes.name = 'report'
+      actionAttributes.icon = 'skill'
+      // actionAttributes.component = () => import('@/views/ADempiere/Process')
+      actionAttributes.component = () => undefined
+      break
+    case 'S':
+      actionAttributes.name = 'browser'
+      actionAttributes.icon = 'search'
+      // actionAttributes.component = () => import('@/views/ADempiere/Browser')
+      actionAttributes.component = () => undefined
+      break
+    case 'T':
+      actionAttributes.name = 'task'
+      actionAttributes.icon = 'size'
+      break
+    case 'W':
+      actionAttributes.name = 'window'
+      actionAttributes.icon = 'tab'
+      // actionAttributes.component = () => import('@/views/ADempiere/Window')
+      actionAttributes.component = () => undefined
+      break
+    case 'X':
+      actionAttributes.name = 'form'
+      actionAttributes.icon = 'form'
+      // actionAttributes.component = () => import('@/views/ADempiere/Form')
+      actionAttributes.component = () => undefined
+      break
+    default:
+      actionAttributes.name = 'summary'
+      actionAttributes.icon = 'nested'
+      // actionAttributes.hidden = true
+      actionAttributes.isIndex = true
+      // actionAttributes.component = () => import('@/views/ADempiere/Summary')
+      actionAttributes.component = () => undefined
+      break
+  }
+  return actionAttributes
 }

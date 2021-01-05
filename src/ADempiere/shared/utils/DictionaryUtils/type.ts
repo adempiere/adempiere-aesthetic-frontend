@@ -74,6 +74,14 @@ export type IFieldDataExtendedUtils = IFieldData &
         isTranslatedField?: boolean
     }
 
+export interface IActionAttributesData {
+    name: string
+    icon: string
+    hidden: boolean
+    isIndex: boolean
+    component: Function
+}
+
 //  Default Action
 // export interface IActionsUtils {
 //     name: VueI18n.TranslateResult
