@@ -1,0 +1,19 @@
+<template>
+  <el-select
+    v-model="fieldsListShowed"
+    :filterable="!isMobile"
+    :placeholder="$t('components.filterableItems')"
+    multiple
+    size="mini"
+    collapse-tags
+    value-key="key"
+    class="select"
+  >
+    <el-option
+      v-for="(item, key) in fieldsListAvailable"
+      :key="key"
+      :label="item.name"
+      :value="item.columnName"
+    />
+  </el-select>
+</template>
