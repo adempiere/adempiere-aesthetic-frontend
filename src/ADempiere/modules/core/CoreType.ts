@@ -325,7 +325,7 @@ export interface IWarehousesListResponse {
 
 export interface IGetCountryDefinitionParams {
     id: number
-    uuid: string
+    uuid?: string
 }
 
 export interface ILanguagesListParams {
