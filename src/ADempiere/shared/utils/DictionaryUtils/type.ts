@@ -72,6 +72,8 @@ export type IFieldDataExtendedUtils = IFieldData &
         isComparisonField?: boolean
         isNumericField?: boolean
         isTranslatedField?: boolean
+        // MixinMainPanel
+        handleRequestFocus?: any
     }
 
 export interface IActionAttributesData {
