@@ -121,7 +121,7 @@ export interface ICreateLocationAddressParams {
 
 export interface IGetLocationAddressParams {
     id: number
-    uuid: string
+    uuid?: string
 }
 
 export type IUpdateLocationAddressParams = IGetLocationAddressParams &
