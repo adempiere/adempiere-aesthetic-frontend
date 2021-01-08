@@ -14,12 +14,12 @@ export interface Reportable {
 }
 // Process Definition
 export interface ProcessDefinitionAction extends Actionable, Reportable {
-    processName: string
+    processName?: string
     uuid: string
     id: number
-    description: string
-    isReport: boolean
-    isDirectPrint: boolean
+    description?: string
+    isReport?: boolean
+    isDirectPrint?: boolean
 }
 
 export interface SummaryAction extends ProcessDefinitionAction {
@@ -28,7 +28,7 @@ export interface SummaryAction extends ProcessDefinitionAction {
 }
 
 export interface IPrintFormatChild extends ProcessDefinitionAction {
-    printFormatUuid: string
+    printFormatUuid?: string
 }
 
 export interface PrintFormatsAction extends ProcessDefinitionAction {
