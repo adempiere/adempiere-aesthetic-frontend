@@ -27,9 +27,9 @@ class evaluator {
      * @return locic result
      */
   static evaluateLogic(logicToEvaluate: {
-        parentUuid: string
-        containerUuid: string
-        context: Function
+        parentUuid?: string
+        containerUuid?: string
+        context?: Function
         logic: string
         defaultReturned?: boolean
     }): boolean {
@@ -111,9 +111,9 @@ class evaluator {
      * @return {boolean}
      */
   static evaluateLogicTuples(logicToEvaluate: {
-        parentUuid: string | null
-        containerUuid: string | null
-        context: Function
+        parentUuid?: string | null
+        containerUuid?: string | null
+        context?: Function
         defaultReturned: boolean
         logic: string
     }): boolean {
@@ -165,11 +165,14 @@ class evaluator {
         containerUuid = null
       }
 
-      const value = context({
-        parentUuid,
-        containerUuid,
-        columnName: first
-      })
+      let value
+      if (context) {
+        value = context({
+          parentUuid,
+          containerUuid,
+          columnName: first
+        })
+      }
       // in context exists this column name
       // if (isEmptyValue(value)) {
       // // console.info(`.The column ${first} not exists in context.`)
@@ -192,7 +195,7 @@ class evaluator {
     let secondEval: any = second.trim()
     if (expr.test(second)) {
       second = second.replace(/@/g, ' ').trim() // strip tag
-      secondEval = context({
+      secondEval = context!({
         parentUuid,
         containerUuid,
         columnName: first
