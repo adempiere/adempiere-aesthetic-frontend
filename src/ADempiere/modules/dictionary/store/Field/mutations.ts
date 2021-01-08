@@ -16,9 +16,9 @@ export const mutations: FieldActionTree = {
   //   resetStateLookup(state) {
   //     state = initStateLookup
   //   },
-  //   setShowedLocation(state, isShowed) {
-  //     state.isShowedLocation = isShowed
-  //   },
+  setShowedLocation(state: FieldState, isShowed: boolean) {
+    state.isShowedLocation = isShowed
+  },
   setFieldsListLocation(state: FieldState, fieldsListLocation) {
     state.fieldsListLocation = fieldsListLocation
   }
