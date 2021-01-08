@@ -1,0 +1,24 @@
+<template>
+  <div>
+    <el-popover
+      ref="locationAddress"
+      v-model="isShowedLocationForm"
+      :placement="popoverPlacement"
+      width="300"
+      trigger="manual"
+    >
+      <location-address-form
+        v-if="isShowedLocationForm"
+        :values="localValues"
+        :parent-metadata="metadata"
+      />
+    </el-popover>
+    <el-input
+      v-model="displayedValue"
+      readonly
+      @focus="setShowedLocationForm(true)"
+    >
+      <i slot="prefix" class="el-icon-location-information el-input__icon" />
+    </el-input>
+  </div>
+</template>
