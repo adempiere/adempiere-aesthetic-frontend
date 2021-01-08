@@ -1,7 +1,7 @@
 import { IFieldData, IFieldGroupData } from '@/ADempiere/modules/field'
 import { ActionContextType, AssociatedTab, PanelContextType, PrintFormatOptions } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { IPrintFormatData } from '@/ADempiere/modules/report'
-import { IFormData, IProcessData, ITabData, IWindowData } from './DomainType'
+import { IBrowserData, IFormData, IProcessData, ITabData, IWindowData } from './DomainType'
 import { WindowTabAssociatedAction } from '@/ADempiere/modules/window'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 
@@ -80,6 +80,8 @@ export interface IPanelData extends ITabData {
         isLoadFieldsList: boolean
         isShowedTotals: boolean
         isTabsChildren: boolean
+        //
+        isShowedCriteria?: boolean
 }
 
 export interface ITabDataExtended extends ITabData {
@@ -143,4 +145,20 @@ export interface IPanelDataExtended extends IPanelData {
     isCustomForm?: boolean
     recordUuid: string | null
     isShowedTableOptionalColumns: boolean
+}
+
+// Browser Definition
+export interface IBrowserDataExtended extends IBrowserData {
+    containerUuid: string
+    fieldsList: any[]
+    panelType: PanelContextType
+    // app attributes
+    awaitForValues: number // control to values
+    awaitForValuesToQuery: number // get values from request search
+    isShowedCriteria: boolean
+    isShowedTotals: boolean
+}
+
+export interface BrowserDefinitionState {
+    browser: IBrowserDataExtended[]
 }
