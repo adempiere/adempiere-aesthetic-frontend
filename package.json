@@ -30,6 +30,7 @@
     "jsonlint": "^1.6.3",
     "jszip": "^3.5.0",
     "lodash": "^4.17.20",
+    "moment": "^2.29.1",
     "morgan": "^1.10.0",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
