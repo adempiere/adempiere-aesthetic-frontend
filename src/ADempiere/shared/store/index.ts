@@ -3,7 +3,8 @@ import {
   fieldModule,
   formDefinitionModule,
   processDefinitionModule,
-  windowDefinitionModule
+  windowDefinitionModule,
+  browserDefinitionModule
 } from '@/ADempiere/modules/dictionary'
 import Vuex, { StoreOptions } from 'vuex'
 import vuexLocal from '@/ADempiere/shared/plugins/vuex-persist'
@@ -73,7 +74,8 @@ const store: StoreOptions<IRootState> = {
     listProductPriceModule,
     contextMenuModule,
     panelModule,
-    businessDataModule
+    businessDataModule,
+    browserDefinitionModule
   },
   getters: getters,
   plugins: [vuexLocal.plugin]
