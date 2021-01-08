@@ -89,12 +89,12 @@ export const actions: LanguageActionTree = {
             language: string
             tableName: string
             recordUuid: string
-            recordId: number
+            recordId?: number
         }
   ) {
     const {
       recordUuid,
-      recordId,
+      recordId = payload.recordId || 0,
       tableName,
       language,
       containerUuid
