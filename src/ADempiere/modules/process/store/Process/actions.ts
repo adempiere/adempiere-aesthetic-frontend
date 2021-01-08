@@ -84,7 +84,7 @@ export const actions: ProcessActionTree = {
             tableNameUuidSelection: string
             recordUuidSelection: string
             menuParentUuid: string
-            routeToDelete: Route
+            routeToDelete?: Route
         }
   ) {
     const {
@@ -248,7 +248,7 @@ export const actions: ProcessActionTree = {
         processResult = {
           ...processLog,
           menuParentUuid,
-          processIdPath: routeToDelete.path,
+          processIdPath: routeToDelete!.path,
           printFormatUuid: action.printFormatUuid,
           // process attributes
           action: <ActionContextName>processDefinition.name,
