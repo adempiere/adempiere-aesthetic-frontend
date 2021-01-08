@@ -1,0 +1,17 @@
+<template>
+  <el-cascader
+    :ref="metadata.columnName"
+    v-model="value"
+    :placeholder="metadata.help"
+    :options="options"
+    :readonly="Boolean(metadata.readonly)"
+    :disabled="isDisabled"
+    :clearable="true"
+    filterable
+    lazy
+    :show-all-levels="false"
+    :lazy-load="searchLocatorByWarehouse"
+    :props="props"
+    @change="preHandleChange"
+  />
+</template>
