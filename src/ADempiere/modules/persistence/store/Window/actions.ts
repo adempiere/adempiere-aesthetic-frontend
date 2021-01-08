@@ -997,7 +997,7 @@ export const actions: WindowActionTree = {
             isReference?: boolean
             isShowNotification?: boolean
         }
-  ): Promise<any> {
+  ) {
     payload.referenceWhereClause = payload.referenceWhereClause || ''
     payload.isAddRecord = payload.isAddRecord || false
     payload.isLoadAllRecords = payload.isLoadAllRecords || false
