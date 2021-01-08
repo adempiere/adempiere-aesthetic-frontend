@@ -37,8 +37,6 @@ import {
   , IPrivateAccessData
 } from '@/ADempiere/modules/privateAccess'
 
-import { convertArrayKeyValueToObject } from '@/ADempiere/shared/utils/valueFormat'
-
 type BusinessDataActionTree = ActionTree<BusinessDataState, IRootState>
 type BusinessDataActionContext = ActionContext<BusinessDataState, IRootState>
 
@@ -834,14 +832,14 @@ export const actions: BusinessDataActionTree = {
             parentUuid: string
             containerUuid: string
             field: any
-            columnName: string
-            rowKey: string
-            keyColumn: string
+            newValue?: any
+            columnName?: string
+            rowKey?: string
+            keyColumn?: string
             panelType?: PanelContextType
             isSendToServer?: boolean
             isSendCallout?: boolean
-            newValue: any
-            displayColumn: string
+            displayColumn?: string
             withOutColumnNames?: any[]
         }
   ) {
@@ -878,13 +876,13 @@ export const actions: BusinessDataActionTree = {
     } else {
       row = recordSelection!.record.find(
         (itemRecord: IKeyValueObject) => {
-          return itemRecord[keyColumn] === rowKey
+          return itemRecord[keyColumn!] === rowKey
         }
       )
     }
 
     // the field has not changed, then the action is broken
-    if (row[columnName] === newValue) {
+    if (row[columnName!] === newValue) {
       return
     }
 
@@ -898,7 +896,7 @@ export const actions: BusinessDataActionTree = {
     if (panelType === PanelContextType.Browser) {
       const rowSelection: IRecordSelectionData | undefined = recordSelection!.selection.find(
         (itemRecord) => {
-          return itemRecord[keyColumn] === rowKey
+          return itemRecord[keyColumn!] === rowKey
         }
       )
       context.commit('notifyCellSelectionChange', {
@@ -1176,7 +1174,7 @@ export const actions: BusinessDataActionTree = {
   },
   getRowData: (context: BusinessDataActionContext) => (data: {
         containerUuid: string
-        recordUuid: string
+        recordUuid?: string
         index: number
     }) => {
     const { recordUuid, containerUuid, index } = data
