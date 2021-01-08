@@ -9,14 +9,19 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 export default class MixinTable extends Vue {
     @Prop({ type: String, default: undefined }) parentUuid?: string
     @Prop({ type: String, required: true }) containerUuid!: string
-    @Prop({ type: String, default: 'window' }) panelType?:
-        | PanelContextType
-        | string
-
+    @Prop({ type: String, default: 'window' }) panelType?: PanelContextType
     @Prop({ type: Boolean, default: false }) isParent = false
-    public panelMetadata: any = () => undefined
+    // private panelMetadata: any = () => undefined
 
     // Computed properties
+    get panelMetadata(): any {
+      return this.panelMetadata || undefined
+    }
+
+    set panelMetadata(value: any) {
+      this.panelMetadata = value
+    }
+
     get isMobile(): boolean {
       return this.$store.state.app.device === 'mobile'
     }
