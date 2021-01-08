@@ -119,8 +119,8 @@ export const actions: PanelActionTree = {
     parentUuid: string
     containerUuid: string
     panelType: PanelContextType
-    panelMetadata: any
-    routeToDelete: Route
+    panelMetadata?: any
+    routeToDelete?: Route
     isAdvancedQuery?: boolean
   }) {
     const { isAdvancedQuery = payload.isAdvancedQuery || false, panelType, parentUuid, containerUuid, panelMetadata, routeToDelete } = payload
