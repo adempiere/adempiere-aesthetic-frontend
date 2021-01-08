@@ -476,9 +476,9 @@ export const actions: WindowDefinitionActionTree = {
     context: WindowDefinitionActionContext,
     payload: {
             parentUuid: string
-            window: IWindowDataExtended
+            window?: IWindowDataExtended
             attributeName: string
-            attributeNameControl: string
+            attributeNameControl?: string
             attributeValue: string
         }
   ) {
