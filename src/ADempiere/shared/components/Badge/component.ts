@@ -1,5 +1,6 @@
 import { INotificationProcessData } from '@/ADempiere/modules/process/ProcessType'
 import { Prop, Ref, Watch, Component, Vue } from 'vue-property-decorator'
+import { Namespaces } from '../../utils/types'
 import Template from './template.vue'
 
 @Component({
@@ -15,7 +16,7 @@ export default class Badge extends Vue {
     get getRecordNotification(): INotificationProcessData[] {
       // return this.$store.getters.getNotificationProcess
       // return this.$store.getters.getNotificationProcess()
-      return this.$store.getters['processModule/getNotificationProcess']
+      return this.$store.getters[Namespaces.Process + '/' + 'getNotificationProcess']
     }
 
     @Watch('show')
