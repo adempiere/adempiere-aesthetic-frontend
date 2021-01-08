@@ -31,6 +31,7 @@ export default new VuexPersistence({
     Namespaces.ListProductPrice,
     Namespaces.ContextMenu,
     Namespaces.Panel,
-    Namespaces.BusinessData
+    Namespaces.BusinessData,
+    Namespaces.BrowserDefinition
   ]
 })

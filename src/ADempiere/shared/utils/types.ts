@@ -69,5 +69,6 @@ export enum Namespaces {
     ListProductPrice = 'listProductPriceModule',
     ContextMenu = 'contextMenuModule',
     Panel = 'panelModule',
-    BusinessData = 'businessDataModule'
+    BusinessData = 'businessDataModule',
+    BrowserDefinition = 'browserDefinitionModule'
 }
