@@ -1,5 +1,4 @@
 import { WindowState } from '@/ADempiere/modules/persistence'
-import { EventType } from '@/ADempiere/modules/window'
 
 export const state: WindowState = {
   inCreate: [],

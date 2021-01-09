@@ -746,7 +746,7 @@ export const actions: WindowActionTree = {
 
       requestDeleteEntity({
         tableName: panel.tableName,
-        uuid: recordUuid,
+        uuid: recordUuid!,
         id: recordId
       })
         .then((responseDeleteEntity: any) => {
