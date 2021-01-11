@@ -453,7 +453,7 @@ export const actions: WindowDefinitionActionTree = {
             parentUuid: string
             containerUuid: string
             window: IWindowDataExtended
-            tab: ITabData
+            tab?: ITabData
         }
   ) {
     const { parentUuid, containerUuid } = payload
