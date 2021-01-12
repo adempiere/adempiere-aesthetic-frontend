@@ -1,230 +1,130 @@
-import Template from './template.vue'
-import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
-import CustomPagination from '@/ADempiere/shared/components/Pagination'
-import MixinForm from '../../MixinForm'
+import { Component, Mixins } from 'vue-property-decorator'
+import BusinessPartner from '@/ADempiere/shared/components/Form/VPOS/BusinessPartner'
+import ProductInfo from '@/ADempiere/shared/components/Form/VPOS/ProductInfo'
+import MixinOrderLine from './MixinOrderLine'
 import fieldListOrders from './fieldListOrders'
-import { IFieldLocation } from '../../../Field/FieldLocation/fieldList'
-import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
-import { IListOrderItemData, IOrderData } from '@/ADempiere/modules/pos'
-import {
-  formatDate,
-  formatQuantity
-} from '@/ADempiere/shared/utils/valueFormat'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { IPointOfSalesData } from '@/ADempiere/modules/pos'
 
 @Component({
-  name: 'OrdersList',
+  name: 'Order',
+  mixins: [MixinOrderLine],
   components: {
-    CustomPagination
-  },
-  mixins: [Template, MixinForm]
+    BusinessPartner,
+    ProductInfo
+  }
 })
-export default class OrdersList extends Mixins(MixinForm) {
-    @Prop({
-      type: Object,
-      default: {
-        uuid: 'Orders-List',
-        containerUuid: 'Orders-List'
-      }
+export default class Order extends Mixins(MixinOrderLine) {
+  public fieldList = fieldListOrders
+
+  // Computed properties
+  get isShowedPOSKeyLayout(): boolean {
+    return this.$store.getters[Namespaces.PointOfSales + '/' + 'getShowPOSKeyLayout']
+  }
+
+  set isShowedPOSKeyLayout(value: boolean) {
+    this.$store.commit('setShowPOSKeyLayout', value)
+  }
+
+  get styleTab() {
+    const isShowedPOSOptions: boolean = this.$store.getters[Namespaces.PointOfSales + '/' + 'getIsShowPOSOptions']
+    if (this.isShowedPOSKeyLayout || isShowedPOSOptions) {
+      return 'adding-left: 0px; padding-right: 0px; padding-top: 3.5%;'
+    }
+    return 'padding-left: 30px; padding-right: 0px; padding-top: 2.2%;'
+  }
+
+  get namePointOfSales(): string | undefined {
+    const currentPOS: IPointOfSalesData | undefined = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+    if (currentPOS && (currentPOS.name)) {
+      return currentPOS.name
+    }
+    return undefined
+  }
+
+  get sellingPointsList(): IPointOfSalesData[] {
+    return this.$store.getters[Namespaces.PointOfSales + '/' + 'getSellingPointsList']
+  }
+
+  get orderDate(): string | undefined {
+    if ((!this.order) || (!this.order.dateOrdered)) {
+      return this.formatDate(new Date())
+    }
+    return this.formatDate(this.order.dateOrdered)
+  }
+
+  get getItemQuantity(): number {
+    if (!this.currentOrder) {
+      return 0
+    }
+    const result: number[] = this.allOrderLines.map(order => {
+      return order.quantityOrdered
     })
-    metadata: any = {
-      uuid: 'Orders-List',
-      containerUuid: 'Orders-List'
+
+    if (result) {
+      return result.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue
+      })
     }
+    return 0
+  }
 
-    public defaultMaxPagination = 50
-    public fieldsList: IFieldLocation[] = fieldListOrders
-    public isCustomForm = true
-    public activeAccordion = 'query-criteria'
-    public timeOut: any = null
+  get numberOfLines(): number | undefined {
+    if (!this.currentOrder) {
+      return
+    }
+    return this.allOrderLines.length
+  }
 
-    // Computed properties
-    get heightTable(): 500 | 250 {
-      if (!this.activeAccordion) {
-        return 500
+  // Methods
+  changePos(posElement: IPointOfSalesData) {
+    this.$store.dispatch('setCurrentPOS', posElement)
+    this.newOrder()
+  }
+
+  openCollectionPanel(): void {
+    this.$store.commit('setShowPOSCollection', !this.$store.getters[Namespaces.PointOfSales + '/' + 'getShowCollectionPos'])
+    this.isShowedPOSKeyLayout = true
+    this.$store.commit('setShowPOSOptions', false)
+  }
+
+  newOrder(): void {
+    this.$store.dispatch('findOrderServer', {})
+    this.$router.push({
+      params: {
+        ...this.$route.params
+      },
+      query: {
+        pos: this.currentPoint!.id.toString()
       }
-      return 250
-    }
+    }).finally(() => {
+      const { templateBusinessPartner } = this.currentPoint!
 
-    get highlightRow(): boolean {
-      if (this.selectOrder) {
-        return true
-      }
-      return false
-    }
+      this.$store.commit('updateValuesOfContainer', {
+        containerUuid: this.metadata.containerUuid,
+        attributes: [{
+          columnName: 'UUID',
+          value: undefined
+        },
+        {
+          columnName: 'ProductValue',
+          value: undefined
+        },
+        {
+          columnName: 'C_BPartner_ID',
+          value: templateBusinessPartner.id
+        },
+        {
+          columnName: 'DisplayColumn_C_BPartner_ID',
+          value: templateBusinessPartner.name
+        },
+        {
+          columnName: ' C_BPartner_ID_UUID',
+          value: templateBusinessPartner.uuid
+        }]
+      })
 
-    get tableOrder(): IListOrderItemData {
-      return this.$store.getters[Namespaces.Order + '/' + 'getListOrder']
-    }
-
-    get ordersList(): IOrderData[] {
-      const order = this.tableOrder
-      if (order && order.list) {
-        return order.list
-      }
-      return []
-    }
-
-    get selectOrder(): IOrderData | null {
-      const action = this.$route.query.action
-      const order = this.ordersList.find(item => item.uuid === action)
-      if (order) {
-        return order
-      }
       this.$store.dispatch('listOrderLine', [])
-      return null
-    }
-
-    get isReadyFromGetData(): boolean {
-      const { isLoaded, isReload } = this.tableOrder
-      return !isLoaded || isReload
-    }
-
-    get shortsKey() {
-      return {
-        closeOrdersList: ['esc'],
-        refreshList: ['f5']
-      }
-    }
-
-    // Watcher
-    @Watch('isReadyFromGetData')
-    handleIsReadyFromGetDataChange(isToLoad: boolean) {
-      if (isToLoad) {
-        this.loadOrdersList()
-      }
-    }
-
-    // Methods
-    formatDate = formatDate
-
-    formatQuantity = formatQuantity
-
-    keyAction(event: any) {
-      switch (event.srcKey) {
-        case 'refreshList':
-          this.loadOrdersList()
-          break
-
-        case 'closeOrdersList':
-          this.$store.commit('showListOrders', false)
-          break
-      }
-    }
-
-    loadOrdersList() {
-      let values = this.$store.getters.getValuesView({
-        containerUuid: this.metadata.containerUuid
-      })
-
-      values = this.convertValuesToSend(values)
-
-      this.$store.dispatch('listOrdersFromServer', {
-        ...values
-      })
-    }
-
-    handleChangePage(newPage: number) {
-      this.$store.dispatch('setOrdersListPageNumber', newPage)
-    }
-
-    handleCurrentChange(row: any) {
-      // close popover
-      this.$store.commit('showListOrders', false)
-      this.$store.dispatch('currentOrder', row)
-      if (row) {
-        this.$store.dispatch('deleteAllCollectBox')
-        this.$router.push(
-          {
-            params: {
-              ...this.$route.params
-            },
-            query: {
-              ...this.$route.query,
-              action: row.uuid
-            }
-          },
-          undefined
-        )
-      }
-    }
-
-    subscribeChanges() {
-      return this.$store.subscribe((mutation, state) => {
-        if (
-          mutation.type === 'updateValueOfField' &&
-                !mutation.payload.columnName.includes('DisplayColumn') &&
-                !mutation.payload.columnName.includes('_UUID') &&
-                mutation.payload.containerUuid === this.metadata.containerUuid
-        ) {
-          clearTimeout(this.timeOut)
-
-          this.timeOut = setTimeout(() => {
-            this.loadOrdersList()
-          }, 2000)
-        }
-      })
-    }
-
-    convertValuesToSend(values: any[]): IKeyValueObject {
-      const valuesToSend: IKeyValueObject = {}
-
-      values.forEach(element => {
-        const { value, columnName } = element
-
-        if (!value) {
-          return
-        }
-
-        switch (columnName) {
-          case 'DocumentNo':
-            valuesToSend.documentNo = value
-            break
-          case 'C_BPartner_ID_UUID':
-            valuesToSend.businessPartnerUuid = value
-            break
-          case 'GrandTotal':
-            valuesToSend.grandTotal = value
-            break
-          case 'OpenAmt':
-            valuesToSend.openAmount = value
-            break
-          case 'IsPaid':
-            valuesToSend.isPaid = value
-            break
-          case 'Processed':
-            valuesToSend.isProcessed = value
-            break
-          case 'IsAisleSeller':
-            valuesToSend.isAisleSeller = value
-            break
-          case 'IsInvoiced':
-            valuesToSend.isInvoiced = value
-            break
-          case 'DateOrderedFrom':
-            valuesToSend.dateOrderedFrom = value
-            break
-          case 'DateOrderedTo':
-            valuesToSend.dateOrderedTo = value
-            break
-          case 'SalesRep_ID_UUID':
-            valuesToSend.salesRepresentativeUuid = value
-            break
-        }
-      })
-
-      return valuesToSend
-    }
-
-    // Hooks
-    created() {
-      this.unsubscribe = this.subscribeChanges()
-
-      if (this.isReadyFromGetData) {
-        this.loadOrdersList()
-      }
-    }
-
-    beforeDestroy() {
-      this.unsubscribe()
-    }
+    })
+  }
 }

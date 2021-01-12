@@ -1,107 +1,52 @@
 import { IFieldLocation } from '../../../Field/FieldLocation/fieldList'
 
-const tableName = 'C_Order'
-
 const fieldListOrders: IFieldLocation[] = [
   {
-    tableName,
-    columnName: 'DocumentNo',
+    elementColumnName: 'ProductValue',
+    columnName: 'ProductValue',
     isFromDictionary: true,
     overwriteDefinition: {
-      size: 8,
-      isMandatory: false
+      size: 24,
+      sequence: 10,
+      handleActionKeyPerformed: true
     }
   },
   {
-    tableName,
-    columnName: 'C_BPartner_ID',
+    elementColumnName: 'QtyEntered',
+    columnName: 'QtyEntered',
     isFromDictionary: true,
     overwriteDefinition: {
-      size: 8,
-      isMandatory: false
+      size: 24,
+      sequence: 8,
+      handleActionPerformed: true,
+      handleContentSelection: true,
+      handleActionKeyPerformed: true
     }
   },
   {
-    tableName,
-    columnName: 'GrandTotal',
+    elementColumnName: 'PriceEntered',
+    columnName: 'PriceEntered',
     isFromDictionary: true,
     overwriteDefinition: {
-      size: 8,
-      isMandatory: false
+      size: 24,
+      sequence: 9,
+      isReadOnly: true,
+      handleActionPerformed: true,
+      handleContentSelection: true,
+      handleActionKeyPerformed: true
     }
   },
   {
-    tableName,
-    elementColumnName: 'OpenAmt',
+    elementColumnName: 'Discount',
+    columnName: 'Discount',
     isFromDictionary: true,
     overwriteDefinition: {
-      size: 8,
-      isMandatory: false
-    }
-  },
-  {
-    tableName,
-    elementColumnName: 'IsPaid',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      size: 8,
-      isMandatory: false
-    }
-  },
-  {
-    tableName,
-    columnName: 'Processed',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      size: 8,
-      isMandatory: false
-    }
-  },
-  {
-    tableName,
-    elementColumnName: 'IsAisleSeller',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      size: 8,
-      isMandatory: false
-    }
-  },
-  {
-    tableName,
-    columnName: 'IsInvoiced',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      size: 8,
-      isMandatory: false
-    }
-  },
-  {
-    tableName,
-    columnName: 'DateOrdered',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      columnName: 'DateOrderedFrom',
-      size: 8,
-      isMandatory: false
-    }
-  },
-  {
-    tableName,
-    columnName: 'DateOrdered',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      columnName: 'DateOrderedTo',
-      size: 8,
-      isMandatory: false
-    }
-  },
-  {
-    tableName,
-    columnName: 'SalesRep_ID',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      size: 8,
-      isMandatory: false
+      size: 24,
+      sequence: 10,
+      isReadOnly: true,
+      handleActionPerformed: true,
+      handleContentSelection: true,
+      handleActionKeyPerformed: true
     }
   }
 ]

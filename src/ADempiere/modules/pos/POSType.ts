@@ -166,18 +166,18 @@ export interface IListOrdersResponse {
 
 export interface ICreateOrderLineParams {
     orderUuid: string
-    warehouseUuid: string
+    warehouseUuid?: string
     productUuid: string
-    chargeUuid: string
-    description: string
-    quantity: number
-    price: number
-    discountRate: number
+    chargeUuid?: string
+    description?: string
+    quantity?: number
+    price?: number
+    discountRate?: number
 }
 
 export interface UpdateOrderLineParams {
     orderLineUuid: string
-    description: string
+    description?: string
     quantity: number
     price: number
     discountRate: number

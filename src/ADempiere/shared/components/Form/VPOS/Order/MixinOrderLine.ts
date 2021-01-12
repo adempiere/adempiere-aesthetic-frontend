@@ -1,3 +1,4 @@
+import { ICurrencyData } from '@/ADempiere/modules/core/CoreType'
 import { IOrderLineData, requestDeleteOrderLine, requestUpdateOrderLine } from '@/ADempiere/modules/pos'
 import { formatPercent, formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
 import { Component, Mixins } from 'vue-property-decorator'
@@ -8,7 +9,6 @@ import MixinPOS from '../MixinPOS'
   mixins: [MixinPOS]
 })
 export default class MixinOrderLine extends Mixins(MixinPOS) {
-    public currencyPoint?: any
     public orderLineDefinition = {
       lineDescription: {
         columnName: 'LineDescription',
@@ -34,6 +34,20 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
         columnName: 'GrandTotal',
         label: 'Total',
         isNumeric: true
+      }
+    }
+
+    // Computed properties
+
+    get currencyPoint(): ICurrencyData | Partial<ICurrencyData> {
+      const currency = this.currentPoint
+      if (currency) {
+        return currency.priceList.currency
+      }
+      return {
+        uuid: '',
+        iSOCode: '',
+        curSymbol: ''
       }
     }
 
