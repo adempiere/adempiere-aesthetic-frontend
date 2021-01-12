@@ -35,6 +35,14 @@ export interface IOverwriteDefinitionData extends IAdditionalAttributesData {
     isDisplayed?: boolean
     //
     sequence?: number
+    handleActionPerformed?: boolean
+    isSendParentValues?: boolean
+    popoverPlacement?: string
+    handleActionKeyPerformed?: boolean
+    handleContentSelection?: boolean
+    isMandatory?: boolean
+    displayLogic?: string
+    validationCode?: string
 }
 
 export type IFieldTemplateMetadataType = Partial<IFieldDataExtendedUtils> & {

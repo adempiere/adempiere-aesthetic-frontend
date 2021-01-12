@@ -25,9 +25,9 @@ export interface ImagePathData {
 
 export interface IRequestImageData {
     file: string
-    width: number
-    height: number
-    operation: string
+    width?: number
+    height?: number
+    operation?: string
 }
 
 export interface IKeyValueObject<T = any> {

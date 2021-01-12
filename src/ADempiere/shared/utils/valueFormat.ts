@@ -171,3 +171,49 @@ export function formatField(value: any, reference?: number, optionalFormat?: any
   }
   return formattedValue
 }
+
+// Format percentage based on Intl library
+export function formatPercent(number: number): string | undefined {
+  if (!number) {
+    return undefined
+  }
+  //  Get formatted number
+  return new Intl.NumberFormat(getCountryCode(), {
+    style: 'percent'
+  }).format(number)
+}
+
+// Format a date with specific format, if format is void use default date format for language
+export function formatDate(date: moment.MomentInput, isTime?: boolean): string | undefined {
+  isTime = isTime || false
+  if (!date) {
+    return undefined
+  }
+  //  Format
+  return moment.utc(date).format(getDateFormat({
+    isTime
+  }))
+}
+
+/**
+ * Removes the % of a text string, only from the beginning and end if they exist,
+ * this in case you need to use a match or local search to find matches between
+ * text strings.
+ * @param {string} stringToParsed ej: '%qwerty asd%' | '%zxc 123'
+ * @returns {string} ej: 'qwerty asd' | 'zxc 123'
+ */
+export function trimPercentage(stringToParsed: string): string {
+  if ((stringToParsed) && String(stringToParsed).includes('%')) {
+    let parsedValue = stringToParsed
+    if (parsedValue[0] === '%') {
+      parsedValue = parsedValue.slice(1)
+    }
+
+    const wordSize = parsedValue.length - 1
+    if (parsedValue[wordSize] === '%') {
+      parsedValue = parsedValue.slice(0, wordSize)
+    }
+    return parsedValue
+  }
+  return stringToParsed
+}
