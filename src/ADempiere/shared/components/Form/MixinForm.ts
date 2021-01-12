@@ -121,7 +121,7 @@ export default class MixinForm extends Vue {
                 columnName: fieldElement.columnName!,
                 containerUuid: additionalAttributes.containerUuid,
                 overwriteDefinition: <IOverwriteDefinitionData>fieldElement.overwriteDefinition,
-                tableName: fieldElement.tableName
+                tableName: fieldElement.tableName!
               }).then((result: IFieldTemplateData) => {
                 fieldsListFromDictionary.push(result)
               })
