@@ -288,13 +288,13 @@ export interface IProductPriceData {
 
 export interface IGetProductPriceParams {
     searchValue: string
-    upc: string
-    value: string
-    name: string
-    priceListUuid: string
-    businessPartnerUuid: string
-    warehouseUuid: string
-    validFrom: number
+    upc?: string
+    value?: string
+    name?: string
+    priceListUuid?: string
+    businessPartnerUuid?: string
+    warehouseUuid?: string
+    validFrom?: number
 }
 
 export interface IOrganizationsListParams {
@@ -371,12 +371,12 @@ export interface IGetBusinessPartnerParams {
 
 export interface IListBusinessPartnerParams {
     searchValue: string
-    value: string
-    name: string
-    contactName: string
-    eMail: string
-    postalCode: string
-    phone: string
+    value?: string
+    name?: string
+    contactName?: string
+    eMail?: string
+    postalCode?: string
+    phone?: string
     // Query
     // criteria,
     pageSize: number
