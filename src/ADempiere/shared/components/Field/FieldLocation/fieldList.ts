@@ -1,11 +1,11 @@
 import { IOverwriteDefinitionData } from '@/ADempiere/shared/utils/lookupFactory'
 
 export interface IFieldLocation {
-    tableName: string
+    tableName?: string
     isFromDictionary: boolean
     columnName?: string
     overwriteDefinition: Partial<IOverwriteDefinitionData>
-
+    elementColumnName?: string
     // {
     //   size: number
     //   index: number
