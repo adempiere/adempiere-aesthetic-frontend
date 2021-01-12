@@ -43,6 +43,7 @@ export interface IOverwriteDefinitionData extends IAdditionalAttributesData {
     isMandatory?: boolean
     displayLogic?: string
     validationCode?: string
+    isReadOnly?: boolean
 }
 
 export type IFieldTemplateMetadataType = Partial<IFieldDataExtendedUtils> & {
