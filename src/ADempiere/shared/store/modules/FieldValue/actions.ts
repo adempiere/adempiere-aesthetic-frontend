@@ -13,7 +13,7 @@ export const actions: FieldValueActionTree = {
             parentUuid: string
             containerUuid: string
             isOverWriteParent?: boolean
-            attributes?: KeyValueData[]
+            attributes?: Partial<KeyValueData>[]
         }
   ) {
     const {
