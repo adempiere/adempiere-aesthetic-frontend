@@ -5,10 +5,11 @@ import MixinOrderLine from './MixinOrderLine'
 import fieldListOrders from './fieldListOrders'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IPointOfSalesData } from '@/ADempiere/modules/pos'
+import Template from './template.vue'
 
 @Component({
   name: 'Order',
-  mixins: [MixinOrderLine],
+  mixins: [MixinOrderLine, Template],
   components: {
     BusinessPartner,
     ProductInfo
