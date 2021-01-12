@@ -123,7 +123,7 @@ export interface IListPointOfSalesResponse {
 export interface ICreateOrderParams {
     posUuid: string
     customerUuid: string
-    documentTypeUuid: string
+    documentTypeUuid?: string
     salesRepresentativeUuid: string
 }
 
@@ -131,7 +131,7 @@ export interface IUpdateOrderParams {
     orderUuid: string
     posUuid: string
     customerUuid: string
-    description: string
+    description?: string
 }
 
 export interface IDeleteOrderParams {
@@ -275,20 +275,22 @@ export interface KeyLayoutState {
     }
 }
 
+export interface IListOrderItemData {
+    list?: IOrderData[]
+    posUuid?: string
+    isLoaded: boolean
+    isReload: boolean
+    recordCount?: number
+    nextPageToken?: string
+    isShowPopover: boolean
+    pageNumber?: number
+}
+
 // Order Module
 export interface OrderState {
     order?: IOrderData
     findOrder?: IOrderData
-    listOrder: {
-        list?: IOrderData[]
-        posUuid?: string
-        isLoaded: boolean
-        isReload: boolean
-        recordCount: number
-        nextPageToken?: string
-        isShowPopover: boolean
-        pageNumber?: number
-    }
+    listOrder: IListOrderItemData
     currentOrder?: IOrderData
 }
 // Order Lines Module
