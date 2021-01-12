@@ -7,13 +7,22 @@ import {
 } from '@/ADempiere/modules/dictionary'
 import Vuex, { StoreOptions } from 'vuex'
 import vuexLocal from '@/ADempiere/shared/plugins/vuex-persist'
-import { RootState } from '@/ADempiere/shared/store/types'
 import { systemModule, businessPartnerModule } from '@/ADempiere/modules/core'
 import {
   languageModule,
   persistenceModule
 } from '@/ADempiere/modules/persistence'
 
+import {
+  pointOfSalesModule,
+  collectionModule,
+  keyLayoutModule,
+  orderModule,
+  orderLinesModule,
+  listProductPriceModule
+} from '@/ADempiere/modules/pos'
+
+import { processModule } from '@/ADempiere/modules/process/store/Process'
 import { fieldValueModule } from '@/ADempiere/shared/store/modules/FieldValue'
 import { reportModule } from '@/ADempiere/modules/report/store/Report'
 import { containerInfoModule } from '@/ADempiere/modules/window/store/ContainerInfo'
@@ -25,15 +34,13 @@ import { eventModule } from '@/ADempiere/shared/store/modules/Event'
 import { windowModule } from '@/ADempiere/modules/persistence/store/Window'
 import { preferenceModule } from '@/ADempiere/shared/store/modules/preference'
 import { dashboardModule } from '@/ADempiere/modules/dashboard'
-import { name, version } from '@/../package.json'
+import { getters } from './getters'
+//
+import { IRootState } from '@/store'
 
 Vue.use(Vuex)
 
-const store: StoreOptions<RootState> = {
-  state: {
-    appName: name,
-    appVersion: version
-  },
+const store: StoreOptions<IRootState> = {
   modules: {
     systemModule,
     businessPartnerModule,
@@ -53,9 +60,17 @@ const store: StoreOptions<RootState> = {
     chatEntriesModule,
     containerInfoModule,
     reportModule,
-    fieldValueModule
+    fieldValueModule,
+    processModule,
+    pointOfSalesModule,
+    collectionModule,
+    keyLayoutModule,
+    orderModule,
+    orderLinesModule,
+    listProductPriceModule
   },
+  getters: getters,
   plugins: [vuexLocal.plugin]
 }
 
-export default new Vuex.Store<RootState>(store)
+export default new Vuex.Store<IRootState>(store)

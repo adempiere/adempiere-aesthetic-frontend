@@ -9,6 +9,7 @@ export interface IReportExportTypeData {
 }
 
 export interface IProcessData {
+    processName?: string
     accessLevel: number
     description: string
     help: string

@@ -1,5 +1,6 @@
 import { IDocumentStatusData } from '@/ADempiere/modules/core'
 import {
+  DrillTableAction,
   PrintFormatsAction,
   ProcessDefinitionAction,
   SummaryAction
@@ -20,6 +21,9 @@ export type IContextActionData =
     | ProcessDefinitionAction
     | PrintFormatsAction
     | SummaryAction
+    | DrillTableAction
+
+export const cod: IContextActionData[] = []
 
 export type IContextRelationData = any
 

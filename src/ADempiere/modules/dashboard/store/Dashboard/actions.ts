@@ -1,12 +1,12 @@
 import { ActionContext, ActionTree } from 'vuex'
 import { requestListDashboards, DashboardState } from '@/ADempiere/modules/dashboard'
 
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { getCurrentRole } from '@/ADempiere/shared/utils/auth'
 import { IDashboardDataExtended, IListDashboardsResponse } from '../../DashboardType'
 
-type DashboardActionTree = ActionTree<DashboardState, RootState>
-type DashboardActionContext = ActionContext<DashboardState, RootState>
+type DashboardActionTree = ActionTree<DashboardState, IRootState>
+type DashboardActionContext = ActionContext<DashboardState, IRootState>
 
 export const actions: DashboardActionTree = {
   // refreshDashboard(context: DashboardActionContext, parameters: any) {

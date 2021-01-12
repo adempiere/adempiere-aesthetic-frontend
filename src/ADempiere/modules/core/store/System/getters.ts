@@ -1,8 +1,8 @@
 import { GetterTree } from 'vuex'
 import { SystemState } from '@/ADempiere/modules/core'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 
-type SystemGetter = GetterTree<SystemState, RootState>
+type SystemGetter = GetterTree<SystemState, IRootState>
 
 export const getters: SystemGetter = {
   getCountry: (state: SystemState) => {

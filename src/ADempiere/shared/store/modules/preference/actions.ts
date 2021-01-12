@@ -1,10 +1,10 @@
 import { ActionTree, ActionContext } from 'vuex'
 import { PreferenceState } from './state'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { typeValue } from '@/ADempiere/shared/utils/valueUtils'
 
-type PreferenceActionTree = ActionTree<PreferenceState, RootState>
-type PreferenceActionContext = ActionContext<PreferenceState, RootState>
+type PreferenceActionTree = ActionTree<PreferenceState, IRootState>
+type PreferenceActionContext = ActionContext<PreferenceState, IRootState>
 
 export const actions : PreferenceActionTree = {
   setPreferenceContext(context: PreferenceActionContext, objectValue: any) {

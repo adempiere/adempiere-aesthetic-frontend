@@ -5,13 +5,13 @@ import { fieldIsDisplayed, getDefaultValue } from '@/ADempiere/shared/utils/Dict
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
 import { ActionContext, GetterTree } from 'vuex'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { IPanelParameters, IRangeAttributeData, PanelState } from './type'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { parsedValueComponent } from '@/ADempiere/shared/utils/valueUtils'
 
-type PanelGetterTree = GetterTree<PanelState, RootState>
-type PanelActionContext = ActionContext<PanelState, RootState>
+type PanelGetterTree = GetterTree<PanelState, IRootState>
+type PanelActionContext = ActionContext<PanelState, IRootState>
 
 export const getters: PanelGetterTree = {
   getPanel: (state: PanelState) => (
@@ -463,5 +463,12 @@ export const getters: PanelGetterTree = {
     // parametersList = parametersList.concat(parametersRange)
     parameters.concat(parametersRange)
     return parameters
+  },
+  getFieldFromColumnName: (state: PanelState, getters) => (parameters: { containerUuid: string, columnName: string }): IFieldDataExtendedUtils | undefined => {
+    const { columnName, containerUuid } = parameters
+    const fieldsList: IFieldDataExtendedUtils[] = getters.getFieldsListFromPanel(containerUuid)
+    return fieldsList.find((itemField: IFieldDataExtendedUtils) => {
+      return itemField.columnName === columnName
+    })
   }
 }

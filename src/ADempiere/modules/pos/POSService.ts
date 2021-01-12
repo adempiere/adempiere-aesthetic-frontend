@@ -72,7 +72,7 @@ export function requestListPointOfSales(
       return {
         nextPageToken: posListResponse.next_page_token,
         recordCount: posListResponse.record_count,
-        sellingPointsList: posListResponse.records.map((pos: any) => {
+        list: posListResponse.records.map((pos: any) => {
           return convertPointOfSales(pos)
         })
       }
@@ -244,7 +244,7 @@ export function requestListOrders(
       return {
         nextPageToken: ordersListResponse.next_page_token,
         recordCount: ordersListResponse.record_count,
-        ordersList: ordersListResponse.records.map(
+        list: ordersListResponse.records.map(
           (productPrice: any) => {
             return convertOrder(productPrice)
           }
@@ -393,7 +393,7 @@ export function requestListProductPrice(
       return {
         nextPageToken: productPriceListResponse.next_page_token,
         recordCount: productPriceListResponse.record_count,
-        productPricesList: productPriceListResponse.records.map(
+        list: productPriceListResponse.records.map(
           (productPrice: any) => {
             return convertProductPrice(productPrice)
           }

@@ -12,7 +12,7 @@ export const state: UtilsState = {
   isShowedTable: false,
   isShowedTabChildren: false,
   recordTable: 0,
-  selectionProcess: [],
+  selectionProcess: {},
   isContainerInfo: false,
   documentAction: [],
   openRoute: {

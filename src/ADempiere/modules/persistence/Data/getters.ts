@@ -1,8 +1,8 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
 import { BusinessDataState, IContextInfoValuesExtends, IPrivateAccessDataExtended, IRecordSelectionData } from '../PersistenceType'
 
-type BusinessDataGetterTree = GetterTree<BusinessDataState, RootState>
+type BusinessDataGetterTree = GetterTree<BusinessDataState, IRootState>
 
 export const getters: BusinessDataGetterTree = {
   /**

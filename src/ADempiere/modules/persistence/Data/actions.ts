@@ -1,4 +1,4 @@
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { parseContext } from '@/ADempiere/shared/utils/contextUtils'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
@@ -39,8 +39,8 @@ import {
 
 import { convertArrayKeyValueToObject } from '@/ADempiere/shared/utils/valueFormat'
 
-type BusinessDataActionTree = ActionTree<BusinessDataState, RootState>
-type BusinessDataActionContext = ActionContext<BusinessDataState, RootState>
+type BusinessDataActionTree = ActionTree<BusinessDataState, IRootState>
+type BusinessDataActionContext = ActionContext<BusinessDataState, IRootState>
 
 export const actions: BusinessDataActionTree = {
   setPageNumber(

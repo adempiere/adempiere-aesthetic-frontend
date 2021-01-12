@@ -20,6 +20,7 @@ export interface IChargeData {
 export interface IOrderLineData {
     uuid: string
     orderUuid: string
+    help?: string
     line: string
     product: IProductData
     charge: IChargeData
@@ -35,7 +36,7 @@ export interface IOrderLineData {
 
 export interface IPointOfSalesData {
     id: number
-    uuid: string
+    uuid?: string
     name: string
     description: string
     help: string
@@ -109,14 +110,14 @@ export interface IGetPointOfSalesParams {
 
 export interface IListPointOfSalesParams {
     userUuid: string
-    pageSize: number
-    pageToken: string
+    pageSize?: number
+    pageToken?: string
 }
 
 export interface IListPointOfSalesResponse {
     nextPageToken: string
     recordCount: number
-    sellingPointsList: IPointOfSalesData
+    list: IPointOfSalesData[]
 }
 
 export interface ICreateOrderParams {
@@ -153,14 +154,14 @@ export interface IListOrdersParams {
     dateOrderedFrom: number
     dateOrderedTo: number
     salesRepresentativeUuid: string
-    pageSize: number
+    pageSize?: number
     pageToken: string
 }
 
 export interface IListOrdersResponse {
     nextPageToken: string
     recordCount: number
-    ordersList: IOrderData[]
+    list: IOrderData[]
 }
 
 export interface ICreateOrderLineParams {
@@ -188,8 +189,8 @@ export interface IDeleteOrderLineParams {
 
 export interface IListOrderLinesParams {
     orderUuid: string
-    pageSize: number
-    pageToken: string
+    pageSize?: number
+    pageToken?: string
 }
 
 export interface IListOrderLinesResponse {
@@ -207,17 +208,17 @@ export interface IListProductPriceParams {
     priceListUuid: string
     businessPartnerUuid: string
     warehouseUuid: string
-    validFrom: string
+    validFrom?: string
     // Query
     // criteria,
-    pageSize: number
-    pageToken: string
+    pageSize?: number
+    pageToken?: string
 }
 
 export interface IListProductPriceResponse {
     nextPageToken: string
     recordCount: number
-    productPricesList: IProductPriceData[]
+    list: IProductPriceData[]
 }
 
 export interface IPrintOrderParams {
@@ -227,4 +228,103 @@ export interface IPrintOrderParams {
 export interface IGenerateInvoiceParams {
     posId: number
     posUuid: string
+}
+
+// VUEX
+
+// PointOfSales Module
+export interface IPOSData {
+    userUuid?: string
+    isLoaded: boolean
+    isReload: boolean
+    recordCount: number
+    nextPageToken?: string
+    list?: IPointOfSalesData[]
+    currentPOS?: IPointOfSalesData
+}
+export interface PointOfSalesState {
+    showPOSOptions: boolean
+    showPOSKeyLayout: boolean
+    showPOSCollection: boolean
+    pointOfSales: IPOSData
+}
+
+// Collection Module
+export interface CollectionState {
+    paymentBox: any[]
+    multiplyRate: number
+    divideRate: number
+}
+
+// Key Layout Module
+export interface IKeyLayoutDataExtended extends IKeyLayoutData {
+    isLoaded: boolean
+    isReload: boolean
+    // token,
+    // pageNumber
+}
+
+export interface KeyLayoutState {
+    keyLayout: {
+        isLoaded: boolean
+        isReload: boolean
+        recordCount: number
+        nextPageToken?: string
+        uuid?: string
+        orderList?: any[]
+    }
+}
+
+// Order Module
+export interface OrderState {
+    order?: IOrderData
+    findOrder?: IOrderData
+    listOrder: {
+        list?: IOrderData[]
+        posUuid?: string
+        isLoaded: boolean
+        isReload: boolean
+        recordCount: number
+        nextPageToken?: string
+        isShowPopover: boolean
+        pageNumber?: number
+    }
+    currentOrder?: IOrderData
+}
+// Order Lines Module
+export interface IProductDataExtended extends IProductData {
+    priceStandard: number
+}
+
+export interface IOrderLineDataExtended extends IOrderLineData {
+    quantityOrdered: number
+    priceActual: number
+    discount: number
+    product: IProductDataExtended
+    taxIndicator: string
+    grandTotal: number
+    help?: string
+}
+
+export interface OrderLinesState {
+    listOrderLine: IOrderLineDataExtended[]
+}
+
+export interface IListProductPriceItemData {
+    isLoaded: boolean
+    isReload: boolean
+    recordCount: number
+    nextPageToken?: string
+    isShowPopoverField?: boolean
+    isShowPopoverMenu?: boolean
+    pageNumber?: number
+    token?: string
+    //
+    list?: IProductPriceData[]
+    businessPartnerUuid?: string
+    warehouseUuid?: string
+}
+// List Product Price Module
+export interface ListProductPriceState {
+    productPrice: IListProductPriceItemData
 }

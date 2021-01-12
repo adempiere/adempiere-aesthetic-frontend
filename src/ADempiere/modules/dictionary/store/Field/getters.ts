@@ -1,8 +1,8 @@
 import { GetterTree } from 'vuex'
 import { FieldState } from '@/ADempiere/modules/dictionary'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 
-type FieldGetter = GetterTree<FieldState, RootState>
+type FieldGetter = GetterTree<FieldState, IRootState>
 
 export const getters: FieldGetter = {
   getIsShowedLocation: (state: FieldState) => {

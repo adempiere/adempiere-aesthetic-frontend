@@ -2,12 +2,13 @@ import { IdentifierColumnsData, IPanelDataExtended } from '@/ADempiere/modules/d
 import { assignedGroup } from '@/ADempiere/shared/utils/DictionaryUtils'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { ActionContext, ActionTree } from 'vuex'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { PanelState } from './type'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
+import { Route } from 'vue-router'
 
-type PanelActionContext = ActionContext<PanelState, RootState>
-type PanelActionTree = ActionTree<PanelState, RootState>
+type PanelActionContext = ActionContext<PanelState, IRootState>
+type PanelActionTree = ActionTree<PanelState, IRootState>
 
 export const actions: PanelActionTree = {
   addPanel(context: PanelActionContext, params: IPanelDataExtended): IPanelDataExtended {
@@ -113,5 +114,51 @@ export const actions: PanelActionTree = {
     }
 
     return params
+  },
+  getPanelAndFields(context: PanelActionContext, payload: {
+    parentUuid: string
+    containerUuid: string
+    panelType: PanelContextType
+    panelMetadata: any
+    routeToDelete: Route
+    isAdvancedQuery?: boolean
+  }) {
+    const { isAdvancedQuery = payload.isAdvancedQuery || false, panelType, parentUuid, containerUuid, panelMetadata, routeToDelete } = payload
+    let executeAction: string
+    switch (panelType) {
+      case PanelContextType.Process:
+      case PanelContextType.Report:
+        executeAction = 'getProcessFromServer'
+        break
+      case PanelContextType.Browser:
+        executeAction = 'getBrowserFromServer'
+        break
+      case PanelContextType.Form:
+        executeAction = 'getFormFromServer'
+        break
+      case PanelContextType.Window:
+      case PanelContextType.Table:
+      default:
+        executeAction = 'getFieldsFromTab'
+        break
+    }
+
+    return context.dispatch(executeAction, {
+      parentUuid,
+      containerUuid,
+      panelType,
+      panelMetadata,
+      isAdvancedQuery,
+      routeToDelete
+    })
+      .then(panelResponse => {
+        return panelResponse
+      })
+      .catch(error => {
+        return {
+          ...error,
+          moreInfo: `Dictionary getPanelAndFields ${panelType} (State Panel).`
+        }
+      })
   }
 }

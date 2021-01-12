@@ -1,9 +1,9 @@
 import { ActionContext, ActionTree } from 'vuex'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { UtilsState } from './type'
 
-type UtilsActionContext = ActionContext<UtilsState, RootState>
-type UtilsActionTree = ActionTree<UtilsState, RootState>
+type UtilsActionContext = ActionContext<UtilsState, IRootState>
+type UtilsActionTree = ActionTree<UtilsState, IRootState>
 
 export const actions: UtilsActionTree = {
   setWidth(context: UtilsActionContext, width: number) {

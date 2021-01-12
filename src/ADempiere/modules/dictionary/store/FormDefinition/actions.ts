@@ -6,11 +6,11 @@ import {
 } from '@/ADempiere/modules/dictionary'
 import language from '@/lang'
 import { ActionTree, ActionContext } from 'vuex'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 
-type FormDefinitionActionTree = ActionTree<FormDefinitionState, RootState>
-type FormDefinitionActionContext = ActionContext<FormDefinitionState, RootState>
+type FormDefinitionActionTree = ActionTree<FormDefinitionState, IRootState>
+type FormDefinitionActionContext = ActionContext<FormDefinitionState, IRootState>
 
 export const actions: FormDefinitionActionTree = {
   addForm(

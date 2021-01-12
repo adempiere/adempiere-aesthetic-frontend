@@ -1,5 +1,5 @@
 import { IValueData } from '@/ADempiere/modules/core'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { ActionTree, ActionContext } from 'vuex'
 import {
   KeyValueData,
@@ -8,8 +8,8 @@ import {
   PersistenceState
 } from '@/ADempiere/modules/persistence'
 
-type PersistenceActionTree = ActionTree<PersistenceState, RootState>
-type PersistenceActionContext = ActionContext<PersistenceState, RootState>
+type PersistenceActionTree = ActionTree<PersistenceState, IRootState>
+type PersistenceActionContext = ActionContext<PersistenceState, IRootState>
 
 export const actions: PersistenceActionTree = {
   flushPersistenceQueue(

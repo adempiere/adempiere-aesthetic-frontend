@@ -14,6 +14,7 @@ export function convertProcessLog(processLogToConvert: any): IProcessLogData {
     //   return convertEntity(parameter)
     // }),
     parameters: [],
+    logsList: processLogToConvert.logs_list,
     output: convertReportOutput(processLogToConvert.output)
   }
 }

@@ -1,5 +1,12 @@
 import { ReportExportContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 
+export interface ISelectionProcessData {
+    selection: any[]
+    processTablaSelection: boolean
+    finish: boolean
+    tableName: string
+}
+
 export interface UtilsState {
     width: number
     height: number
@@ -12,7 +19,7 @@ export interface UtilsState {
     isShowedTable: boolean
     isShowedTabChildren: boolean
     recordTable: number
-    selectionProcess: any[]
+    selectionProcess: Partial<ISelectionProcessData>
     isContainerInfo: boolean
     documentAction: any[]
     openRoute: {

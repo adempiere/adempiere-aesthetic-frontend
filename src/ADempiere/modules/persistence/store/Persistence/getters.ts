@@ -1,10 +1,10 @@
 import { IValueData } from '@/ADempiere/modules/core'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
 import { KeyValueData } from '../../PersistenceType'
 import { PersistenceState } from '@/ADempiere/modules/persistence'
 
-type PersistenceGetterTree = GetterTree<PersistenceState, RootState>
+type PersistenceGetterTree = GetterTree<PersistenceState, IRootState>
 
 export const getters: PersistenceGetterTree = {
   getPersistenceMap: (state: PersistenceState) => (tableName: string) => {

@@ -1,9 +1,9 @@
 import { GetterTree } from 'vuex'
 import { PreferenceState } from './state'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
 
-type PreferenceGetterTree = GetterTree<PreferenceState, RootState>
+type PreferenceGetterTree = GetterTree<PreferenceState, IRootState>
 
 export const getters: PreferenceGetterTree = {
   /**

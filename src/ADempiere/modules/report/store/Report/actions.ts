@@ -1,6 +1,6 @@
 import { IPrintFormatDataExtended } from '@/ADempiere/modules/dictionary'
 import { IPanelParameters } from '@/ADempiere/shared/store/modules/panel/type'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 import {
   ActionContextType,
   PrintFormatOptions
@@ -26,8 +26,8 @@ import {
   ReportState
 } from '@/ADempiere/modules/report/ReportType'
 
-type ReportActionTree = ActionTree<ReportState, RootState>
-type ReportActionContext = ActionContext<ReportState, RootState>
+type ReportActionTree = ActionTree<ReportState, IRootState>
+type ReportActionContext = ActionContext<ReportState, IRootState>
 
 export const actions: ReportActionTree = {
   reportActionPerformed(
@@ -47,7 +47,10 @@ export const actions: ReportActionTree = {
             processUuid: string
             instanceUuid: string
         }
-  ) {
+  ): Promise<Omit<
+  IPrintFormatDataExtended,
+  'printFormatUuid'
+>[]> {
     const { processId, processUuid, instanceUuid } = payload
     return new Promise(resolve => {
       requestListPrintFormats({

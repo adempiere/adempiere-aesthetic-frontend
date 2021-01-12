@@ -4,11 +4,11 @@ import { getters } from './getters'
 import { mutations } from './mutations'
 import { actions } from './actions'
 import { FormDefinitionState } from '@/ADempiere/modules/dictionary'
-import { RootState } from '@/ADempiere/shared/store/types'
+import { IRootState } from '@/store'
 
 const namespaced = true
 
-export const formDefinitionModule: Module<FormDefinitionState, RootState> = {
+export const formDefinitionModule: Module<FormDefinitionState, IRootState> = {
   namespaced,
   state,
   getters,
