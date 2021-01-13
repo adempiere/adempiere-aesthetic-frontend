@@ -299,9 +299,9 @@ export interface IGetProductPriceParams {
 
 export interface IOrganizationsListParams {
     roleUuid: string
-    roleId: number
-    pageToken: string
-    pageSize: number
+    roleId?: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface IOrganizationsListResponse {
@@ -312,9 +312,9 @@ export interface IOrganizationsListResponse {
 
 export interface IWarehousesListParams {
     organizationUuid: string
-    organizationId: number
-    pageToken: string
-    pageSize: number
+    organizationId?: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface IWarehousesListResponse {

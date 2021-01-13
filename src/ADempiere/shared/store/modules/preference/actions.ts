@@ -11,8 +11,8 @@ export const actions : PreferenceActionTree = {
     context.commit('setPreferenceContext', objectValue)
   },
   setMultiplePreference(context: PreferenceActionContext, payload: {
-        parentUuid: string
-        containerUuid: string
+        parentUuid?: string
+        containerUuid?: string
         values: any
       }) {
     const { parentUuid, containerUuid, values } = payload

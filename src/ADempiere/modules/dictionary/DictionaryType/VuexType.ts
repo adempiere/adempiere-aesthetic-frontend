@@ -145,6 +145,8 @@ export interface IPanelDataExtended extends IPanelData {
     isCustomForm?: boolean
     recordUuid: string | null
     isShowedTableOptionalColumns: boolean
+    // Browser store
+    awaitForValuesToQuery?: any
 }
 
 // Browser Definition

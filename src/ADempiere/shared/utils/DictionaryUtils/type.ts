@@ -74,6 +74,8 @@ export type IFieldDataExtendedUtils = IFieldData &
         isTranslatedField?: boolean
         // MixinMainPanel
         handleRequestFocus?: any
+        // Panel
+        isActiveLogics?: boolean
     }
 
 export interface IActionAttributesData {
