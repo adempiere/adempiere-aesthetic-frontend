@@ -107,12 +107,12 @@ export interface IResponseImageData {
 export interface IBrowserSearchParams {
     uuid: string
     parametersList: any[]
-    tableName: string
+    tableName?: string
     query: string
     whereClause: string
     orderByClause: string
-    limit: number
-    pageSize: number
+    limit?: number
+    pageSize?: number
     pageToken: string
 }
 
