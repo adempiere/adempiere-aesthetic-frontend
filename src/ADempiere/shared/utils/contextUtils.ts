@@ -158,7 +158,7 @@ export const specialColumns: string[] = [
  * @param {boolean} isSOTrxMenu
  */
 export function parseContext(data: {
-    parentUuid: string
+    parentUuid?: string
     containerUuid: string
     columnName?: string
     value?: string
