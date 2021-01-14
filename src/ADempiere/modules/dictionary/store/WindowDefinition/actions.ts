@@ -52,11 +52,11 @@ export const actions: WindowDefinitionActionTree = {
     context: WindowDefinitionActionContext,
     payload: {
             windowUuid: string
-            windowId: number
+            windowId?: number
             routeToDelete: string
         }
   ) {
-    const { windowUuid, windowId, routeToDelete } = payload
+    const { windowUuid, windowId = payload.windowId || 0, routeToDelete } = payload
     return requestWindowMetadata({
       uuid: windowUuid,
       id: windowId

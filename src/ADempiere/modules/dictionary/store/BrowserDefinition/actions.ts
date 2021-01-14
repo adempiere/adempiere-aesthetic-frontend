@@ -171,7 +171,7 @@ export const actions: BrowserDefinitionActionTree = {
         containerUuid: string
         browser?: any
         attributeName: string
-        attributeNameControl: any
+        attributeNameControl?: any
         attributeValue: any
       }): void {
     const { containerUuid, attributeName, attributeNameControl, attributeValue } = payload

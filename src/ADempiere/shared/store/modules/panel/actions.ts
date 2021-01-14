@@ -739,7 +739,7 @@ export const actions: PanelActionTree = {
     })
   },
   getPanelAndFields(context: PanelActionContext, payload: {
-    parentUuid: string
+    parentUuid?: string
     containerUuid: string
     panelType: PanelContextType
     panelMetadata?: any
