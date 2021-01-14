@@ -1,0 +1,545 @@
+<template>
+  <div
+    v-if="isLoaded"
+    key="window-loaded"
+  >
+    <el-container style="height: 86vh;">
+      <Split>
+        <SplitArea :size="sizePanel" :min-size="100">
+          <el-aside width="100%">
+            <split-pane :min-percent="10" :default-percent="defaultPorcentSplitPane" split="vertical">
+              <template>
+                <!-- this slot is 'paneL' (with 'L' in uppercase) do not change -->
+                <div slot="paneL" class="left-container">
+                  <el-aside v-show="isShowedRecordNavigation" width="100%">
+                    <div class="small-4 columns">
+                      <div class="w">
+                        <div class="open-left" />
+                        <div :class="styleTableNavigation">
+                          <!-- close record navigation and advanced query panel -->
+                          <el-button
+                            :icon="iconShowedRecordNavigation"
+                            circle
+                            style="margin-left: 10px;"
+                            class="el-button-window"
+                            @click="handleChangeShowedRecordNavigation(false)"
+                          />
+                          <!-- complete expand record navigation and advanced query panel  -->
+                          <el-button
+                            v-show="!isMobile"
+                            :icon="iconIsShowedAside"
+                            circle
+                            class="el-button-window"
+                            @click="handleChangeShowedPanel()"
+                          />
+                        </div>
+                        <data-table
+                          :parent-uuid="windowUuid"
+                          :container-uuid="windowMetadata.currentTab.uuid"
+                          :table-name="windowMetadata.currentTab.tableName"
+                          :is-showed-panel-record="true"
+                          :is-parent="true"
+                        />
+                      </div>
+                    </div>
+                  </el-aside>
+                </div>
+              </template>
+              <template slot="paneR">
+                <el-container id="PanelRight" style="height: 86vh;">
+                  <resize-observer @notify="handleResize" />
+                  <Split v-shortkey="['f8']" direction="vertical" @onDrag="onDrag" @shortkey.native="handleChangeShowedRecordNavigation(!isShowedRecordNavigation)">
+                    <SplitArea :size="sizeAreaStyle" :style="splitAreaStyle">
+                      <el-header
+                        v-if="showContextMenu"
+                        :style="isWorkflowBarStatus ? 'height: 45px; background: #F5F7FA' : 'height: 40px'"
+                      >
+                        <el-container>
+                          <el-aside width="100%" style="width: 78vw; overflow: hidden;">
+                            <el-scrollbar>
+                              <workflow-status-bar
+                                v-if="isWorkflowBarStatus"
+                                :style-steps="styleStepsSimple"
+                                :container-uuid="windowMetadata.currentTabUuid"
+                                :parent-uuid="windowUuid"
+                                :panel-type="panelType"
+                              />
+                            </el-scrollbar>
+                          </el-aside>
+                          <el-main>
+                            <context-menu
+                              v-show="!isShowedRecordPanel"
+                              :menu-parent-uuid="$route.meta.parentUuid"
+                              :parent-uuid="windowUuid"
+                              :container-uuid="windowMetadata.currentTabUuid"
+                              :table-name="windowMetadata.currentTab.tableName"
+                              :panel-type="panelType"
+                              :is-insert-record="windowMetadata.currentTab.isInsertRecord"
+                            />
+                          </el-main>
+                        </el-container>
+                      </el-header>
+                      <el-main :style="styleMainTab">
+                        <tab-parent
+                          :window-uuid="windowUuid"
+                          :window-metadata="windowMetadata"
+                          :tabs-list="windowMetadata.tabsListParent"
+                          class="tab-window"
+                        />
+                        <div v-if="isMobile">
+                          <el-card class="box-card">
+                            <el-tabs v-model="activeInfo" @tab-click="handleClick">
+                              <el-tab-pane
+                                name="listChatEntries"
+                              >
+                                <span slot="label">
+                                  <i class="el-icon-s-comment" />
+                                  {{ $t('window.containerInfo.notes') }}
+                                </span>
+                                <chat-entries
+                                  :table-name="getTableName"
+                                  :record-id="recordId"
+                                />
+                              </el-tab-pane>
+
+                              <el-tab-pane
+                                name="listRecordLogs"
+                              >
+                                <span slot="label">
+                                  <svg-icon icon-class="tree-table" />
+                                  {{ $t('window.containerInfo.changeLog') }}
+                                </span>
+                                <div
+                                  key="change-log-loaded"
+                                >
+                                  <record-logs />
+                                </div>
+                              </el-tab-pane>
+
+                              <el-tab-pane
+                                v-if="getIsWorkflowLog"
+                                name="listWorkflowLogs"
+                              >
+                                <span slot="label">
+                                  <i class="el-icon-s-help" />
+                                  {{ $t('window.containerInfo.workflowLog') }}
+                                </span>
+                                <div
+                                  v-if="getIsWorkflowLog"
+                                  key="workflow-log-loaded"
+                                >
+                                  <workflow-logs />
+                                </div>
+                              </el-tab-pane>
+                            </el-tabs>
+                          </el-card>
+                        </div>
+                        <div style="right: 0%; top: 40%; position: absolute;">
+                          <!-- open container info -->
+                          <el-button
+                            v-show="!showContainerInfo && !isMobile"
+                            type="info"
+                            icon="el-icon-info"
+                            circle
+                            style="float: right;"
+                            class="el-button-window"
+                            @click="contentInfo"
+                          />
+                        </div>
+                        <div class="small-4 columns">
+                          <div class="wrapper">
+                            <div
+                              v-show="!isEmptyValue(windowMetadata.tabsListChildren)"
+                              class="open-detail"
+                            />
+                            <!-- open childs tabs -->
+                            <el-button
+                              v-if="windowMetadata.tabsListChildren.length &&
+                                (isMobile && !isShowedRecordNavigation || !isMobile)"
+                              v-show="!isShowedTabsChildren"
+                              icon="el-icon-caret-top"
+                              :class="classIsMobile"
+                              circle
+                              type="primary"
+                              @click="handleChangeShowedTabChildren(true)"
+                            />
+                          </div>
+                        </div>
+                        <modal-dialog
+                          :parent-uuid="windowUuid"
+                          :container-uuid="windowMetadata.currentTabUuid"
+                        />
+                        <div class="small-4 columns">
+                          <div class="w">
+                            <div class="open-left" />
+                            <!-- open record navigation and advanced query if is closed -->
+                            <el-button
+                              v-show="!isShowedRecordNavigation"
+                              :icon="iconShowedRecordNavigation"
+                              class="open-navegation"
+                              circle
+                              type="primary"
+                              @click="handleChangeShowedRecordNavigation(true)"
+                            />
+                          </div>
+                        </div>
+                      </el-main>
+                    </SplitArea>
+                    <SplitArea v-show="isShowedTabsChildren" :size="50">
+                      <el-header
+                        v-if="isShowedTabsChildren && !isEmptyValue(windowMetadata.tabsListChildren)"
+                        style="height: auto; padding-right: 35px !important; padding-bottom: 33px;"
+                      >
+                        <div class="w-33">
+                          <div class="center">
+                            <!-- close tab children if is openend -->
+                            <el-button
+                              icon="el-icon-caret-bottom"
+                              circle
+                              class="el-button-window"
+                              @click="handleChangeShowedTabChildren(false)"
+                            />
+                          </div>
+                        </div>
+                        <tab-children
+                          :window-uuid="windowUuid"
+                          :window-metadata="windowMetadata"
+                          :tabs-list="windowMetadata.tabsListChildren"
+                          :first-tab-uuid="windowMetadata.firstTabUuid"
+                          :style="{'height': getHeightPanelBottom + 'vh'}"
+                        />
+                      </el-header>
+                    </SplitArea>
+                  </Split>
+                </el-container>
+              </template>
+            </split-pane>
+          </el-aside>
+        </SplitArea>
+        <SplitArea :size="showContainerInfo ? isSize : 0">
+          <el-main>
+            <div :class="isCloseInfo">
+              <!-- close container info if is opened -->
+              <el-button
+                v-show="showContainerInfo"
+                type="info"
+                icon="el-icon-info"
+                circle
+                style="float: right;"
+                class="el-button-window"
+                @click="contentInfo"
+              />
+            </div>
+            <div id="example-1">
+              <transition name="slide-fade">
+                <p v-if="showContainerInfo">
+                  <el-card class="box-card">
+                    <el-tabs v-model="activeInfo" @tab-click="handleClick">
+                      <el-tab-pane
+                        name="listChatEntries"
+                      >
+                        <span slot="label">
+                          <i class="el-icon-s-comment" />
+                          {{ $t('window.containerInfo.notes') }}
+                        </span>
+                        <chat-entries
+                          :table-name="getTableName"
+                          :record-id="recordId"
+                        />
+                      </el-tab-pane>
+
+                      <el-tab-pane
+                        name="listRecordLogs"
+                      >
+                        <span slot="label">
+                          <svg-icon icon-class="tree-table" />
+                          {{ $t('window.containerInfo.changeLog') }}
+                        </span>
+                        <div
+                          v-if="getIsChangeLog"
+                          key="change-log-loaded"
+                        >
+                          <record-logs />
+                        </div>
+                      </el-tab-pane>
+
+                      <el-tab-pane
+                        v-if="getIsWorkflowLog"
+                        name="listWorkflowLogs"
+                      >
+                        <span slot="label">
+                          <i class="el-icon-s-help" />
+                          {{ $t('window.containerInfo.workflowLog') }}
+                        </span>
+                        <div
+                          v-if="getIsWorkflowLog"
+                          key="workflow-log-loaded"
+                        >
+                          <workflow-logs />
+                        </div>
+                      </el-tab-pane>
+                    </el-tabs>
+                  </el-card>
+                </p>
+              </transition>
+            </div>
+          </el-main>
+        </SplitArea>
+      </Split>
+    </el-container>
+  </div>
+  <div
+    v-else
+    key="window-loading"
+    v-loading="!isLoaded"
+    :element-loading-text="$t('notifications.loading')"
+    element-loading-background="rgba(255, 255, 255, 0.8)"
+    class="loading-window"
+  />
+</template>
+
+<style scoped>
+  .scroll {
+    max-height: 60vh;
+  }
+  /* Enter and leave animations can use different */
+  /* durations and timing functions.              */
+  .slide-fade-enter-active {
+    transition: all .2s ease;
+  }
+  .slide-fade-leave-active {
+    transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+  .slide-fade-enter, .slide-fade-leave-to
+  /* .slide-fade-leave-active below version 2.1.8 */ {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+  .el-tabs__content {
+    overflow: hidden;
+    position: relative;
+    padding-top: 0px !important;
+    padding-right: 15px !important;
+    padding-bottom: 0px !important;
+    padding-left: 15px !important;
+  }
+  .el-header {
+    background-color: #fff;
+    color: #333;
+    line-height: 21px;
+  }
+  .el-aside {
+    height: 100%;
+    color: #333;
+    overflow-y: hidden;
+    overflow-x: hidden;
+  }
+  aside {
+    background: #fff;
+    padding: 0px;
+    margin-bottom: 0px;
+    border-radius: 2px;
+    display: block;
+    line-height: 32px;
+    font-size: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    color: #2c3e50;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .el-main {
+    display: block;
+    -webkit-box-flex: 1;
+    flex: 1;
+    flex-basis: auto;
+    overflow: hidden;
+    height: 90vh;
+    box-sizing: border-box;
+    padding-top: 0px !important;
+    padding-right: 0px !important;
+    padding-bottom: 0px !important;
+    padding-left: 0px !important;
+  }
+  .center{
+    text-align: center;
+  }
+  .close{
+    text-align: right;
+  }
+  .w-33 {
+    width: 100%;
+    background-color: transparent;
+  }
+  .open-table-detail-mobile {
+    position: absolute;
+    right: 50%;
+    bottom: 4%;
+  }
+  .open-table-detail {
+    position: absolute;
+    right: 50%;
+    bottom: 4%;
+    display: none;
+  }
+  .open-navegation {
+    position: fixed;
+    top: 50%;
+    display: none;
+    z-index: 5;
+  }
+  .open-datatable-aside {
+    position: absolute;
+    top: 41%;
+    display: none;
+    z-index: 5;
+    right: 1%!important;
+  }
+  .open-datatable-aside-mobile {
+    position: absolute;
+    top: 41%;
+    display: grid;
+    z-index: 5;
+    right: 1%!important;
+  }
+  .button {
+    display: none;
+  }
+  .wrapper:hover .open-table-detail {
+    display: inline-block;
+  }
+  .w:hover .open-navegation {
+    display: inline-block;
+  }
+  .w:hover .open-datatable-aside {
+    display: grid;
+  }
+  .open-detail {
+    width: 100%;
+    height: 20px;
+    position: absolute;
+    bottom: 5%;
+  }
+  .open-left {
+    width: 2%;
+    height: 97%;
+    position: absolute;
+    top: 2%;
+    left: 1%;
+  }
+  .el-button-window {
+    cursor: pointer;
+    background: #FFFFFF;
+    border: 1px solid #DCDFE6;
+    border-color: #DCDFE6;
+    color: white;
+    background: #008fd3;
+  }
+  .close-info {
+    top: 40%;
+    position: absolute;
+  }
+  .close-info-mobile {
+    top: 29%;
+    position: absolute;
+  }
+  .vertical-panes {
+    width: 100%;
+    height: 85vh;
+    border: 1px solid #ccc;
+  }
+  .vertical-panes > .pane {
+    text-align: left;
+    padding: 15px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .vertical-panes > .pane ~ .pane {
+    border-left: 1px solid #ccc;
+  }
+  .loading-window {
+    padding: 100px 100px;
+    height: 100%;
+  }
+</style>
+<style>
+  .el-step.is-simple .el-step__icon-inner {
+    font-size: 18px;
+    padding-top: 30px;
+  }
+  .el-steps--simple {
+    /* padding: 13px 8%; */
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0%;
+    padding-right: 0px;
+    border-radius: 4px;
+    background: #F5F7FA;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: auto;
+  }
+  .scroll-window-log-change {
+    max-height: 74vh !important;
+  }
+  .scroll-window-log-workflow {
+    max-height: 68vh !important;
+  }
+  .scroll-window-log-chat {
+    max-height: 28vh !important;
+  }
+  .el-card__header {
+    background: rgba(245, 247, 250, 0.75);
+    padding: 18px 20px;
+    border-bottom: 1px solid #f5f7fa;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  .split {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    height: 102%;
+    width: 100%;
+  }
+  .components-container {
+    position: relative;
+    height: 100vh;
+  }
+  .left-container {
+    background-color: #ffffff;
+    height: 100%;
+  }
+  .right-container {
+    background-color: #ffffff;
+    height: 200px;
+  }
+  .top-container {
+    background-color: #ffffff;
+    width: 100%;
+    height: 100%;
+  }
+  .bottom-container {
+    width: 100%;
+    background-color: #95E1D3;
+    height: 100%;
+  }
+  .splitter-pane-resizer.vertical {
+    width: 11px !important;
+    /* width: 9px; */
+    height: 100%;
+    background: gray !important;
+    margin-left: -10px;
+    /* margin-left: -5px; */
+    border-left: 5px solid hsla(0,0%,100%,0);
+    border-right: 5px solid hsla(0,0%,100%,0);
+    cursor: col-resize;
+  }
+  .splitter-pane.vertical.splitter-paneR {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    padding-left: 10px;
+  }
+</style>
