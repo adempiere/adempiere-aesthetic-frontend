@@ -5,13 +5,12 @@
     },
     "adempiere": {
         "api": {
-            "url": "http://localhost:8085",
+            "url": "http://localhost:8080",
             "service": "/adempiere-api"
         },
         "images": {
-            "url": "http://localhost:8085",
-            "service": "/adempiere-api",
-            "comida": "dasdasd"
+            "url": "http://localhost:8080",
+            "service": "/adempiere-api"
         }
     }
 }
