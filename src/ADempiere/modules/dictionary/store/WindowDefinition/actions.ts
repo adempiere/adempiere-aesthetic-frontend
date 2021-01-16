@@ -52,11 +52,11 @@ export const actions: WindowDefinitionActionTree = {
     context: WindowDefinitionActionContext,
     payload: {
             windowUuid: string
-            windowId: number
+            windowId?: number
             routeToDelete: string
         }
   ) {
-    const { windowUuid, windowId, routeToDelete } = payload
+    const { windowUuid, windowId = payload.windowId || 0, routeToDelete } = payload
     return requestWindowMetadata({
       uuid: windowUuid,
       id: windowId
@@ -453,7 +453,7 @@ export const actions: WindowDefinitionActionTree = {
             parentUuid: string
             containerUuid: string
             window: IWindowDataExtended
-            tab: ITabData
+            tab?: ITabData
         }
   ) {
     const { parentUuid, containerUuid } = payload
@@ -476,9 +476,9 @@ export const actions: WindowDefinitionActionTree = {
     context: WindowDefinitionActionContext,
     payload: {
             parentUuid: string
-            window: IWindowDataExtended
+            window?: IWindowDataExtended
             attributeName: string
-            attributeNameControl: string
+            attributeNameControl?: string
             attributeValue: string
         }
   ) {

@@ -3,7 +3,8 @@ import {
   fieldModule,
   formDefinitionModule,
   processDefinitionModule,
-  windowDefinitionModule
+  windowDefinitionModule,
+  browserDefinitionModule
 } from '@/ADempiere/modules/dictionary'
 import Vuex, { StoreOptions } from 'vuex'
 import vuexLocal from '@/ADempiere/shared/plugins/vuex-persist'
@@ -22,6 +23,9 @@ import {
   listProductPriceModule
 } from '@/ADempiere/modules/pos'
 
+import { businessDataModule } from '@/ADempiere/modules/persistence/store/Data'
+import { panelModule } from '@/ADempiere/shared/store/modules/panel'
+import { contextMenuModule } from '@/ADempiere/modules/window/store/ContextMenu'
 import { processModule } from '@/ADempiere/modules/process/store/Process'
 import { fieldValueModule } from '@/ADempiere/shared/store/modules/FieldValue'
 import { reportModule } from '@/ADempiere/modules/report/store/Report'
@@ -67,7 +71,11 @@ const store: StoreOptions<IRootState> = {
     keyLayoutModule,
     orderModule,
     orderLinesModule,
-    listProductPriceModule
+    listProductPriceModule,
+    contextMenuModule,
+    panelModule,
+    businessDataModule,
+    browserDefinitionModule
   },
   getters: getters,
   plugins: [vuexLocal.plugin]

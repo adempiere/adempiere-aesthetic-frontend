@@ -105,10 +105,10 @@ export const actions: LookupActionTree = {
     payload: {
             parentUuid: string
             containerUuid: string
-            columnName: string
+            columnName?: string
             tableName: string
             query: string
-            whereClause: string
+            whereClause?: string
             isAddBlankValue: boolean
             blankValue: any
             valuesList: (string | number)[]
@@ -116,7 +116,7 @@ export const actions: LookupActionTree = {
   ): Promise<ILookupOptions[] | void> | undefined {
     const {
       parentUuid,
-      columnName,
+      columnName = payload.columnName || payload.tableName,
       containerUuid,
       tableName,
       query,
@@ -138,7 +138,7 @@ export const actions: LookupActionTree = {
       }).value
     }
 
-    let parsedWhereClause: string = whereClause
+    let parsedWhereClause: string = whereClause!
     if (String(parsedWhereClause).includes('@')) {
       parsedWhereClause = parseContext({
         parentUuid,

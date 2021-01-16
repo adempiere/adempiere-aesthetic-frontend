@@ -83,12 +83,13 @@ export type INotificationProcessData = Partial<IPrintFormatChild> & Partial<IPro
         option?: PrintFormatOptions
         selection?: any
         record?: any
+        url?: string
+        download?: string
     }
-
 export interface ProcessState {
     inExecution: any[]
     isVisibleDialog: boolean
-    reportObject: {}
+    reportObject: any
     reportList: INotificationProcessData[]
     metadata: Partial<IPanelDataExtended>
     process: INotificationProcessData[]

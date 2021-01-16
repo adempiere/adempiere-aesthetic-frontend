@@ -41,13 +41,13 @@ export const getters: FieldValueGetterTree = {
      * @returns {object|array}
      */
   getValuesView: (state: FieldValueState) => (parameters: {
-        parentUuid: string
+        parentUuid?: string
         containerUuid: string
         isOnlyColumns?: boolean
-        format: string
+        format?: string
     }): IKeyValueObject | KeyValueData[] => {
     const {
-      parentUuid,
+      parentUuid = parameters.parentUuid || '',
       containerUuid,
       isOnlyColumns = parameters.isOnlyColumns || true,
       format = parameters.format || 'array'

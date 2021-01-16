@@ -5,7 +5,7 @@ import { IRootState } from '@/store'
 type FieldGetter = GetterTree<FieldState, IRootState>
 
 export const getters: FieldGetter = {
-  getIsShowedLocation: (state: FieldState) => {
+  getIsShowedLocation: (state: FieldState): boolean => {
     return state.isShowedLocation
   },
   getFieldFromUuid: (state: FieldState) => (uuid: string) => {
@@ -42,7 +42,7 @@ export const getters: FieldGetter = {
       )
     })
   },
-  getFieldLocation: state => {
+  getFieldLocation: (state): any[] => {
     return state.fieldsListLocation
   }
 }

@@ -20,7 +20,7 @@ export const mutations: FieldValueMutationTree = {
      * @param {boolean} isOverWriteParent // overwite parent context values
      */
   updateValueOfField(state: FieldValueState, payload: {
-        parentUuid: string
+        parentUuid?: string
         containerUuid: string
         columnName: string
         value: any
@@ -61,7 +61,7 @@ export const mutations: FieldValueMutationTree = {
           parentUuid: string
           containerUuid: string
           isOverWriteParent: boolean
-          attributes: KeyValueData[]
+          attributes: Partial<KeyValueData>[]
       }): void {
     const { parentUuid, containerUuid, isOverWriteParent } = payload
     payload.attributes.forEach(attribute => {

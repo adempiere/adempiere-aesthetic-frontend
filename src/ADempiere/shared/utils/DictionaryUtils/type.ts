@@ -47,9 +47,9 @@ export type IFieldDataExtendedUtils = IFieldData &
         displayColumn?: string // link to value from selects and table
         displayColumnName?: string // key to display column
         // value attributes
-        value?: string
+        value?: string | Date
         oldValue?: string
-        valueTo?: string
+        valueTo?: string | Date
         parsedDefaultValue?: string
         parsedDefaultValueTo?: string
 
@@ -72,7 +72,19 @@ export type IFieldDataExtendedUtils = IFieldData &
         isComparisonField?: boolean
         isNumericField?: boolean
         isTranslatedField?: boolean
+        // MixinMainPanel
+        handleRequestFocus?: any
+        // Panel
+        isActiveLogics?: boolean
     }
+
+export interface IActionAttributesData {
+    name: string
+    icon: string
+    hidden: boolean
+    isIndex: boolean
+    component: Function
+}
 
 //  Default Action
 // export interface IActionsUtils {

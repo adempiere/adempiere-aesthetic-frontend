@@ -7,15 +7,19 @@ import {
 import { IDrillTablesDataExtended, IReportViewDataExtended } from '../../report'
 import { IPrintFormatDataExtended, IProcessDataExtended } from './VuexType'
 
+export interface Reportable {
+    reportExportType?: ReportExportContextType
+    disabled?: boolean
+    hidden?: boolean
+}
 // Process Definition
-export interface ProcessDefinitionAction extends Actionable {
-    processName: string
+export interface ProcessDefinitionAction extends Actionable, Reportable {
+    processName?: string
     uuid: string
     id: number
-    description: string
-    isReport: boolean
-    isDirectPrint: boolean
-    reportExportType?: ReportExportContextType
+    description?: string
+    isReport?: boolean
+    isDirectPrint?: boolean
 }
 
 export interface SummaryAction extends ProcessDefinitionAction {
@@ -24,7 +28,7 @@ export interface SummaryAction extends ProcessDefinitionAction {
 }
 
 export interface IPrintFormatChild extends ProcessDefinitionAction {
-    printFormatUuid: string
+    printFormatUuid?: string
 }
 
 export interface PrintFormatsAction extends ProcessDefinitionAction {

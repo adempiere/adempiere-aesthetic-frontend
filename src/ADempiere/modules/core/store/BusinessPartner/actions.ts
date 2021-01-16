@@ -16,14 +16,14 @@ export const actions: BPartnerActionTree = {
     context: BPartnerActionContext,
     payload: {
             searchValue: string
-            value: string
-            name: string
-            contactName: string
-            eMail: string
-            postalCode: string
-            phone: string
+            value?: string
+            name?: string
+            contactName?: string
+            eMail?: string
+            postalCode?: string
+            phone?: string
             // Query
-            criteria: number
+            criteria?: number
             pageNumber: number
         }
   ) {
@@ -47,7 +47,7 @@ export const actions: BPartnerActionTree = {
     return requestListBusinessPartner({
       ...payload,
       pageToken: pageToken,
-      pageSize: payload.criteria
+      pageSize: payload.criteria!
     })
       .then((responseBPartnerList: IListBusinessPartnerResponse) => {
         if (token || pageToken) {

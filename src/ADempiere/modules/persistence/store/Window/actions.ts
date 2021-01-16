@@ -727,8 +727,8 @@ export const actions: WindowActionTree = {
     payload: {
             parentUuid: string
             containerUuid: string
-            recordUuid: string
-            recordId: number
+            recordUuid?: string
+            recordId?: number
             row: IKeyValueObject<IValueData>
         }
   ) {
@@ -746,7 +746,7 @@ export const actions: WindowActionTree = {
 
       requestDeleteEntity({
         tableName: panel.tableName,
-        uuid: recordUuid,
+        uuid: recordUuid!,
         id: recordId
       })
         .then((responseDeleteEntity: any) => {
@@ -842,11 +842,11 @@ export const actions: WindowActionTree = {
     payload: {
             parentUuid: string
             containerUuid: string
-            tableName: string
-            isParentTab: boolean
+            tableName?: string
+            isParentTab?: boolean
         }
   ): void {
-    let { tableName, isParentTab } = payload
+    let { tableName = payload.tableName || '', isParentTab } = payload
     const { parentUuid, containerUuid } = payload
 
     if (!tableName || !isParentTab) {
@@ -997,7 +997,7 @@ export const actions: WindowActionTree = {
             isReference?: boolean
             isShowNotification?: boolean
         }
-  ): Promise<any> {
+  ) {
     payload.referenceWhereClause = payload.referenceWhereClause || ''
     payload.isAddRecord = payload.isAddRecord || false
     payload.isLoadAllRecords = payload.isLoadAllRecords || false

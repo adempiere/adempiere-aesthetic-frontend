@@ -12,8 +12,8 @@ export const actions: FieldValueActionTree = {
     payload: {
             parentUuid: string
             containerUuid: string
-            isOverWriteParent: boolean
-            attributes?: KeyValueData[]
+            isOverWriteParent?: boolean
+            attributes?: Partial<KeyValueData>[]
         }
   ) {
     const {

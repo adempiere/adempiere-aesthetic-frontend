@@ -221,3 +221,72 @@ export const recursiveTreeSearch = (data: IRecursiveTreeSearchParams) => {
     return found
   }
 }
+// Note: Check types
+export function convertFieldsListToShareLink(fieldsList: any[]) {
+  let attributesListLink = ''
+  fieldsList.map((fieldItem: any) => {
+    // assign values
+    let value = fieldItem.value
+    let valueTo = fieldItem.valueTo
+
+    if (value) {
+      if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath) || typeof value === 'object') {
+        value = value.getTime()
+      }
+      attributesListLink += `${fieldItem.columnName}=${encodeURIComponent(value)}&`
+    }
+
+    if (fieldItem.isRange && valueTo) {
+      if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath) || typeof value === 'object') {
+        valueTo = valueTo.getTime()
+      }
+      attributesListLink += `${fieldItem.columnName}_To=${encodeURIComponent(valueTo)}&`
+    }
+  })
+
+  return attributesListLink.slice(0, -1)
+}
+
+let partialValue = ''
+export function calculationValue(value: any, event: any): string | null | undefined {
+  const isZero = Number(value) === 0
+  // eslint-disable-next-line
+  const VALIDATE_EXPRESSION: RegExp = new RegExp(/[\d\/.()%\*\+\-]/gim)
+  const isValidKey = VALIDATE_EXPRESSION.test(event.key)
+  if (event.type === 'keydown' && isValidKey) {
+    partialValue += event.key
+    const operation: string = !value || isZero ? partialValue : String(value) + partialValue
+    if (operation) {
+      try {
+        // eslint-disable-next-line no-eval
+        return eval(operation) + ''
+      } catch (error) {
+        return null
+      }
+    }
+  } else if (event.type === 'click') {
+    if (value) {
+      try {
+        // eslint-disable-next-line no-eval
+        return eval(value) + ''
+      } catch (error) {
+        return null
+      }
+    }
+  } else {
+    if ((event.key === 'Backspace' || event.key === 'Delete') && value) {
+      try {
+        // eslint-disable-next-line no-eval
+        return eval(value) + ''
+      } catch (error) {
+        return null
+      }
+    } else {
+      return null
+    }
+  }
+}
+
+export function clearVariables() {
+  partialValue = ''
+}

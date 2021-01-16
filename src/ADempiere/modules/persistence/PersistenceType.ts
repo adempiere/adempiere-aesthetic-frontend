@@ -13,6 +13,7 @@ export type KeyValueData<T = any> = {
     key: string
     value: T
     // Optional
+    valueTo?: T
     valueType?: string
 }
 
@@ -106,12 +107,12 @@ export interface IResponseImageData {
 export interface IBrowserSearchParams {
     uuid: string
     parametersList: any[]
-    tableName: string
+    tableName?: string
     query: string
     whereClause: string
     orderByClause: string
-    limit: number
-    pageSize: number
+    limit?: number
+    pageSize?: number
     pageToken: string
 }
 
@@ -221,7 +222,7 @@ export interface IReferenceListDataExtended extends IReferenceListData {
 export interface IWindowOldRoute {
     path: string
     fullPath: string
-    query: {}
+    query: any
 }
 
 export interface WindowState {
@@ -229,10 +230,10 @@ export interface WindowState {
         containerUuid: string
     }[]
     references: IReferenceListDataExtended[]
-    currentRecord: {}
+    currentRecord: any
     windowOldRoute: IWindowOldRoute
     dataLog: IDataLog
-    tabSequenceRecord: []
+    tabSequenceRecord: any[]
     totalResponse: number
     totalRequest: number
 }

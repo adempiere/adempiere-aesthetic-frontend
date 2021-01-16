@@ -1,0 +1,19 @@
+<template>
+    <el-select
+        v-model="columnsFixed"
+        :filterable="!isMobile"
+        :placeholder="$t('components.fixedleItems')"
+        multiple
+        size="mini"
+        collapse-tags
+        value-key="key"
+        @change="addField"
+    >
+        <el-option
+            v-for="(item, key) in columnListAvailable"
+            :key="key"
+            :label="item.name"
+            :value="item.columnName"
+        />
+    </el-select>
+</template>

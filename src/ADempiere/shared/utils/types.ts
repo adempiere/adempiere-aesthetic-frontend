@@ -25,9 +25,9 @@ export interface ImagePathData {
 
 export interface IRequestImageData {
     file: string
-    width: number
-    height: number
-    operation: string
+    width?: number
+    height?: number
+    operation?: string
 }
 
 export interface IKeyValueObject<T = any> {
@@ -38,4 +38,37 @@ export interface IResponseList<T> {
     nextPageToken: string
     recordCount: number
     list: T[]
+}
+
+export enum Namespaces {
+    System = 'systemModule',
+    BusinessPartner = 'businessPartnerModule',
+    Dashboard = 'dashboardModule',
+    Field = 'fieldModule',
+    FormDefinition = 'formDefinitionModule',
+    ProcessDefinition = 'processDefinitionModule',
+    Preference = 'preferenceModule',
+    WindowDefinition = 'windowDefinitionModule',
+    Language = 'languageModule',
+    Persistence = 'persistenceModule',
+    Window = 'windowModule',
+    Event = 'eventModule',
+    Utils = 'utilsModule',
+    Lookup = 'lookupModule',
+    CallOutControl = 'callOutControlModule',
+    ChatEntries = 'chatEntriesModule',
+    ContainerInfo = 'containerInfoModule',
+    Report = 'reportModule',
+    FieldValue = 'fieldValueModule',
+    Process = 'processModule',
+    PointOfSales = 'pointOfSalesModule',
+    Collection = 'collectionModule',
+    KeyLayout = 'keyLayoutModule',
+    Order = 'orderModule',
+    OrderLines = 'orderLinesModule',
+    ListProductPrice = 'listProductPriceModule',
+    ContextMenu = 'contextMenuModule',
+    Panel = 'panelModule',
+    BusinessData = 'businessDataModule',
+    BrowserDefinition = 'browserDefinitionModule'
 }

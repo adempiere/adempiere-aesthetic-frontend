@@ -1,6 +1,6 @@
 import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
-import { IOrderData, OrderState } from '../../POSType'
+import { IListOrderItemData, IOrderData, OrderState } from '../../POSType'
 
 type OrderGetterTree = GetterTree<OrderState, IRootState>
 
@@ -8,14 +8,14 @@ export const getters: OrderGetterTree = {
   getOrder: (state: OrderState): IOrderData | undefined => {
     return state.order
   },
-  getListOrder: (state: OrderState) => {
+  getListOrder: (state: OrderState): IListOrderItemData | Partial<IListOrderItemData> => {
     if (!(state.listOrder)) {
       return {
         isLoaded: false,
         isReload: true,
         recordCount: 0,
         nextPageToken: undefined,
-        ordersList: []
+        list: []
       }
     }
     return state.listOrder

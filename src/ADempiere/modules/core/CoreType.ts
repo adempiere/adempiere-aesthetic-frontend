@@ -288,20 +288,20 @@ export interface IProductPriceData {
 
 export interface IGetProductPriceParams {
     searchValue: string
-    upc: string
-    value: string
-    name: string
-    priceListUuid: string
-    businessPartnerUuid: string
-    warehouseUuid: string
-    validFrom: number
+    upc?: string
+    value?: string
+    name?: string
+    priceListUuid?: string
+    businessPartnerUuid?: string
+    warehouseUuid?: string
+    validFrom?: number
 }
 
 export interface IOrganizationsListParams {
     roleUuid: string
-    roleId: number
-    pageToken: string
-    pageSize: number
+    roleId?: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface IOrganizationsListResponse {
@@ -312,9 +312,9 @@ export interface IOrganizationsListResponse {
 
 export interface IWarehousesListParams {
     organizationUuid: string
-    organizationId: number
-    pageToken: string
-    pageSize: number
+    organizationId?: number
+    pageToken?: string
+    pageSize?: number
 }
 
 export interface IWarehousesListResponse {
@@ -325,7 +325,7 @@ export interface IWarehousesListResponse {
 
 export interface IGetCountryDefinitionParams {
     id: number
-    uuid: string
+    uuid?: string
 }
 
 export interface ILanguagesListParams {
@@ -371,12 +371,12 @@ export interface IGetBusinessPartnerParams {
 
 export interface IListBusinessPartnerParams {
     searchValue: string
-    value: string
-    name: string
-    contactName: string
-    eMail: string
-    postalCode: string
-    phone: string
+    value?: string
+    name?: string
+    contactName?: string
+    eMail?: string
+    postalCode?: string
+    phone?: string
     // Query
     // criteria,
     pageSize: number

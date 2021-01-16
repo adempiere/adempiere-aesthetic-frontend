@@ -1,0 +1,373 @@
+import Template from './template.vue'
+import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
+import ContextInfo from './Popover/ContextInfo'
+import DocumentStatus from './Popover/DocumentStatus'
+import OperatorComparison from './Popover/OperatorComparison'
+import Calculator from './Popover/Calculator'
+import Translated from './Popover/Translated'
+import FieldText from './FieldText'
+import FieldSelectMultiple from './FieldSelectMultiple'
+import { FieldAutocomplete } from './FieldAutocomplete'
+import FieldBinary from './FieldBinary'
+import FieldButton from './FieldButton'
+import FieldColor from './FieldColor'
+import FieldDate from './FieldDate'
+import FieldImage from './FieldImage'
+import FieldLocation from './FieldLocation'
+import FieldLocator from './FieldLocator'
+import FieldNumber from './FieldNumber'
+import FieldSelect from './FieldSelect'
+import FieldTextLong from './FieldTextLong'
+import FieldTime from './FieldTime'
+import FieldYesNo from './FieldYesNo'
+import {
+  evalutateTypeField,
+  fieldIsDisplayed
+} from '../../utils/DictionaryUtils'
+import { PanelContextType } from '../../utils/DictionaryUtils/ContextMenuType'
+import {
+  DEFAULT_SIZE,
+  IFieldReferencesType,
+  ISizeData
+} from '../../utils/references'
+import { Namespaces } from '../../utils/types'
+
+@Component({
+  name: 'FieldDefinition',
+  components: {
+    ContextInfo,
+    DocumentStatus,
+    OperatorComparison,
+    Translated,
+    Calculator
+  },
+  mixins: [Template]
+})
+export default class FieldDefinition extends Vue {
+    @Prop({ type: Object }) metadataField?: any = {}
+    @Prop({
+      type: [Number, String, Boolean, Array, Object, Date],
+      default: undefined
+    })
+    recordDataFields?: any = undefined
+
+    @Prop({ type: Boolean, default: false }) inGroup?: boolean = false
+    @Prop({ type: Boolean, default: false }) inTable?: boolean = false
+    @Prop({ type: Boolean, default: false }) isAdvancedQuery?: boolean = false
+    public field: any = {}
+
+    // Computed properties
+    // load the component that is indicated in the attributes of received property
+    get componentRender() {
+      if (!(this.field.componentPath || !this.field.isSupported)) {
+        return () => new FieldText() // import('@/components/ADempiere/Field/FieldText')
+      }
+      if (this.isSelectCreated!) {
+        return () => new FieldSelectMultiple() // import('@/components/ADempiere/Field/FieldSelectMultiple')
+      }
+
+      let field
+      switch (this.field.componentPath) {
+        case 'FieldAutocomplete':
+          field = () => new FieldAutocomplete() // import('@/components/ADempiere/Field/FieldAutocomplete')
+          break
+        case 'FieldBinary':
+          field = () => new FieldBinary() // import('@/components/ADempiere/Field/FieldBinary')
+          break
+        case 'FieldButton':
+          field = () => new FieldButton() // import('@/components/ADempiere/Field/FieldButton')
+          break
+        case 'FieldColor':
+          field = () => new FieldColor() // import('@/components/ADempiere/Field/FieldColor')
+          break
+        case 'FieldDate':
+          field = () => new FieldDate() // import('@/components/ADempiere/Field/FieldDate')
+          break
+        case 'FieldImage':
+          field = () => new FieldImage() // import('@/components/ADempiere/Field/FieldImage')
+          break
+        case 'FieldLocation':
+          field = () => new FieldLocation() // import('@/components/ADempiere/Field/FieldLocation')
+          break
+        case 'FieldLocator':
+          field = () => new FieldLocator() // import('@/components/ADempiere/Field/FieldLocator')
+          break
+        case 'FieldNumber':
+          field = () => new FieldNumber() // import('@/components/ADempiere/Field/FieldNumber')
+          break
+        case 'FieldSelect':
+          field = () => new FieldSelect() // import('@/components/ADempiere/Field/FieldSelect')
+          break
+        case 'FieldText':
+          field = () => new FieldText() // import('@/components/ADempiere/Field/FieldText')
+          break
+        case 'FieldTextLong':
+          field = () => new FieldTextLong() // import('@/components/ADempiere/Field/FieldTextLong')
+          break
+        case 'FieldTime':
+          field = () => new FieldTime() // import('@/components/ADempiere/Field/FieldTime')
+          break
+        case 'FieldYesNo':
+          field = () => new FieldYesNo() // import('@/components/ADempiere/Field/FieldYesNo')
+          break
+      }
+      return field
+      // return () => import(`@/components/ADempiere/Field/${this.field.componentPath}`)
+    }
+
+    get fieldAttributes() {
+      return {
+        ...this.field,
+        inTable: this.inTable,
+        isAdvancedQuery: this.isAdvancedQuery,
+        // DOM properties
+        required: this.isMandatory,
+        readonly: this.isReadOnly,
+        displayed: this.isDisplayed,
+        disabled: !this.field.isActive,
+        isSelectCreated: this.isSelectCreated
+      }
+    }
+
+    get isDisplayed(): boolean {
+      if (this.isAdvancedQuery) {
+        return this.field.isShowedFromUser
+      }
+      return (
+        fieldIsDisplayed(this.field) &&
+            (this.isMandatory || this.field.isShowedFromUser || this.inTable)
+      )
+    }
+
+    get isMandatory(): boolean {
+      if (this.isAdvancedQuery) {
+        return false
+      }
+      return this.field.isMandatory || this.field.isMandatoryFromLogic
+    }
+
+    get isReadOnly(): boolean {
+      if (this.isAdvancedQuery) {
+        if (['NULL', 'NOT_NULL'].includes(this.field.operator)) {
+          return true
+        }
+        return false
+      }
+
+      if (!this.field.isActive) {
+        return true
+      }
+
+      const isUpdateableAllFields: boolean =
+            this.field.isReadOnly || this.field.isReadOnlyFromLogic
+
+      if (this.field.panelType === PanelContextType.Window) {
+        if (this.field.isAlwaysUpdateable) {
+          return false
+        }
+        if (
+          this.field.isProcessingContext ||
+                this.field.isProcessedContext
+        ) {
+          return true
+        }
+
+        // TODO: Evaluate record uuid without route.action
+        // edit mode is diferent to create new
+        let isWithRecord: boolean = this.field.recordUuid !== 'create-new'
+        if (this.inTable) {
+          isWithRecord = this.field.recordUuid
+        }
+
+        return (
+          (!this.field.isUpdateable && isWithRecord) ||
+                isUpdateableAllFields || this.field.isReadOnlyFromForm
+        )
+      } else if (this.field.panelType === PanelContextType.Browser) {
+        if (this.inTable) {
+          // browser result
+          return this.field.isReadOnly
+        }
+        // query criteria
+        return this.field.isReadOnlyFromLogic
+      }
+      // other type of panels (process/report)
+      return Boolean(isUpdateableAllFields)
+    }
+
+    get isFieldOnly(): any {
+      if (this.inTable || this.field.isFieldOnly) {
+        return undefined
+      }
+      return this.field.name
+    }
+
+    get isSelectCreated(): boolean {
+      return (
+            this.isAdvancedQuery! &&
+            ['IN', 'NOT_IN'].includes(this.field.operator) &&
+            !['FieldBinary', 'FieldDate', 'FieldSelect', 'FieldYesNo'].includes(
+              this.field.componentPath
+            )
+      )
+    }
+
+    get getWidth(): number {
+      return this.$store.getters[Namespaces.Utils + '/' + 'getWidthLayout']
+    }
+
+    get classField(): string {
+      if (this.inTable) {
+        return 'in-table'
+      }
+      return ''
+    }
+
+    get sizeFieldResponsive(): ISizeData {
+      if (!this.isDisplayed) {
+        return DEFAULT_SIZE
+      }
+
+      let sizeField: Partial<ISizeData> = {}
+      if (this.field.size) {
+        // set field size property
+        sizeField = this.field.size
+      }
+      if (!sizeField) {
+        // set default size
+        sizeField = DEFAULT_SIZE
+      }
+
+      const newSizes: Partial<ISizeData> = {}
+
+      // in table set max width, used by browser result and tab children of window
+      if (this.inTable) {
+        newSizes.xs = 24
+        newSizes.sm = 24
+        newSizes.md = 24
+        newSizes.lg = 24
+        newSizes.xl = 24
+        return <ISizeData>newSizes
+      }
+      if (this.isAdvancedQuery) {
+        newSizes.xs = 24
+        newSizes.sm = 24
+        newSizes.md = 12
+        newSizes.lg = 12
+        newSizes.xl = 12
+        return <ISizeData>newSizes
+      }
+
+      if (this.field.panelType === PanelContextType.Window) {
+        // TODO: Add FieldYesNo and name.length > 12 || 14
+        if (this.field.componentPath === 'FieldTextLong') {
+          return <ISizeData>sizeField
+        }
+        // two columns if is mobile or desktop and show record navigation
+        if (
+          this.getWidth <= 768 ||
+                (this.getWidth >= 768 && this.field.isShowedRecordNavigation)
+        ) {
+          newSizes.xs = 12
+          newSizes.sm = 12
+          newSizes.md = 12
+          newSizes.lg = 12
+          newSizes.xl = 12
+          return <ISizeData>newSizes
+        } else if (this.inGroup && this.getWidth >= 992) {
+          newSizes.xs = sizeField.xs
+          newSizes.sm = sizeField.sm! * 2
+          if (this.getWidth <= 1199) {
+            newSizes.md = sizeField.md
+          } else {
+            newSizes.md = sizeField.md! * 2
+          }
+          if (this.field.groupAssigned !== '') {
+            newSizes.lg = sizeField.lg! * 2
+            newSizes.xl = sizeField.xl! * 2
+          } else {
+            newSizes.lg = sizeField.lg
+            newSizes.xl = sizeField.xl
+          }
+          return <ISizeData>newSizes
+        }
+        return <ISizeData>sizeField
+      }
+      return <ISizeData>sizeField
+    }
+
+    get processOrderUuid(): any[] {
+      return this.$store.getters[Namespaces.Utils + '' + 'getOrders']
+    }
+
+    get isDocuemntStatus(): boolean {
+      if (
+        this.field.panelType === PanelContextType.Window &&
+            !this.isAdvancedQuery
+      ) {
+        if (
+          this.field.columnName === 'DocStatus' &&
+                this.processOrderUuid
+        ) {
+          return true
+        }
+      }
+      return false
+    }
+
+    get isContextInfo(): boolean {
+      if (this.field.panelType !== PanelContextType.Window) {
+        return false
+      }
+      return (
+        Boolean(
+          this.field.contextInfo && this.field.contextInfo.isActive
+        ) ||
+            Boolean(
+              this.field.reference && this.field.reference.zoomWindows.length
+            )
+      )
+    }
+
+    @Watch('metadataField')
+    handleMetaadataFieldChange(value: any) {
+      this.field = value
+    }
+
+    // Methods
+    focusField() {
+      if (
+        this.field.handleRequestFocus ||
+            (this.field.displayed && !this.field.readonly)
+      ) {
+        // eslint-disable-next-line
+        // @ts-ignore
+        this.$refs[this.field.columnName].requestFocus()
+      }
+    }
+
+    // Hooks
+    created() {
+      // assined field with prop
+      this.field = this.metadataField
+      if (this.field.isCustomField && !this.field.componentPath) {
+        let componentReference: Partial<IFieldReferencesType> = <
+                IFieldReferencesType
+            >evalutateTypeField(this.field.displayType)
+        if (!componentReference) {
+          componentReference = {
+            componentPath: 'FieldText'
+          }
+        }
+        this.field = {
+          ...this.metadataField,
+          isActive: true,
+          isDisplayed: true,
+          isDisplayedFromLogic: true,
+          isShowedFromUser: true,
+          //
+          componentPath: componentReference.componentPath
+        }
+      }
+    }
+}

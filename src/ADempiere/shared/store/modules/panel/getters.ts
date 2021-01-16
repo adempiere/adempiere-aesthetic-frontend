@@ -33,6 +33,26 @@ export const getters: PanelGetterTree = {
     }
     return panel.fieldsList
   },
+  getFieldsIsDisplayed: (state: PanelState, getters) => (containerUuid: string) => {
+    const fieldsList: IFieldDataExtendedUtils[] = getters.getFieldsListFromPanel(containerUuid)
+    let fieldsIsDisplayed = []
+    const fieldsNotDisplayed: any[] = []
+    if (fieldsList.length) {
+      fieldsIsDisplayed = fieldsList.filter(itemField => {
+        const isMandatory = itemField.isMandatory && itemField.isMandatoryFromLogic
+        if (fieldIsDisplayed(itemField) && (isMandatory || itemField.isShowedFromUser)) {
+          return true
+        }
+        fieldsNotDisplayed.push(itemField)
+      })
+    }
+    return {
+      fieldIsDisplayed,
+      fieldsNotDisplayed,
+      totalField: fieldsList.length,
+      isDisplayed: Boolean(fieldsIsDisplayed.length)
+    }
+  },
   getParsedDefaultValues: (state: PanelState, getters) => (payload: {
         parentUuid: string
         containerUuid: string
@@ -469,6 +489,138 @@ export const getters: PanelGetterTree = {
     const fieldsList: IFieldDataExtendedUtils[] = getters.getFieldsListFromPanel(containerUuid)
     return fieldsList.find((itemField: IFieldDataExtendedUtils) => {
       return itemField.columnName === columnName
+    })
+  },
+  /**
+   * Determinate if panel is ready fron send, all fiedls mandatory and displayed with values
+   * @param {string}  containerUuid
+   * @param {object}  row, data to compare if is table
+   * @returns {object}
+   */
+  isNotReadyForSubmit: (state: PanelState, getters, rootState, rootGetters) => (containerUuid: string, row: any): IFieldDataExtendedUtils | undefined => {
+    const fieldsList: IFieldDataExtendedUtils[] = getters.getFieldsListFromPanel(containerUuid)
+
+    const fieldNotReadyToSend: IFieldDataExtendedUtils | undefined = fieldsList.find((fieldItem: IFieldDataExtendedUtils) => {
+      const isMandatory: boolean = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
+      const isDisplayed: boolean = fieldIsDisplayed(fieldItem) && (fieldItem.isShowedFromUser || isMandatory)
+
+      const { columnName } = fieldItem
+      if (isDisplayed && isMandatory) {
+        let value
+        // used when evaluate data in table
+        if (row) {
+          value = row[columnName]
+        } else {
+          value = rootGetters.getValueOfField({
+            parentUuid: fieldItem.parentUuid,
+            containerUuid,
+            columnName
+          })
+        }
+
+        if (!(value)) {
+          return true
+        }
+      }
+    })
+
+    return fieldNotReadyToSend
+  },
+  getParametersToShare: (state: PanelState, getters) => (parameters: {
+    containerUuid: string
+    withOut?: any[]
+    isOnlyDisplayed?: boolean
+  }): string => {
+    const { containerUuid, withOut = parameters.withOut || [], isOnlyDisplayed = parameters.isOnlyDisplayed || false } = parameters
+    let fieldsList: IFieldDataExtendedUtils[] = getters.getFieldsListFromPanel(containerUuid)
+    let attributesListLink = ''
+    if (withOut.length) {
+      fieldsList = fieldsList.filter((fieldItem: IFieldDataExtendedUtils) => {
+        // columns to exclude
+        if (withOut.includes(fieldItem.columnName)) {
+          return false
+        }
+        return true
+      })
+    }
+
+    if (isOnlyDisplayed) {
+      fieldsList = fieldsList.filter((fieldItem: IFieldDataExtendedUtils) => {
+        const isMandatory = Boolean(fieldItem.isMandatory || fieldItem.isMandatoryFromLogic) && !fieldItem.isAdvancedQuery
+        const isDisplayed = fieldIsDisplayed(fieldItem) && (fieldItem.isShowedFromUser || isMandatory)
+        if (isDisplayed) {
+          return true
+        }
+        return false
+      })
+    }
+
+    fieldsList.map((fieldItem: IFieldDataExtendedUtils) => {
+      // assign values
+      let value: Date | number = new Date(fieldItem.value!)
+      let valueTo: Date | number = new Date(fieldItem.valueTo!)
+
+      if (value) {
+        if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath!)) {
+          value = value.getTime()
+        }
+        attributesListLink += `${fieldItem.columnName}=${encodeURIComponent(Number(value))}&`
+      }
+
+      if (fieldItem.isRange && (valueTo)) {
+        if (['FieldDate', 'FieldTime'].includes(fieldItem.componentPath!)) {
+          valueTo = valueTo.getTime()
+        }
+        attributesListLink += `${fieldItem.columnName}_To=${encodeURIComponent(Number(valueTo))}&`
+      }
+    })
+
+    return attributesListLink.slice(0, -1)
+  },
+  // Obtain empty obligatory fields
+  getFieldsListEmptyMandatory: (state: PanelState, getters) => (parameters: {
+    containerUuid: string
+    fieldsList?: IFieldDataExtendedUtils[]
+  }): string[] => {
+    const { containerUuid } = parameters
+    let { fieldsList } = parameters
+
+    if (!fieldsList) {
+      fieldsList = getters.getFieldsListFromPanel(containerUuid)
+    }
+    const fieldsEmpty: string[] = []
+    // all optionals (not mandatory) fields
+    fieldsList!.forEach((fieldItem: IFieldDataExtendedUtils) => {
+      const value: any = getters.getValueOfField({
+        parentUuid: fieldItem.parentUuid,
+        containerUuid,
+        columnName: fieldItem.columnName
+      })
+      if (!value) {
+        const isMandatory: boolean = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
+        if (fieldIsDisplayed(fieldItem) && isMandatory) {
+          fieldsEmpty.push(fieldItem.name)
+        }
+      }
+    })
+    return fieldsEmpty
+  },
+  /**
+   * Show all available fields not mandatory to show, used in components panel/filterFields.vue
+   * @param {string} containerUuid
+   * @param {boolean} isEvaluateShowed
+   */
+  getFieldsListNotMandatory: (state: PanelState, getters) => (params: { containerUuid: string, isEvaluateShowed?: boolean}): IFieldDataExtendedUtils[] => {
+    const { containerUuid, isEvaluateShowed = params.isEvaluateShowed || true } = params
+    // all optionals (not mandatory) fields
+    return getters.getFieldsListFromPanel(containerUuid).filter((fieldItem: IFieldDataExtendedUtils) => {
+      const isMandatory: boolean = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
+      if (!isMandatory) {
+        if (isEvaluateShowed) {
+          return fieldIsDisplayed(fieldItem)
+        }
+        return !isMandatory
+      }
     })
   }
 }
