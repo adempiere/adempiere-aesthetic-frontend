@@ -1,5 +1,5 @@
 import { ActionTree, ActionContext } from 'vuex'
-import { PreferenceState } from './state'
+import { IPrefrenceData, PreferenceState } from './state'
 import { IRootState } from '@/store'
 import { typeValue } from '@/ADempiere/shared/utils/valueUtils'
 
@@ -7,7 +7,7 @@ type PreferenceActionTree = ActionTree<PreferenceState, IRootState>
 type PreferenceActionContext = ActionContext<PreferenceState, IRootState>
 
 export const actions : PreferenceActionTree = {
-  setPreferenceContext(context: PreferenceActionContext, objectValue: any) {
+  setPreferenceContext(context: PreferenceActionContext, objectValue: IPrefrenceData) {
     context.commit('setPreferenceContext', objectValue)
   },
   setMultiplePreference(context: PreferenceActionContext, payload: {
