@@ -11,6 +11,9 @@ export interface ISettingsState {
   showTagsView: boolean
   showSidebarLogo: boolean
   sidebarTextTheme: boolean
+  // ADempiere
+  supportPinyinSearch: boolean
+  showContextMenu?: boolean
 }
 
 @Module({ dynamic: true, store, name: 'settings' })
@@ -21,6 +24,9 @@ class Settings extends VuexModule implements ISettingsState {
   public showTagsView = defaultSettings.showTagsView
   public showSidebarLogo = defaultSettings.showSidebarLogo
   public sidebarTextTheme = defaultSettings.sidebarTextTheme
+  // ADempiere
+  public supportPinyinSearch = defaultSettings.supportPinyinSearch
+  public showContextMenu = defaultSettings.showContextMenu
 
   @Mutation
   private CHANGE_SETTING(payload: { key: string, value: any }) {
