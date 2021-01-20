@@ -10,7 +10,7 @@ import settings from './settings'
 
 NProgress.configure({ showSpinner: false })
 
-const whiteList = ['/login', '/auth-redirect']
+const whiteList = ['/login', '/auth-redirect', '/userEnrollment', '/createPassword', '/forgotPassword', '/passwordReset']
 
 const getPageTitle = (key: string) => {
   const hasKey = i18n.te(`route.${key}`)
@@ -33,14 +33,14 @@ router.beforeEach(async(to: Route, _: Route, next: any) => {
       NProgress.done()
     } else {
       // Check whether the user has obtained his permission roles
-      if (UserModule.roles.length === 0) {
+      if (!UserModule.isSession) {
         try {
           // Note: roles must be a object array! such as: ['admin'] or ['developer', 'editor']
           // await UserModule.GetUserInfo()
           await UserModule.GetSessionInfo()
-          const roles = UserModule.roles
+          // const roles = UserModule.roles
           // Generate accessible routes map based on role
-          PermissionModule.GenerateRoutes(roles)
+          // PermissionModule.GenerateRoutes()
           // Dynamically add accessible routes
           router.addRoutes(PermissionModule.dynamicRoutes)
           // Hack: ensure addRoutes is complete
@@ -48,7 +48,7 @@ router.beforeEach(async(to: Route, _: Route, next: any) => {
           next({ ...to, replace: true })
         } catch (err) {
           // Remove token and redirect to login page
-          UserModule.ResetToken()
+          await UserModule.ResetToken()
           Message.error(err || 'Has Error')
           next(`/login?redirect=${to.path}`)
           NProgress.done()

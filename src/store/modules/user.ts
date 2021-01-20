@@ -13,7 +13,6 @@ import { requestRolesList, requestChangeRole } from '@/ADempiere/modules/user/Us
 import { setCurrentRole, getCurrentRole, removeCurrentRole, getCurrentOrganization, removeCurrentOrganization, setCurrentOrganization, getCurrentWarehouse, removeCurrentWarehouse, setCurrentWarehouse } from '@/ADempiere/shared/utils/auth'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import language from '@/ADempiere/shared/lang'
-import { ADempiereResponse } from '@/ADempiere/shared/services/types'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 export interface IUserState {
@@ -152,10 +151,10 @@ class User extends VuexModule implements IUserState {
             return
           }
 
-          const { result: token } = logInResponse
+          const { result: resultedToken } = logInResponse
 
-          this.SET_TOKEN(token)
-          setToken(token)
+          this.SET_TOKEN(resultedToken)
+          setToken(resultedToken)
           resolve(logInResponse)
         })
         .catch(error => {
@@ -262,20 +261,20 @@ class User extends VuexModule implements IUserState {
           }
 
           // set current role
-          if (!(this.role)) {
-            let role
+          if (!this.role) {
+            let roleFounded
             const roleSession = getCurrentRole()
             if (roleSession) {
-              role = rolesList.find((itemRole: IRoleData) => {
+              roleFounded = rolesList.find((itemRole: IRoleData) => {
                 return itemRole.uuid === roleSession
               })
             }
-            if (!(role)) {
-              role = rolesList[0]
+            if (!(roleFounded)) {
+              roleFounded = rolesList[0]
             }
 
-            if ((role)) {
-              this.SET_ROLE(role)
+            if ((roleFounded)) {
+              this.SET_ROLE(roleFounded)
             }
           }
 
@@ -338,7 +337,6 @@ class User extends VuexModule implements IUserState {
   // user logout
   @Action
   public async Logout() {
-    const token: string = this.token
     return await new Promise((resolve, reject) => {
       this.SET_TOKEN('')
       this.SET_ROLES([])
@@ -623,18 +621,17 @@ public async ChangeRole(params: {
 
   @Action
   public async ChangeRoles(role: string) {
-    // Dynamically modify permissions
-    const token = role + '-token'
-    this.SET_TOKEN(token)
-    setToken(token)
-    // await this.GetUserInfo()
-    resetRouter()
-    // Generate dynamic accessible routes based on roles
-    PermissionModule.GenerateRoutes(this.roles)
-    // Add generated routes
-    router.addRoutes(PermissionModule.dynamicRoutes)
-    // Reset visited views and cached views
-    TagsViewModule.delAllViews()
+    const founded = this.rolesList.find((item) => {
+      return item.name === role
+    })
+
+    if (founded) {
+      this.ChangeRole({
+        organizationUuid: getCurrentOrganization()!,
+        roleUuid: founded!.uuid,
+        warehouseUuid: getCurrentWarehouse()!
+      })
+    }
   }
 
   @Action
@@ -666,7 +663,7 @@ public async ChangeRole(params: {
   }
 
   // current role info
-  get getRole(): Partial<IRoleData> {
+  get getRole() {
     return this.role
   }
 
