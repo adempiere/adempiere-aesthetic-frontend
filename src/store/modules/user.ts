@@ -2,8 +2,7 @@ import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-dec
 // import { login, logout, getUserInfo } from '@/api/users'
 // import { login, logout, requestUserInfoFromSession } from '@/ADempiere/modules/user/UserService/user'
 import { getToken, setToken, removeToken } from '@/utils/cookies'
-import router, { resetRouter } from '@/router'
-import { PermissionModule } from './permission'
+import { resetRouter } from '@/router'
 import { TagsViewModule } from './tags-view'
 // import store from '@/store'
 import store from '@/ADempiere/shared/store'
@@ -415,7 +414,7 @@ class User extends VuexModule implements IUserState {
   public async ChangeOrganization(params: {
     organizationUuid: string
     organizationId: number
-    isCloseAllViews: boolean
+    isCloseAllViews?: boolean
   }) {
     const { organizationId, organizationUuid, isCloseAllViews = params.isCloseAllViews || true } = params
     // TODO: Check if there are no tagViews in the new routes to close them, and
