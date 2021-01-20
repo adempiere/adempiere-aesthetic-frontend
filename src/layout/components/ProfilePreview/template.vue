@@ -7,7 +7,7 @@
         {{ this.currentRole.clientName }}
       </p>
     </router-link>
-    <!-- <roles-navbar /> -->
+    <roles-navbar />
   </div>
 </template>
 
