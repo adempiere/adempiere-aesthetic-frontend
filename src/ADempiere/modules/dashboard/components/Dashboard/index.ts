@@ -1,8 +1,4 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import RecentItems from './RecentItems'
-import UserFavorites from './UserFavorites'
-import DocStatus from './DocStatus'
-import Calendar from './Calendar'
 
 @Component({
   name: 'Dashboard'
@@ -20,19 +16,19 @@ export default class Dashboard extends Vue {
         return
       }
 
-      let dashboard: () => RecentItems | UserFavorites | DocStatus | Calendar
+      let dashboard
       switch (this.metadata.fileName) {
         case 'recentItems':
-          dashboard = () => new RecentItems()
+          dashboard = () => import('@/ADempiere/modules/dashboard/components/Dashboard/RecentItems')
           break
         case 'userfavorites':
-          dashboard = () => new UserFavorites()
+          dashboard = () => import('@/ADempiere/modules/dashboard/components/Dashboard/UserFavorites')
           break
         case 'docstatus':
-          dashboard = () => new DocStatus()
+          dashboard = () => import('@/ADempiere/modules/dashboard/components/Dashboard/DocStatus')
           break
         default:
-          dashboard = () => new Calendar()
+          dashboard = () => import('@/ADempiere/modules/dashboard/components/Dashboard/Calendar')
           break
       }
       return dashboard
