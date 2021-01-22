@@ -1,7 +1,7 @@
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { ActionTree, ActionContext } from 'vuex'
-import language from '@/lang'
+import language from '@/ADempiere/shared/lang'
 import { fieldIsDisplayed } from '@/ADempiere/shared/utils/DictionaryUtils'
 import { BrowserDefinitionState, IBrowserDataExtended, IPanelDataExtended } from '@/ADempiere/modules/dictionary'
 import { IEntityData, IEntityListData, IRecordSelectionData } from '../../PersistenceType'

@@ -4,7 +4,7 @@ import {
   IFormDataExtended,
   requestForm
 } from '@/ADempiere/modules/dictionary'
-import language from '@/lang'
+import language from '@/ADempiere/shared/lang'
 import { ActionTree, ActionContext } from 'vuex'
 import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'

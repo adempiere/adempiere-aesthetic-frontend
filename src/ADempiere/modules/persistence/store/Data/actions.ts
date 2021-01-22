@@ -29,7 +29,7 @@ import {
   ISelectionToServerData,
   KeyValueData
 } from '../../PersistenceType'
-import language from '@/lang'
+import language from '@/ADempiere/shared/lang'
 import {
   requestGetPrivateAccess,
   requestLockPrivateAccess,

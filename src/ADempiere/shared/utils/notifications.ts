@@ -1,7 +1,7 @@
 import { Message, Notification } from 'element-ui'
 import { ElMessageComponent, ElMessageOptions } from 'element-ui/types/message'
 import { ElNotificationOptions } from 'element-ui/types/notification'
-import language from '@/lang'
+import language from '@/ADempiere/shared/lang'
 import VueI18n from 'vue-i18n'
 // import router from '@/router'
 

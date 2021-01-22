@@ -1,6 +1,6 @@
 import { exportJsonToExcel } from '@/ADempiere/shared/vendor/Export2Excel'
 import { exportTxtToZip } from '@/ADempiere/shared/vendor/Export2Zip'
-import language from '@/lang'
+import language from '@/ADempiere/shared/lang'
 import XLSX from 'xlsx'
 
 export const supportedTypes = {
