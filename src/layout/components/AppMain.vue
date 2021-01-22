@@ -1,5 +1,5 @@
 <template>
-  <section class="app-main">
+  <section id="appMain" class="app-main">
     <transition
       name="fade-transform"
       mode="out-in"
@@ -14,6 +14,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { TagsViewModule } from '@/store/modules/tags-view'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 @Component({
   name: 'AppMain'
@@ -25,6 +26,34 @@ export default class extends Vue {
 
   get key() {
     return this.$route.path
+  }
+
+  get openRoute() {
+    return this.$store.state.utilsModule.openRoute
+  }
+
+  // Hooks
+  created() {
+    this.readRouteParameters()
+  }
+
+  // Methods
+  public readRouteParameters(): void {
+    if (this.$store.getters[Namespaces.Utils + '/' + 'getIsLoadedOpenRoute']) {
+      return
+    }
+    this.$store.dispatch(Namespaces.Utils + '/' + 'setOpenRoute', {
+      path: this.$route.path,
+      name: this.$route.name,
+      fullPath: this.$route.fullPath,
+      params: {
+        ...this.$route.params
+      },
+      query: {
+        ...this.$route.query
+      },
+      isLoaded: true
+    })
   }
 }
 </script>

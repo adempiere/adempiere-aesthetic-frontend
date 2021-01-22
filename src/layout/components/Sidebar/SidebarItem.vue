@@ -1,12 +1,12 @@
 <template>
   <div
-    v-if="!item.meta || !item.meta.hidden"
+    v-if="item.meta && !item.meta.hidden"
     :class="[isCollapse ? 'simple-mode' : 'full-mode', {'first-level': isFirstLevel}]"
   >
     <template v-if="!alwaysShowRootMenu && theOnlyOneChild && !theOnlyOneChild.children">
       <sidebar-item-link
         v-if="theOnlyOneChild.meta"
-        :to="resolvePath(theOnlyOneChild.path)"
+        :to="theOnlyOneChild"
       >
         <el-menu-item
           :index="resolvePath(theOnlyOneChild.path)"
@@ -28,7 +28,7 @@
       :index="resolvePath(item.path)"
       popper-append-to-body
     >
-      <template slot="title">
+      <template v-if="item.meta && item.meta.title && item.meta.icon" slot="title">
         <svg-icon
           v-if="item.meta && item.meta.icon"
           :name="item.meta.icon"
@@ -36,7 +36,7 @@
         <span
           v-if="item.meta && item.meta.title"
           slot="title"
-        >{{ $t('route.' + item.meta.title) }}</span>
+        >{{ ($te('route.'+item.meta.title)) ? $t('route.'+item.meta.title) : item.meta.title }}</span>
       </template>
       <template v-if="item.children">
         <sidebar-item

@@ -1,34 +1,23 @@
 <template>
-  <div
-    class="sidebar-logo-container"
-    :class="{'collapse': collapse}"
-  >
+  <div class="sidebar-logo-container" :class="{'collapse': collapse}">
     <transition name="sidebarLogoFade">
-      <router-link
-        v-if="collapse"
-        key="collapse"
-        class="sidebar-logo-link"
-        to="/"
-      >
-        <img
-          src="favicon.ico"
-          class="sidebar-logo"
-        >
+      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link sidebar-logo-link-close" to="/">
+        <el-tooltip placement="right">
+          <div slot="content">{{ getRole.name }} | {{ getRole.clientName }}</div>
+          <img v-if="logo" :src="logo" class="sidebar-logo">
+          <h1 v-else class="sidebar-title">{{ title }} </h1>
+        </el-tooltip>
       </router-link>
-      <router-link
-        v-else
-        key="expand"
-        class="sidebar-logo-link"
-        to="/"
-      >
-        <img
-          src="favicon.ico"
-          class="sidebar-logo"
-        >
-        <h1 class="sidebar-title">
-          {{ title }}
-        </h1>
-      </router-link>
+      <div v-else key="expand" class="sidebar-logo-link">
+        <img v-if="logo" :src="logo" class="sidebar-logo" @click="dashboard()">
+        <h1 class="sidebar-title" @click="dashboard()">{{ title }}</h1><br>
+        <el-tooltip placement="right">
+          <div slot="content">{{ getRole.name }} | {{ getRole.clientName }}</div>
+          <p class="sidebar-sub-title" @click="profile()">
+            {{ getRole.name }} | {{ getRole.clientName }}
+          </p>
+        </el-tooltip>
+      </div>
     </transition>
   </div>
 </template>
@@ -36,6 +25,8 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import settings from '@/settings'
+import { UserModule } from '@/store/modules/user'
+import { IRoleData } from '@/ADempiere/modules/user'
 
 @Component({
   name: 'SidebarLogo'
@@ -44,6 +35,25 @@ export default class extends Vue {
   @Prop({ required: true }) private collapse!: boolean
 
   private title = settings.title
+  private logo = 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4?imageView2/1/w/80/h/80'
+
+  // Computed properties
+  get getRole(): Partial<IRoleData> {
+    return UserModule.role
+  }
+
+  // Methods
+  profile() {
+    this.$router.push({
+      path: '/profile/index?'
+    })
+  }
+
+  dashboard() {
+    this.$router.push({
+      path: '/'
+    })
+  }
 }
 </script>
 
@@ -61,7 +71,7 @@ export default class extends Vue {
   position: relative;
   width: 100%;
   height: 50px;
-  line-height: 50px;
+  // line-height: 50px;
   background: #2b2f3a;
   text-align: center;
   overflow: hidden;
@@ -75,18 +85,37 @@ export default class extends Vue {
       height: 32px;
       vertical-align: middle;
       margin-right: 12px;
+      cursor: pointer;
     }
 
     & .sidebar-title {
       display: inline-block;
+      cursor: pointer;
       margin: 0;
       color: #fff;
       font-weight: 600;
-      line-height: 50px;
+      // line-height: 50px;
       font-size: 14px;
       font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
       vertical-align: middle;
     }
+
+    & .sidebar-sub-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      // display: inline-block;
+      cursor: pointer;
+      margin: 0;
+      color: #fff;
+      font-size: 12px;
+      font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
+      vertical-align: middle;
+    }
+  }
+
+  & .sidebar-logo-link-close {
+    line-height: 50px;
   }
 
   &.collapse {
