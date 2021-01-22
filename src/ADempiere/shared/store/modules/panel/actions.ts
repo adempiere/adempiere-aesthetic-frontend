@@ -5,9 +5,8 @@ import { ActionContext, ActionTree } from 'vuex'
 import { IRootState } from '@/store'
 import { IRangeAttributeData, PanelState } from './type'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
-import { Route, RouterOptions } from 'vue-router'
+import { Route } from 'vue-router'
 import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
-import router from '@/router'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import language from '@/ADempiere/shared/lang'
 import { IRecordSelectionData, KeyValueData } from '@/ADempiere/modules/persistence/PersistenceType'
@@ -15,6 +14,7 @@ import { convertObjectToKeyValue } from '@/ADempiere/shared/utils/valueFormat'
 import { typeValue } from '@/ADempiere/shared/utils/valueUtils'
 import evaluator from '@/ADempiere/shared/utils/evaluator'
 import { getContext, parseContext } from '@/ADempiere/shared/utils/contextUtils'
+import router from '@/router'
 
 type PanelActionContext = ActionContext<PanelState, IRootState>
 type PanelActionTree = ActionTree<PanelState, IRootState>
@@ -320,7 +320,7 @@ export const actions: PanelActionTree = {
         return
       }
 
-      const oldRoute: Route = router.app.$router.currentRoute
+      const oldRoute: Route = context.rootGetters.router.currentRoute
       const defaultAttributes: IRangeAttributeData[] = context.getters.getParsedDefaultValues({
         parentUuid,
         containerUuid,
@@ -331,16 +331,16 @@ export const actions: PanelActionTree = {
       if (panelType === 'window' && isNewRecord) {
         // redirect to create new record
         if (!(oldRoute.query && oldRoute.query.action === 'create-new')) {
-          router.push({
-            name: oldRoute.name!,
-            params: {
-              ...oldRoute.params
-            },
-            query: {
-              ...oldRoute.query,
-              action: 'create-new'
-            }
-          }, undefined)
+          // router.push({
+          //   name: oldRoute.name!,
+          //   params: {
+          //     ...oldRoute.params
+          //   },
+          //   query: {
+          //     ...oldRoute.query,
+          //     action: 'create-new'
+          //   }
+          // })
         }
         showMessage({
           message: language.t('data.createNewRecord').toString(),
