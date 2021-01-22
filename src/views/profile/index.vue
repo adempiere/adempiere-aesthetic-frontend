@@ -15,10 +15,11 @@
           <el-card>
             <el-tabs v-model="activeTab">
               <el-tab-pane
-                label="Activity"
-                name="activity"
+                :label="$t('profile.role')"
+                name="role"
               >
-                <activity />
+                <!-- <activity /> -->
+                <role />
               </el-tab-pane>
               <el-tab-pane
                 label="Timeline"
@@ -47,6 +48,7 @@ import Account from './components/Account.vue'
 import Activity from './components/Activity.vue'
 import Timeline from './components/Timeline.vue'
 import UserCard from './components/UserCard.vue'
+import Role from '@/ADempiere/shared/components/Profile/Role'
 
 export interface IProfile {
   name: string
@@ -65,6 +67,7 @@ const defaultProfile: IProfile = {
 @Component({
   name: 'Profile',
   components: {
+    Role,
     Account,
     Activity,
     Timeline,

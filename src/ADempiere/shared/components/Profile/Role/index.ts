@@ -1,5 +1,5 @@
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { getLocale } from '@/lang'
+import { getLocale } from '@/ADempiere/shared/lang'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import Template from './template.vue'
 

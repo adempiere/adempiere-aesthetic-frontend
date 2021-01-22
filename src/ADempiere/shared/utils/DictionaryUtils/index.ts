@@ -6,7 +6,7 @@ import REFERENCES, {
   IFieldReferencesType
 } from '@/ADempiere/shared/utils/references'
 import { FIELD_OPERATORS_LIST } from '@/ADempiere/shared/utils/dataUtils'
-import language from '@/lang'
+import language from '@/ADempiere/shared/lang'
 import { IFieldData } from '@/ADempiere/modules/field'
 import {
   parseContext,

@@ -3,7 +3,7 @@
     v-if="item.meta && !item.meta.hidden"
     :class="[isCollapse ? 'simple-mode' : 'full-mode', {'first-level': isFirstLevel}]"
   >
-    <template v-if="!alwaysShowRootMenu && theOnlyOneChild && !theOnlyOneChild.children">
+    <template v-if="isNotParent">
       <sidebar-item-link
         v-if="theOnlyOneChild.meta"
         :to="theOnlyOneChild"
@@ -19,7 +19,7 @@
           <span
             v-if="theOnlyOneChild.meta.title"
             slot="title"
-          >{{ $t('route.' + theOnlyOneChild.meta.title) }}</span>
+          >{{ ($te('route.'+item.meta.title)) ? $t('route.'+item.meta.title) : item.meta.title }}</span>
         </el-menu-item>
       </sidebar-item-link>
     </template>
@@ -73,12 +73,20 @@ export default class extends Vue {
   @Prop({ default: false }) private isCollapse!: boolean
   @Prop({ default: true }) private isFirstLevel!: boolean
   @Prop({ default: '' }) private basePath!: string
+  private noShowingChildren = false
 
   get alwaysShowRootMenu() {
     if (this.item.meta && this.item.meta.alwaysShow) {
       return true
     }
     return false
+  }
+
+  get isNotParent(): boolean {
+    const hasOneshowingChild: boolean = this.showingChildNumber === 1 || this.showingChildNumber === 0
+    const hasOnlyOne: boolean = (this.theOnlyOneChild !== null) && !this.theOnlyOneChild.children
+    const validation: boolean = hasOneshowingChild && (!this.theOnlyOneChild?.children || this.noShowingChildren || this.theOnlyOneChild === null)
+    return validation
   }
 
   get showingChildNumber() {
@@ -90,6 +98,9 @@ export default class extends Vue {
           return true
         }
       })
+      if (showingChildren.length === 0) {
+        this.noShowingChildren = true
+      }
       return showingChildren.length
     }
     return 0

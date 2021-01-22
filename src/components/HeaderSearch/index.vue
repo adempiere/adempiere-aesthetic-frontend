@@ -38,7 +38,7 @@ import { RouteConfig } from 'vue-router'
 import { AppModule, DeviceType } from '@/store/modules/app'
 import { PermissionModule } from '@/store/modules/permission'
 import MixinI18n from '@/ADempiere/shared/utils/i18n'
-import i18n from '@/lang' // Internationalization
+import i18n from '@/ADempiere/shared/lang' // Internationalization
 
 @Component({
   name: 'HeaderSearch',

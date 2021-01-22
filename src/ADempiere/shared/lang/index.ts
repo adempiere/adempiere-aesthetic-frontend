@@ -52,7 +52,7 @@ const messages = {
   }
 }
 
-const dateTimeFormats = {
+const dateTimeFormats: VueI18n.DateTimeFormats = {
   en: {
     long: {
       year: 'numeric',

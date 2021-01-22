@@ -1,49 +1,45 @@
 <template>
   <div class="drawer-container">
     <div>
-      <h3 class="drawer-title">
-        {{ $t('settings.title') }}
-      </h3>
+      <h3 class="drawer-title">{{ $t('settings.title') }}</h3>
 
       <div class="drawer-item">
         <span>{{ $t('settings.theme') }}</span>
-        <theme-picker
-          style="float: right;height: 26px;margin: -3px 8px 0 0;"
-          @change="themeChange"
-        />
+        <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="themeChange" />
       </div>
 
       <div class="drawer-item">
-        <span>{{ $t('settings.showTagsView') }}</span>
-        <el-switch
-          v-model="showTagsView"
-          class="drawer-switch"
-        />
+        <span>{{ $t('settings.tagsView') }}</span>
+        <el-switch v-model="showTagsView" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
-        <span>{{ $t('settings.showSidebarLogo') }}</span>
-        <el-switch
-          v-model="showSidebarLogo"
-          class="drawer-switch"
-        />
+        <span>{{ $t('settings.showContextMenu') }}</span>
+        <el-switch v-model="showContextMenu" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
         <span>{{ $t('settings.fixedHeader') }}</span>
-        <el-switch
-          v-model="fixedHeader"
-          class="drawer-switch"
-        />
+        <el-switch v-model="fixedHeader" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
-        <span>{{ $t('settings.sidebarTextTheme') }}</span>
-        <el-switch
-          v-model="sidebarTextTheme"
-          class="drawer-switch"
-        />
+        <span>{{ $t('settings.sidebarLogo') }}</span>
+        <el-switch v-model="showSidebarLogo" class="drawer-switch" />
       </div>
+      <a v-if="isShowJob" href="https://panjiachen.github.io/vue-element-admin-site/zh/job/" target="_blank" class="job-link">
+        <el-alert
+          title="部门目前非常缺人！有兴趣的可以点击了解详情。坐标: 字节跳动"
+          type="success"
+          :closable="false"
+        />
+      </a>
+
+      <div v-if="lang === 'zh'" class="drawer-item">
+        <span>菜单支持拼音搜索</span>
+        <el-switch v-model="supportPinyinSearch" class="drawer-switch" />
+      </div>
+
     </div>
   </div>
 </template>
@@ -60,6 +56,10 @@ import ThemePicker from '@/components/ThemePicker/index.vue'
   }
 })
 export default class extends Vue {
+  get isShowJob() {
+    return this.$store.getters.language === 'zh'
+  }
+
   get fixedHeader() {
     return SettingsModule.fixedHeader
   }
@@ -92,6 +92,32 @@ export default class extends Vue {
     SettingsModule.ChangeSetting({ key: 'sidebarTextTheme', value })
   }
 
+  get showContextMenu(): boolean {
+    return SettingsModule.showContextMenu!
+  }
+
+  set showContextMenu(value: boolean) {
+    this.$store.dispatch('settings/changeSetting', {
+      key: 'showContextMenu',
+      value: value
+    })
+  }
+
+  get supportPinyinSearch(): boolean {
+    return SettingsModule.supportPinyinSearch
+  }
+
+  set supportPinyinSearch(value: boolean) {
+    this.$store.dispatch('settings/changeSetting', {
+      key: 'supportPinyinSearch',
+      value: value
+    })
+  }
+
+  get lang(): string {
+    return this.$store.getters.language
+  }
+
   private themeChange(value: string) {
     SettingsModule.ChangeSetting({ key: 'theme', value })
   }
@@ -120,6 +146,14 @@ export default class extends Vue {
 
   .drawer-switch {
     float: right
+  }
+
+  .job-link{
+    display: block;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 0;
   }
 }
 </style>

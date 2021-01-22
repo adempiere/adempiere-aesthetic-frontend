@@ -5,7 +5,7 @@ import { Message } from 'element-ui'
 import { Route } from 'vue-router'
 import { UserModule } from '@/store/modules/user'
 import { PermissionModule } from '@/store/modules/permission'
-import i18n from '@/lang' // Internationalization
+import i18n from '@/ADempiere/shared/lang' // Internationalization
 import settings from './settings'
 
 NProgress.configure({ showSpinner: false })
@@ -38,11 +38,12 @@ router.beforeEach(async(to: Route, _: Route, next: any) => {
           // Note: roles must be a object array! such as: ['admin'] or ['developer', 'editor']
           // await UserModule.GetUserInfo()
           await UserModule.GetSessionInfo()
+          const accessRoutes = await PermissionModule.GenerateRoutes()
           // const roles = UserModule.roles
           // Generate accessible routes map based on role
           // PermissionModule.GenerateRoutes()
           // Dynamically add accessible routes
-          router.addRoutes(PermissionModule.dynamicRoutes)
+          router.addRoutes(accessRoutes)
           // Hack: ensure addRoutes is complete
           // Set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })

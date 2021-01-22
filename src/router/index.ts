@@ -130,6 +130,7 @@ export const constantRoutes: RouteConfig[] = [
     path: '/guide',
     component: Layout,
     redirect: '/guide/index',
+    meta: { title: 'guide', icon: 'guide', noCache: true, breadcrumb: false },
     children: [
       {
         path: 'index',
@@ -138,7 +139,8 @@ export const constantRoutes: RouteConfig[] = [
         meta: {
           title: 'guide',
           icon: 'guide',
-          noCache: true
+          noCache: true,
+          isIndex: true
         }
       }
     ]

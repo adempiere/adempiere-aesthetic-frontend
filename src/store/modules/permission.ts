@@ -63,7 +63,7 @@ class Permission extends VuexModule implements IPermissionState {
   public GenerateRoutes(organizationId?: number) {
     organizationId = organizationId || 0
     return new Promise<RouteConfig[]>((resolve) => {
-      const organization = UserModule.getOrganization
+      const organization = UserModule.organization
       let organizationUuid = ''
 
       if (organization) {
@@ -71,7 +71,7 @@ class Permission extends VuexModule implements IPermissionState {
         organizationUuid = organization.uuid!
       }
 
-      const role: Partial<IRoleData> = store.getters['user/getRole'] // UserModule.getRole
+      const role: Partial<IRoleData> = UserModule.role // store.getters['user/getRole'] // UserModule.getRole
       let roleUuid = ''
       let clientId = 0
       if (role) {
