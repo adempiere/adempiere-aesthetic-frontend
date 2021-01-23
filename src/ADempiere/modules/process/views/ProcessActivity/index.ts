@@ -2,6 +2,7 @@ import { IProcessData } from '@/ADempiere/modules/dictionary'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import { AppModule } from '@/store/modules/app'
+import VueI18n from 'vue-i18n'
 import { Component, Vue } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
 import { INotificationProcessData } from '../../ProcessType'
@@ -167,11 +168,11 @@ export default class ProcessActivity extends Vue {
       return status
     }
 
-    generateTitle(title: string): string {
+    generateTitle(title: string): VueI18n.TranslateResult {
       const hasKey: boolean = this.$te('table.ProcessActivity.' + title)
       if (hasKey) {
         // $t :this method from vue-i18n, inject in @/lang/index.js
-        const translatedTitle = this.$t('table.ProcessActivity.' + title).toString()
+        const translatedTitle = this.$t('table.ProcessActivity.' + title)
         return translatedTitle
       }
       return title

@@ -7,7 +7,7 @@ import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { ActionContext, ActionTree } from 'vuex'
 import { runCallOutRequest } from '../../UIService/rule'
 import { CallOutControlState, ICallOutData } from '../../UITypes'
-import language from '@/lang'
+import language from '@/ADempiere/shared/lang'
 import { IPanelParameters } from '@/ADempiere/shared/store/modules/panel/type'
 
 type CallOutControlActionContext = ActionContext<CallOutControlState, IRootState>

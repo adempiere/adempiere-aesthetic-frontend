@@ -26,7 +26,7 @@ export const actions: DashboardActionTree = {
       }
     }
 
-    return new Promise(resolve => {
+    return new Promise<IDashboardDataExtended[]>(resolve => {
       requestListDashboards({
         roleId: payload.roleId,
         roleUuid: payload.roleUuid

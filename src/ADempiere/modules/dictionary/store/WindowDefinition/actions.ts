@@ -7,7 +7,7 @@ import {
   IWindowDataExtended,
   WindowDefinitionState
 } from '@/ADempiere/modules/dictionary/DictionaryType/VuexType'
-import language from '@/lang'
+import language from '@/ADempiere/shared/lang'
 import { generateField } from '@/ADempiere/shared/utils/DictionaryUtils'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import {

@@ -4,27 +4,34 @@
       slot="header"
       class="clearfix"
     >
-      <span>About me</span>
+      <span>{{ $t('profile.aboutMe') }}</span>
     </div>
 
     <div class="user-profile">
       <div class="box-center">
         <pan-thumb
-          :image="user.avatar"
+          :image="avatarResize"
           :height="'100px'"
           :width="'100px'"
           :hoverable="false"
         >
           <div>Hello</div>
-          {{ user.roles }}
+          {{ currentRole.name }}
         </pan-thumb>
       </div>
       <div class="box-center">
         <div class="user-name text-center">
-          {{ user.name }}
+          {{ currentRole.name }}
         </div>
+        <br />
+
         <div class="user-role text-center text-muted">
-          {{ user.roles | uppercaseFirstChar }}
+        <div class="user-header">
+          {{ $t('profile.availableRoles') }}
+        </div>
+        <li v-for="(item, key) in rolesList" :key="key">
+          {{ item.name | uppercaseFirstChar }}
+        </li>
         </div>
       </div>
     </div>
@@ -75,6 +82,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { IProfile } from '../index.vue'
 import PanThumb from '@/components/PanThumb/index.vue'
+import { getImagePath } from '@/ADempiere/shared/utils/resource'
 
 @Component({
   name: 'UserCard',
@@ -84,6 +92,31 @@ import PanThumb from '@/components/PanThumb/index.vue'
 })
 export default class extends Vue {
   @Prop({ required: true }) private user!: IProfile
+
+  // Computed properties
+  get currentRole() {
+    return this.$store.state.user.role
+  }
+
+  get rolesList() {
+    return this.$store.state.user.rolesList
+    // return this.$store.getters['user/getRoles']
+  }
+
+  get avatarResize(): string {
+    const defaultAvatar = 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4?imageView2/1/w/80/h/80'
+    if (!(this.user.avatar) || defaultAvatar.includes(this.user.avatar)) {
+      return defaultAvatar
+    }
+
+    const { uri } = getImagePath({
+      file: this.user.avatar,
+      width: 100,
+      height: 100
+    })
+
+    return uri
+  }
 }
 </script>
 
@@ -110,6 +143,12 @@ export default class extends Vue {
     padding-top: 10px;
     font-weight: 400;
     font-size: 14px;
+    .user-header {
+      border-bottom: 1px solid #dfe6ec;
+      font-weight: bold;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
   }
 
   .box-social {

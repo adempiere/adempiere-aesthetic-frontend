@@ -30,7 +30,7 @@ export function requestGetLocationAddress(
   return requestGetEntity({
     tableName,
     id,
-    uuid
+    uuid: uuid!
   })
 }
 
@@ -42,7 +42,7 @@ export function requestUpdateLocationAddress(
   return requestUpdateEntity({
     tableName,
     id,
-    uuid,
+    uuid: uuid!,
     attributes: attributesList
   })
 }

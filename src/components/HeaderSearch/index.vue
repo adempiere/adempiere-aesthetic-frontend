@@ -16,13 +16,13 @@
       filterable
       default-first-option
       remote
-      placeholder="Search"
+      :placeholder="$t('table.dataTable.search')"
       class="header-search-select"
       @change="change"
     >
       <el-option
         v-for="item in options"
-        :key="item.path"
+        :key="item.name"
         :value="item"
         :label="item.meta.title.join(' > ')"
       />
@@ -33,21 +33,27 @@
 <script lang="ts">
 import path from 'path'
 import Fuse from 'fuse.js' // A lightweight fuzzy-search module
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Vue, Watch } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
-import { AppModule } from '@/store/modules/app'
+import { AppModule, DeviceType } from '@/store/modules/app'
 import { PermissionModule } from '@/store/modules/permission'
-import i18n from '@/lang' // Internationalization
+import MixinI18n from '@/ADempiere/shared/utils/i18n'
+import i18n from '@/ADempiere/shared/lang' // Internationalization
 
 @Component({
-  name: 'HeaderSearch'
+  name: 'HeaderSearch',
+  mixins: [MixinI18n]
 })
-export default class extends Vue {
+export default class extends Mixins(MixinI18n) {
   private search = ''
   private show = false
   private options: RouteConfig[] = []
   private searchPool: RouteConfig[] = []
   private fuse?: Fuse<RouteConfig>
+
+  get isMobile() {
+    return AppModule.device === DeviceType.Mobile
+  }
 
   get routes() {
     return PermissionModule.routes
@@ -99,7 +105,26 @@ export default class extends Vue {
   }
 
   private change(route: RouteConfig) {
-    this.$router.push(route.path)
+    if (route.name) {
+      const query: any = {}
+      if (route.meta && route.meta.type === 'window') {
+        query.tabParent = 0
+      }
+
+      this.$router.push({
+        name: route.name,
+        params: {
+          childs: route.meta.childs
+        },
+        query
+      })
+    } else {
+      this.$router.push({
+        path: route.path
+      })
+    }
+
+    // this.$router.push(route.path)
     this.search = ''
     this.options = []
     this.$nextTick(() => {
@@ -131,22 +156,24 @@ export default class extends Vue {
 
     for (const router of routes) {
       // skip hidden router
-      if (router.meta && router.meta.hidden) {
-        continue
-      }
+      // if (router.meta && router.meta.hidden) {
+      //   continue
+      // }
 
       const data: RouteConfig = {
         path: path.resolve(basePath, router.path),
         meta: {
-          title: [...prefixTitle]
+          ...router.meta,
+          title: [...prefixTitle],
+          name: router.name
         }
       }
 
       if (router.meta && router.meta.title) {
         // generate internationalized title
-        const i18ntitle = i18n.t(`route.${router.meta.title}`).toString()
+        const i18ntitle = this.generateTitle(router.meta.title)
         data.meta.title = [...data.meta.title, i18ntitle]
-        if (router.redirect !== 'noRedirect') {
+        if (router.redirect !== 'noRedirect' && router.name !== 'Report Viewer' && !router.meta.isIndex) {
           // only push the routes with title
           // special case: need to exclude parent router without redirect
           res.push(data)
@@ -209,7 +236,7 @@ export default class extends Vue {
 
   &.show {
     .header-search-select {
-      width: 210px;
+      width: 150px;
       margin-left: 10px;
     }
   }

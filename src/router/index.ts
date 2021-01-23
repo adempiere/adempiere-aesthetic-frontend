@@ -73,9 +73,32 @@ export const constantRoutes: RouteConfig[] = [
     meta: { hidden: true }
   },
   {
+    path: '/userEnrollment',
+    component: () => import('@/ADempiere/shared/components/Login/UserEnrollment'),
+    meta: { hidden: true }
+  },
+  {
+    path: '/forgotPassword',
+    component: () => import('@/ADempiere/shared/components/Login/ForgotPassword'),
+    meta: { hidden: true }
+  },
+  {
+    path: '/passwordReset',
+    name: 'passwordReset',
+    component: () => import('@/ADempiere/shared/components/Login/ChangePassword'),
+    meta: { hidden: true }
+  },
+  {
+    path: '/createPassword',
+    name: 'createPassword',
+    component: () => import('@/ADempiere/shared/components/Login/ChangePassword'),
+    meta: { hidden: true }
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+    meta: { title: 'dashboard', icon: 'dashboard', affix: true, breadcrumb: false },
     children: [
       {
         path: 'dashboard',
@@ -84,7 +107,9 @@ export const constantRoutes: RouteConfig[] = [
         meta: {
           title: 'dashboard',
           icon: 'dashboard',
-          affix: true
+          affix: true,
+          breadcrumb: false,
+          isIndex: true
         }
       }
     ]
@@ -105,6 +130,7 @@ export const constantRoutes: RouteConfig[] = [
     path: '/guide',
     component: Layout,
     redirect: '/guide/index',
+    meta: { title: 'guide', icon: 'guide', noCache: true, breadcrumb: false },
     children: [
       {
         path: 'index',
@@ -113,7 +139,8 @@ export const constantRoutes: RouteConfig[] = [
         meta: {
           title: 'guide',
           icon: 'guide',
-          noCache: true
+          noCache: true,
+          isIndex: true
         }
       }
     ]
@@ -210,7 +237,7 @@ export const asyncRoutes: RouteConfig[] = [
     redirect: '/example/list',
     meta: {
       title: 'example',
-      icon: 'example'
+      icon: 'el-icon-s-help'
     },
     children: [
       {

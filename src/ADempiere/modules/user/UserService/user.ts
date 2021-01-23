@@ -3,7 +3,6 @@ import {
   ApiRest as requestRest,
   evaluateResponse
 } from '@/ADempiere/shared/services/instances'
-import { AxiosPromise } from 'axios'
 import {
   IMenuData,
   IMenuParams,
@@ -19,7 +18,7 @@ import { convertMenu, convertSession } from '@/ADempiere/modules/user'
  * @param {string} password
  */
 
-export function login(data: ILoginParams): AxiosPromise<any> {
+export function login(data: ILoginParams) {
   const { userName, password } = data
   return requestRest({
     url: '/user/login',
@@ -66,7 +65,8 @@ export function requestSessionInfo(token: string): Promise<ISessionData> {
   })
     .then(evaluateResponse)
     .then(responseSession => {
-      return convertSession(responseSession)
+      const session = convertSession(responseSession)
+      return session
     })
 }
 

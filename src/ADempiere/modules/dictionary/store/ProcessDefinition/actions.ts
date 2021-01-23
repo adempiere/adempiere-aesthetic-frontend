@@ -8,7 +8,7 @@ import {
 import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { generateProcess } from '@/ADempiere/shared/utils/DictionaryUtils'
-import language from '@/lang'
+import language from '@/ADempiere/shared/lang'
 
 type ProcessDefinitionActionContext = ActionContext<
     ProcessDefinitionState,

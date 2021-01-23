@@ -10,7 +10,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { AppModule, DeviceType } from '@/store/modules/app'
+import { Component, Ref, Vue, Watch } from 'vue-property-decorator'
 
 const tagSpacing = 4
 
@@ -20,6 +21,19 @@ const tagSpacing = 4
 export default class extends Vue {
   get scrollWrapper() {
     return (this.$refs.scrollContainer as Vue).$refs.wrap as HTMLElement
+  }
+
+  get isMobile(): boolean {
+    return AppModule.device === DeviceType.Mobile
+  }
+
+  @Watch('isMobile')
+  hanldeIsMobileChange(value: boolean) {
+    if (value) {
+      ((this.$refs.scrollContainer as Vue).$refs.resize as HTMLElement).style.display = 'flex'
+    } else {
+      ((this.$refs.scrollContainer as Vue).$refs.resize as HTMLElement).style.display = ''
+    }
   }
 
   mounted() {

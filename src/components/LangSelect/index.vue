@@ -66,6 +66,9 @@ export default class extends Vue {
   private handleSetLanguage(lang: string) {
     this.$i18n.locale = lang
     AppModule.SetLanguage(lang)
+    if (this.$route.path !== '/login') {
+      location.reload()
+    }
     this.$message({
       message: 'Switch Language Success',
       type: 'success'

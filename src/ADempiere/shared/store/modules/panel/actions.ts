@@ -5,7 +5,7 @@ import { ActionContext, ActionTree } from 'vuex'
 import { IRootState } from '@/store'
 import { IRangeAttributeData, PanelState } from './type'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
-import { Route } from 'vue-router'
+import { Route, RouterOptions } from 'vue-router'
 import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
 import router from '@/router'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
@@ -297,15 +297,15 @@ export const actions: PanelActionTree = {
       valueAttribute: true
     })
   },
-  /**
-   * Set default values to panel
-   * @param {string}  parentUuid
-   * @param {string}  containerUuid
-   * @param {string}  panelType
-   * @param {boolean} isNewRecord
-   * @param {array}   fieldsList
-   * TODO: Evaluate if it is necessary to parse the default values
-   */
+  // /**
+  //  * Set default values to panel
+  //  * @param {string}  parentUuid
+  //  * @param {string}  containerUuid
+  //  * @param {string}  panelType
+  //  * @param {boolean} isNewRecord
+  //  * @param {array}   fieldsList
+  //  * TODO: Evaluate if it is necessary to parse the default values
+  //  */
   setDefaultValues(context: PanelActionContext, params: {
     parentUuid: string
     containerUuid: string
@@ -320,7 +320,7 @@ export const actions: PanelActionTree = {
         return
       }
 
-      const oldRoute = router.app.$route // ._route
+      const oldRoute: Route = router.app.$router.currentRoute
       const defaultAttributes: IRangeAttributeData[] = context.getters.getParsedDefaultValues({
         parentUuid,
         containerUuid,

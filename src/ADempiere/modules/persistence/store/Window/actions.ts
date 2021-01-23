@@ -22,7 +22,7 @@ import {
   KeyValueData,
   WindowState
 } from '@/ADempiere/modules/persistence/PersistenceType'
-import language from '@/lang'
+import language from '@/ADempiere/shared/lang'
 import { Route } from 'vue-router'
 import { typeValue } from '@/ADempiere/shared/utils/valueUtils'
 import {
