@@ -57,7 +57,6 @@ export default class FieldSelect extends Mixins(MixinField) {
     }
 
     get getterLookupAll(): ILookupOptions[] {
-      console.log('entro aqui')
       const allOptions = this.$store.getters[
         Namespaces.Lookup + '/' + 'getLookupAll'
       ]({

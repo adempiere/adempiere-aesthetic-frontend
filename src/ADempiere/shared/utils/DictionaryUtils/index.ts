@@ -695,8 +695,7 @@ export function convertAction(action: any): IActionAttributesData {
     icon: '',
     hidden: false,
     isIndex: false,
-    // component: () => import('@/views/ADempiere/Unsupported')
-    component: () => undefined
+    component: () => import('@/ADempiere/shared/views/Unsupported')
   }
 
   switch (action) {
@@ -711,20 +710,17 @@ export function convertAction(action: any): IActionAttributesData {
     case 'P':
       actionAttributes.name = 'process'
       actionAttributes.icon = 'component'
-      // actionAttributes.component = () => import('@/views/ADempiere/Process')
-      actionAttributes.component = () => undefined
+      actionAttributes.component = () => import('@/ADempiere/modules/process/views/Process')
       break
     case 'R':
       actionAttributes.name = 'report'
       actionAttributes.icon = 'skill'
-      // actionAttributes.component = () => import('@/views/ADempiere/Process')
-      actionAttributes.component = () => undefined
+      actionAttributes.component = () => import('@/ADempiere/modules/process/views/Process')
       break
     case 'S':
       actionAttributes.name = 'browser'
       actionAttributes.icon = 'search'
-      // actionAttributes.component = () => import('@/views/ADempiere/Browser')
-      actionAttributes.component = () => undefined
+      actionAttributes.component = () => import('@/ADempiere/modules/persistence/views/Browser')
       break
     case 'T':
       actionAttributes.name = 'task'
@@ -733,22 +729,19 @@ export function convertAction(action: any): IActionAttributesData {
     case 'W':
       actionAttributes.name = 'window'
       actionAttributes.icon = 'tab'
-      // actionAttributes.component = () => import('@/views/ADempiere/Window')
-      actionAttributes.component = () => undefined
+      actionAttributes.component = () => import('@/ADempiere/modules/window/views/Window')
       break
     case 'X':
       actionAttributes.name = 'form'
       actionAttributes.icon = 'form'
-      // actionAttributes.component = () => import('@/views/ADempiere/Form')
-      actionAttributes.component = () => undefined
+      actionAttributes.component = () => import('@/ADempiere/modules/dictionary/views/Form')
       break
     default:
       actionAttributes.name = 'summary'
       actionAttributes.icon = 'nested'
       // actionAttributes.hidden = true
       actionAttributes.isIndex = true
-      // actionAttributes.component = () => import('@/views/ADempiere/Summary')
-      actionAttributes.component = () => undefined
+      actionAttributes.component = () => import('@/ADempiere/shared/views/Summary')
       break
   }
   return actionAttributes

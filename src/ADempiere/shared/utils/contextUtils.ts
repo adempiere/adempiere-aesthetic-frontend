@@ -2,6 +2,7 @@ import store from '@/ADempiere/shared/store'
 import { convertBooleanToString } from './valueFormat'
 import { IReferenceData } from '@/ADempiere/modules/field'
 import evaluator from '@/ADempiere/shared/utils/evaluator'
+import { Namespaces } from './types'
 // import store from '@/store'
 export default evaluator
 
@@ -18,14 +19,14 @@ export const getContext = (data: {
         columnName.startsWith('#') ||
         columnName.startsWith('P|')
   if (isPreferenceValue) {
-    value = store.getters.getPreference({
+    value = store.getters[Namespaces.Preference + '/' + 'getPreference']({
       parentUuid,
       containerUuid,
       columnName
     })
   }
   if (!isPreferenceValue && value) {
-    value = store.getters.getValueOfField({
+    value = store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
       parentUuid,
       containerUuid,
       columnName
@@ -55,7 +56,7 @@ export function getPreference(data: {
 }) {
   const { parentUuid, containerUuid, columnName } = data
   let value
-  if (columnName) {
+  if (!columnName) {
     console.warn('Require Context ColumnName')
     return value
   }
