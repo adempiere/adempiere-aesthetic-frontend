@@ -36,6 +36,7 @@ export function ApiRest(requestConfig: AxiosRequestConfig): Promise<any> {
   requestConfig.data = requestConfig.data || {}
   requestConfig.responseType = requestConfig.responseType || 'json'
   requestConfig.params = {
+    ...requestConfig.params,
     token: getToken(),
     language: language
   }
