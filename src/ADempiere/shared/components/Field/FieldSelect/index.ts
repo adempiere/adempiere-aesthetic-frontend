@@ -57,6 +57,7 @@ export default class FieldSelect extends Mixins(MixinField) {
     }
 
     get getterLookupAll(): ILookupOptions[] {
+      console.log('entro aqui')
       const allOptions = this.$store.getters[
         Namespaces.Lookup + '/' + 'getLookupAll'
       ]({
@@ -129,7 +130,7 @@ export default class FieldSelect extends Mixins(MixinField) {
         // always update uuid
         this.uuidValue = option.uuid
 
-        this.$store.commit('updateValueOfField', {
+        this.$store.dispatch(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             parentUuid: this.metadata.parentUuid,
             containerUuid: this.metadata.containerUuid,
             columnName: this.metadata.columnName,
@@ -155,7 +156,7 @@ export default class FieldSelect extends Mixins(MixinField) {
         if (this.metadata.inTable) {
             return
         }
-        this.$store.commit('updateValueOfField', {
+        this.$store.dispatch(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             parentUuid: this.metadata.parentUuid,
             containerUuid: this.metadata.containerUuid,
             // 'ColumnName'_UUID
@@ -188,7 +189,7 @@ export default class FieldSelect extends Mixins(MixinField) {
     }
 
     set displayedValue(value: any) {
-        this.$store.commit('updateValueOfField', {
+        this.$store.dispatch(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             parentUuid: this.metadata.parentUuid,
             containerUuid: this.metadata.containerUuid,
             // DisplayColumn_'ColumnName'
@@ -273,7 +274,7 @@ export default class FieldSelect extends Mixins(MixinField) {
         }
         this.isLoading = true
         this.$store
-            .dispatch('getLookupItemFromServer', {
+            .dispatch(Namespaces.Lookup + '/' + 'getLookupItemFromServer', {
                 parentUuid: this.metadata.parentUuid,
                 containerUuid: this.metadata.containerUuid,
                 columnName: this.metadata.columnName,
@@ -296,7 +297,7 @@ export default class FieldSelect extends Mixins(MixinField) {
     remoteMethod(): void {
         this.isLoading = true
         this.$store
-            .dispatch('getLookupListFromServer', {
+            .dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
                 parentUuid: this.metadata.parentUuid,
                 containerUuid: this.metadata.containerUuid,
                 columnName: this.metadata.columnName,

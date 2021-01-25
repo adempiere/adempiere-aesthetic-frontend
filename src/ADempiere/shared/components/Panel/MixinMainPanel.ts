@@ -1,5 +1,6 @@
 import { IPanelDataExtended } from '@/ADempiere/modules/dictionary/DictionaryType/VuexType'
 import { IRecordSelectionData } from '@/ADempiere/modules/persistence/PersistenceType'
+import { TagsViewModule } from '@/store/modules/tags-view'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { fieldIsDisplayed } from '../../utils/DictionaryUtils'
 import { PanelContextType } from '../../utils/DictionaryUtils/ContextMenuType'
@@ -18,9 +19,9 @@ import FilterFields from './FilterFields'
   }
 })
 export default class MixinMainPanel extends Vue {
-    @Prop() parentUuid?: string = undefined
+    @Prop() parentUuid?: string
     @Prop({ type: String, required: true }) containerUuid!: string
-    @Prop({ type: Object, default: {} }) metadata: any = {}
+    @Prop({ type: Object, default: {} }) metadata: any
     @Prop({
       type: Object,
       default: () => ({
@@ -28,16 +29,15 @@ export default class MixinMainPanel extends Vue {
         grouName: ''
       })
     })
-    groupTab: any = {
-      groupType: '',
-      grouName: ''
+    groupTab!: {
+      groupType: string
+      groupName: string
     }
 
-    @Prop({ type: String, default: 'window' }) panelType: PanelContextType =
-        PanelContextType.Window
+    @Prop({ type: String, default: 'window' }) panelType!: PanelContextType
 
-    @Prop({ type: Boolean, default: false }) isAdvancedQuery = false
-    @Prop({ type: Boolean, default: false }) isShowedRecordNavigation = false
+    @Prop({ type: Boolean, default: false }) isAdvancedQuery?: boolean
+    @Prop({ type: Boolean, default: false }) isShowedRecordNavigation?: boolean
     public panelMetadata?: Partial<IPanelDataExtended> = {}
     public fieldsList: any[] = [] // groups list of fields
     public dataRecords: any = {}
@@ -198,7 +198,7 @@ export default class MixinMainPanel extends Vue {
         }
       } else {
         this.$store
-          .dispatch('getPanelAndFields', {
+          .dispatch(Namespaces.Panel + '/' + 'getPanelAndFields', {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             panelType: this.panelType,
@@ -410,24 +410,28 @@ export default class MixinMainPanel extends Vue {
             }
           })
           parameters.isWindow = false
-          this.$store.dispatch('notifyPanelChange', {
+          this.$store.dispatch(Namespaces.Panel + '/' + 'notifyPanelChange', {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
-            isAdvancedQuery: route.query.action === 'advancedQuery',
-            newValues: this.dataRecords,
-            isSendToServer: true,
-            isSendCallout: false,
-            fieldsList: this.fieldsList,
-            panelType: this.panelType
+            attributes: {
+              isAdvancedQuery: route.query.action === 'advancedQuery',
+              newValues: this.dataRecords,
+              isSendToServer: true,
+              isSendCallout: false,
+              fieldsList: this.fieldsList,
+              panelType: this.panelType
+            }
           })
         } else if (['process', 'browser'].includes(this.panelType)) {
           if (route.query) {
-            this.$store.dispatch('notifyPanelChange', {
+            this.$store.dispatch(Namespaces.Panel + '/' + 'notifyPanelChange', {
               containerUuid: this.containerUuid,
-              newValues: route.query,
-              isShowedField: true,
-              isSendCallout: false,
-              panelType: this.panelType
+              attributes: {
+                newValues: route.query,
+                isShowedField: true,
+                isSendCallout: false,
+                panelType: this.panelType
+              }
             })
             parameters.isWindow = false
           }
@@ -445,7 +449,7 @@ export default class MixinMainPanel extends Vue {
             !this.getterIsLoadedRecord
       ) {
         this.$store
-          .dispatch('getDataListTab', {
+          .dispatch(Namespaces.Window + '/' + 'getDataListTab', {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             isLoadAllRecords: parameters.isLoadAllRecords,
@@ -495,17 +499,18 @@ export default class MixinMainPanel extends Vue {
             )
 
             if (action === 'create-new') {
-              this.$store.dispatch('setDefaultValues', {
+              this.$store.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {
                 panelType: this.panelType,
                 parentUuid: this.parentUuid,
                 containerUuid: this.containerUuid,
-                isNewRecord: true
+                isNewRecord: true,
+                oldRoute: this.$router.currentRoute
               })
             } else {
               const attributes = convertObjectToKeyValue({
                 object: this.dataRecords
               })
-              this.$store.dispatch('notifyPanelChange', {
+              this.$store.dispatch(Namespaces.Panel + '/' + 'notifyPanelChange', {
                 parentUuid: this.parentUuid,
                 containerUuid: this.containerUuid,
                 attributes
@@ -599,8 +604,8 @@ export default class MixinMainPanel extends Vue {
             this.panelMetadata!.isDocument &&
             this.getterDataStore.isLoaded
       ) {
-        this.$store.dispatch('listWorkflows', this.metadata.tableName)
-        this.$store.dispatch('listDocumentStatus', {
+        this.$store.dispatch(Namespaces.ContainerInfo + '/' + 'listWorkflows', this.metadata.tableName)
+        this.$store.dispatch(Namespaces.ContextMenu + '/' + 'listDocumentStatus', {
           recordUuid: this.$route.query.action,
           tableName: this.metadata.tableName
         })
@@ -633,7 +638,7 @@ export default class MixinMainPanel extends Vue {
         }
       }
       if (this.isPanelWindow) {
-        this.$store.dispatch('tagsView/updateVisitedView', {
+        TagsViewModule.updateVisitedView({
           ...this.$route,
           title: `${this.tagTitle.base} - ${this.tagTitle.action}`
         })
@@ -651,7 +656,7 @@ export default class MixinMainPanel extends Vue {
         ].includes(uuidRecord)
       ) {
         this.$store
-          .dispatch('seekRecord', {
+          .dispatch(Namespaces.Panel + '/' + 'seekRecord', {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             recordUuid: uuidRecord
@@ -659,7 +664,7 @@ export default class MixinMainPanel extends Vue {
           .then(() => {
             if (this.panelMetadata!.isTabsChildren) {
               // delete records tabs children when change record uuid
-              this.$store.dispatch('deleteRecordContainer', {
+              this.$store.dispatch(Namespaces.BusinessData + '/' + 'deleteRecordContainer', {
                 viewUuid: this.parentUuid,
                 withOut: [this.containerUuid]
               })

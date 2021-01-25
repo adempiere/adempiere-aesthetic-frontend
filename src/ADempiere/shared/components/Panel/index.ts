@@ -1,3 +1,4 @@
+import { AppModule, DeviceType } from '@/store/modules/app'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { PanelContextType } from '../../utils/DictionaryUtils/ContextMenuType'
 import MainPanelDesktop from './MainPanelDesktop'
@@ -9,32 +10,32 @@ import Template from './template.vue'
   mixins: [Template]
 })
 export default class MainPanel extends Vue {
-    @Prop({ type: String, default: undefined }) parentUuid?: string = undefined
+    @Prop({ type: String, default: undefined }) parentUuid?: string
     @Prop({ type: String, required: true }) containerUuid!: string
-    @Prop({ type: Object, default: {} }) metadata: any = {}
-    @Prop({ type: String, default: 'window' }) panelType : PanelContextType = PanelContextType.Window
-    @Prop({ type: Boolean, default: false }) isAdvancedQuery = false
-    @Prop({ type: Boolean, default: false }) isShowedRecordNavigation = false
+    @Prop({ type: Object, default: {} }) metadata?: any
+    @Prop({ type: String, default: 'window' }) panelType?: PanelContextType
+    @Prop({ type: Boolean, default: false }) isAdvancedQuery?: boolean
+    @Prop({ type: Boolean, default: false }) isShowedRecordNavigation?: boolean
     @Prop({
       type: Object,
       default: () => ({
         groupType: '',
         groupName: ''
       })
-    }) groupTab = {
-      groupType: '',
-      groupName: ''
+    }) groupTab?: {
+      groupType: string
+      groupName: string
     }
 
     // Computed properties
     get isMobile(): boolean {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     get templateDevice() {
       if (this.isMobile) {
-        return () => new MainPanelMobile() // import('@/components/ADempiere/Panel/mainPanelMobile')
+        return () => import('@/ADempiere/shared/components/Panel/MainPanelMobile')
       }
-      return () => new MainPanelDesktop() // import('@/components/ADempiere/Panel/mainPanelDesktop')
+      return () => import('@/ADempiere/shared/components/Panel/MainPanelDesktop')
     }
 }

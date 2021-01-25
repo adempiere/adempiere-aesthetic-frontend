@@ -51,7 +51,9 @@ export default class MixinForm extends Vue {
         this.panelMetadata = panel
       } else {
         await this.generateFieldsList()
-        this.$store.dispatch('addPanel', {
+        console.log('getPanel MixinForm')
+        console.log(...this.metadata)
+        this.$store.dispatch(Namespaces.Panel + '/' + 'addPanel', {
           ...this.metadata,
           isCustomForm: this.isCustomForm,
           uuid: this.containerUuid,

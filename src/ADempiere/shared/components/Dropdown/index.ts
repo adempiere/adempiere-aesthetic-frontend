@@ -7,8 +7,8 @@ import Template from './template.vue'
   mixins: [Template]
 })
 export default class Dropdown extends Vue {
-    @Prop({ type: Object, default: {} }) items: any = {}
-    @Prop({ type: String, default: '' }) title = ''
+    @Prop({ type: Object, default: {} }) items?: any
+    @Prop({ type: String, default: '' }) title?: string
     public activeNames: string[] = ['1']
 
     // Computed properties

@@ -20,9 +20,9 @@
       <el-row :gutter="20">
         <el-col :span="24">
           <el-card class="content-collapse">
-            <h3 v-show="!isEmptyValue(processTitle)" class="warn-content text-center">
+            <h3 v-show="(processTitle)" class="warn-content text-center">
               <el-popover
-                v-if="!isEmptyValue(processMetadata.help)"
+                v-if="(processMetadata.help)"
                 ref="helpTitle"
                 placement="top-start"
                 :title="processTitle"

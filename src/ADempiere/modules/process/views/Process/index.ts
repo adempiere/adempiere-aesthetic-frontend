@@ -42,7 +42,7 @@ export default class ProcessView extends Vue {
         this.processMetadata = process
         this.isLoadedMetadata = true
       } else {
-        this.$store.dispatch('getPanelAndFields', {
+        this.$store.dispatch(Namespaces.Panel + '/' + 'getPanelAndFields', {
           containerUuid: this.processUuid,
           panelType: this.panelType,
           routeToDelete: this.$route
@@ -57,7 +57,7 @@ export default class ProcessView extends Vue {
     // Hooks
     created() {
       this.getProcess()
-      this.$store.dispatch('settings/changeSetting', {
+      SettingsModule.ChangeSetting({
         key: 'showContextMenu',
         value: true
       })
