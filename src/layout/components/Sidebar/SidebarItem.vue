@@ -106,9 +106,15 @@ export default class extends Vue {
     return 0
   }
 
-  get theOnlyOneChild() {
+  get theOnlyOneChild(): RouteConfig {
     if (this.showingChildNumber > 1) {
-      return null
+      return {
+        ...this.item,
+        path: '',
+        meta: {
+          noShowingChildren: true
+        }
+      }
     }
     if (this.item.children) {
       for (const child of this.item.children) {
