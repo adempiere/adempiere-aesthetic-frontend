@@ -1,7 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import Dropdown from '@/ADempiere/shared/components/Dropdown'
 import Template from './template.vue'
-import { RouteConfig } from 'vue-router'
 
 @Component({
   name: 'Summary',
@@ -22,10 +21,7 @@ export default class Summary extends Vue {
     // Methods
     generateRoutesPool(): void {
       if (this.$route.meta && this.$route.meta.childs.length) {
-        // this.optionList = this.$route.meta.childs
         this.optionList = this.$route.meta.childs
-        console.log('optionsList: ')
-        console.log(this.optionList[0])
       }
     }
 

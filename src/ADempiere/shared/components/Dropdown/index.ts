@@ -16,6 +16,11 @@ export default class Dropdown extends Vue {
       return this.$store.state.app.device
     }
 
+    created() {
+      console.log('items')
+      console.log(this.items)
+    }
+
     get isMobile(): number {
       if (this.device === DeviceType.Mobile) {
         return 24
