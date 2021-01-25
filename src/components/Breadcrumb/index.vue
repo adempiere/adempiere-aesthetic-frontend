@@ -11,25 +11,27 @@
         <span
           v-if="item.redirect === 'noredirect' || index === breadcrumbs.length-1"
           class="no-redirect"
-        >{{ $t('route.' + item.meta.title) }}</span>
+        >{{ generateTitle(item.meta.title) }}</span>
         <a
           v-else
           @click.prevent="handleLink(item)"
-        >{{ $t('route.' + item.meta.title) }}</a>
+        >{{ generateTitle(item.meta.title) }}</a>
       </el-breadcrumb-item>
     </transition-group>
   </el-breadcrumb>
 </template>
 
 <script lang="ts">
+import MixinI18n from '@/ADempiere/shared/utils/i18n'
 import { compile } from 'path-to-regexp'
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Vue, Watch, Mixins } from 'vue-property-decorator'
 import { RouteRecord, Route } from 'vue-router'
 
 @Component({
-  name: 'Breadcrumb'
+  name: 'Breadcrumb',
+  mixins: [MixinI18n]
 })
-export default class extends Vue {
+export default class extends Mixins(MixinI18n) {
   private breadcrumbs: RouteRecord[] = []
 
   @Watch('$route')
