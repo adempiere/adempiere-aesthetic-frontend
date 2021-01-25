@@ -22,6 +22,8 @@ export interface IProcessLogData {
     // parametersList?: any
     parameters?: KeyValueData[]
     output: IReportOutputData
+    //
+    processUuid?: string
 }
 
 type ParameterData = {

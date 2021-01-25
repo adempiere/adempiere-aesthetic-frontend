@@ -8,6 +8,7 @@ import { requestBrowserMetadata } from '../../DictionaryService'
 import { BrowserDefinitionState, IBrowserData, IBrowserDataExtended } from '../../DictionaryType'
 import language from '@/ADempiere/shared/lang'
 import { WindowProcessAsociatedAction } from '@/ADempiere/modules/window'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type BrowserDefinitionActionTree = ActionTree<BrowserDefinitionState, IRootState>
 type BrowserDefinitionActionContext = ActionContext<BrowserDefinitionState, IRootState>
@@ -115,7 +116,7 @@ export const actions: BrowserDefinitionActionTree = {
           }
 
           context.commit('addBrowser', newBrowser)
-          context.dispatch('addPanel', newBrowser)
+          context.dispatch(Namespaces.Panel + '/' + 'addPanel', newBrowser, { root: true })
 
           resolve(newBrowser)
 

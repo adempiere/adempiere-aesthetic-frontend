@@ -6,7 +6,7 @@ import { IRootState } from '@/store'
 import { IRangeAttributeData, PanelState } from './type'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { Route } from 'vue-router'
-import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
+import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import language from '@/ADempiere/shared/lang'
 import { IRecordSelectionData, KeyValueData } from '@/ADempiere/modules/persistence/PersistenceType'
@@ -14,26 +14,28 @@ import { convertObjectToKeyValue } from '@/ADempiere/shared/utils/valueFormat'
 import { typeValue } from '@/ADempiere/shared/utils/valueUtils'
 import evaluator from '@/ADempiere/shared/utils/evaluator'
 import { getContext, parseContext } from '@/ADempiere/shared/utils/contextUtils'
-import router from '@/router'
 
 type PanelActionContext = ActionContext<PanelState, IRootState>
 type PanelActionTree = ActionTree<PanelState, IRootState>
 
 export const actions: PanelActionTree = {
-  addPanel(context: PanelActionContext, params: IPanelDataExtended): IPanelDataExtended {
+  addPanel(context: PanelActionContext, parameters: IPanelDataExtended): IPanelDataExtended {
     const {
       panelType,
       // isParentTab,
       // parentUuid,
       uuid: containerUuid
-    } = params
+    } = parameters
+    const params: Partial<IPanelDataExtended> = {
+      ...parameters
+    }
     let keyColumn = ''
     let selectionColumn: string[] = []
     let identifierColumns: IdentifierColumnsData[] = []
     let count = 0
 
     if (params.fieldsList) {
-      params.fieldsList.forEach((itemField, index, listFields) => {
+      params.fieldsList.forEach((itemField, index: number, listFields: any) => {
         if (itemField.isKey) {
           keyColumn = itemField.columnName
         }
@@ -68,8 +70,8 @@ export const actions: PanelActionTree = {
         }
         //  Get dependent fields
         if (itemField.parentFieldsList && itemField.isActive) {
-          itemField.parentFieldsList.forEach(parentColumnName => {
-            const parentField: IFieldDataExtendedUtils | undefined = listFields.find(parentFieldItem => {
+          itemField.parentFieldsList.forEach((parentColumnName: any) => {
+            const parentField: IFieldDataExtendedUtils | undefined = listFields.find((parentFieldItem: any) => {
               return parentFieldItem.columnName === parentColumnName &&
                     parentColumnName !== itemField.columnName
             })
@@ -107,7 +109,6 @@ export const actions: PanelActionTree = {
     params.recordUuid = null
     // show/hidden optionals columns to table
     params.isShowedTableOptionalColumns = false
-
     context.commit('addPanel', params)
 
     if (!['table'].includes(panelType)) {
@@ -119,10 +120,10 @@ export const actions: PanelActionTree = {
       })
     }
     if (params.isCustomForm) {
-      context.dispatch('addForm', params)
+      context.dispatch(Namespaces.FormDefinition + '/' + 'addForm', params, { root: true })
     }
 
-    return params
+    return <IPanelDataExtended>params
   },
   /**
    * Used by components/fields/filterFields
@@ -312,15 +313,15 @@ export const actions: PanelActionTree = {
     panelType?: PanelContextType
     isOverWriteParent?: boolean
     isNewRecord?: boolean
+    oldRoute: Route
   }) {
-    const { parentUuid, containerUuid, panelType = params.panelType || PanelContextType.Window, isOverWriteParent = params.isOverWriteParent || true, isNewRecord = params.isNewRecord || false } = params
+    const { oldRoute, parentUuid, containerUuid, panelType = params.panelType || PanelContextType.Window, isOverWriteParent = params.isOverWriteParent || true, isNewRecord = params.isNewRecord || false } = params
     return new Promise(resolve => {
       const panel: IPanelDataExtended | undefined = context.getters.getPanel(containerUuid)
       if (!(panel)) {
         return
       }
 
-      const oldRoute: Route = context.rootGetters.router.currentRoute
       const defaultAttributes: IRangeAttributeData[] = context.getters.getParsedDefaultValues({
         parentUuid,
         containerUuid,
@@ -372,12 +373,12 @@ export const actions: PanelActionTree = {
         // }
       }
 
-      context.dispatch('updateValuesOfContainer', {
+      context.dispatch(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
         parentUuid,
         containerUuid,
         isOverWriteParent,
         attributes: defaultAttributes
-      })
+      }, { root: true })
         .then(() => {
           if ([PanelContextType.Browser, PanelContextType.Form, PanelContextType.Process, PanelContextType.Report].includes(panelType)) {
           // const fieldsUser = []
@@ -428,9 +429,9 @@ export const actions: PanelActionTree = {
   },
   // Change all values of panel and dispatch actions for each field
   notifyPanelChange(context: PanelActionContext, params: {
-    parentUuid: string
+    parentUuid?: string
     containerUuid: string
-    attributes?: any[]
+    attributes?: any[] | IKeyValueObject
   }) {
     const { parentUuid, containerUuid } = params
     let { attributes = params.attributes || [] } = params
@@ -440,14 +441,14 @@ export const actions: PanelActionTree = {
       })
     }
     // Update field
-    context.dispatch('updateValuesOfContainer', {
+    context.dispatch(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
       parentUuid,
       containerUuid,
       attributes
-    })
+    }, { root: true })
       .then(() => {
-        const panel: IPanelDataExtended = context.getters.getPanel(containerUuid)
-        if (!panel.isAdvancedQuery) {
+        const panel: IPanelDataExtended | undefined = context.getters.getPanel(containerUuid)
+        if (panel && panel.isAdvancedQuery) {
           const fieldsList: IFieldDataExtendedUtils[] = panel.fieldsList
           fieldsList.forEach(field => {
             // Change Dependents
@@ -546,9 +547,9 @@ export const actions: PanelActionTree = {
     //   }
     // })
 
-    context.dispatch('setIsloadContext', {
+    context.dispatch(Namespaces.BusinessData + '/' + 'setIsloadContext', {
       containerUuid
-    })
+    }, { root: true })
   },
   /**
    * Handle all trigger for a field:
@@ -572,7 +573,7 @@ export const actions: PanelActionTree = {
         field = fieldsList.find(fieldItem => fieldItem.columnName === columnName)
       }
 
-      const value = context.getters.getValueOfField({
+      const value = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         parentUuid: field!.parentUuid,
         containerUuid: field!.containerUuid,
         columnName: field!.columnName
@@ -604,11 +605,11 @@ export const actions: PanelActionTree = {
       })
 
       // Run specific action
-      context.dispatch(field!.panelType + 'ActionPerformed', {
+      context.dispatch(field!.panelType + 'Module/' + field!.panelType + 'ActionPerformed', {
         containerUuid: field!.containerUuid,
         field,
         value
-      })
+      }, { root: true })
         .then(response => {
           if (response) {
             context.dispatch('notifyPanelChange', {
@@ -705,7 +706,7 @@ export const actions: PanelActionTree = {
           value: fieldDependent.defaultValue
         }).query
         if (defaultValue !== fieldDependent.parsedDefaultValue) {
-          const newValue = await context.dispatch('getValueBySQL', {
+          const newValue = await context.dispatch(Namespaces.BusinessData + '/' + 'getValueBySQL', {
             parentUuid: field.parentUuid,
             containerUuid: field.containerUuid,
             query: defaultValue
@@ -751,18 +752,18 @@ export const actions: PanelActionTree = {
     switch (panelType) {
       case PanelContextType.Process:
       case PanelContextType.Report:
-        executeAction = 'getProcessFromServer'
+        executeAction = Namespaces.ProcessDefinition + '/' + 'getProcessFromServer'
         break
       case PanelContextType.Browser:
-        executeAction = 'getBrowserFromServer'
+        executeAction = Namespaces.BrowserDefinition + '/' + 'getBrowserFromServer'
         break
       case PanelContextType.Form:
-        executeAction = 'getFormFromServer'
+        executeAction = Namespaces.FormDefinition + '/' + 'getFormFromServer'
         break
       case PanelContextType.Window:
       case PanelContextType.Table:
       default:
-        executeAction = 'getFieldsFromTab'
+        executeAction = Namespaces.WindowDefinition + '/' + 'getFieldsFromTab'
         break
     }
 
@@ -773,7 +774,7 @@ export const actions: PanelActionTree = {
       panelMetadata,
       isAdvancedQuery,
       routeToDelete
-    })
+    }, { root: true })
       .then(panelResponse => {
         return panelResponse
       })

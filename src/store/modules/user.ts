@@ -13,6 +13,7 @@ import { setCurrentRole, getCurrentRole, removeCurrentRole, getCurrentOrganizati
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import language from '@/ADempiere/shared/lang'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { PermissionModule } from './permission'
 
 export interface IUserState {
   token: string
@@ -474,9 +475,7 @@ class User extends VuexModule implements IUserState {
         console.warn(`Error change role: ${error.message}. Code: ${error.code}.`)
       })
       .finally(() => {
-        this.context.dispatch('permission/sendRequestMenu', organizationId, {
-          root: true
-        })
+        PermissionModule.sendRequestMenu(organizationId)
       })
   }
 

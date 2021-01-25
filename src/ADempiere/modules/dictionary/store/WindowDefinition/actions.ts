@@ -433,7 +433,6 @@ export const actions: WindowDefinitionActionTree = {
         isShowedTotals: false,
         isTabsChildren // to delete records assiciated
       }
-
       context.dispatch('addPanel', panel)
       resolve(panel)
 

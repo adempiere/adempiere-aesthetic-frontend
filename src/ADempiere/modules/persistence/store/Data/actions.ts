@@ -4,7 +4,7 @@ import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/Conte
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { TABLE, TABLE_DIRECT } from '@/ADempiere/shared/utils/references'
-import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
+import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import {
   extractPagingToken,
   typeValue
@@ -317,7 +317,7 @@ export const actions: BusinessDataActionTree = {
             }
             // get value to displayed from server
             const { label } = await context.dispatch(
-              'getLookupItemFromServer',
+              Namespaces.Lookup + '/' + 'getLookupItemFromServer',
               {
                 parentUuid,
                 containerUuid,
@@ -325,6 +325,9 @@ export const actions: BusinessDataActionTree = {
                 tableName: itemField.reference.tableName,
                 directQuery: itemField.reference.directQuery,
                 value: valueGetDisplayColumn
+              },
+              {
+                root: true
               }
             )
             values[itemField.displayColumnName!] = label

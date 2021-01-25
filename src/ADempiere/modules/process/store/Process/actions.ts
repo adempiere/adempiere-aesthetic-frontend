@@ -1155,22 +1155,17 @@ export const actions: ProcessActionTree = {
             pageToken: string
             pageSize: number
         }
-  ): Promise<IResponseList<
-        IProcessLogData & {
-            processUuid: string
-        }
-    > | void> {
+  ) {
     // process Activity
+
     const { pageToken, pageSize } = parameters
     return requestListProcessesLogs({ pageToken, pageSize })
       .then((processActivityResponse: IProcessLogListData) => {
         const responseList = processActivityResponse.processLogsList.map(
           (processLogItem: IProcessLogData) => {
-            const processMetadata:
-                            | IProcessData
-                            | undefined = context.rootGetters.getProcess(
-                              processLogItem.uuid
-                            )
+            const processMetadata: IProcessData | undefined = context.rootGetters.getProcess(
+              processLogItem.uuid
+            )
             // if no exists metadata process in store and no request progess
             if (
               processMetadata === undefined &&
@@ -1211,6 +1206,7 @@ export const actions: ProcessActionTree = {
                   nextPageToken: processActivityResponse.nextPageToken
                 }
         context.commit('setSessionProcess', processResponseList)
+
         return processResponseList
       })
       .catch(error => {
@@ -1240,7 +1236,7 @@ export const actions: ProcessActionTree = {
                 uuid: string
             }
         }
-  ): void {
+  ) {
     const { action, type } = payload
     const panels: PanelContextType[] = [
       PanelContextType.Process,

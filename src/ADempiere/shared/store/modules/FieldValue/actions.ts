@@ -29,5 +29,27 @@ export const actions: FieldValueActionTree = {
       isOverWriteParent,
       attributes
     })
+  },
+  updateValueOfField(context: FieldValueActionContext, payload: {
+    parentUuid?: string
+    containerUuid: string
+    columnName: string
+    value: any
+    isOverWriteParent?: boolean
+  }) {
+    const {
+      parentUuid,
+      columnName,
+      containerUuid,
+      value,
+      isOverWriteParent
+    } = payload
+    context.commit('updateValueOfField', {
+      parentUuid: parentUuid,
+      containerUuid: containerUuid,
+      columnName: columnName,
+      value,
+      isOverWriteParent
+    })
   }
 }
