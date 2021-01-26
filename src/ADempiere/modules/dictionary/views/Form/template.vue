@@ -20,11 +20,11 @@
         <el-col :span="24">
           <el-card
             class="content-collapse"
-            :style="isEmptyValue(formMetadata.fieldsList) ? 'height: 100% !important;' : ''"
+            :style="!(formMetadata.fieldsList) ? 'height: 100% !important;' : ''"
           >
             <h3 v-if="isShowTitleForm" class="warn-content text-center">
               <el-popover
-                v-if="!isEmptyValue(formMetadata.help)"
+                v-if="(formMetadata.help)"
                 ref="helpTitle"
                 placement="top-start"
                 :title="formTitle"

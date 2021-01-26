@@ -30,7 +30,7 @@
         </div>
       </div>
       <el-popover
-        v-if="!isEmptyValue(browserMetadata.help)"
+        v-if="(browserMetadata.help)"
         ref="helpTitle"
         placement="top-start"
         :title="browserTitle"

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isEmptyValue(getProcessLog)" key="with-process" class="app-container">
+  <div v-if="(getProcessLog)" key="with-process" class="app-container">
     <el-timeline>
       <el-timeline-item
         v-for="(activity, index) in getProcessLog"
@@ -53,7 +53,7 @@
               </el-popover>
               <!-- show only when bring logs -->
               <el-popover
-                v-else-if="!isEmptyValue(activity.logsList) || !isEmptyValue(activity.summary)"
+                v-else-if="(activity.logsList) || (activity.summary)"
                 :key="index + 'is-summary'"
                 placement="right"
                 width="500"

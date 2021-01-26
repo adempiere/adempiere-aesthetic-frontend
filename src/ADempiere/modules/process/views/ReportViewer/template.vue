@@ -17,7 +17,7 @@
                 <div class="content">
                     <h3 class="text-center" style="margin: 0 !important;">
                         <el-popover
-                            v-if="!isEmptyValue(processMetadata.help)"
+                            v-if="(processMetadata.help)"
                             ref="helpTitle"
                             placement="top-start"
                             :title="reportTitle"
