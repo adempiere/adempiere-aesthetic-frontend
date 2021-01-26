@@ -19,3 +19,5 @@ declare module 'vue2-dropzone'
 
 // TODO: remove this part after vue-image-crop-upload has its typescript file
 declare module 'vue-image-crop-upload'
+
+declare module 'v-markdown/src'
