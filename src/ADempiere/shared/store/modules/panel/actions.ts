@@ -172,12 +172,12 @@ export const actions: PanelActionTree = {
     if (isChangedDisplayedWithValue) {
       // Updated record result
       if (panel.panelType === 'browser') {
-        context.dispatch('getBrowserSearch', {
+        context.dispatch(Namespaces.Browser + '/' + 'getBrowserSearch', {
           containerUuid,
           isClearSelection: true
         })
       } else if (panel.panelType === 'table' || panel.isAdvancedQuery) {
-        context.dispatch('getObjectListFromCriteria', {
+        context.dispatch(Namespaces.BusinessData + '/' + 'getObjectListFromCriteria', {
           parentUuid: panel.parentUuid,
           containerUuid,
           tableName: panel.tableName,
@@ -744,10 +744,11 @@ export const actions: PanelActionTree = {
     containerUuid: string
     panelType: PanelContextType
     panelMetadata?: any
+    tabMetadata?: any
     routeToDelete?: Route
     isAdvancedQuery?: boolean
   }) {
-    const { isAdvancedQuery = payload.isAdvancedQuery || false, panelType, parentUuid, containerUuid, panelMetadata, routeToDelete } = payload
+    const { isAdvancedQuery = payload.isAdvancedQuery || false, panelType, parentUuid, containerUuid, panelMetadata, routeToDelete, tabMetadata } = payload
     let executeAction: string
     switch (panelType) {
       case PanelContextType.Process:
@@ -772,10 +773,12 @@ export const actions: PanelActionTree = {
       containerUuid,
       panelType,
       panelMetadata,
+      tabMetadata,
       isAdvancedQuery,
       routeToDelete
     }, { root: true })
       .then(panelResponse => {
+        console.log(panelResponse)
         return panelResponse
       })
       .catch(error => {

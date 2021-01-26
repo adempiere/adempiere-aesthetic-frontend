@@ -34,6 +34,8 @@ import {
 } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { IFieldData } from '@/ADempiere/modules/field'
 import { getFieldTemplate } from '@/ADempiere/shared/utils/lookupFactory'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
+import fieldList from '@/ADempiere/shared/views/Test/fieldList'
 
 type WindowDefinitionActionTree = ActionTree<WindowDefinitionState, IRootState>
 type WindowDefinitionActionContext = ActionContext<
@@ -272,10 +274,10 @@ export const actions: WindowDefinitionActionTree = {
                 actions = actions.concat(processList)
               }
               //  Add process menu
-              context.dispatch('setContextMenu', {
+              context.dispatch(Namespaces.ContextMenu + '/' + 'setContextMenu', {
                 containerUuid: tab.uuid,
                 actions
-              })
+              }, { root: true })
 
               if (tab.isParentTab) {
                 tab.tabParentIndex = tabParentIndex
@@ -315,7 +317,7 @@ export const actions: WindowDefinitionActionTree = {
         // router.push({
         //   path: '/dashboard'
         // }, () => {})
-        context.dispatch('tagsView/delView', routeToDelete)
+        context.dispatch('tagsView/delView', routeToDelete, { root: true })
         showMessage({
           message: language.t('login.unexpectedError').toString(),
           type: 'error'
@@ -332,11 +334,11 @@ export const actions: WindowDefinitionActionTree = {
             containerUuid: string
             // tabId,
             panelType: PanelContextType
-            tabMetadata: ITabData
+            tabMetadata?: ITabData
             isAdvancedQuery: boolean
         }
   ) {
-    payload.tabMetadata = payload.tabMetadata || {}
+    payload.tabMetadata = payload.tabMetadata || undefined
     payload.panelType = payload.panelType || PanelContextType.Window
     payload.isAdvancedQuery = payload.isAdvancedQuery || false
 
@@ -347,6 +349,7 @@ export const actions: WindowDefinitionActionTree = {
       isAdvancedQuery
     } = payload
     let { tabMetadata } = payload
+
     return new Promise(resolve => {
       if (!tabMetadata) {
         tabMetadata = store.getters.getTab(parentUuid, containerUuid)
@@ -358,10 +361,10 @@ export const actions: WindowDefinitionActionTree = {
         isShowedFromUser: true,
         panelType,
         //
-        tableName: tabMetadata.tableName, // @deprecated
-        tabTableName: tabMetadata.tableName,
-        tabQuery: tabMetadata.query,
-        tabWhereClause: tabMetadata.whereClause,
+        tableName: tabMetadata?.tableName, // @deprecated
+        tabTableName: tabMetadata?.tableName,
+        tabQuery: tabMetadata?.query,
+        tabWhereClause: tabMetadata?.whereClause,
         //
         isReadOnlyFromForm: false,
         isAdvancedQuery,
@@ -372,7 +375,7 @@ export const actions: WindowDefinitionActionTree = {
       let fieldLinkColumnName = ''
 
       //  Convert and add to app attributes
-      const fieldsList: IFieldDataExtendedUtils[] = tabMetadata.fields.map(
+      const fieldsList: IFieldDataExtendedUtils[] = tabMetadata!.fields.map(
         (fieldItem: IFieldData, index: number) => {
           const generatedField: IFieldDataExtendedUtils = generateField(
             {
@@ -399,9 +402,12 @@ export const actions: WindowDefinitionActionTree = {
         }
       )
 
+      console.log(fieldsList)
+
       let isTabsChildren = false
       if (!isAdvancedQuery) {
-        const window: IWindowDataExtended = store.getters.getWindow(
+        console.log(parentUuid)
+        const window: IWindowDataExtended = context.getters.getWindow(
           parentUuid
         )
         isTabsChildren = Boolean(window.tabsListChildren.length)
@@ -422,7 +428,7 @@ export const actions: WindowDefinitionActionTree = {
 
       // panel for save on store
       const panel: IPanelData = {
-        ...tabMetadata,
+        ...tabMetadata!,
         containerUuid,
         isAdvancedQuery,
         fieldLinkColumnName,
@@ -433,7 +439,7 @@ export const actions: WindowDefinitionActionTree = {
         isShowedTotals: false,
         isTabsChildren // to delete records assiciated
       }
-      context.dispatch('addPanel', panel)
+      context.dispatch(Namespaces.Panel + '/' + 'addPanel', panel, { root: true })
       resolve(panel)
 
       context.dispatch('changeTabAttribute', {

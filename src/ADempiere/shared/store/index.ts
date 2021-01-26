@@ -11,7 +11,8 @@ import vuexLocal from '@/ADempiere/shared/plugins/vuex-persist'
 import { systemModule, businessPartnerModule } from '@/ADempiere/modules/core'
 import {
   languageModule,
-  persistenceModule
+  persistenceModule,
+  browserModule
 } from '@/ADempiere/modules/persistence'
 
 import {
@@ -75,7 +76,8 @@ const store: StoreOptions<IRootState> = {
     contextMenuModule,
     panelModule,
     businessDataModule,
-    browserDefinitionModule
+    browserDefinitionModule,
+    browserModule
   },
   getters: getters,
   plugins: [vuexLocal.plugin]

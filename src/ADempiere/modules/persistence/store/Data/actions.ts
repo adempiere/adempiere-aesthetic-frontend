@@ -1199,7 +1199,7 @@ export const actions: BusinessDataActionTree = {
     commit('setInitialContext', {})
     commit('resetStateTranslations')
     commit('resetStateBusinessData')
-    commit('resetContextMenu')
+    commit(Namespaces.ContextMenu + '/' + 'resetContextMenu')
     commit('resetStateTranslations')
     commit('resetStateLookup')
     commit('resetStateProcessControl')

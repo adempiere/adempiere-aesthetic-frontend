@@ -11,7 +11,7 @@ export const getters: WindowDefinitionGetterTree = {
     windowUuid: string
   ): IWindowDataExtended | undefined => {
     return state.window.find(
-      (item: IWindowDataExtended) => item.uuid === windowUuid
+      (item: IWindowDataExtended) => (item.uuid === windowUuid)
     )
   },
   getIsShowedRecordNavigation: () => (
@@ -26,7 +26,7 @@ export const getters: WindowDefinitionGetterTree = {
   getPanelRight: (state: WindowDefinitionState) => {
     return state.panelRight
   },
-  getTab: () => (
+  getTab: (state: WindowDefinitionState) => (
     windowUuid: string,
     tabUuid: string
   ): ITabDataExtended | undefined => {

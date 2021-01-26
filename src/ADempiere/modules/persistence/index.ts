@@ -4,3 +4,4 @@ export * from './PersistenceService'
 // store
 export * from './store/Language'
 export * from './store/Persistence'
+export * from './store/Browser'

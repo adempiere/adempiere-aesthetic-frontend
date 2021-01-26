@@ -5,7 +5,7 @@ import { BrowserDefinitionState } from '@/ADempiere/modules/dictionary'
 
 const namespaced = true
 
-export const browserDefinitionModule: Module<BrowserDefinitionState, IRootState> = {
+export const browserModule: Module<BrowserDefinitionState, IRootState> = {
   namespaced,
   actions
 }

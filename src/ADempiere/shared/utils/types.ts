@@ -70,5 +70,6 @@ export enum Namespaces {
     ContextMenu = 'contextMenuModule',
     Panel = 'panelModule',
     BusinessData = 'businessDataModule',
-    BrowserDefinition = 'browserDefinitionModule'
+    BrowserDefinition = 'browserDefinitionModule',
+    Browser = 'browserModule'
 }

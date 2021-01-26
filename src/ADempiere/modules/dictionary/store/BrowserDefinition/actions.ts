@@ -150,10 +150,10 @@ export const actions: BrowserDefinitionActionTree = {
             // })
           }
           // Add process menu
-          context.dispatch('setContextMenu', {
+          context.dispatch(Namespaces.ContextMenu + '/' + 'setContextMenu', {
             containerUuid,
             actions
-          })
+          }, { root: true })
         })
         .catch(error => {
           //   router.push({
