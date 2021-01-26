@@ -12,7 +12,9 @@ import Template from './template.vue'
 export default class FieldCalc extends Vue {
     @Prop({ type: Object, required: true }) fieldAttributes!: any
     @Ref() readonly calculatorInput!: HTMLElement
-    @Prop({ type: Number, default: undefined }) fieldValue?: number = undefined
+    @Prop({ type: Number, default: undefined }) fieldValue?: number
+    // eslint-disable-next-line
+    // @ts-ignore
     public calcValue?: any = this.fieldValue
     public valueToDisplay = ''
     public tableData: ICalculatorObject[] = calculatorRows

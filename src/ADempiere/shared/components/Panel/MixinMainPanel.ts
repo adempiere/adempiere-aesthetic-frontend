@@ -202,10 +202,11 @@ export default class MixinMainPanel extends Vue {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             panelType: this.panelType,
-            panelMetadata: this.metadata,
+            tabMetadata: this.metadata,
             isAdvancedQuery: this.isAdvancedQuery
           })
           .then(panelResponse => {
+            console.log(panelResponse)
             this.panelMetadata = panelResponse
             this.generatePanel(panelResponse.fieldsList)
           })
@@ -462,7 +463,7 @@ export default class MixinMainPanel extends Vue {
           .then(response => {
             let action = 'create-new'
             let params = this.$route.params
-            if (response.length && !parameters.isNewRecord) {
+            if (response && response.length && !parameters.isNewRecord) {
               this.dataRecords = response[0]
               const recordId = this.dataRecords[
                             `${this.metadata.tableName}_ID`
@@ -494,8 +495,7 @@ export default class MixinMainPanel extends Vue {
                   ...this.$route.query,
                   action
                 }
-              },
-              undefined // () => {}
+              }
             )
 
             if (action === 'create-new') {

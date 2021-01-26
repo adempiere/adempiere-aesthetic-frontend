@@ -18,14 +18,7 @@ import { Namespaces } from '@/ADempiere/shared/utils/types'
 export default class Dashboard extends Vue {
     // Properties
     @Prop() private language!: string
-    @Prop() private value!: string
     @Ref() readonly editor!: Editor
-
-    constructor() {
-      super()
-      this.language = ''
-      this.value = ''
-    }
 
     // Computed properties
     get editorInstance(): Editor {
@@ -54,12 +47,12 @@ export default class Dashboard extends Vue {
     }
 
     // Getters & Setters
-    get Value() {
+    get value() {
       return this.$store.getters[Namespaces.ChatEntries + '/' + 'getChatTextLong']
     }
 
-    set Value(newValue: string) {
-      this.$store.dispatch('setChatText', newValue)
+    set value(newValue: string) {
+      this.$store.dispatch(Namespaces.ChatEntries + '/' + 'setChatText', newValue)
     }
 
     // Watchers

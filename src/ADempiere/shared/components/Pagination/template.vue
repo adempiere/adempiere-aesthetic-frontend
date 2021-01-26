@@ -7,7 +7,7 @@
         :current-page="currentPage"
         :page-size="pageSize"
         :total="total"
-        @current-change="handleChangePage"
+        @current-change="handleChangePageFunction"
       >
         <template v-slot>
           <span v-if="isSelection">

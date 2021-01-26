@@ -8,7 +8,7 @@ import { Table } from 'element-ui'
 })
 export default class MixinTableSort extends Mixins(MixinTable) {
     @Ref() readonly multipleTable?: Table
-    public sortable: Sortable | null = null
+    public sortable?: Sortable | null
     public oldgetDataDetail?: any[]
     public newgetDataDetail?: any
 

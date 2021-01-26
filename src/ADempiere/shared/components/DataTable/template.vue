@@ -21,12 +21,12 @@
                             <main-panel
                                 v-if="
                                     isLoadedPanel ||
-                                        (!isEmptyValue(activeName) &&
+                                        ((activeName) &&
                                             activeName[0] ===
                                                 'PanelAdvancedQuery')
                                 "
                                 v-show="
-                                    !isEmptyValue(activeName) &&
+                                    (activeName) &&
                                         activeName[0] === 'PanelAdvancedQuery'
                                 "
                                 :container-uuid="'table_' + containerUuid"

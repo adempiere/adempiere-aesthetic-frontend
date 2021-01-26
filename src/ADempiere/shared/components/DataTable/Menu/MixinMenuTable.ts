@@ -15,11 +15,10 @@ import MixinTable from '../Mixin/MixinTable'
   mixins: [MixinTable]
 })
 export default class MixinMenuTable extends Mixins(MixinTable) {
-    @Prop({ type: Object, default: () => Object }) currentRow: any
-    @Prop({ type: Array, default: () => [] }) processMenu: any[] = []
-    @Prop({ type: Object, default: () => Object }) panelMetadata: any
-    @Prop({ type: String, default: 'xlsx' })
-    defaultFormatExport = 'xlsx'
+  // eslint-disable-next-line
+    @Prop({ type: Object, default: () => {} }) currentRow: any
+    @Prop({ type: Array, default: () => [] }) processMenu!: any[]
+    @Prop({ type: String, default: 'xlsx' }) defaultFormatExport!: string
 
     public menuType?: string
     public supportedTypes = supportedTypes

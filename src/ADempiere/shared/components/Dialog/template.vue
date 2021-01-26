@@ -22,7 +22,7 @@
     />
     <template v-else>
       <main-panel
-        v-if="!isEmptyValue(modalMetadata.uuid)"
+        v-if="(modalMetadata.uuid)"
         key="main-panel"
         :parent-uuid="parentUuid"
         :container-uuid="modalMetadata.uuid"

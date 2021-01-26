@@ -18,12 +18,10 @@ import { WindowTabAssociatedAction } from '@/ADempiere/modules/window'
   }
 })
 export default class ModalProcess extends Vue {
-    @Prop({ type: String, default: undefined }) parentUuid?: string = undefined
-    @Prop({ type: String, default: '' }) containerUuid = ''
-    @Prop({ type: String, default: 'window' }) panelType: PanelContextType =
-        PanelContextType.Window
-
-    @Prop({ type: String, default: '' }) reportExportType = ''
+    @Prop({ type: String, default: undefined }) parentUuid?: string
+    @Prop({ type: String, default: '' }) containerUuid!: string
+    @Prop({ type: String, default: 'window' }) panelType!: PanelContextType
+    @Prop({ type: String, default: '' }) reportExportType!: string
 
     // Computed properties
     get isMobile(): boolean {
@@ -38,11 +36,11 @@ export default class ModalProcess extends Vue {
     }
 
     get isVisibleDialog(): boolean {
-      return this.$store.state.process.isVisibleDialog
+      return this.$store.state.processModule.isVisibleDialog
     }
 
     get modalMetadata(): Partial<IPanelDataExtended> {
-      return this.$store.state.process.metadata
+      return this.$store.state.processModule.metadata
     }
 
     get windowRecordSelected(): any {

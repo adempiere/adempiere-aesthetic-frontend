@@ -36,7 +36,7 @@
                           <b> {{ $t('login.userName') }}:</b>
                           {{ nodeList.userName }}
                         </p>
-                        <p v-if="!isEmptyValue(nodeList.textMessage)">
+                        <p v-if="(nodeList.textMessage)">
                           <b> {{ $t('window.containerInfo.logWorkflow.message') }}:</b>
                           {{ nodeList.textMessage }}
                         </p>

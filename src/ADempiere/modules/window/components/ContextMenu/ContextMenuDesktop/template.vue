@@ -11,7 +11,7 @@
       unique-opened
       @shortkey.native="actionContextMenu"
     >
-      <el-submenu v-if="!isEmptyValue(relationsList)" class="el-menu-item" index="1">
+      <el-submenu v-if="(relationsList)" class="el-menu-item" index="1">
         <template slot="title">
           {{ $t('components.contextMenuRelations') }}
         </template>
@@ -23,7 +23,7 @@
         {{ $t('components.contextMenuRelations') }}
       </el-menu-item>
 
-      <el-submenu v-if="!isEmptyValue(actions)" class="el-menu-item" index="actions" @click.native="runAction(actions[0])">
+      <el-submenu v-if="(actions)" class="el-menu-item" index="actions" @click.native="runAction(actions[0])">
         <template slot="title">
           {{ $t('components.contextMenuActions') }}
         </template>

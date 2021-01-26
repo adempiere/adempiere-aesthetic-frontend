@@ -38,8 +38,8 @@ import evaluator from '../../utils/evaluator'
   }
 })
 export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
-    @Prop({ type: Boolean, default: true }) isTableSelection = true
-    @Prop({ type: Boolean, default: true }) isShowedPanelRecord = false
+    @Prop({ type: Boolean, default: true }) isTableSelection!: boolean
+    @Prop({ type: Boolean, default: true }) isShowedPanelRecord!: boolean
     @Ref() readonly headerSearchInput!: ElInput
     public topContextualMenu = 0
     public leftContextualMenu = 0
@@ -93,9 +93,9 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
       return this.$store.getters[Namespaces.Utils + '/' + 'getShowContextMenuTabChildren']
     }
 
-    get panelMetadata(): IPanelDataExtended | undefined {
-      return this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](this.containerUuid)
-    }
+    // get panelMetadata(): IPanelDataExtended | undefined {
+    //   return this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](this.containerUuid)
+    // }
 
     get isLoadedPanel(): boolean {
       const panelMetadata: IPanelDataExtended | undefined = this.$store.getters[Namespaces.Panel + '/' + 'getPanel']('table_' + this.containerUuid)

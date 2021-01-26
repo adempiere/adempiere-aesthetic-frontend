@@ -1,5 +1,6 @@
 import MainPanel from '@/ADempiere/shared/components/Panel'
 import { parseContext } from '@/ADempiere/shared/utils/contextUtils'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import MixinTab from './MixinTab'
 import Template from './template.vue'
@@ -72,7 +73,7 @@ export default class TabParent extends Mixins(MixinTab) {
 
     // Methods
     setCurrentTab(): void {
-      this.$store.dispatch('setCurrentTab', {
+      this.$store.dispatch(Namespaces.WindowDefinition + '/' + 'setCurrentTab', {
         parentUuid: this.windowUuid,
         containerUuid: this.tabUuid,
         window: this.windowMetadata

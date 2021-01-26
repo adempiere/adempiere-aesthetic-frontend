@@ -1,6 +1,7 @@
 import { IRecordSelectionData } from '@/ADempiere/modules/persistence/PersistenceType'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { AppModule, DeviceType } from '@/store/modules/app'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
 @Component({
@@ -10,20 +11,23 @@ export default class MixinTable extends Vue {
     @Prop({ type: String, default: undefined }) parentUuid?: string
     @Prop({ type: String, required: true }) containerUuid!: string
     @Prop({ type: String, default: 'window' }) panelType?: PanelContextType
-    @Prop({ type: Boolean, default: false }) isParent = false
+    @Prop({ type: Boolean, default: false }) isParent!: boolean
+    // eslint-disable-next-line
+    @Prop({ type: Object, default: () => {} }) panelMetadata?: any
+
     // private panelMetadata: any = () => undefined
 
     // Computed properties
-    get panelMetadata(): any {
-      return this.panelMetadata || undefined
-    }
+    // get panelMetadata(): any {
+    //   return this.panelMetadata || undefined
+    // }
 
-    set panelMetadata(value: any) {
-      this.panelMetadata = value
-    }
+    // set panelMetadata(value: any) {
+    //   this.panelMetadata = value
+    // }
 
     get isMobile(): boolean {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     get isCreateNewRoute(): boolean {
@@ -37,9 +41,7 @@ export default class MixinTable extends Vue {
     get isReadOnlyParent(): boolean {
       if (this.isPanelWindow) {
         if (
-          !this.$store.getters[
-            (Namespaces.FieldValue, +'/' + 'getContainerIsActive')
-          ](this.parentUuid)
+          !this.$store.getters[Namespaces.FieldValue + '/' + 'getContainerIsActive'](this.parentUuid)
         ) {
           return true
         }
