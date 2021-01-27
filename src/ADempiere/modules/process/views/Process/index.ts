@@ -45,7 +45,8 @@ export default class ProcessView extends Vue {
         this.$store.dispatch(Namespaces.Panel + '/' + 'getPanelAndFields', {
           containerUuid: this.processUuid,
           panelType: this.panelType,
-          routeToDelete: this.$route
+          routeToDelete: this.$route,
+          oldRoute: this.$router.currentRoute
         }).then(processResponse => {
           this.processMetadata = processResponse
         }).finally(() => {
