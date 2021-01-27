@@ -98,7 +98,8 @@ export default class FieldDocumentStatus extends Vue {
         isActionDocument: true,
         parentUuid: this.field.parentUuid,
         panelType: <PanelContextType> this.field.panelType,
-        containerUuid: this.field.containerUuid // determinate if get table name and record id (window) or selection (browser)
+        containerUuid: this.field.containerUuid, // determinate if get table name and record id (window) or selection (browser)
+        oldRoute: this.$router.currentRoute
       })
       this.valueActionDocument = ''
     }

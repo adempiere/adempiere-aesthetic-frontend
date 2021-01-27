@@ -58,7 +58,8 @@ export default class MixinForm extends Vue {
           isCustomForm: this.isCustomForm,
           uuid: this.containerUuid,
           panelType: this.panelType,
-          fieldsList: this.fieldList
+          fieldsList: this.fieldList,
+          oldRoute: this.$router.currentRoute
         })
           .then((responsePanel: IPanelDataExtended) => {
             this.fieldList = responsePanel.fieldsList

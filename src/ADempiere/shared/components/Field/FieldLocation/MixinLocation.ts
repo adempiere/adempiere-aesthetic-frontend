@@ -19,6 +19,10 @@ export default class MixinLocationField extends Vue {
     ]
   }
 
+  set isShowedLocationForm(isShowed: boolean) {
+    this.$store.dispatch(Namespaces.Field + '/' + 'setShowedLocation', isShowed)
+  }
+
     // Methods
     requestGetLocationAddress = requestGetLocationAddress
     requestGetCountryDefinition = requestGetCountryDefinition

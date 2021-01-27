@@ -138,7 +138,8 @@ export default class ModalProcess extends Vue {
                 containerUuid: this.containerUuid,
                 panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
                 reportFormat: this.reportExportType,
-                routeToDelete: this.$route
+                routeToDelete: this.$route,
+                oldRoute: this.$router.currentRoute
               })
               .catch(error => {
                 console.warn(error)

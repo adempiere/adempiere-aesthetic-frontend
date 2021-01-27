@@ -368,12 +368,13 @@ export default class MixinContextMenu extends Vue {
     actionContextMenu(event: any): void {
       switch (event.srcKey) {
         case 'defaultValues':
-          this.$store.dispatch('setDefaultValues', {
+          this.$store.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             recordUuid: this.recordUuid,
             panelType: 'window',
-            isNewRecord: true
+            isNewRecord: true,
+            oldRoute: this.$router.currentRoute
           })
           break
         case 'deleteRecord':
