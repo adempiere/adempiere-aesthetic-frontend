@@ -512,7 +512,7 @@ export const actions: BusinessDataActionTree = {
       }
     )
     context.commit('deleteRecordContainer', record)
-    context.dispatch('setTabSequenceRecord', [])
+    context.dispatch(Namespaces.Window + '/' + 'setTabSequenceRecord', [], { root: true })
 
     if (setNews.length) {
       setNews.forEach(uuid => {

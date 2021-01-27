@@ -9,6 +9,7 @@ import { runCallOutRequest } from '../../UIService/rule'
 import { CallOutControlState, ICallOutData } from '../../UITypes'
 import language from '@/ADempiere/shared/lang'
 import { IPanelParameters } from '@/ADempiere/shared/store/modules/panel/type'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type CallOutControlActionContext = ActionContext<CallOutControlState, IRootState>
 type CallOutControlActionTree = ActionTree<CallOutControlState, IRootState>
@@ -88,14 +89,14 @@ export const actions: CallOutControlActionTree = {
               ...row,
               ...calloutResponse.values
             }
-            context.dispatch('notifyRowTableChange', {
+            context.dispatch(Namespaces.BusinessData + '/' + 'notifyRowTableChange', {
               parentUuid,
               containerUuid,
               row: newValues,
               isEdit: true
-            })
+            }, { root: true })
           } else {
-            context.dispatch('notifyPanelChange', {
+            context.dispatch(Namespaces.Panel + '/' + 'notifyPanelChange', {
               parentUuid,
               containerUuid,
               panelType: PanelContextType.Window,
@@ -104,7 +105,7 @@ export const actions: CallOutControlActionTree = {
               withOutColumnNames,
               isSendCallout: false,
               isChangeFromCallout: true
-            })
+            }, { root: true })
           }
           resolve(calloutResponse.values)
         })

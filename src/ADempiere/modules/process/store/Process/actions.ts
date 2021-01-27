@@ -10,7 +10,7 @@ import {
   showNotification,
   ShowNotificationOptions
 } from '@/ADempiere/shared/utils/notifications'
-import { IResponseList } from '@/ADempiere/shared/utils/types'
+import { IResponseList, Namespaces } from '@/ADempiere/shared/utils/types'
 import { ActionContext, ActionTree } from 'vuex'
 import {
   DrillTableAction,
@@ -85,6 +85,7 @@ export const actions: ProcessActionTree = {
             recordUuidSelection: string
             menuParentUuid: string
             routeToDelete?: Route
+            oldRoute: Route
         }
   ) {
     const {
@@ -98,7 +99,8 @@ export const actions: ProcessActionTree = {
       recordUuidSelection,
       menuParentUuid,
       reportFormat,
-      routeToDelete
+      routeToDelete,
+      oldRoute
     } = payload
     let { parametersList } = payload
     return new Promise((resolve, reject) => {
@@ -282,7 +284,7 @@ export const actions: ProcessActionTree = {
           // )
           context.dispatch('tagsView/delView', routeToDelete)
           // delete data associate to browser
-          context.dispatch('deleteRecordContainer', {
+          context.dispatch(Namespaces.Browser + '/' + 'deleteRecordContainer', {
             viewUuid: containerUuid
           })
         }
@@ -298,10 +300,11 @@ export const actions: ProcessActionTree = {
 
         // reset panel and set defalt isShowedFromUser
         if (!processDefinition.isReport) {
-          context.dispatch('setDefaultValues', {
+          context.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {
             containerUuid,
-            panelType
-          })
+            panelType,
+            oldRoute
+          }, { root: true })
         }
       }
       if (isProcessTableSelection) {
@@ -1235,9 +1238,10 @@ export const actions: ProcessActionTree = {
                 parentUuid: string
                 uuid: string
             }
+            oldRoute: Route
         }
   ) {
-    const { action, type } = payload
+    const { action, type, oldRoute } = payload
     const panels: PanelContextType[] = [
       PanelContextType.Process,
       PanelContextType.Report,
@@ -1261,12 +1265,13 @@ export const actions: ProcessActionTree = {
                 | undefined = context.rootGetters.getPanel(action.containerUuid)
       if (!panel) {
         context
-          .dispatch('getPanelAndFields', {
+          .dispatch(Namespaces.Panel + '/' + 'getPanelAndFields', {
             parentUuid: action.parentUuid,
             containerUuid: !action.uuid
               ? action.containerUuid
               : action.uuid,
-            panelType: action.panelType
+            panelType: action.panelType,
+            oldRoute
           })
           .then((responsePanel: any) => {
             context.commit('setMetadata', responsePanel)

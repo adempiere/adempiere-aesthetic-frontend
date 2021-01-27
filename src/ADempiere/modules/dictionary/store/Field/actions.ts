@@ -65,5 +65,8 @@ export const actions: FieldActionTree = {
   },
   changeSequence(context: FieldActionContext, params: any) {
     context.commit('setFieldsListLocation', params)
+  },
+  setShowedLocation(context: FieldActionContext, isShowed: boolean) {
+    context.commit('setShowedLocation', isShowed)
   }
 }

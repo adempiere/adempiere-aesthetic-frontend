@@ -36,6 +36,7 @@ import { IFieldData } from '@/ADempiere/modules/field'
 import { getFieldTemplate } from '@/ADempiere/shared/utils/lookupFactory'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import fieldList from '@/ADempiere/shared/views/Test/fieldList'
+import { Route } from 'vue-router'
 
 type WindowDefinitionActionTree = ActionTree<WindowDefinitionState, IRootState>
 type WindowDefinitionActionContext = ActionContext<
@@ -336,6 +337,7 @@ export const actions: WindowDefinitionActionTree = {
             panelType: PanelContextType
             tabMetadata?: ITabData
             isAdvancedQuery: boolean
+            oldRoute: Route
         }
   ) {
     payload.tabMetadata = payload.tabMetadata || undefined
@@ -346,7 +348,8 @@ export const actions: WindowDefinitionActionTree = {
       parentUuid,
       containerUuid,
       panelType,
-      isAdvancedQuery
+      isAdvancedQuery,
+      oldRoute
     } = payload
     let { tabMetadata } = payload
 
@@ -427,7 +430,7 @@ export const actions: WindowDefinitionActionTree = {
       }
 
       // panel for save on store
-      const panel: IPanelData = {
+      const panel: IPanelData & { oldRoute: Route } = {
         ...tabMetadata!,
         containerUuid,
         isAdvancedQuery,
@@ -437,7 +440,8 @@ export const actions: WindowDefinitionActionTree = {
         // app attributes
         isLoadFieldsList: true,
         isShowedTotals: false,
-        isTabsChildren // to delete records assiciated
+        isTabsChildren, // to delete records assiciated
+        oldRoute
       }
       context.dispatch(Namespaces.Panel + '/' + 'addPanel', panel, { root: true })
       resolve(panel)

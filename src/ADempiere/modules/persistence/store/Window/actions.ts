@@ -30,7 +30,7 @@ import {
   IReferenceListData,
   requestReferencesList
 } from '@/ADempiere/modules/ui'
-import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
+import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import {
   requestCreateEntity,
   requestDeleteEntity,
@@ -730,9 +730,10 @@ export const actions: WindowActionTree = {
             recordUuid?: string
             recordId?: number
             row: IKeyValueObject<IValueData>
+            oldRoute: Route
         }
   ) {
-    const { parentUuid, containerUuid, row } = payload
+    const { parentUuid, containerUuid, row, oldRoute } = payload
     let { recordUuid, recordId } = payload
 
     return new Promise(resolve => {
@@ -760,12 +761,13 @@ export const actions: WindowActionTree = {
               if (panel.isParentTab) {
                 // if response is void, go to new record
                 if (responseDataList.length <= 0) {
-                  context.dispatch('setDefaultValues', {
+                  context.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {
                     parentUuid,
                     containerUuid,
                     panelType: 'window',
-                    isNewRecord: true
-                  })
+                    isNewRecord: true,
+                    oldRoute
+                  }, { root: true })
                 } else {
                   // const oldRoute = router.app.$route
                   // else display first record of table in panel
@@ -996,6 +998,7 @@ export const actions: WindowActionTree = {
             isRefreshPanel?: boolean
             isReference?: boolean
             isShowNotification?: boolean
+            oldRoute: Route
         }
   ) {
     payload.referenceWhereClause = payload.referenceWhereClause || ''
@@ -1016,7 +1019,8 @@ export const actions: WindowActionTree = {
       criteria,
       isLoadAllRecords,
       isRefreshPanel,
-      isShowNotification
+      isShowNotification,
+      oldRoute
     } = payload
     let { isAddRecord } = payload
 
@@ -1070,7 +1074,7 @@ export const actions: WindowActionTree = {
       })
     }
     return context
-      .dispatch('getObjectListFromCriteria', {
+      .dispatch(Namespaces.BusinessData + '/' + 'getObjectListFromCriteria', {
         parentUuid,
         containerUuid,
         tableName: tab.tableName,
@@ -1081,7 +1085,7 @@ export const actions: WindowActionTree = {
         isParentTab: tab.isParentTab,
         isAddRecord,
         isShowNotification
-      })
+      }, { root: true })
       .then((response: IRecordObjectListFromCriteria[]) => {
         if (
           isRefreshPanel &&
@@ -1097,19 +1101,20 @@ export const actions: WindowActionTree = {
                         )
           if (newValues) {
             // update fields with values obtained from the server
-            context.dispatch('notifyPanelChange', {
+            context.dispatch(Namespaces.Panel + '/' + 'notifyPanelChange', {
               parentUuid,
               containerUuid,
               newValues,
               isSendCallout: false,
               isSendToServer: false
-            })
+            }, { root: true })
           } else {
             // this record is missing (Deleted or the query does not include it)
-            context.dispatch('setDefaultValues', {
+            context.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {
               parentUuid,
-              containerUuid
-            })
+              containerUuid,
+              oldRoute
+            }, { root: true })
           }
         }
         return response

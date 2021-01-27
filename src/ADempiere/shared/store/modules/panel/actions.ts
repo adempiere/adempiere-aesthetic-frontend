@@ -19,9 +19,10 @@ type PanelActionContext = ActionContext<PanelState, IRootState>
 type PanelActionTree = ActionTree<PanelState, IRootState>
 
 export const actions: PanelActionTree = {
-  addPanel(context: PanelActionContext, parameters: IPanelDataExtended): IPanelDataExtended {
+  addPanel(context: PanelActionContext, parameters: IPanelDataExtended & { oldRoute: Route }): IPanelDataExtended {
     const {
       panelType,
+      oldRoute,
       // isParentTab,
       // parentUuid,
       uuid: containerUuid
@@ -115,6 +116,7 @@ export const actions: PanelActionTree = {
       context.dispatch('setDefaultValues', {
         parentUuid: params.parentUuid,
         containerUuid,
+        oldRoute,
         // isOverWriteParent: Boolean(isParentTab),
         panelType
       })
@@ -746,9 +748,10 @@ export const actions: PanelActionTree = {
     panelMetadata?: any
     tabMetadata?: any
     routeToDelete?: Route
+    oldRoute?: Route
     isAdvancedQuery?: boolean
   }) {
-    const { isAdvancedQuery = payload.isAdvancedQuery || false, panelType, parentUuid, containerUuid, panelMetadata, routeToDelete, tabMetadata } = payload
+    const { oldRoute, isAdvancedQuery = payload.isAdvancedQuery || false, panelType, parentUuid, containerUuid, panelMetadata, routeToDelete, tabMetadata } = payload
     let executeAction: string
     switch (panelType) {
       case PanelContextType.Process:
@@ -775,10 +778,10 @@ export const actions: PanelActionTree = {
       panelMetadata,
       tabMetadata,
       isAdvancedQuery,
+      oldRoute,
       routeToDelete
     }, { root: true })
       .then(panelResponse => {
-        console.log(panelResponse)
         return panelResponse
       })
       .catch(error => {

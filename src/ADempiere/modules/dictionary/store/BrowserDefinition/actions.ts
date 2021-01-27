@@ -9,6 +9,7 @@ import { BrowserDefinitionState, IBrowserData, IBrowserDataExtended } from '../.
 import language from '@/ADempiere/shared/lang'
 import { WindowProcessAsociatedAction } from '@/ADempiere/modules/window'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { Route } from 'vue-router'
 
 type BrowserDefinitionActionTree = ActionTree<BrowserDefinitionState, IRootState>
 type BrowserDefinitionActionContext = ActionContext<BrowserDefinitionState, IRootState>
@@ -24,8 +25,9 @@ export const actions: BrowserDefinitionActionTree = {
         containerUuid: string
         browserId: number
         routeToDelete: any
+        oldRoute: Route
       }) {
-    const { containerUuid, browserId, routeToDelete } = payload
+    const { containerUuid, browserId, routeToDelete, oldRoute } = payload
     return new Promise(resolve => {
       requestBrowserMetadata({
         uuid: containerUuid,
@@ -103,7 +105,7 @@ export const actions: BrowserDefinitionActionTree = {
           fieldsList = fieldsList.concat(fieldsRangeList)
 
           // Panel for save on store
-          const newBrowser: IBrowserDataExtended = {
+          const newBrowser: IBrowserDataExtended & { oldRoute: Route } = {
             ...browserResponse,
             containerUuid,
             fieldsList,
@@ -112,7 +114,8 @@ export const actions: BrowserDefinitionActionTree = {
             awaitForValues, // control to values
             awaitForValuesToQuery: awaitForValues, // get values from request search
             isShowedCriteria,
-            isShowedTotals: true
+            isShowedTotals: true,
+            oldRoute
           }
 
           context.commit('addBrowser', newBrowser)

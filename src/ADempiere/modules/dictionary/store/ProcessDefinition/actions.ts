@@ -10,6 +10,7 @@ import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { generateProcess } from '@/ADempiere/shared/utils/DictionaryUtils'
 import language from '@/ADempiere/shared/lang'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { Route } from 'vue-router'
 
 type ProcessDefinitionActionContext = ActionContext<
     ProcessDefinitionState,
@@ -30,9 +31,10 @@ export const actions: ProcessDefinitionActionTree = {
             containerUuid: string
             processId: number
             routeToDelete: string
+            oldRoute: Route
         }
   ) {
-    const { containerUuid, processId, routeToDelete } = payload
+    const { containerUuid, processId, routeToDelete, oldRoute } = payload
     return new Promise(resolve => {
       requestProcessMetadata({
         uuid: containerUuid,
@@ -58,7 +60,11 @@ export const actions: ProcessDefinitionActionTree = {
           })
 
           const { processDefinition, actions } = cont
-          context.dispatch(Namespaces.Panel + '/' + 'addPanel', processDefinition, { root: true })
+          const processDefinitionRoute = {
+            ...processDefinition,
+            oldRoute
+          }
+          context.dispatch(Namespaces.Panel + '/' + 'addPanel', processDefinitionRoute, { root: true })
           context.commit('addProcess', processDefinition)
           resolve(processDefinition)
 
@@ -92,15 +98,20 @@ export const actions: ProcessDefinitionActionTree = {
     context: ProcessDefinitionActionContext,
     payload: {
             processToGenerate: IProcessDataExtended
+            oldRoute: Route
         }
   ) {
-    const { processToGenerate } = payload
+    const { processToGenerate, oldRoute } = payload
     return new Promise(resolve => {
       const { processDefinition, actions } = generateProcess({
         processToGenerate
       })
 
-      context.dispatch(Namespaces.Panel + '/' + 'addPanel', processDefinition)
+      const processDefinitionRoute = {
+        ...processDefinition,
+        oldRoute
+      }
+      context.dispatch(Namespaces.Panel + '/' + 'addPanel', processDefinitionRoute)
       context.commit('addProcess', processDefinition)
       resolve(processDefinition)
 
