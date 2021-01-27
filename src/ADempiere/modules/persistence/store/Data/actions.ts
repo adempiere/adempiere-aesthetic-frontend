@@ -917,7 +917,7 @@ export const actions: BusinessDataActionTree = {
                 field.callout
       ) {
         withOutColumnNames.push(field.columnName)
-        context.dispatch('runCallout', {
+        context.dispatch(Namespaces.CallOutControl + '/' + 'runCallout', {
           parentUuid,
           containerUuid,
           tableName: field.tableName,
@@ -928,7 +928,7 @@ export const actions: BusinessDataActionTree = {
           withOutColumnNames,
           row,
           inTable: true
-        })
+        }, { root: true })
       }
 
       if (isSendToServer) {
@@ -951,7 +951,7 @@ export const actions: BusinessDataActionTree = {
             })
           }
         } else {
-          const fieldsEmpty = context.rootGetters.getFieldsListEmptyMandatory(
+          const fieldsEmpty = context.rootGetters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory'](
             {
               containerUuid,
               row

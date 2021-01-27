@@ -150,7 +150,7 @@ export const actions: PanelActionTree = {
       }
 
       if (!isChangedDisplayedWithValue) {
-        const value = context.rootGetters.getValueOfField({
+        const value = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
           parentUuid: itemField.parentUuid,
           containerUuid: containerUuid,
           columnName: itemField.columnName

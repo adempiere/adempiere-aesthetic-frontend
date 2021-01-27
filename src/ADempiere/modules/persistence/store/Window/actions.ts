@@ -126,7 +126,7 @@ export const actions: WindowActionTree = {
     const { parentUuid, containerUuid, columnName } = payload.field
     //  get value from store
     if (!value) {
-      value = context.getters.getValueOfField({
+      value = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         parentUuid,
         containerUuid,
         columnName
@@ -135,7 +135,7 @@ export const actions: WindowActionTree = {
     return new Promise((resolve, reject) => {
       // request callouts
       context
-        .dispatch('runCallout', {
+        .dispatch(Namespaces.CallOutControl + '/' + 'runCallout', {
           parentUuid,
           containerUuid,
           tableName: field.tableName,
@@ -144,7 +144,7 @@ export const actions: WindowActionTree = {
           oldValue: field.oldValue,
           valueType: field.valueType,
           value
-        })
+        }, { root: true })
         .then(() => {
           //  Context Info
           context.dispatch('reloadContextInfo', {
@@ -172,11 +172,11 @@ export const actions: WindowActionTree = {
     return new Promise((resolve, reject) => {
       // For change options
       if (fieldIsDisplayed(field)) {
-        context.commit('addChangeToPersistenceQueue', {
+        context.commit(Namespaces.Persistence + '/' + 'addChangeToPersistenceQueue', {
           ...field,
           value
-        })
-        const emptyFields = context.getters.getFieldsListEmptyMandatory(
+        }, { root: true })
+        const emptyFields = context.rootGetters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory'](
           {
             containerUuid: field.containerUuid
           }
@@ -230,7 +230,7 @@ export const actions: WindowActionTree = {
   ) {
     const { field } = payload
     //  get value from store
-    const value = context.getters.getValueOfField({
+    const value = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
       parentUuid: field.parentUuid,
       containerUuid: field.containerUuid,
       columnName: field.columnName
@@ -295,7 +295,7 @@ export const actions: WindowActionTree = {
         isAddDisplayColumn: true
       }
     )
-    context.dispatch('notifyPanelChange', {
+    context.dispatch(Namespaces.Panel + '/' + 'notifyPanelChange', {
       containerUuid,
       newValues: oldAttributes
     })

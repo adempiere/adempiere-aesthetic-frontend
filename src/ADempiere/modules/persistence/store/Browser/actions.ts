@@ -8,6 +8,7 @@ import { IEntityData, IEntityListData, IRecordSelectionData } from '../../Persis
 import { parseContext } from '@/ADempiere/shared/utils/contextUtils'
 import { requestBrowserSearch } from '../../PersistenceService/browser'
 import { IRootState } from '@/store'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type BrowserActionTree = ActionTree<BrowserDefinitionState, IRootState>
 type BrowserActionContext = ActionContext<BrowserDefinitionState, IRootState>
@@ -19,9 +20,9 @@ export const actions: BrowserActionTree = {
         value: any
       }) {
     const { containerUuid, field, value } = params
-    const fieldsEmpty: string[] = context.getters.getFieldsListEmptyMandatory({
+    const fieldsEmpty: string[] = context.rootGetters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
       containerUuid,
-      fieldsList: context.getters.getFieldsListFromPanel(containerUuid)
+      fieldsList: context.rootGetters[Namespaces.Panel + '/' + 'getFieldsListFromPanel'](containerUuid)
     })
     if (fieldsEmpty) {
       showMessage({
@@ -35,21 +36,21 @@ export const actions: BrowserActionTree = {
     if (fieldIsDisplayed(field)) {
       let isReadyForQuery = true
       if (field.isSQLValue) {
-        const panel: IPanelDataExtended = context.getters.getPanel(containerUuid)
+        const panel: IPanelDataExtended = context.rootGetters[Namespaces.Panel + '/' + 'getPanel'](containerUuid)
         let awaitForValuesToQuery = panel.awaitForValuesToQuery
         awaitForValuesToQuery--
-        context.dispatch('changeBrowserAttribute', {
+        context.dispatch(Namespaces.BrowserDefinition + '/' + 'changeBrowserAttribute', {
           containerUuid,
           attributeName: 'awaitForValuesToQuery',
           attributeValue: awaitForValuesToQuery
-        })
+        }, { root: true })
         if (awaitForValuesToQuery === 0) {
           if (panel.isShowedCriteria) {
-            context.dispatch('changeBrowserAttribute', {
+            context.dispatch(Namespaces.BrowserDefinition + '/' + 'changeBrowserAttribute', {
               containerUuid,
               attributeName: 'isShowedCriteria',
               attributeValue: false
-            })
+            }, { root: true })
           }
         } else if (awaitForValuesToQuery > 0) {
           isReadyForQuery = false
