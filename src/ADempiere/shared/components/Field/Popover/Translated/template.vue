@@ -11,7 +11,7 @@
         <span class="custom-tittle-popover">
           {{ fieldAttributes.name }}
         </span>
-        <template v-if="!isEmptyValue(fieldAttributes.help)">
+        <template v-if="(fieldAttributes.help)">
           : {{ fieldAttributes.help }}
         </template>
       </div>
@@ -47,7 +47,7 @@
       >
         <el-input
           v-model="translatedValue"
-          :disabled="isEmptyValue(langValue)"
+          :disabled="!(langValue)"
           @change="changeTranslationValue"
         />
       </el-form-item>

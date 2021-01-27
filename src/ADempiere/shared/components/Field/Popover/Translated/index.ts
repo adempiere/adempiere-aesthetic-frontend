@@ -2,7 +2,7 @@ import Template from './template.vue'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { ILanguageData, IValueData } from '@/ADempiere/modules/core'
-import { getLanguage } from '@/utils/cookies'
+import { getLocale } from '@/ADempiere/shared/lang/index'
 
 @Component({
   name: 'FieldTranslated',
@@ -10,8 +10,8 @@ import { getLanguage } from '@/utils/cookies'
 })
 export default class FieldTranslated extends Vue {
     @Prop({ type: Object, required: true }) fieldAttributes!: any
-    @Prop({ type: String, default: undefined }) recordUuid?: string = undefined
-    public langValue?: string = undefined
+    @Prop({ type: String, default: undefined }) recordUuid?: string
+    public langValue?: string = ''
     public translatedValue = ''
     public isLoading = false
 
@@ -51,52 +51,57 @@ export default class FieldTranslated extends Vue {
       return values[this.fieldAttributes.columnName]
     }
 
-      // Watchers
-      @Watch('getterValue')
+    // Watchers
+    @Watch('getterValue')
     hanldeGetterValueChange(newValue: string) {
       this.translatedValue = newValue
     }
 
-      // Methods
-      getTranslationsFromServer(): void {
-        this.isLoading = true
-        this.$store.dispatch('getTranslationsFromServer', {
-          containerUuid: this.fieldAttributes.containerUuid,
-          recordUuid: this.recordUuid,
-          tableName: this.fieldAttributes.tableName,
-          language: this.langValue
+    // Methods
+    getTranslationsFromServer(): void {
+      this.isLoading = true
+      this.$store.dispatch(Namespaces.Language + '/' + 'getTranslationsFromServer', {
+        containerUuid: this.fieldAttributes.containerUuid,
+        recordUuid: this.recordUuid,
+        tableName: this.fieldAttributes.tableName,
+        language: this.langValue
+      })
+        .finally(() => {
+          this.isLoading = false
         })
-          .finally(() => {
-            this.isLoading = false
-          })
-      }
+    }
 
-      getTranslation(): void {
-        if (!this.getterTranslationValues) {
-          this.getTranslationsFromServer()
-        }
+    getTranslation(): void {
+      if (!this.getterTranslationValues) {
+        this.getTranslationsFromServer()
       }
+    }
 
-      changeTranslationValue(value: IValueData) {
-        this.$store.dispatch('changeTranslationValue', {
-          containerUuid: this.fieldAttributes.containerUuid,
-          language: this.langValue,
-          columnName: this.fieldAttributes.columnName,
-          value
-        })
-      }
+    changeTranslationValue(value: IValueData) {
+      this.$store.dispatch(Namespaces.Language + '/' + 'changeTranslationValue', {
+        containerUuid: this.fieldAttributes.containerUuid,
+        language: this.langValue,
+        columnName: this.fieldAttributes.columnName,
+        value
+      })
+    }
 
-      // Hooks
-      created() {
-        const langMatch: ILanguageData | undefined = this.languageList.find((itemLanguage: ILanguageData) => {
-          return itemLanguage.languageISO === getLanguage()
-        })
-        let langMatchName: string
-        if (langMatch) {
-          langMatchName = langMatch.language
-        } else {
-          langMatchName = this.languageList[0].language
-        }
-        this.langValue = langMatchName
+    // Hooks
+    created() {
+      console.log(this.languageList)
+      console.log(getLocale())
+      this.$store.dispatch(Namespaces.System + '/' + 'getLanguagesFromServer')
+      const langMatch: ILanguageData | undefined = this.languageList.find((itemLanguage: ILanguageData) => {
+        return itemLanguage.languageISO === getLocale()
+      })
+      console.log('langmatch' + langMatch)
+      console.log(this.languageList)
+      let langMatchName: string
+      if (langMatch) {
+        langMatchName = langMatch.language
+      } else {
+        langMatchName = this.languageList[0].language
       }
+      this.langValue = langMatchName
+    }
 }

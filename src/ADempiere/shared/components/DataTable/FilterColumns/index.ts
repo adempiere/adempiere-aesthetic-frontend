@@ -48,7 +48,7 @@ export default class FilterColumns extends Vue {
      * @param {array} selectedValues
      */
     addField(selectedValues: string[]) {
-      this.$store.dispatch('changeFieldAttributesBoolean', {
+      this.$store.dispatch(Namespaces.Panel + '/' + 'changeFieldAttributesBoolean', {
         containerUuid: this.containerUuid,
         fieldsIncludes: selectedValues,
         attribute: 'isShowedTableFromUser',

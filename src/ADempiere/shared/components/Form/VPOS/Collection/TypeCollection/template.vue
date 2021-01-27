@@ -30,7 +30,7 @@
                       </el-button>
 
                       <el-button
-                        v-if="!isEmptyValue(value.dateTrx)"
+                        v-if="(value.dateTrx)"
                         type="text"
                         class="button"
                         style="color: rgb(50, 54, 58); font-size: 13px; text-align: left; float: unset; padding-top: 5px;"

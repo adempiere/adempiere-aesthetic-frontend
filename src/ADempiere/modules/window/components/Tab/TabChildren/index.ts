@@ -15,7 +15,7 @@ import Template from './template.vue'
 })
 export default class TabChildren extends Mixins(MixinTab) {
     @Prop({ type: String, default: undefined })
-    firstTabUuid?: string = undefined
+    firstTabUuid?: string
 
     public currentTabChild = this.$route.query.tabChild
 

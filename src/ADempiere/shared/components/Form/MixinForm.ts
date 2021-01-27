@@ -14,8 +14,10 @@ import Field from '@/ADempiere/shared/components/Field'
   }
 })
 export default class MixinForm extends Vue {
-    @Prop({ type: Object, default: () => undefined }) metadata: any = () => undefined
+    @Prop({ type: Object, default: undefined }) metadata?: any
     public formUuid: string = this.$route.meta.uuid
+    // eslint-disable-next-line
+    // @ts-ignore
     public containerUuid: string = this.metadata.containerUuid || this.$route.meta.uuid || this.metadata.uuid
     public fieldList: any[] = []
     public panelMetadata: any = {}

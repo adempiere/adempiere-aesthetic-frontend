@@ -82,7 +82,7 @@ export default class FieldDocumentStatus extends Vue {
       // })
 
       const actionProcess = this.$store.getters[Namespaces.Utils + '/' + 'getOrders']
-      this.$store.dispatch('startProcess', {
+      this.$store.dispatch(Namespaces.Process + '/' + 'startProcess', {
         action: {
           uuid: actionProcess.uuid,
           id: actionProcess.id,

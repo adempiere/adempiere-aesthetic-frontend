@@ -48,7 +48,7 @@
             v-show="!action.hidden"
             :key="index"
             :index="action.name"
-            :disabled="panelType === 'browser' ? isEmptyValue(getDataSelection) : action.disabled"
+            :disabled="panelType === 'browser' ? !(getDataSelection) : action.disabled"
             @click="runAction(action)"
           >
             {{ action.name }}
@@ -108,7 +108,7 @@
         <template slot="title">
           {{ $t('components.contextMenuReferences') }}
         </template>
-        <template v-if="references && !isEmptyValue(references.referencesList)">
+        <template v-if="references && (references.referencesList)">
           <el-scrollbar wrap-class="scroll-child">
             <el-menu-item
               v-for="(reference, index) in references.referencesList"

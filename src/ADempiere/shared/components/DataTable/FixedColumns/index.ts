@@ -47,7 +47,7 @@ export default class FixedColumns extends Vue {
        * @param {array} selectedValues
        */
     addField(selectedValues: string[]): void {
-      this.$store.dispatch('changeFieldAttributesBoolean', {
+      this.$store.dispatch(Namespaces.Panel + '/' + 'changeFieldAttributesBoolean', {
         containerUuid: this.containerUuid,
         fieldsIncludes: selectedValues,
         attribute: 'isFixedTableColumn',

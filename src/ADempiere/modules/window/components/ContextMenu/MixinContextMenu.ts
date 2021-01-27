@@ -341,7 +341,7 @@ export default class MixinContextMenu extends Vue {
             )
           })
       } else if (this.panelType === PanelContextType.Browser) {
-        const fieldsEmpty: string[] = this.$store.getters.getFieldsListEmptyMandatory(
+        const fieldsEmpty: string[] = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory'](
           {
             containerUuid: this.containerUuid,
             fieldsList: this.getterFieldsList

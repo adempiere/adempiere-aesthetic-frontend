@@ -1,7 +1,5 @@
 import Template from './template.vue'
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import PriceChecking from './PriceChecking'
-import VPOS from './VPOS'
 
 @Component({
   name: 'FormPanel',
@@ -13,35 +11,33 @@ export default class FormPanel extends Vue {
     // Computed properties
     // load the component that is indicated in the attributes of received property
     get componentRender() {
-      let form: Promise<any> | PriceChecking | VPOS
+      let form: Promise<any>
       switch (this.metadata.fileName) {
         case 'PriceChecking':
-          form = new PriceChecking() // import('@/components/ADempiere/Form/PriceChecking')
+          form = import('@/ADempiere/shared/components/Form/PriceChecking') // import('@/components/ADempiere/Form/PriceChecking')
           break
         case 'VPOS':
-          form = new VPOS() // import('@/components/ADempiere/Form/VPOS')
+          form = import('@/ADempiere/shared/components/Form/VPOS') // import('@/components/ADempiere/Form/VPOS')
           break
         default:
-          // NOTE: Migrate Unsupported view
-          // form = new Unsupported() // import('@/views/ADempiere/Unsupported')
+          form = import('@/ADempiere/shared/views/Unsupported') // import('@/views/ADempiere/Unsupported')
           break
       }
 
       return () => {
-        return form
-        //   return new Promise(resolve => {
-        //     form
-        //       .then((formFile: any) => {
-        //         resolve(formFile)
-        //       })
-        //       .catch(() => {
-        //           // NOTE: Migrate Unsupported view
-        //         // import('@/views/ADempiere/Unsupported')
-        //         //   .then(unsupportedFile => {
-        //         //     resolve(unsupportedFile)
-        //         //   })
-        //       })
-        //   })
+        return new Promise(resolve => {
+          form
+            .then((formFile: any) => {
+              resolve(formFile)
+            })
+            .catch(() => {
+              // NOTE: Migrate Unsupported view
+              import('@/ADempiere/shared/views/Unsupported')
+                .then(unsupportedFile => {
+                  resolve(unsupportedFile)
+                })
+            })
+        })
       }
     }
 }

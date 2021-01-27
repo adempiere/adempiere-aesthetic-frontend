@@ -97,7 +97,7 @@
           <template slot="title">
             {{ $t('components.contextMenuReferences') }}
           </template>
-          <template v-if="references && !isEmptyValue(references.referencesList)">
+          <template v-if="references && (references.referencesList)">
             <el-scrollbar wrap-class="scroll-child">
               <el-menu-item
                 v-for="(reference, index) in references.referencesList"
