@@ -30,6 +30,10 @@ export default class DashboardAdmin extends Vue {
       return this.$store.getters.getRoleUuid
     }
 
+    create() {
+      console.log(this.dashboardList)
+    }
+
     // Watchers
     @Watch('getterRol')
     handleGetterRol(value?: string) {

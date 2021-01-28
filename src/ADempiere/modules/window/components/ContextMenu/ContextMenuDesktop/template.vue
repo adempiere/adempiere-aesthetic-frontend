@@ -101,14 +101,14 @@
       </el-menu-item>
 
       <el-submenu
-        :disabled="!(isReferecesContent && isLoadedReferences)"
+        :disabled="!(isReferencesContent && isLoadedReferences)"
         class="el-menu-item"
         index="references"
       >
         <template slot="title">
           {{ $t('components.contextMenuReferences') }}
         </template>
-        <template v-if="references && (references.referencesList)">
+        <template v-if="this.references && (this.references.referencesList)">
           <el-scrollbar wrap-class="scroll-child">
             <el-menu-item
               v-for="(reference, index) in references.referencesList"

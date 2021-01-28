@@ -36,6 +36,8 @@ import { showNotification } from '@/ADempiere/shared/utils/notifications'
 import { IReportOutputDataExtended } from '@/ADempiere/modules/report'
 import { convertFieldsListToShareLink, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import ROUTES from '@/ADempiere/shared/utils/zoomWindow'
+import { UserModule } from '@/store/modules/user'
+import { PermissionModule } from '@/store/modules/permission'
 
 @Component({
   name: 'MixinContextMenu',
@@ -48,8 +50,7 @@ export default class MixinContextMenu extends Vue {
     @Prop({ default: undefined, type: String }) private menuParentUuid?: string
     @Prop({ default: undefined, type: String }) private parentUuid?: string
     @Prop({ type: String, required: true }) private containerUuid?: string
-    @Prop({ default: undefined, type: String })
-    private panelType?: PanelContextType
+    @Prop({ default: undefined, type: String }) private panelType?: PanelContextType
 
     @Prop({ default: undefined, type: String }) private tableName?: string
     @Prop({ default: false, type: Boolean }) private isReport?: boolean
@@ -59,19 +60,22 @@ export default class MixinContextMenu extends Vue {
     private isInsertRecord?: boolean
 
     @Prop({ default: 'xlsx', type: String })
-    private defaultFromatExport?: string
+    private defaultFormatExport?: string
 
     @Prop({ default: false, type: Boolean }) isDisplayed?: boolean
     private actions: IContextActionData[] = []
     private supportedTypes = supportedTypes
-    private references: IReferenceDataExtended[] = []
-    private file: any = this.$store.getters[
-      Namespaces.Process + '/' + 'getProcessResult'
-    ].download
-
+    public references: IReferenceDataExtended[] | undefined = undefined
+    public file: any = this.getProcessResult.download || ''
+    public downloads: any = this.getProcessResult.url || ''
     private metadataMenu?: Partial<IContextMenuData> = {}
     private recordUuid = this.$route.query.action
-    private isLoadedReferences = false
+    public isLoadedReferences = false
+
+    get getProcessResult() {
+      const result = this.$store.getters[Namespaces.Process + '/' + 'getProcessResult']
+      return result
+    }
 
     // computed properties
     get activeMenu(): any | string {
@@ -89,8 +93,14 @@ export default class MixinContextMenu extends Vue {
     }
 
     get isReferencesContent(): boolean {
+      console.log({
+        panel: this.panelType,
+        recordUuid: this.recordUuid,
+        recordUUidCurrent: this.$route.query,
+        ruta: this.$router.currentRoute
+      })
       if (
-        this.panelType === 'window' &&
+        this.panelType === PanelContextType.Window &&
             this.recordUuid &&
             this.recordUuid !== 'create-new'
       ) {
@@ -115,8 +125,8 @@ export default class MixinContextMenu extends Vue {
         menuUuid = this.menuParentUuid!
       }
       const relations: any = this.$store.getters[
-        Namespaces.Window + '/' + 'getRelations'
-      ](menuUuid)
+        Namespaces.ContextMenu + '/' + 'getRelations'
+      ](menuUuid, this.permissionRoutes)
       if (relations) {
         return relations.children
       }
@@ -124,7 +134,7 @@ export default class MixinContextMenu extends Vue {
     }
 
     get permissionRoutes(): RouteConfig[] {
-      return this.$store.getters.permission_routes
+      return PermissionModule.routes
     }
 
     get valuesPanelToShare(): string {
@@ -181,9 +191,7 @@ export default class MixinContextMenu extends Vue {
     }
 
     get getAllDataRecords(): IRecordSelectionData {
-      return this.$store.getters[
-        Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'
-      ](this.containerUuid)
+      return this.$store.getters[Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'](this.containerUuid)
     }
 
     get getDataSelection(): any[] {
@@ -223,8 +231,7 @@ export default class MixinContextMenu extends Vue {
 
     get getOldRouteOfWindow(): IWindowOldRoute | false {
       if (this.panelType === PanelContextType.Window) {
-        const oldRoute: IWindowOldRoute = this.$store.state.window
-          .windowOldRoute
+        const oldRoute: IWindowOldRoute = this.$store.state.windowModule.windowOldRoute
         if (
           oldRoute.query.action &&
                 oldRoute.query.action !== 'create-new' &&
@@ -237,13 +244,13 @@ export default class MixinContextMenu extends Vue {
     }
 
     get getReportDefinition(): INotificationProcessData | undefined {
-      return this.$store.getters.getCachedReport(
+      return this.$store.getters[Namespaces.Process + '/' + 'getCachedReport'](
         this.$route.params.instanceUuid
       )
     }
 
     get isPersonalLock(): boolean {
-      return this.$store.getters['user/getIsPersonalLock']
+      return UserModule.role.isPersonalLock!
     }
 
     get listDocumentActions(): IDocumentActionData[] {
@@ -313,13 +320,11 @@ export default class MixinContextMenu extends Vue {
 
     // Note: Check if those watchers are hooks
 
-    @Watch('created')
-    async handleCreated() {
+    created() {
       this.generateContextMenu()
     }
 
-    @Watch('mounted')
-    async handleMounted() {
+    mounted() {
       this.getReferences()
     }
 
@@ -329,7 +334,7 @@ export default class MixinContextMenu extends Vue {
     refreshData(): void {
       if (this.panelType === PanelContextType.Window) {
         this.$store
-          .dispatch('getDataListTab', {
+          .dispatch(Namespaces.Window + '/' + 'getDataListTab', {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             isRefreshPanel: true,
@@ -357,7 +362,7 @@ export default class MixinContextMenu extends Vue {
             showClose: true
           })
         } else {
-          this.$store.dispatch('getBrowserSearch', {
+          this.$store.dispatch(Namespaces.Browser + '/' + 'getBrowserSearch', {
             containerUuid: this.containerUuid,
             isClearSelection: true
           })
@@ -379,7 +384,7 @@ export default class MixinContextMenu extends Vue {
           break
         case 'deleteRecord':
         case 'deleteRecord2':
-          this.$store.dispatch('deleteEntity', {
+          this.$store.dispatch(Namespaces.Window + '/' + 'deleteEntity', {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             recordUuid: this.recordUuid
@@ -393,14 +398,15 @@ export default class MixinContextMenu extends Vue {
 
     getReferences(): void {
       if (this.isReferencesContent) {
-        const references: IReferenceDataExtended[] = this.getterReferences
-        if (references && references.length) {
-          this.references = references
+        console.log('op definitiva')
+        this.references = this.getterReferences
+        if (this.references && this.references.length) {
           this.isLoadedReferences = true
         } else {
+          console.log('segunda op')
           this.isLoadedReferences = false
           this.$store
-            .dispatch('getReferencesListFromServer', {
+            .dispatch(Namespaces.Window + '/' + 'getReferencesListFromServer', {
               parentUuid: this.parentUuid,
               containerUuid: this.containerUuid,
               tableName: this.tableName,
@@ -414,9 +420,12 @@ export default class MixinContextMenu extends Vue {
             })
         }
       } else {
+        console.log('op final')
         this.references = []
         this.isLoadedReferences = false
       }
+      console.log('references')
+      console.log(this.references)
     }
 
     formatJson(filterVal: string[], jsonData: string[]): any[][] {
@@ -489,7 +498,7 @@ export default class MixinContextMenu extends Vue {
         isChangePrivateAccess = false
         if (this.$route.params.tableName) {
           this.$store
-            .dispatch('getPrivateAccessFromServer', {
+            .dispatch(Namespaces.BusinessData + '/' + 'getPrivateAccessFromServer', {
               tableName: this.$route.params.tableName,
               recordId: this.$route.params.recordId
             })
@@ -518,14 +527,14 @@ export default class MixinContextMenu extends Vue {
                     return reportableAction
                   }
                 })
-        this.$store.dispatch('setOrder', processAction)
+        this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', processAction)
       }
 
       if (this.actions && this.actions.length) {
         this.actions.forEach((item: IContextActionData) => {
           const itemAction = item as ReportableActions
           const { action } = itemAction
-          if (
+          if (this.$route.meta &&
             this.$route.meta.type === 'report' &&
                     action === ActionContextName.StartProcess
           ) {
@@ -576,7 +585,7 @@ export default class MixinContextMenu extends Vue {
           action.associated.parentUuid ||
                 action.associated.containerUuid
         ) {
-          const attributes = this.$store.getters.getValuesView({
+          const attributes = this.$store.getters[Namespaces.FieldValue + '/' + 'getValuesView']({
             parentUuid: action.associated.parentUuid,
             containerUuid: action.associated.containerUuid
           })
@@ -590,7 +599,7 @@ export default class MixinContextMenu extends Vue {
         }
 
         // open modal dialog with metadata
-        this.$store.dispatch('setShowDialog', {
+        this.$store.dispatch(Namespaces.Process + '/' + 'setShowDialog', {
           type: action.type,
           action: {
             ...action,
@@ -605,7 +614,7 @@ export default class MixinContextMenu extends Vue {
       if (this.lastParameter !== undefined) {
         containerParams = this.lastParameter
       }
-      const fieldsNotReady = this.$store.getters.getFieldsListEmptyMandatory({
+      const fieldsNotReady = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
         containerUuid: containerParams
       })
 
@@ -619,7 +628,7 @@ export default class MixinContextMenu extends Vue {
         }
 
         if (this.panelType === 'process') {
-          this.$store.dispatch('setTempShareLink', {
+          this.$store.dispatch(Namespaces.Utils + '/' + 'setTempShareLink', {
             processId: this.$route.params.processId,
             href: window.location.href
           })
@@ -645,7 +654,7 @@ export default class MixinContextMenu extends Vue {
           reportFormat, // this.$route.query.reportType ? this.$route.query.reportType : action.reportExportType,
           menuParentUuid, // to load relationsList in context menu (report view)
           routeToDelete: this.$route
-        })
+        }, { root: true })
           .catch(error => {
             console.warn(error)
           })
@@ -669,7 +678,7 @@ export default class MixinContextMenu extends Vue {
       if (!processId) {
         processId = this.$route.params.processId
       }
-      this.$store.dispatch('getReportOutputFromServer', {
+      this.$store.dispatch(Namespaces.Report + '/' + 'getReportOutputFromServer', {
         instanceUuid,
         processUuid: action.processUuid,
         tableName: action.tableName,
@@ -677,8 +686,8 @@ export default class MixinContextMenu extends Vue {
         printFormatUuid: action.printFormatUuid,
         reportViewUuid: action.reportViewUuid,
         isSummary: false,
-        reportName: this.$store.getters.getProcessResult.name,
-        reportType: this.$store.getters.getReportType,
+        reportName: this.$store.getters[Namespaces.Process + '/' + 'getProcessResult'].name,
+        reportType: this.$store.getters[Namespaces.Utils + '/' + 'getReportType'],
         option: action.option
       })
         .then((reportOutputResponse: IReportOutputDataExtended) => {
@@ -702,7 +711,7 @@ export default class MixinContextMenu extends Vue {
             }
             reportOutputResponse.url = link.href
           }
-          this.$store.dispatch('finishProcess', {
+          this.$store.dispatch(Namespaces.Process + '/' + 'finishProcess', {
             processOutput: reportOutputResponse,
             routeToDelete: this.$route
           })
@@ -710,20 +719,20 @@ export default class MixinContextMenu extends Vue {
     }
 
     runAction(action: IContextActionData): void {
-      if (action.type === ActionContextType.Action) {
+      if (action && action.type && action.type === ActionContextType.Action) {
         this.executeAction(action)
-      } else if (action.type === ActionContextType.Process) {
+      } else if (action && action.type && action.type === ActionContextType.Process) {
         // run process associate with view (window or browser)
         const processAction = action as WindowProcessAsociatedAction
         this.showModal(processAction)
-      } else if (action.type === ActionContextType.DataAction) {
+      } else if (action && action.type && action.type === ActionContextType.DataAction) {
         if (action.action === ActionContextName.UndoModifyData && Boolean(!this.getDataLog) && this.getOldRouteOfWindow) {
           this.$router.push({
             path: this.getOldRouteOfWindow.path,
             query: {
               ...this.getOldRouteOfWindow.query
             }
-          }, undefined)
+          })
         } else {
           if (action.action === ActionContextName.SetDefaultValues && this.$route.query.action === 'create-new') {
             return
@@ -731,22 +740,23 @@ export default class MixinContextMenu extends Vue {
 
           const defaultAction = action as WindowDefinitionAction
 
-          this.$store.dispatch(defaultAction.action, {
+          this.$store.dispatch(Namespaces.Panel + '/' + defaultAction.action, {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             recordUuid: this.recordUuid,
             panelType: this.panelType,
             isNewRecord: defaultAction.action === ActionContextName.SetDefaultValues,
             tableName: defaultAction.tableName,
-            recordId: defaultAction.recordId
-          })
+            recordId: defaultAction.recordId,
+            oldRoute: this.$router.currentRoute
+          }, { root: true })
             .then(response => {
               if (response && response.isPrivateAccess) {
                 this.validatePrivateAccess(response)
               }
             })
         }
-      } else if (action.type === 'updateReport') {
+      } else if (action && action.type && action.type === 'updateReport') {
         this.updateReport(action)
       }
     }
@@ -771,7 +781,7 @@ export default class MixinContextMenu extends Vue {
               // tabParent: 0
               tabParent: String(0)
             }
-          }, undefined)
+          })
         } else {
           this.$message({
             type: 'error',
@@ -826,8 +836,8 @@ export default class MixinContextMenu extends Vue {
       let shareLink: string = this.panelType === PanelContextType.Window || window.location.href.includes('?') ? `${window.location.href}&` : `${window.location.href}?`
       if (this.$route.name === 'Report Viewer') {
         const processParameters = convertFieldsListToShareLink(this.processParametersExecuted!)
-        const reportFormat = this.$store.getters.getReportType
-        shareLink = this.$store.getters.getTempShareLink
+        const reportFormat = this.$store.getters[Namespaces.Utils + '/' + 'getReportType']
+        shareLink = this.$store.getters[Namespaces.Utils + '/' + 'getTempShareLink']
         if (String(processParameters).length) {
           shareLink += '?' + processParameters
           shareLink += `&reportType=${reportFormat}`

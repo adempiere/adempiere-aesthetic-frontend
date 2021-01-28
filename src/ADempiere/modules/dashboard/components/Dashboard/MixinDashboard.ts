@@ -1,4 +1,5 @@
 import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
+import { PermissionModule } from '@/store/modules/permission'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
@@ -11,7 +12,7 @@ export default class MixinDasboard extends Vue {
 
     // Computed properties
     get permissionRoutes() {
-      return this.$store.getters.permission_routes
+      return PermissionModule.routes
     }
 
     // Methods
@@ -32,7 +33,7 @@ export default class MixinDasboard extends Vue {
       if (viewSearch) {
         let recordUuid
         if (row.uuidRecord) {
-          recordUuid = row.uuidRecord
+          recordUuid = String(row.uuidRecord)
         }
         let tabParent = ''
         if (row.action === 'window') {
@@ -45,7 +46,7 @@ export default class MixinDasboard extends Vue {
             action: recordUuid,
             tabParent
           }
-        }, undefined)
+        })
       } else {
         this.$message({
           type: 'error',

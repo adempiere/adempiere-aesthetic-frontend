@@ -1,6 +1,7 @@
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { AppModule, DeviceType } from '@/store/modules/app'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import Template from './template.vue'
 
@@ -17,7 +18,7 @@ export default class FilterFields extends Vue {
 
     // Computed properties
     get isMobile(): boolean {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     get fieldsListOptional(): any[] {
@@ -58,7 +59,7 @@ export default class FilterFields extends Vue {
      * @param {array} selectedValues
      */
       addField(selectedValues: any[]): void {
-        this.$store.dispatch('changeFieldShowedFromUser', {
+        this.$store.dispatch(Namespaces.Panel + '/' + 'changeFieldShowedFromUser', {
           containerUuid: this.containerUuid,
           fieldsUser: selectedValues,
           show: true,

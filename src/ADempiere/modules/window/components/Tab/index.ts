@@ -13,7 +13,7 @@ import Template from './template.vue'
   }
 })
 export default class TabParent extends Mixins(MixinTab) {
-    public currentTab = this.$route.query.tabParent
+    public currentTab: any = this.$route.query.tabParent || ''
 
     // Computed properties
     tabParentStyle(): {

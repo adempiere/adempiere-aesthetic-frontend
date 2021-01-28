@@ -1,8 +1,10 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { icon } from '../icon'
+import Template from './template.vue'
 
 @Component({
-  name: 'Item'
+  name: 'Item',
+  mixins: [Template]
 })
 export default class Item extends Vue {
     @Prop({ required: true }) item: any

@@ -1,7 +1,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import ContextMenuMobile from '@/ADempiere/modules/window/components/ContextMenu/ContextMenuMobile'
-import ContextMenuDesktop from '@/ADempiere/modules/window/components/ContextMenu/ContextMenuDesktop'
 import Template from './template.vue'
+import { AppModule, DeviceType } from '@/store/modules/app'
 
 @Component({
   name: 'ContextMenu',
@@ -20,13 +19,13 @@ export default class ContextMenu extends Vue {
 
     // Computed properties
     get isMobile(): boolean {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     get templateDevice() {
       if (this.isMobile) {
-        return new ContextMenuMobile() // () => ContextMenuMobile
+        return () => import('@/ADempiere/modules/window/components/ContextMenu/ContextMenuMobile')
       }
-      return new ContextMenuDesktop() // () => ContextMenuDesktop
+      return () => import('@/ADempiere/modules/window/components/ContextMenu/ContextMenuDesktop') // () => ContextMenuDesktop
     }
 }
