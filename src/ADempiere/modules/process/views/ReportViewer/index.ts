@@ -83,7 +83,7 @@ export default class ReportViewer extends Vue {
       this.reportResult = this.getterCachedReport
       if (this.reportResult === undefined) {
         this.$store
-          .dispatch('getSessionProcessFromServer')
+          .dispatch(Namespaces.Process + '/' + 'getSessionProcessFromServer', undefined, { root: true })
           .then(response => {
             this.reportResult = this.getterCachedReport
             if (this.reportResult === undefined) {
@@ -96,7 +96,7 @@ export default class ReportViewer extends Vue {
               this.$store
                 .dispatch('tagsView/delView', this.$route)
                 .then(() => {
-                  this.$router.push('/', undefined)
+                  this.$router.push('/')
                 })
               return
             }

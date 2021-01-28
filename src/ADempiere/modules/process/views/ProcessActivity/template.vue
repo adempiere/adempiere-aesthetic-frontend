@@ -1,5 +1,5 @@
 <template>
-  <div v-if="(getProcessLog)" key="with-process" class="app-container">
+  <div v-if="(this.getProcessLog.length)" key="with-process" class="app-container">
     <el-timeline>
       <el-timeline-item
         v-for="(activity, index) in getProcessLog"

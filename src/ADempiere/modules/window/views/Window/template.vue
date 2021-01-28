@@ -35,8 +35,8 @@
                         </div>
                         <data-table
                           :parent-uuid="windowUuid"
-                          :container-uuid="this.windowMetadata.currentTab.uuid"
-                          :table-name="this.windowMetadata.currentTab.tableName"
+                          :container-uuid="windowMetadata.currentTab.uuid"
+                          :table-name="windowMetadata.currentTab.tableName"
                           :is-showed-panel-record="true"
                           :is-parent="true"
                         />
@@ -49,7 +49,7 @@
                 <el-container id="PanelRight" style="height: 86vh;">
                   <resize-observer @notify="handleResize" />
                   <Split v-shortkey="['f8']" direction="vertical" @onDrag="onDrag" @shortkey.native="handleChangeShowedRecordNavigation(!isShowedRecordNavigation)">
-                    <Split :size="sizeAreaStyle" :style="splitAreaStyle">
+                    <SplitArea :size="sizeAreaStyle" :style="splitAreaStyle">
                       <el-header
                         v-if="showContextMenu"
                         :style="isWorkflowBarStatus ? 'height: 45px; background: #F5F7FA' : 'height: 40px'"
@@ -90,7 +90,7 @@
                           <el-card class="box-card">
                             <el-tabs v-model="activeInfo" @tab-click="handleClick">
                               <el-tab-pane
-                                name="chatEntriesModule/listChatEntries"
+                                name="listChatEntries"
                               >
                                 <span slot="label">
                                   <i class="el-icon-s-comment" />
@@ -184,7 +184,7 @@
                           </div>
                         </div>
                       </el-main>
-                    </Split>
+                    </SplitArea>
                     <SplitArea v-show="isShowedTabsChildren" :size="50">
                       <el-header
                         v-if="isShowedTabsChildren && (windowMetadata.tabsListChildren)"
@@ -236,7 +236,7 @@
                   <el-card class="box-card">
                     <el-tabs v-model="activeInfo" @tab-click="handleClick">
                       <el-tab-pane
-                        name="chatEntriesModule/listChatEntries"
+                        name="listChatEntries"
                       >
                         <span slot="label">
                           <i class="el-icon-s-comment" />
@@ -249,7 +249,7 @@
                       </el-tab-pane>
 
                       <el-tab-pane
-                        name="containerInfoModule/listRecordLogs"
+                        name="listRecordLogs"
                       >
                         <span slot="label">
                           <svg-icon icon-class="tree-table" />
@@ -265,7 +265,7 @@
 
                       <el-tab-pane
                         v-if="getIsWorkflowLog"
-                        name="containerInfoModule/listWorkflowLogs"
+                        name="listWorkflowLogs"
                       >
                         <span slot="label">
                           <i class="el-icon-s-help" />

@@ -103,7 +103,7 @@ export default class ProcessActivity extends Vue {
 
     // Methods
     getProcessMetadata(uuid: string): IProcessData | undefined {
-      return this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](uuid)
+      return this.$store.getters[Namespaces.Process + '/' + 'getProcess'](uuid)
     }
 
     handleCommand(activity: any): void {
@@ -132,7 +132,7 @@ export default class ProcessActivity extends Vue {
               ...this.$route.query,
               ...activity.parametersList
             }
-          }, undefined)
+          })
         }
       }
     }
@@ -184,10 +184,10 @@ export default class ProcessActivity extends Vue {
 
     // Hooks
     beforeMount() {
-      this.$store.dispatch('getSessionProcessFromServer', {
+      this.$store.dispatch(Namespaces.Process + '/' + 'getSessionProcessFromServer', {
         pageToken: this.pageToken,
         pageSize: this.pageSize
-      })
+      }, { root: true })
         .then(response => {
           if (response.nextPageToken !== this.pageToken) {
             this.pageToken = response.nextPageToken

@@ -1,6 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import Dropdown from '@/ADempiere/shared/components/Dropdown'
 import Template from './template.vue'
+import { PermissionModule } from '@/store/modules/permission'
 
 @Component({
   name: 'Summary',
@@ -10,7 +11,7 @@ import Template from './template.vue'
   }
 })
 export default class Summary extends Vue {
-    public routes = this.$store.state.permission.addRoutes
+    public routes = PermissionModule.dynamicRoutes
     public parentUuid: string = this.$route.meta.parentUuid
     public optionList?:any
     // Computed properties

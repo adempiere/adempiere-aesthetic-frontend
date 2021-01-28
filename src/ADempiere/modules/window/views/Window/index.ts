@@ -366,7 +366,7 @@ export default class WindowView extends Vue {
           })
           .then(response => {
             if (value.query.action === 'create-new') {
-              this.$store.commit('isNote', false)
+              this.$store.commit(Namespaces.ChatEntries + '/' + 'isNote', false)
             }
           })
       }
