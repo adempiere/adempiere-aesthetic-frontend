@@ -12,6 +12,7 @@ import {
   LookupState
 } from '@/ADempiere/modules/ui/UITypes'
 import { getToken as getSession } from '@/utils/cookies'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type LookupActionContext = ActionContext<LookupState, IRootState>
 type LookupActionTree = ActionTree<LookupState, IRootState>
@@ -78,7 +79,7 @@ export const actions: LookupActionTree = {
           parsedDirectQuery: directQuery,
           tableName,
           sessionUuid: getSession()!,
-          clientId: context.rootGetters.getPreferenceClientId()
+          clientId: context.rootGetters[Namespaces.Preference + '/' + 'getPreferenceClientId']
         }
         context.commit('addLoockupItem', lookupItem)
         return option
@@ -186,7 +187,7 @@ export const actions: LookupActionTree = {
           tableName,
           parsedQuery,
           sessionUuid: getSession()!,
-          clientId: context.rootGetters.getPreferenceClientId
+          clientId: context.rootGetters[Namespaces.Preference + '/' + 'getPreferenceClientId']
         }
         context.commit('addLoockupList', lookupList)
 

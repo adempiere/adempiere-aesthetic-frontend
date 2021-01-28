@@ -77,23 +77,23 @@ export const actions: BusinessDataActionTree = {
     // refresh list table with data from server
     if (panelType === PanelContextType.Window) {
       context
-        .dispatch('getDataListTab', {
+        .dispatch(Namespaces.Window + '/' + 'getDataListTab', {
           parentUuid,
           containerUuid,
           isAddRecord,
           isShowNotification
-        })
+        }, { root: true })
         .catch(error => {
           console.warn(
                         `Error getting data list tab. Message: ${error.message}, code ${error.code}.`
           )
         })
     } else if (panelType === 'browser') {
-      if (!context.rootGetters.isNotReadyForSubmit(containerUuid)) {
-        context.dispatch('getBrowserSearch', {
+      if (!context.rootGetters[Namespaces.Panel + '/' + 'isNotReadyForSubmit'](containerUuid)) {
+        context.dispatch(Namespaces.Browser + '/' + 'getBrowserSearch', {
           containerUuid,
           isClearSelection: true
-        })
+        }, { root: true })
       }
     }
   },
@@ -147,7 +147,7 @@ export const actions: BusinessDataActionTree = {
     }
 
     if (!row) {
-      const tabPanel: IPanelDataExtended = context.rootGetters.getPanel(
+      const tabPanel: IPanelDataExtended = context.rootGetters[Namespaces.Panel + '/' + 'getPanel'](
         containerUuid
       )
 
@@ -158,7 +158,7 @@ export const actions: BusinessDataActionTree = {
       if (isPanelValues) {
         // add row with values used from record in panel
         values = <IKeyValueObject>(
-                    context.rootGetters.getColumnNamesAndValues({
+                    context.rootGetters[Namespaces.Panel + '/' + 'getColumnNamesAndValues']({
                       containerUuid,
                       propertyName: 'value',
                       isObjectReturn: true,
@@ -168,7 +168,7 @@ export const actions: BusinessDataActionTree = {
                 )
       } else {
         values = <IKeyValueObject>(
-                    context.rootGetters.getParsedDefaultValues({
+                    context.rootGetters[Namespaces.Panel + '/' + 'getParsedDefaultValues']({
                       parentUuid,
                       containerUuid,
                       fieldsList,
@@ -280,7 +280,7 @@ export const actions: BusinessDataActionTree = {
             }
 
             // get label (DisplayColumn) from vuex store
-            const options = context.rootGetters.getLookupAll({
+            const options = context.rootGetters[Namespaces.Lookup + '/' + 'getLookupAll']({
               parentUuid,
               containerUuid,
               tableName: itemField.reference.tableName,
@@ -630,7 +630,7 @@ export const actions: BusinessDataActionTree = {
     let defaultValues: IKeyValueObject<String> = {}
     if (isAddDefaultValues) {
       defaultValues = <IKeyValueObject<String>>(
-                context.rootGetters.getParsedDefaultValues({
+                context.rootGetters[Namespaces.Panel + '/' + 'getParsedDefaultValues']({
                   parentUuid,
                   containerUuid,
                   formatToReturn: 'object',
@@ -798,7 +798,7 @@ export const actions: BusinessDataActionTree = {
       values = row
     } else {
       values = <IKeyValueObject>(
-                context.rootGetters.getColumnNamesAndValues({
+                context.rootGetters[Namespaces.Panel + '/' + 'getColumnNamesAndValues']({
                   parentUuid,
                   containerUuid,
                   propertyName: 'value',
@@ -932,23 +932,23 @@ export const actions: BusinessDataActionTree = {
       }
 
       if (isSendToServer) {
-        const fieldNotReady = context.rootGetters.isNotReadyForSubmit(
+        const fieldNotReady = context.rootGetters[Namespaces.Panel + '/' + 'isNotReadyForSubmit'](
           containerUuid,
           row
         )
         if (!fieldNotReady) {
           if (row.UUID) {
-            context.dispatch('updateCurrentEntityFromTable', {
+            context.dispatch(Namespaces.Window + '/' + 'updateCurrentEntityFromTable', {
               parentUuid,
               containerUuid,
               row
-            })
+            }, { root: true })
           } else {
-            context.dispatch('createEntityFromTable', {
+            context.dispatch(Namespaces.Window + '/' + 'createEntityFromTable', {
               parentUuid,
               containerUuid,
               row
-            })
+            }, { root: true })
           }
         } else {
           const fieldsEmpty = context.rootGetters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory'](
@@ -1133,7 +1133,7 @@ export const actions: BusinessDataActionTree = {
     }
     if (selection.length) {
       const { fieldsList, keyColumn } = <IPanelDataExtended>(
-                context.rootGetters.getPanel(containerUuid)
+                context.rootGetters[Namespaces.Panel + '/' + 'getPanel'](containerUuid)
             )
             // reduce list
       const fieldsListSelection: IFieldDataExtendedUtils[] = fieldsList.filter(
@@ -1195,15 +1195,15 @@ export const actions: BusinessDataActionTree = {
   },
   resetStateBusinessData(context: BusinessDataActionContext) {
     const { commit } = context
-    commit('resetStateContainerInfo')
+    commit(Namespaces.ContainerInfo + '/' + 'resetStateContainerInfo', undefined, { root: true })
     commit('setInitialContext', {})
-    commit('resetStateTranslations')
+    commit(Namespaces.Language + '/' + 'resetStateTranslations', undefined, { root: true })
     commit('resetStateBusinessData')
-    commit(Namespaces.ContextMenu + '/' + 'resetContextMenu')
-    commit('resetStateTranslations')
-    commit('resetStateLookup')
-    commit('resetStateProcessControl')
-    commit('resetStateUtils')
-    commit('resetStateWindowControl')
+    commit(Namespaces.ContextMenu + '/' + 'resetContextMenu', undefined, { root: true })
+    commit(Namespaces.Language + '/' + 'resetStateTranslations', undefined, { root: true })
+    commit(Namespaces.Event + '/' + 'resetStateLookup', undefined, { root: true })
+    commit(Namespaces.Process + '/' + 'resetStateProcessControl', undefined, { root: true })
+    commit(Namespaces.Utils + '/' + 'resetStateUtils', undefined, { root: true })
+    commit(Namespaces.Window + '/' + 'resetStateWindowControl', undefined, { root: true })
   }
 }

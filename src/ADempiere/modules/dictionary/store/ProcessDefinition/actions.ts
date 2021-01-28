@@ -81,7 +81,7 @@ export const actions: ProcessDefinitionActionTree = {
           //     },
           //     () => {}
           // )
-          context.dispatch('tagsView/delView', routeToDelete)
+          context.dispatch('tagsView/delView', routeToDelete, { root: true })
           showMessage({
             message: language.t('login.unexpectedError').toString(),
             type: 'error'
@@ -111,7 +111,7 @@ export const actions: ProcessDefinitionActionTree = {
         ...processDefinition,
         oldRoute
       }
-      context.dispatch(Namespaces.Panel + '/' + 'addPanel', processDefinitionRoute)
+      context.dispatch(Namespaces.Panel + '/' + 'addPanel', processDefinitionRoute, { root: true })
       context.commit('addProcess', processDefinition)
       resolve(processDefinition)
 

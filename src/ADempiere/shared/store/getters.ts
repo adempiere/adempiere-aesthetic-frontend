@@ -12,7 +12,6 @@ export const getters: GetterTree<IRootState, IRootState> = {
   token: (state: IRootState) => state.user.token,
   avatar: (state: IRootState) => state.user.avatar,
   name: (state: IRootState) => state.user.name,
-  // router: (state: IRootState) => state.permission,
   router: (state: IRootState) => state.permission.dynamicRoutes,
   introduction: (state: IRootState) => state.user.introduction,
   // TODO: Migrate the following getters in the corresponding files

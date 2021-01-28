@@ -256,14 +256,14 @@ export const actions: WindowActionTree = {
       }
       const contextInfo: Promise<
                 IContextInfoValuesExtends | IContextInfoValuesResponse
-            > = context.dispatch('getContextInfoValueFromServer', {
+            > = context.dispatch(Namespaces.BusinessData + '/' + 'getContextInfoValueFromServer', {
               parentUuid: field.parentUuid,
               containerUuid: field.containerUuid,
               contextInfoId: field.contextInfo.id,
               contextInfoUuid: field.contextInfo.uuid,
               columnName: field.columnName,
               sqlStatement
-            })
+            }, { root: true })
 
       contextInfo.then(response => {
         if (response && response.messageText) {
@@ -287,7 +287,7 @@ export const actions: WindowActionTree = {
     data: { containerUuid: string }
   ) {
     const { containerUuid } = data
-    const oldAttributes: IKeyValueObject = context.rootGetters.getColumnNamesAndValues(
+    const oldAttributes: IKeyValueObject = context.rootGetters[Namespaces.Panel + '/' + 'getColumnNamesAndValues'](
       {
         containerUuid,
         propertyName: 'oldValue',
@@ -427,7 +427,7 @@ export const actions: WindowActionTree = {
       }
     }
     const { tableName, isParentTab } = <IPanelDataExtended>(
-            context.rootGetters.getPanel(containerUuid)
+            context.rootGetters[Namespaces.Panel + '/' + 'getPanel'](containerUuid)
         )
 
     // TODO: Add support to Binary columns (BinaryData)
@@ -618,7 +618,7 @@ export const actions: WindowActionTree = {
   ): Promise<void | IEntityData> {
     const { containerUuid, row } = payload
     const { tableName, fieldsList } = <IPanelDataExtended>(
-            context.rootGetters.getPanel(containerUuid)
+            context.rootGetters[Namespaces.Panel + '/' + 'getPanel'](containerUuid)
         )
 
     // TODO: Add support to Binary columns (BinaryData)
@@ -853,13 +853,13 @@ export const actions: WindowActionTree = {
 
     if (!tableName || !isParentTab) {
       const tab: ITabDataExtended = <ITabDataExtended>(
-                context.rootGetters.getTab(parentUuid, containerUuid)
+                context.rootGetters[Namespaces.WindowDefinition + '/' + 'getTab'](parentUuid, containerUuid)
             )
       tableName = tab.tableName
       isParentTab = tab.isParentTab
     }
     const allData: IRecordSelectionData = <IRecordSelectionData>(
-            context.rootGetters.getDataRecordAndSelection(containerUuid)
+            context.rootGetters[Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'](containerUuid)
         )
     let selectionLength = allData.selection.length
 
@@ -1025,7 +1025,7 @@ export const actions: WindowActionTree = {
     let { isAddRecord } = payload
 
     const tab: ITabDataExtended = <ITabDataExtended>(
-            context.rootGetters.getTab(parentUuid, containerUuid)
+            context.rootGetters[Namespaces.WindowDefinition + '/' + 'getTab'](parentUuid, containerUuid)
         )
 
     let parsedQuery: string = tab.query
@@ -1123,9 +1123,7 @@ export const actions: WindowActionTree = {
         return error
       })
       .finally(() => {
-        const currentData: IRecordSelectionData = <
-                    IRecordSelectionData
-                >context.rootGetters.getDataRecordAndSelection(containerUuid)
+        const currentData: IRecordSelectionData = <IRecordSelectionData>context.rootGetters[Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'](containerUuid)
         const {
           originalNextPageToken,
           pageNumber,
@@ -1204,7 +1202,7 @@ export const actions: WindowActionTree = {
     let { tableName } = payload
 
     if (!tableName) {
-      tableName = context.rootGetters.getTab(windowUuid, containerUuid)
+      tableName = context.rootGetters[Namespaces.WindowDefinition + '/' + 'getTab'](windowUuid, containerUuid)
         .tableName
     }
 
@@ -1235,9 +1233,7 @@ export const actions: WindowActionTree = {
           resolve(referenceResponse)
         })
         .catch(error => {
-          console.warn(
-                        `References Load Error ${error.code}: ${error.message}.`
-          )
+          console.warn(`References Load Error ${error.code}: ${error.message}.`)
         })
     })
   },
@@ -1271,10 +1267,10 @@ export const actions: WindowActionTree = {
       // tabAssociatedUuid,
       associatedTab
     } = <ITabDataExtended>(
-            context.rootGetters.getTab(parentUuid, containerUuid)
+            context.rootGetters[Namespaces.WindowDefinition + '/' + 'getTab'](parentUuid, containerUuid)
         )
     const listSequenceToSet: any[] = context.getters.getTabSequenceRecord
-    const recordData: any[] = context.rootGetters.getDataRecordsList(
+    const recordData: any[] = context.rootGetters[Namespaces.BusinessData + '/' + 'getDataRecordsList'](
       containerUuid
     )
 

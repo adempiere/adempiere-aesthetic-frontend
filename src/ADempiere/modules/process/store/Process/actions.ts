@@ -151,7 +151,7 @@ export const actions: ProcessActionTree = {
                         valueRecord?: any
                     } = context.getters.getRecordUuidMenu()
           tab = <ITabDataExtended>(
-                        context.rootGetters.getTab(parentUuid, containerUuid)
+                        context.rootGetters[Namespaces.WindowDefinition + '/' + 'getTab'](parentUuid, containerUuid)
                     )
           if (isProcessTableSelection) {
             tableName = tableNameUuidSelection
@@ -1157,11 +1157,12 @@ export const actions: ProcessActionTree = {
     parameters: {
             pageToken: string
             pageSize: number
+            oldRoute: Route
         }
   ) {
     // process Activity
 
-    const { pageToken, pageSize } = parameters
+    const { pageToken, pageSize, oldRoute } = parameters
     return requestListProcessesLogs({ pageToken, pageSize })
       .then((processActivityResponse: IProcessLogListData) => {
         const responseList = processActivityResponse.processLogsList.map(
@@ -1181,9 +1182,10 @@ export const actions: ProcessActionTree = {
                 processLogItem.uuid
               )
               context
-                .dispatch('getProcessFromServer', {
-                  containerUuid: processLogItem.uuid
-                })
+                .dispatch(Namespaces.ProcessDefinition + '/' + 'getProcessFromServer', {
+                  containerUuid: processLogItem.uuid,
+                  oldRoute: oldRoute
+                }, { root: true })
                 .finally(() => {
                   context.commit(
                     'deleteInRequestMetadata',

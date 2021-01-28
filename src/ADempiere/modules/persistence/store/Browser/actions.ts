@@ -75,15 +75,15 @@ export const actions: BrowserActionTree = {
       message: language.t('notifications.searching').toString(),
       type: 'info'
     })
-    const allData: IRecordSelectionData = context.rootGetters.getDataRecordAndSelection(containerUuid)
+    const allData: IRecordSelectionData = context.rootGetters[Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'](containerUuid)
     // deletes the data from the container to replace it and to report the searches in the table
-    context.dispatch('deleteRecordContainer', {
+    context.dispatch(Namespaces.BusinessData + '/' + 'deleteRecordContainer', {
       viewUuid: containerUuid
-    })
+    }, { root: true })
 
-    const browser: IBrowserDataExtended = context.rootGetters.getBrowser(containerUuid)
+    const browser: IBrowserDataExtended = context.rootGetters[Namespaces.BrowserDefinition + '/' + 'getBrowser'](containerUuid)
     // parameters isQueryCriteria
-    const parametersList = context.rootGetters.getParametersToServer({
+    const parametersList = context.rootGetters[Namespaces.Panel + '/' + 'getParametersToServer']({
       containerUuid,
       fieldsList: browser.fieldsList
     })
@@ -143,14 +143,14 @@ export const actions: BrowserActionTree = {
           token = token.slice(0, -2)
         }
 
-        context.dispatch('setRecordSelection', {
+        context.dispatch(Namespaces.BusinessData + '/' + 'setRecordSelection', {
           containerUuid,
           record: recordsList,
-          pageNumber: context.rootGetters.getPageNumber(containerUuid),
+          pageNumber: context.rootGetters[Namespaces.BusinessData + '/' + 'getPageNumber'](containerUuid),
           selection: selection,
           recordCount: browserSearchResponse.recordCount,
           nextPageToken: token
-        })
+        }, { root: true })
         showMessage({
           // title: language.t('notifications.succesful').toString(),
           message: language.t('notifications.succcessSearch').toString(),
@@ -161,10 +161,10 @@ export const actions: BrowserActionTree = {
       .catch(error => {
         // Set default registry values so that the table does not say loading,
         // there was already a response from the server
-        context.dispatch('setRecordSelection', {
+        context.dispatch(Namespaces.BusinessData + '/' + 'setRecordSelection', {
           containerUuid,
           panelType: 'browser'
-        })
+        }, { root: true })
 
         showMessage({
           // title: language.t('notifications.error').toString(),

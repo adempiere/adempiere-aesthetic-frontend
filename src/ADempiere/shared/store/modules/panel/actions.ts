@@ -351,10 +351,10 @@ export const actions: PanelActionTree = {
         })
 
         defaultAttributes.forEach(attribute => {
-          context.commit('addChangeToPersistenceQueue', {
+          context.commit(Namespaces.Persistence + '/' + 'addChangeToPersistenceQueue', {
             ...attribute,
             containerUuid
-          })
+          }, { root: true })
         })
         // panel.fieldsList.forEach(fieldToBlank => {
         //   if (isEmptyValue(fieldToBlank.parsedDefaultValue)) {
@@ -841,10 +841,10 @@ export const actions: PanelActionTree = {
   },
   dictionaryResetCache(context: PanelActionContext): void {
     context.commit('dictionaryResetCache')
-    context.commit('dictionaryResetCacheContext')
-    context.commit('dictionaryResetCacheContextMenu')
-    context.commit('dictionaryResetCacheWindow')
-    context.commit('dictionaryResetCacheProcess')
-    context.commit('dictionaryResetCacheBrowser')
+    context.commit(Namespaces.ContextMenu + '/' + 'dictionaryResetCacheContext')
+    context.commit(Namespaces.ContextMenu + '/' + 'dictionaryResetCacheContextMenu')
+    context.commit(Namespaces.WindowDefinition + '/' + 'dictionaryResetCacheWindow')
+    context.commit(Namespaces.ProcessDefinition + '/' + 'dictionaryResetCacheProcess')
+    context.commit(Namespaces.BrowserDefinition + '/' + 'dictionaryResetCacheBrowser')
   }
 }

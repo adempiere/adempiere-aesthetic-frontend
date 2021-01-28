@@ -25,6 +25,27 @@ class TagsView extends VuexModule implements ITagsViewState {
         title: view.meta.title || 'no-name'
       })
     )
+
+    // if(view.name === 'Report Viewer'){
+    //   if (this.visitedViews.some(
+    //     v => v.params
+    //     && view.params
+    //     && v.params.processId === view.params.processId
+    //     && v.params.tableName === view.params.tableName
+    //     )) return
+    //   this.visitedViews.push(
+    //     Object.assign({}, view, {
+    //       title: view.meta.title || 'no-name'
+    //     })
+    //   )
+    // } else {
+    //   if(this.visitedViews.some(v => v.name === view.name))
+    //   this.visitedViews.push(
+    //     Object.assign({}, view, {
+    //       title: view.meta.title || 'no-name'
+    //     })
+    //   )
+    // }
   }
 
   @Mutation
@@ -136,6 +157,27 @@ class TagsView extends VuexModule implements ITagsViewState {
   @Action
   public updateVisitedView(view: ITagView) {
     this.UPDATE_VISITED_VIEW(view)
+  }
+
+  @Action
+  public setCustomTagView(isCloseAllViews = true, route: Route) {
+    const selectedTag: ITagView = {
+      fullPath: route.fullPath,
+      hash: route.hash,
+      matched: route.matched,
+      meta: route.meta,
+      name: route.name,
+      params: route.params,
+      path: route.path,
+      query: route.query,
+      title: route.meta.title
+    }
+
+    if (isCloseAllViews) {
+      this.delAllViews()
+    } else {
+      this.delOthersViews(selectedTag)
+    }
   }
 }
 

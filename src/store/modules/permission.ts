@@ -5,7 +5,7 @@ import router, { constantRoutes, resetRouter } from '@/router'
 import store from '@/ADempiere/shared/store'
 import { UserModule } from './user'
 import { IRoleData } from '@/ADempiere/modules/user'
-import { loadMainMenu } from '@/ADempiere/shared/router/menu'
+import { loadMainMenu } from '@/router/ADempiere/menu'
 import { getToken } from '@/utils/cookies'
 import NProgress from 'nprogress'
 

@@ -9,6 +9,7 @@ import {
   ILookupOptions,
   LookupState
 } from '@/ADempiere/modules/ui/UITypes'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type LookupGettersTree = GetterTree<LookupState, IRootState>
 type LookupActionContext = ActionContext<LookupState, IRootState>
@@ -50,7 +51,7 @@ export const getters: LookupGettersTree = {
                     itemLookup.tableName === tableName &&
                     itemLookup.sessionUuid === getSession() &&
                     itemLookup.clientId ===
-                        context.rootGetters.getPreferenceClientId &&
+                        context.rootGetters[Namespaces.Preference + '/' + 'getPreferenceClientId'] &&
                     itemLookup.value === value
                 )
               }
@@ -88,7 +89,7 @@ export const getters: LookupGettersTree = {
                     itemLookup.tableName === tableName &&
                     itemLookup.sessionUuid === getSession() &&
                     itemLookup.clientId ===
-                        context.rootGetters.getPreferenceClientId
+                        context.rootGetters[Namespaces.Preference + '/' + 'getPreferenceClientId']
                 )
               }
             )
