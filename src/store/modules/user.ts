@@ -14,6 +14,7 @@ import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import language from '@/ADempiere/shared/lang'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { PermissionModule } from './permission'
+import { Route } from 'vue-router'
 
 export interface IUserState {
   token: string
@@ -343,21 +344,24 @@ class User extends VuexModule implements IUserState {
       removeToken()
 
       this.setIsSession(false)
-      this.context.dispatch('resetStateBusinessData', null, {
+      this.context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData', {
         root: true
       })
-      this.context.dispatch('dictionaryResetCache', null, {
+      this.context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache', {
         root: true
       })
 
       // reset visited views and cached views
       // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-      this.context.dispatch('tagsView/delAllViews', null, { root: true })
+      // this.context.dispatch('tagsView/delAllViews', null, { root: true })
+      TagsViewModule.delAllViews()
 
       removeCurrentRole()
       resetRouter()
       logout(this.token).catch(error => {
         console.warn(error)
+      }).finally(() => {
+        resolve({})
       })
     })
   }
@@ -416,10 +420,12 @@ class User extends VuexModule implements IUserState {
     organizationUuid: string
     organizationId: number
     isCloseAllViews?: boolean
+    route: Route
   }) {
-    const { organizationId, organizationUuid, isCloseAllViews = params.isCloseAllViews || true } = params
+    const { route, organizationId, organizationUuid, isCloseAllViews = params.isCloseAllViews || true } = params
     // TODO: Check if there are no tagViews in the new routes to close them, and
     // if they exist, reload with the new route using name (uuid)
+    TagsViewModule.setCustomTagView(isCloseAllViews, route)
     this.context.dispatch('tagsView/setCustomTagView', {
       isCloseAllViews
     }, {
@@ -564,10 +570,10 @@ public async ChangeRole(params: {
 
       this.GetSessionInfo(uuid)
       // Update user info and context associated with session
-      this.context.dispatch('resetStateBusinessData', null, {
+      this.context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData', null, {
         root: true
       })
-      this.context.dispatch('dictionaryResetCache', null, {
+      this.context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache', null, {
         root: true
       })
 
@@ -590,9 +596,7 @@ public async ChangeRole(params: {
       console.warn(`Error change role: ${error.message}. Code: ${error.code}.`)
     })
     .finally(() => {
-      this.context.dispatch('permission/sendRequestMenu', null, {
-        root: true
-      })
+      PermissionModule.sendRequestMenu()
     })
 }
 

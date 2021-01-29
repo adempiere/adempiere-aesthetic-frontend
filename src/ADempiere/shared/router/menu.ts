@@ -1,12 +1,10 @@
 
 /* Layout  */
-import Layout from '@/layout/index.vue'
 import { requestMenu } from '@/ADempiere/modules/user/UserService/user'
 import staticRoutes from './staticRoutes'
 import { IMenuData } from '@/ADempiere/modules/user'
 import { RouteConfig } from 'vue-router'
-import { convertAction } from '../utils/DictionaryUtils'
-import { RouteConfigSingleView } from 'vue-router/types/router'
+import { convertAction } from '@/ADempiere/shared/utils/DictionaryUtils'
 
 // Get Menu from server
 export function loadMainMenu(params: {
@@ -24,7 +22,7 @@ export function loadMainMenu(params: {
     requestMenu({
       sessionUuid
     }).then((menuResponse: IMenuData) => {
-      const asyncRoutesMap: RouteConfigSingleView[] = []
+      const asyncRoutesMap: RouteConfig[] = []
 
       menuResponse.childs.forEach(menuElement => {
         const optionMenu = getRouteFromMenuItem({
@@ -35,7 +33,7 @@ export function loadMainMenu(params: {
 
         if (optionMenu.meta.isSummary) {
           menuElement.childs.forEach(menu => {
-            const childsSumaryConverted: RouteConfigSingleView = getChildFromAction({
+            const childsSumaryConverted: RouteConfig = getChildFromAction({
               menu,
               index: 0,
               roleUuid,
@@ -58,7 +56,6 @@ export function loadMainMenu(params: {
         }
         asyncRoutesMap.push(optionMenu)
       })
-
       resolve(staticRoutes.concat(asyncRoutesMap))
     }).catch(error => {
       console.warn(`Error getting menu: ${error.message}. Code: ${error.code}.`)
@@ -133,7 +130,7 @@ function getRouteFromMenuItem(params: { menu: any, roleUuid: string, organizatio
   const optionMenu: RouteConfig = {
     path: '/' + roleUuid + '/' + organizationUuid + '/' + menu.id,
     redirect: '/' + menu.id + '/index',
-    component: Layout,
+    component: () => import('@/layout/index.vue'),
     name: menu.uuid,
     meta: {
       description: menu.description,
