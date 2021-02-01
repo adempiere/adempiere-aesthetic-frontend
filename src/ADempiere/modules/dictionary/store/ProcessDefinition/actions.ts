@@ -31,10 +31,9 @@ export const actions: ProcessDefinitionActionTree = {
             containerUuid: string
             processId: number
             routeToDelete: string
-            oldRoute: Route
         }
   ) {
-    const { containerUuid, processId, routeToDelete, oldRoute } = payload
+    const { containerUuid, processId, routeToDelete } = payload
     return new Promise(resolve => {
       requestProcessMetadata({
         uuid: containerUuid,
@@ -61,8 +60,7 @@ export const actions: ProcessDefinitionActionTree = {
 
           const { processDefinition, actions } = cont
           const processDefinitionRoute = {
-            ...processDefinition,
-            oldRoute
+            ...processDefinition
           }
           context.dispatch(Namespaces.Panel + '/' + 'addPanel', processDefinitionRoute, { root: true })
           context.commit('addProcess', processDefinition)
@@ -98,18 +96,16 @@ export const actions: ProcessDefinitionActionTree = {
     context: ProcessDefinitionActionContext,
     payload: {
             processToGenerate: IProcessDataExtended
-            oldRoute: Route
         }
   ) {
-    const { processToGenerate, oldRoute } = payload
+    const { processToGenerate } = payload
     return new Promise(resolve => {
       const { processDefinition, actions } = generateProcess({
         processToGenerate
       })
 
       const processDefinitionRoute = {
-        ...processDefinition,
-        oldRoute
+        ...processDefinition
       }
       context.dispatch(Namespaces.Panel + '/' + 'addPanel', processDefinitionRoute, { root: true })
       context.commit('addProcess', processDefinition)

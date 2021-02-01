@@ -19,10 +19,9 @@ type PanelActionContext = ActionContext<PanelState, IRootState>
 type PanelActionTree = ActionTree<PanelState, IRootState>
 
 export const actions: PanelActionTree = {
-  addPanel(context: PanelActionContext, parameters: IPanelDataExtended & { oldRoute: Route }): IPanelDataExtended {
+  addPanel(context: PanelActionContext, parameters: IPanelDataExtended): IPanelDataExtended {
     const {
       panelType,
-      oldRoute,
       // isParentTab,
       // parentUuid,
       uuid: containerUuid
@@ -116,7 +115,6 @@ export const actions: PanelActionTree = {
       context.dispatch('setDefaultValues', {
         parentUuid: params.parentUuid,
         containerUuid,
-        oldRoute,
         // isOverWriteParent: Boolean(isParentTab),
         panelType
       })
@@ -315,9 +313,8 @@ export const actions: PanelActionTree = {
     panelType?: PanelContextType
     isOverWriteParent?: boolean
     isNewRecord?: boolean
-    oldRoute: Route
   }) {
-    const { oldRoute, parentUuid, containerUuid, panelType = params.panelType || PanelContextType.Window, isOverWriteParent = params.isOverWriteParent || true, isNewRecord = params.isNewRecord || false } = params
+    const { parentUuid, containerUuid, panelType = params.panelType || PanelContextType.Window, isOverWriteParent = params.isOverWriteParent || true, isNewRecord = params.isNewRecord || false } = params
     return new Promise(resolve => {
       const panel: IPanelDataExtended | undefined = context.getters.getPanel(containerUuid)
       if (!(panel)) {
@@ -327,13 +324,13 @@ export const actions: PanelActionTree = {
       const defaultAttributes: IRangeAttributeData[] = context.getters.getParsedDefaultValues({
         parentUuid,
         containerUuid,
-        isSOTrxMenu: oldRoute.meta.isSalesTransaction,
+        isSOTrxMenu: context.rootState.route.meta.isSalesTransaction, // oldRoute.meta.isSalesTransaction,
         fieldsList: panel.fieldsList
       })
 
       if (panelType === 'window' && isNewRecord) {
         // redirect to create new record
-        if (!(oldRoute.query && oldRoute.query.action === 'create-new')) {
+        if (!(context.rootState.route.query && context.rootState.route.query.action === 'create-new')) {
           // router.push({
           //   name: oldRoute.name!,
           //   params: {
@@ -748,10 +745,9 @@ export const actions: PanelActionTree = {
     panelMetadata?: any
     tabMetadata?: any
     routeToDelete?: Route
-    oldRoute?: Route
     isAdvancedQuery?: boolean
   }) {
-    const { oldRoute, isAdvancedQuery = payload.isAdvancedQuery || false, panelType, parentUuid, containerUuid, panelMetadata, routeToDelete, tabMetadata } = payload
+    const { isAdvancedQuery = payload.isAdvancedQuery || false, panelType, parentUuid, containerUuid, panelMetadata, routeToDelete, tabMetadata } = payload
     let executeAction: string
     switch (panelType) {
       case PanelContextType.Process:
@@ -778,7 +774,6 @@ export const actions: PanelActionTree = {
       panelMetadata,
       tabMetadata,
       isAdvancedQuery,
-      oldRoute,
       routeToDelete
     }, { root: true })
       .then(panelResponse => {

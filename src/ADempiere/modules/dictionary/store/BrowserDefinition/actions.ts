@@ -25,9 +25,8 @@ export const actions: BrowserDefinitionActionTree = {
         containerUuid: string
         browserId: number
         routeToDelete: any
-        oldRoute: Route
       }) {
-    const { containerUuid, browserId, routeToDelete, oldRoute } = payload
+    const { containerUuid, browserId, routeToDelete } = payload
     return new Promise(resolve => {
       requestBrowserMetadata({
         uuid: containerUuid,
@@ -105,7 +104,7 @@ export const actions: BrowserDefinitionActionTree = {
           fieldsList = fieldsList.concat(fieldsRangeList)
 
           // Panel for save on store
-          const newBrowser: IBrowserDataExtended & { oldRoute: Route } = {
+          const newBrowser: IBrowserDataExtended = {
             ...browserResponse,
             containerUuid,
             fieldsList,
@@ -114,8 +113,7 @@ export const actions: BrowserDefinitionActionTree = {
             awaitForValues, // control to values
             awaitForValuesToQuery: awaitForValues, // get values from request search
             isShowedCriteria,
-            isShowedTotals: true,
-            oldRoute
+            isShowedTotals: true
           }
 
           context.commit('addBrowser', newBrowser)

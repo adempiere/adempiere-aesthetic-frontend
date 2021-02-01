@@ -85,7 +85,6 @@ export const actions: ProcessActionTree = {
             recordUuidSelection: string
             menuParentUuid: string
             routeToDelete?: Route
-            oldRoute: Route
         }
   ) {
     const {
@@ -99,8 +98,7 @@ export const actions: ProcessActionTree = {
       recordUuidSelection,
       menuParentUuid,
       reportFormat,
-      routeToDelete,
-      oldRoute
+      routeToDelete
     } = payload
     let { parametersList } = payload
     return new Promise((resolve, reject) => {
@@ -302,8 +300,7 @@ export const actions: ProcessActionTree = {
         if (!processDefinition.isReport) {
           context.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {
             containerUuid,
-            panelType,
-            oldRoute
+            panelType
           }, { root: true })
         }
       }
@@ -1157,12 +1154,11 @@ export const actions: ProcessActionTree = {
     parameters: {
             pageToken: string
             pageSize: number
-            oldRoute: Route
         }
   ) {
     // process Activity
 
-    const { pageToken, pageSize, oldRoute } = parameters
+    const { pageToken, pageSize } = parameters
     return requestListProcessesLogs({ pageToken, pageSize })
       .then((processActivityResponse: IProcessLogListData) => {
         const responseList = processActivityResponse.processLogsList.map(
@@ -1183,8 +1179,7 @@ export const actions: ProcessActionTree = {
               )
               context
                 .dispatch(Namespaces.ProcessDefinition + '/' + 'getProcessFromServer', {
-                  containerUuid: processLogItem.uuid,
-                  oldRoute: oldRoute
+                  containerUuid: processLogItem.uuid
                 }, { root: true })
                 .finally(() => {
                   context.commit(
@@ -1240,10 +1235,9 @@ export const actions: ProcessActionTree = {
                 parentUuid: string
                 uuid: string
             }
-            oldRoute: Route
         }
   ) {
-    const { action, type, oldRoute } = payload
+    const { action, type } = payload
     const panels: PanelContextType[] = [
       PanelContextType.Process,
       PanelContextType.Report,
@@ -1264,7 +1258,7 @@ export const actions: ProcessActionTree = {
       }
       const panel:
                 | IPanelDataExtended
-                | undefined = context.rootGetters.getPanel(action.containerUuid)
+                | undefined = context.rootGetters[Namespaces.Panel + '/' + 'getPanel'](action.containerUuid)
       if (!panel) {
         context
           .dispatch(Namespaces.Panel + '/' + 'getPanelAndFields', {
@@ -1272,8 +1266,7 @@ export const actions: ProcessActionTree = {
             containerUuid: !action.uuid
               ? action.containerUuid
               : action.uuid,
-            panelType: action.panelType,
-            oldRoute
+            panelType: action.panelType
           })
           .then((responsePanel: any) => {
             context.commit('setMetadata', responsePanel)

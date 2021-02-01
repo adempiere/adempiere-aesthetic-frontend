@@ -337,7 +337,6 @@ export const actions: WindowDefinitionActionTree = {
             panelType: PanelContextType
             tabMetadata?: ITabData
             isAdvancedQuery: boolean
-            oldRoute: Route
         }
   ) {
     payload.tabMetadata = payload.tabMetadata || undefined
@@ -348,8 +347,7 @@ export const actions: WindowDefinitionActionTree = {
       parentUuid,
       containerUuid,
       panelType,
-      isAdvancedQuery,
-      oldRoute
+      isAdvancedQuery
     } = payload
     let { tabMetadata } = payload
 
@@ -430,7 +428,7 @@ export const actions: WindowDefinitionActionTree = {
       }
 
       // panel for save on store
-      const panel: IPanelData & { oldRoute: Route } = {
+      const panel: IPanelData = {
         ...tabMetadata!,
         containerUuid,
         isAdvancedQuery,
@@ -440,8 +438,7 @@ export const actions: WindowDefinitionActionTree = {
         // app attributes
         isLoadFieldsList: true,
         isShowedTotals: false,
-        isTabsChildren, // to delete records assiciated
-        oldRoute
+        isTabsChildren // to delete records assiciated
       }
       context.dispatch(Namespaces.Panel + '/' + 'addPanel', panel, { root: true })
       resolve(panel)
