@@ -203,8 +203,7 @@ export default class MixinMainPanel extends Vue {
             containerUuid: this.containerUuid,
             panelType: this.panelType,
             tabMetadata: this.metadata,
-            isAdvancedQuery: this.isAdvancedQuery,
-            oldRoute: this.$router.currentRoute
+            isAdvancedQuery: this.isAdvancedQuery
           })
           .then(panelResponse => {
             console.log(panelResponse)
@@ -504,8 +503,7 @@ export default class MixinMainPanel extends Vue {
                 panelType: this.panelType,
                 parentUuid: this.parentUuid,
                 containerUuid: this.containerUuid,
-                isNewRecord: true,
-                oldRoute: this.$router.currentRoute
+                isNewRecord: true
               })
             } else {
               const attributes = convertObjectToKeyValue({

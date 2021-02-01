@@ -59,8 +59,7 @@ export default class FormView extends Vue {
         this.$store.dispatch(Namespaces.Panel + '/' + 'getPanelAndFields', {
           containerUuid: this.formUuid,
           panelType: this.panelType,
-          routeToDelete: this.$route,
-          oldRoute: this.$router.currentRoute
+          routeToDelete: this.$route
         })
           .then(responseForm => {
             this.formMetadata = responseForm

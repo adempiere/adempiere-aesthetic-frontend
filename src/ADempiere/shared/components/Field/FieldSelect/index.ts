@@ -266,7 +266,7 @@ export default class FieldSelect extends Mixins(MixinField) {
 
     async getDataLookupItem() {
         if (
-            !this.metadata.reference.directQuery ||
+            (!this.metadata.reference.directQuery) ||
             (this.metadata.isAdvancedQuery && this.isSelectMultiple)
         ) {
             return
@@ -339,7 +339,7 @@ export default class FieldSelect extends Mixins(MixinField) {
         // set empty list and empty option
         this.optionsList = [this.blankOption]
 
-        this.$store.dispatch('deleteLookupList', {
+        this.$store.dispatch(Namespaces.Lookup + '/' + 'deleteLookupList', {
             parentUuid: this.metadata.parentUuid,
             containerUuid: this.metadata.containerUuid,
             tableName: this.metadata.reference.tableName,

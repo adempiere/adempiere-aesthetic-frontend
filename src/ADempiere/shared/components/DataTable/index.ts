@@ -676,8 +676,7 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
           this.$store.dispatch(Namespaces.Panel + '/' + 'getPanelAndFields', {
             containerUuid: this.containerUuid,
             parentUuid: this.parentUuid,
-            panelType: this.panelType,
-            oldRoute: this.$router.currentRoute
+            panelType: this.panelType
           }).catch(error => {
             console.warn(`Fields List Load Error ${error.code}: ${error.message}.`)
           })

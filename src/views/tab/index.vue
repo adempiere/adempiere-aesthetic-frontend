@@ -48,7 +48,7 @@ export default class extends Vue {
     { label: 'Eurozone', key: 'EU' }
   ]
 
-  private activeName = 'CN'
+  public activeName = 'CN'
   private createdTimes = 0
 
   @Watch('activeName')

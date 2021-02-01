@@ -123,8 +123,7 @@ export default class BrowserView extends Vue {
       this.$store.dispatch(Namespaces.Panel + '/' + 'getPanelAndFields', {
         containerUuid: this.browserUuid,
         panelType: this.panelType,
-        routeToDelete: this.$route,
-        oldRoute: this.$router.currentRoute
+        routeToDelete: this.$route
       })
         .then(browserResponse => {
           this.browserMetadata = browserResponse

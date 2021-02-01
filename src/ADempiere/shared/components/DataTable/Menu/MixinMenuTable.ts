@@ -132,8 +132,7 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
       if (processData === undefined) {
         this.$store.dispatch('getProcessFromServer', {
           containerUuid: process.uuid,
-          routeToDelete: this.$route,
-          oldRoute: this.$router.currentRoute
+          routeToDelete: this.$route
         })
           .then(response => {
             this.$store.dispatch('setShowDialog', {

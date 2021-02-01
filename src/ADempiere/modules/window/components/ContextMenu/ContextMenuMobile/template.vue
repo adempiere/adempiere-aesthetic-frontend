@@ -86,21 +86,21 @@
               <el-menu-item v-if="isManageDataRecords" index="refreshData" @click="refreshData">
                 {{ $t('components.contextMenuRefresh') }}
               </el-menu-item>
-              <el-menu-item index="shareLink" @click="setShareLink">
+              <el-menu-item index="shareLink" @click="setShareLink()">
                 {{ $t('components.contextMenuShareLink') }}
               </el-menu-item>
             </el-scrollbar>
           </el-menu-item-group>
         </el-submenu>
 
-        <el-submenu :disabled="!(isReferecesContent && isLoadedReferences)" class="el-menu-item" index="references">
+        <el-submenu :disabled="!(isReferencesContent && isLoadedReferences)" class="el-menu-item" index="references">
           <template slot="title">
             {{ $t('components.contextMenuReferences') }}
           </template>
-          <template v-if="references && (references.referencesList)">
+          <template v-if="this.references && (this.references.referencesList)">
             <el-scrollbar wrap-class="scroll-child">
               <el-menu-item
-                v-for="(reference, index) in references.referencesList"
+                v-for="(reference, index) in this.references.referencesList"
                 :key="index"
                 :index="reference.displayName"
                 @click="openReference(reference)"

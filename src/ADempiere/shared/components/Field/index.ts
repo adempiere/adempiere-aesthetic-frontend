@@ -1,12 +1,10 @@
 import Template from './template.vue'
-import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import ContextInfo from './Popover/ContextInfo'
 import DocumentStatus from './Popover/DocumentStatus'
 import OperatorComparison from './Popover/OperatorComparison'
 import Calculator from './Popover/Calculator'
 import Translated from './Popover/Translated'
-import FieldText from './FieldText'
-import FieldSelectMultiple from './FieldSelectMultiple'
 import {
   evalutateTypeField,
   fieldIsDisplayed
@@ -47,10 +45,10 @@ export default class FieldDefinition extends Vue {
     // load the component that is indicated in the attributes of received property
     get componentRender() {
       if (!(this.field.componentPath || !this.field.isSupported)) {
-        return () => new FieldText() // import('@/components/ADempiere/Field/FieldText')
+        return () => import('@/ADempiere/shared/components/Field/FieldText')
       }
       if (this.isSelectCreated!) {
-        return () => new FieldSelectMultiple() // import('@/components/ADempiere/Field/FieldSelectMultiple')
+        return () => import('@/ADempiere/shared/components/Field/FieldSelectMultiple')
       }
 
       let field

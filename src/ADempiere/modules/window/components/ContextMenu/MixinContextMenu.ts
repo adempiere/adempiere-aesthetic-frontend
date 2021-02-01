@@ -65,7 +65,7 @@ export default class MixinContextMenu extends Vue {
     @Prop({ default: false, type: Boolean }) isDisplayed?: boolean
     private actions: IContextActionData[] = []
     private supportedTypes = supportedTypes
-    public references: IReferenceDataExtended[] | undefined = undefined
+    public references: IReferenceDataExtended[] = []
     public file: any = this.getProcessResult.download || ''
     public downloads: any = this.getProcessResult.url || ''
     private metadataMenu?: Partial<IContextMenuData> = {}
@@ -281,6 +281,7 @@ export default class MixinContextMenu extends Vue {
     // Watchers
     @Watch('$route.query.action')
     handleRouteQueryAction(actionValue: string) {
+      console.log('cambio de accion')
       this.recordUuid = actionValue
       // only requires updating the context menu if it is Window
       if (this.panelType === PanelContextType.Window) {
@@ -378,8 +379,7 @@ export default class MixinContextMenu extends Vue {
             containerUuid: this.containerUuid,
             recordUuid: this.recordUuid,
             panelType: 'window',
-            isNewRecord: true,
-            oldRoute: this.$router.currentRoute
+            isNewRecord: true
           })
           break
         case 'deleteRecord':
@@ -747,8 +747,7 @@ export default class MixinContextMenu extends Vue {
             panelType: this.panelType,
             isNewRecord: defaultAction.action === ActionContextName.SetDefaultValues,
             tableName: defaultAction.tableName,
-            recordId: defaultAction.recordId,
-            oldRoute: this.$router.currentRoute
+            recordId: defaultAction.recordId
           }, { root: true })
             .then(response => {
               if (response && response.isPrivateAccess) {

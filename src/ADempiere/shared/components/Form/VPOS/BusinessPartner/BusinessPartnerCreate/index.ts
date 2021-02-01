@@ -85,8 +85,7 @@ export default class BusinessPartnerCreate extends Mixins(
 
       this.$store.dispatch('setDefaultValues', {
         containerUuid: this.containerUuid,
-        panelType: this.panelType,
-        oldRoute: this.$router.currentRoute
+        panelType: this.panelType
       })
       this.clearLocationValues()
     }

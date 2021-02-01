@@ -87,7 +87,7 @@ export default class Favorites extends Mixins(MixinDasboard) {
               // tabParent: 0
               tabParent: String(0)
             }
-          }, undefined)
+          })
       } else {
         this.$message({
           type: 'error',
