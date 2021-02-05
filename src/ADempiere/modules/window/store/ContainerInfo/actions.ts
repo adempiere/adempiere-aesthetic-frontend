@@ -70,7 +70,7 @@ export const actions: ContainerInfoActionTree = {
       pageToken
     })
       .then((responseWorkFlowList: IListWorkflowsResponse) => {
-        context.commit('addListWorkflows', responseWorkFlowList)
+        context.commit('addListWorkflows', responseWorkFlowList.list)
         return responseWorkFlowList
       })
       .catch(error => {

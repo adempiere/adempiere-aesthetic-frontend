@@ -117,7 +117,6 @@
                               </el-tab-pane>
 
                               <el-tab-pane
-                                v-if="getIsWorkflowLog"
                                 name="listWorkflowLogs"
                               >
                                 <span slot="label">
@@ -125,7 +124,6 @@
                                   {{ $t('window.containerInfo.workflowLog') }}
                                 </span>
                                 <div
-                                  v-if="getIsWorkflowLog"
                                   key="workflow-log-loaded"
                                 >
                                   <workflow-logs />

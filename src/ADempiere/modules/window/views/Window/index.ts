@@ -261,7 +261,7 @@ export default class WindowView extends Vue {
 
     get getIsWorkflowLog(): boolean {
       const workflowLogs: IWorkflowProcessData[] = this.$store.getters[
-        Namespaces.ContainerInfo + '/' + 'getWorkflow'
+        Namespaces.ContainerInfo + '/' + 'getNodeWorkflow'
       ]
       if (!workflowLogs) {
         return false
@@ -325,13 +325,21 @@ export default class WindowView extends Vue {
       return currentRecord
     }
 
+    get isDocument(): boolean {
+      const panel = this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](this.windowMetadata.currentTabUuid)
+      if (panel && this.isDocument && this.$route.query.action !== 'create-new') {
+        return true
+      }
+      return false
+    }
+
     get isWorkflowBarStatus(): boolean {
       const panel = this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](
         this.windowMetadata.currentTabUuid
       )
       if (
         panel &&
-            panel.isDocument &&
+            this.isDocument &&
             this.$route.query.action !== 'create-new'
       ) {
         return true
@@ -515,6 +523,12 @@ export default class WindowView extends Vue {
         this.handleChangeShowedRecordNavigation(isShowRecords)
       }
       this.isLoaded = true
+      const record = this.currentRecord
+      this.$store.dispatch(Namespaces.ContextMenu + '/' + 'listDocumentStatus', {
+        tableName: this.getTableName,
+        recordUuid: this.$route.query.action,
+        recordId: record[this.getTableName + '_ID']
+      })
     }
 
     handleChangeShowedRecordNavigation(valueToChange: any): void {
