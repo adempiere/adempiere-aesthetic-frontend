@@ -1,4 +1,4 @@
-import { DeviceType } from '@/store/modules/app'
+import { AppModule, DeviceType } from '@/store/modules/app'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
 
@@ -13,7 +13,7 @@ export default class Dropdown extends Vue {
 
     // Computed properties
     get device(): DeviceType {
-      return this.$store.state.app.device
+      return AppModule.device
     }
 
     get isMobile(): number {

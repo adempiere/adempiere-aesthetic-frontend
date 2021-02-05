@@ -8,6 +8,7 @@ import { Namespaces } from '../../utils/types'
 import { IRecordSelectionData } from '@/ADempiere/modules/persistence'
 import { showNotification } from '../../utils/notifications'
 import { WindowTabAssociatedAction } from '@/ADempiere/modules/window'
+import { AppModule, DeviceType } from '@/store/modules/app'
 
 @Component({
   name: 'ModalProcess',
@@ -25,7 +26,7 @@ export default class ModalProcess extends Vue {
 
     // Computed properties
     get isMobile(): boolean {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     get width(): number {

@@ -2,6 +2,7 @@ import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { getLocale } from '@/ADempiere/shared/lang'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import Template from './template.vue'
+import { AppModule, DeviceType } from '@/store/modules/app'
 
 @Component({
   name: 'ProfileRole',
@@ -28,7 +29,7 @@ export default class ProfileRole extends Vue {
     }
 
     get isMobile() {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     @Watch('currentRole.uuid')
