@@ -88,8 +88,7 @@ export const getters: LookupGettersTree = {
                   itemLookup.parsedQuery === parsedQuery &&
                     itemLookup.tableName === tableName &&
                     itemLookup.sessionUuid === getSession() &&
-                    itemLookup.clientId ===
-                        context.rootGetters[Namespaces.Preference + '/' + 'getPreferenceClientId']
+                    itemLookup.clientId === context.rootGetters[Namespaces.Preference + '/' + 'getPreferenceClientId']
                 )
               }
             )

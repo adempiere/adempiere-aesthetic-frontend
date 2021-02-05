@@ -1,5 +1,6 @@
 import { IPanelDataExtended } from '@/ADempiere/modules/dictionary/DictionaryType/VuexType'
 import { IRecordSelectionData } from '@/ADempiere/modules/persistence/PersistenceType'
+import { AppModule, DeviceType } from '@/store/modules/app'
 import { TagsViewModule } from '@/store/modules/tags-view'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { fieldIsDisplayed } from '../../utils/DictionaryUtils'
@@ -34,7 +35,7 @@ export default class MixinMainPanel extends Vue {
       groupName: string
     }
 
-    @Prop({ type: String, default: 'window' }) panelType!: PanelContextType
+    @Prop({ type: String, default: 'window' }) panelType!: string
 
     @Prop({ type: Boolean, default: false }) isAdvancedQuery?: boolean
     @Prop({ type: Boolean, default: false }) isShowedRecordNavigation?: boolean
@@ -65,7 +66,7 @@ export default class MixinMainPanel extends Vue {
     }
 
     get isPanelWindow(): boolean {
-      return this.panelType === PanelContextType.Window
+      return this.panelType === 'window'
     }
 
     get panelAttributes() {
@@ -121,7 +122,7 @@ export default class MixinMainPanel extends Vue {
     }
 
     get isMobile(): boolean {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     get getterDataStore():
@@ -133,7 +134,7 @@ export default class MixinMainPanel extends Vue {
               } {
       if (this.isPanelWindow) {
         return this.$store.getters[
-          Namespaces.Panel + '/' + 'getDataRecordAndSelection'
+          Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'
         ](this.containerUuid)
       }
       return {
@@ -143,11 +144,11 @@ export default class MixinMainPanel extends Vue {
       }
     }
 
-    getterIsLoadedRecord(): boolean {
+    get getterIsLoadedRecord(): boolean {
       return this.getterDataStore.isLoaded
     }
 
-    classCards(): 'cards-not-group' | 'cards-in-group' {
+    get classCards(): 'cards-not-group' | 'cards-in-group' {
       if (
         this.isMobile ||
             this.fieldGroups.length < 2 ||
@@ -206,7 +207,6 @@ export default class MixinMainPanel extends Vue {
             isAdvancedQuery: this.isAdvancedQuery
           })
           .then(panelResponse => {
-            console.log(panelResponse)
             this.panelMetadata = panelResponse
             this.generatePanel(panelResponse.fieldsList)
           })
@@ -230,7 +230,6 @@ export default class MixinMainPanel extends Vue {
         this.fieldGroups.shift()
       }
       this.firstGroup = firstGroup
-
       this.isLoadPanel = true
     }
 
@@ -238,7 +237,18 @@ export default class MixinMainPanel extends Vue {
      * TODO: Delete route parameters after reading them
      */
     readParameters(): void {
-      const parameters: any = {
+      const parameters: {
+        isLoadAllRecords: boolean
+        isReference: boolean
+        isNewRecord: boolean
+        isWindow: boolean
+        criteria: any
+        referenceUuid?: string
+        referenceWhereClause?: string
+        value?: any
+        tableName?: string
+        columnName?: string
+      } = {
         isLoadAllRecords: true,
         isReference: false,
         isNewRecord: false,
@@ -676,7 +686,7 @@ export default class MixinMainPanel extends Vue {
               record => record.UUID === uuidRecord
             ) || {}
       this.dataRecords = currentRecord
-      this.$store.commit('setCurrentRecord', currentRecord)
+      this.$store.commit(Namespaces.Window + '/' + 'setCurrentRecord', currentRecord)
 
       this.setTagsViewTitle(uuidRecord)
       if (this.$route.query && this.$route.query.action === 'create-new') {

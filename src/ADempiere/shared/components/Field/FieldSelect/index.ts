@@ -282,8 +282,8 @@ export default class FieldSelect extends Mixins(MixinField) {
                 value: this.value
             })
             .then(responseLookupItem => {
-                this.displayedValue = responseLookupItem.label
-                this.uuidValue = responseLookupItem.uuid
+                this.displayedValue = responseLookupItem?.label
+                this.uuidValue = responseLookupItem?.uuid
                 this.$nextTick(() => {
                     this.optionsList = this.getterLookupAll
                 })
@@ -326,9 +326,7 @@ export default class FieldSelect extends Mixins(MixinField) {
         if (isShowList) {
             // TODO: Evaluate if length = 1 and this element id = blankOption
             const list = this.getterLookupList
-            if (
-                !list ||
-                (list.length === 1 && this.blankValues.includes(list[0]))
+            if ((!list.length) || (list.length === 1 && this.blankValues.includes(list[0]))
             ) {
                 this.remoteMethod()
             }

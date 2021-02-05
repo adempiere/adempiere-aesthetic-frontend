@@ -66,10 +66,9 @@ export const actions: LookupActionTree = {
       value
     })
       .then((lookupItemResponse: ILookupItemData) => {
-        const label: IValueData =
-                    lookupItemResponse.values.DisplayColumn
+        const label: IValueData = lookupItemResponse.values.DisplayColumn
         const option: Required<ILookupOptions> = {
-          label: !label ? ' ' : label,
+          label: (!label) ? ' ' : label,
           uuid: lookupItemResponse.uuid,
           id: value // lookupItemResponse.values.KeyColumn
         }
