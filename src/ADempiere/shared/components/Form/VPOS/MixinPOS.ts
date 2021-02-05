@@ -325,7 +325,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
             containerUuid: this.metadata.containerUuid,
             attributes: [
               {
-                columnName: 'ProductValue',
+                key: 'ProductValue',
                 value: undefined
               }
             ]

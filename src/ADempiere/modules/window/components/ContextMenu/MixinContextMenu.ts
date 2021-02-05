@@ -593,7 +593,7 @@ export default class MixinContextMenu extends Vue {
           if (attributes) {
             this.$store.dispatch(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
               containerUuid: action.uuid,
-              attributes
+              attributes: <KeyValueData[]>attributes
             })
           }
         }

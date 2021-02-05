@@ -209,7 +209,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
           this.$store.dispatch(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
             parentUuid: this.parentMetadata.parentUuid,
             containerUuid: this.parentMetadata.containerUuid,
-            attributes
+            attributes: <KeyValueData[]>attributes
           })
         }
       }
