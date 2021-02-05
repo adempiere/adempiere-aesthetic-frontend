@@ -25,7 +25,7 @@ export const getContext = (data: {
       columnName
     })
   }
-  if (!isPreferenceValue && value) {
+  if (!isPreferenceValue && !value) {
     value = store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
       parentUuid,
       containerUuid,
@@ -168,8 +168,8 @@ export function parseContext(data: {
     isSOTrxMenu?: boolean
 }) {
   let {
-    isSQL,
-    isBooleanToString,
+    isSQL = data.isSQL || false,
+    isBooleanToString = data.isBooleanToString || false,
     value,
     columnName,
     parentUuid,
@@ -178,10 +178,6 @@ export function parseContext(data: {
   } = data
   // Default values
   let contextInfo: any
-  isSQL = isSQL === undefined ? false : isSQL
-  isBooleanToString =
-        isBooleanToString === undefined ? false : isBooleanToString
-
   let isError = false
   const errorsList: string[] = []
   // let contextInfo: any
