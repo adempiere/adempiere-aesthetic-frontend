@@ -24,6 +24,7 @@ import '@/utils/error-log'
 import '@/pwa/register-service-worker'
 import * as directives from '@/directives'
 import * as filters from '@/filters'
+import { sync } from 'vuex-router-sync'
 
 Vue.use(VMarkdown)
 Vue.use(VueShortkey)
@@ -52,6 +53,8 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
+
+sync(store, router)
 
 new Vue({
   router,
