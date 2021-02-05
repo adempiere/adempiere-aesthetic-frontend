@@ -12,7 +12,7 @@ export default class ContextMenu extends Vue {
     @Prop({ type: String, required: true }) public containerUuid?: string
     @Prop({ type: String, default: undefined }) public panelType?: string
     @Prop({ type: String, default: undefined }) public tableName?: string
-    @Prop({ type: Boolean, default: false }) public isReport = false
+    @Prop({ type: Boolean, default: false }) public isReport!: boolean
     @Prop({ type: String, default: undefined }) public lastParameter?: string
     @Prop({ type: String, default: undefined }) public reportFormat?: string
     @Prop({ type: Boolean, default: undefined }) public isInsertRecord?: boolean
