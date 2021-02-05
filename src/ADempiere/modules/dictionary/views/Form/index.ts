@@ -35,7 +35,7 @@ export default class FormView extends Vue {
     }
 
     set showContextMenu(value: boolean | undefined) {
-      this.$store.dispatch('settings/changeSetting', {
+      SettingsModule.ChangeSetting({
         key: 'showContextMenu',
         value: value
       })

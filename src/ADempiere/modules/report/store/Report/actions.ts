@@ -25,6 +25,7 @@ import {
   IReportViewDataExtended,
   ReportState
 } from '@/ADempiere/modules/report/ReportType'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type ReportActionTree = ActionTree<ReportState, IRootState>
 type ReportActionContext = ActionContext<ReportState, IRootState>
@@ -216,7 +217,7 @@ export const actions: ReportActionTree = {
         ).printFormatUuid
       }
       const parametersList: IPanelParameters[] = <IPanelParameters[]>(
-                context.rootGetters.getParametersToServer({
+                context.rootGetters[Namespaces.Panel + '/' + 'getParametersToServer']({
                   containerUuid: processUuid
                 })
             )

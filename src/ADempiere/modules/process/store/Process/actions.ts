@@ -119,9 +119,9 @@ export const actions: ProcessActionTree = {
       if (panelType) {
         if (panelType === PanelContextType.Browser) {
           allData = <IRecordSelectionData>(
-                        context.getters.getDataRecordAndSelection(containerUuid)
+                        context.rootGetters[Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'](containerUuid)
                     )
-          selection = context.rootGetters.getSelectionToServer({
+          selection = context.rootGetters[Namespaces.BusinessData + '/' + 'getSelectionToServer']({
             containerUuid,
             selection: allData.selection
           })
@@ -147,7 +147,7 @@ export const actions: ProcessActionTree = {
                         processTable?: any
                         tableName: string
                         valueRecord?: any
-                    } = context.getters.getRecordUuidMenu()
+                    } = context.rootGetters[Namespaces.Utils + '/' + 'getRecordUuidMenu']()
           tab = <ITabDataExtended>(
                         context.rootGetters[Namespaces.WindowDefinition + '/' + 'getTab'](parentUuid, containerUuid)
                     )
@@ -161,7 +161,7 @@ export const actions: ProcessActionTree = {
             } else {
               tableName = tab.tableName
               const field = <IFieldDataExtendedUtils>(
-                                context.rootGetters.getFieldFromColumnName({
+                                context.rootGetters[Namespaces.Panel + '/' + 'getFieldFromColumnName']({
                                   containerUuid,
                                   columnName: `${tableName}_ID`
                                 })
@@ -179,7 +179,7 @@ export const actions: ProcessActionTree = {
 
       if (!parametersList) {
         parametersList = <IPanelParameters[]>(
-                    context.rootGetters.getParametersToServer({
+                    context.rootGetters[Namespaces.Panel + '/' + 'getParametersToServer']({
                       containerUuid: processDefinition.uuid
                     })
                 )
@@ -274,6 +274,9 @@ export const actions: ProcessActionTree = {
       } else if (panelType === PanelContextType.Browser) {
         if (allData!.record.length <= 100) {
           // close view if is browser.
+          context.rootState.router.push(
+            { path: '/dashboard' }
+          )
           // router.push(
           //     {
           //         path: '/dashboard'
@@ -288,6 +291,7 @@ export const actions: ProcessActionTree = {
         }
       } else {
         // close view if is process, report.
+        context.rootState.router.push({ path: '/dashboard' })
         // router.push(
         //     {
         //         path: '/dashboard'
@@ -305,7 +309,7 @@ export const actions: ProcessActionTree = {
         }
       }
       if (isProcessTableSelection) {
-        const windowSelectionProcess: ISelectionProcessData = context.getters.getProcessSelect()
+        const windowSelectionProcess: ISelectionProcessData = context.rootGetters[Namespaces.Utils + '/' + 'getProcessSelect']()
         windowSelectionProcess.selection.forEach((selection: any) => {
           Object.assign(processResult, {
             selection: selection.UUID,
@@ -378,30 +382,24 @@ export const actions: ProcessActionTree = {
                     option: PrintFormatOptions.ReportView
                   }
 
-                  reportViewList.childs = <
-                                        IReportViewDataExtended[]
-                                    >context.getters.getReportViewList(
-                                      processResult.processUuid
-                                    )
+                  reportViewList.childs = <IReportViewDataExtended[]>context.rootGetters[Namespaces.Report + '/' + 'getReportViewList'](
+                    processResult.processUuid
+                  )
                   if (
                     reportViewList &&
                                         !reportViewList.childs
                   ) {
                     context
                       .dispatch(
-                        'getReportViewsFromServer',
+                        Namespaces.Report + '/' + 'getReportViewsFromServer',
                         {
-                          processUuid:
-                                                        processResult.processUuid,
+                          processUuid: processResult.processUuid,
                           instanceUuid,
-                          processId:
-                                                        processDefinition.id,
+                          processId: processDefinition.id,
                           tableName: output.tableName,
-                          printFormatUuid:
-                                                        output.printFormatUuid,
-                          reportViewUuid:
-                                                        output.reportViewUuid // TODO: Change to uuid
-                        }
+                          printFormatUuid: output.printFormatUuid,
+                          reportViewUuid: output.reportViewUuid // TODO: Change to uuid
+                        }, { root: true }
                       )
                       .then(
                         (
@@ -413,7 +411,7 @@ export const actions: ProcessActionTree = {
                               .length
                           ) {
                             // Get contextMenu metadata and concat print report views with contextMenu actions
-                            const contextMenuMetadata: IContextMenuData = context.rootGetters.getContextMenu(
+                            const contextMenuMetadata: IContextMenuData = context.rootGetters[Namespaces.ContextMenu + '/' + 'getContextMenu'](
                               processResult.processUuid
                             )
 
@@ -436,36 +434,25 @@ export const actions: ProcessActionTree = {
                     childs: [],
                     option: PrintFormatOptions.PrintFormat
                   }
-                  printFormatList.childs = <
-                                        Omit<
-                                            IPrintFormatDataExtended,
-                                            'printFormatUuid'
-                                        >[]
-                                    >context.rootGetters.getPrintFormatList(
-                                      processResult.processUuid
-                                    )
+                  printFormatList.childs =
+                  <Omit<IPrintFormatDataExtended, 'printFormatUuid'>[]>context.rootGetters[Namespaces.Report + '/' + 'getPrintFormatList'](
+                    processResult.processUuid
+                  )
                   if (
-                    printFormatList &&
-                                        !printFormatList.childs.length
+                    printFormatList && !printFormatList.childs.length
                   ) {
                     context
-                      .dispatch('getListPrintFormats', {
-                        processUuid:
-                                                    processResult.processUuid,
+                      .dispatch(Namespaces.Report + '/' + 'getListPrintFormats', {
+                        processUuid: processResult.processUuid,
                         instanceUuid,
                         processId: processDefinition.id,
                         tableName: output.tableName,
-                        printFormatUuid:
-                                                    output.printFormatUuid,
-                        reportViewUuid:
-                                                    output.reportViewUuid
-                      })
+                        printFormatUuid: output.printFormatUuid,
+                        reportViewUuid: output.reportViewUuid
+                      }, { root: true })
                       .then(
                         (
-                          printFormarResponse: Omit<
-                                                        IPrintFormatDataExtended,
-                                                        'printFormatUuid'
-                                                    >[]
+                          printFormarResponse: Omit<IPrintFormatDataExtended, 'printFormatUuid'>[]
                         ) => {
                           printFormatList.childs = printFormarResponse
                           if (
@@ -473,13 +460,12 @@ export const actions: ProcessActionTree = {
                               .length
                           ) {
                             // Get contextMenu metadata and concat print Format List with contextMenu actions
-                            const contextMenuMetadata: IContextMenuData = context.rootGetters.getContextMenu(
+                            const contextMenuMetadata: IContextMenuData = context.rootGetters[Namespaces.ContextMenu + '/' + 'getContextMenu'](
                               processResult.processUuid
                             )
 
-                            const printFormatListActions: PrintFormatsAction = <
-                                                            PrintFormatsAction
-                                                        >printFormatList
+                            const printFormatListActions: PrintFormatsAction =
+                            <PrintFormatsAction>printFormatList
                             contextMenuMetadata.actions.push(
                               printFormatListActions
                             )
@@ -497,31 +483,23 @@ export const actions: ProcessActionTree = {
                     option: PrintFormatOptions.DrillTable
                   }
                   if (output.tableName) {
-                    drillTablesList.childs = <
-                                            IDrillTablesDataExtended[]
-                                        >context.rootGetters.getDrillTablesList(
-                                          processResult.processUuid
-                                        )
+                    drillTablesList.childs =
+                    <IDrillTablesDataExtended[]>context.rootGetters[Namespaces.Report + '/' + 'getDrillTablesList'](processResult.processUuid)
                     if (
                       drillTablesList &&
                                             !drillTablesList.childs
                     ) {
                       context
                         .dispatch(
-                          'getDrillTablesFromServer',
+                          Namespaces.Report + '/' + 'getDrillTablesFromServer',
                           {
-                            processUuid:
-                                                            processResult.processUuid,
+                            processUuid: processResult.processUuid,
                             instanceUuid,
-                            processId:
-                                                            processDefinition.id,
-                            tableName:
-                                                            output.tableName,
-                            printFormatUuid:
-                                                            output.printFormatUuid,
-                            reportViewUuid:
-                                                            output.reportViewUuid
-                          }
+                            processId: processDefinition.id,
+                            tableName: output.tableName,
+                            printFormatUuid: output.printFormatUuid,
+                            reportViewUuid: output.reportViewUuid
+                          }, { root: true }
                         )
                         .then(
                           (
@@ -533,7 +511,7 @@ export const actions: ProcessActionTree = {
                                 .childs.length
                             ) {
                               // Get contextMenu metadata and concat drill tables list with contextMenu actions
-                              const contextMenuMetadata: IContextMenuData = context.rootGetters.getContextMenu(
+                              const contextMenuMetadata: IContextMenuData = context.rootGetters[Namespaces.ContextMenu + '/' + 'getContextMenu'](
                                 processResult.processUuid
                               )
 
@@ -559,7 +537,7 @@ export const actions: ProcessActionTree = {
                 })
                 if (processResult.output) {
                   context.dispatch(
-                    'setReportTypeToShareLink',
+                    Namespaces.Utils + '/' + 'setReportTypeToShareLink',
                     processResult.output.reportType
                   )
                 }
@@ -691,12 +669,11 @@ export const actions: ProcessActionTree = {
               if (reportType !== 'pdf' && reportType !== 'html') {
                                 link.click!()
               }
-              const contextMenuMetadata: IContextMenuData = <
-                                IContextMenuData
-                            >context.rootGetters.getContextMenu(
-                              processResult.processUuid
-                            )
-                            // Report views List to context menu
+              const contextMenuMetadata: IContextMenuData = <IContextMenuData>
+              context.rootGetters[Namespaces.ContextMenu + '/' + 'getContextMenu'](
+                processResult.processUuid
+              )
+              // Report views List to context menu
               const reportViewList: Partial<SummaryAction> = {
                 name: language.t('views.reportView'),
                 type: ActionContextType.Summary,
@@ -705,7 +682,7 @@ export const actions: ProcessActionTree = {
                 option: PrintFormatOptions.ReportView
               }
               reportViewList.childs = <IReportViewDataExtended[]>(
-                                context.getters.getReportViewList(
+                                context.rootGetters[Namespaces.Report + '/' + 'getReportViewList'](
                                   processResult.processUuid
                                 )
                             )
@@ -714,24 +691,22 @@ export const actions: ProcessActionTree = {
                                 !reportViewList.childs.length
               ) {
                 context
-                  .dispatch('getReportViewsFromServer', {
+                  .dispatch(Namespaces.Report + '/' + 'getReportViewsFromServer', {
                     processUuid: processResult.processUuid,
                     instanceUuid,
                     processId: processDefinition.id,
                     tableName: output.tableName,
                     printFormatUuid: output.printFormatUuid,
                     reportViewUuid: output.reportViewUuid
-                  })
+                  }, { root: true })
                   .then(
                     (
                       responseReportView: IReportViewDataExtended[]
                     ) => {
                       reportViewList.childs = responseReportView
                       if (reportViewList.childs!.length) {
-                        const reportViewListActions: SummaryAction = <
-                                                    SummaryAction
-                                                >reportViewList
-                                                // Get contextMenu metadata and concat print report views with contextMenu actions
+                        const reportViewListActions: SummaryAction = <SummaryAction>reportViewList
+                        // Get contextMenu metadata and concat print report views with contextMenu actions
                         contextMenuMetadata.actions.push(
                           reportViewListActions
                         )
@@ -748,40 +723,31 @@ export const actions: ProcessActionTree = {
                 childs: [],
                 option: PrintFormatOptions.PrintFormat
               }
-              printFormatList.childs = <
-                                Omit<
-                                    IPrintFormatDataExtended,
-                                    'printFormatUuid'
-                                >[]
-                            >context.rootGetters.getPrintFormatList(
-                              processResult.processUuid
-                            )
+              printFormatList.childs = <Omit<IPrintFormatDataExtended, 'printFormatUuid'>[]>
+                                context.rootGetters[Namespaces.Report + '/' + 'getPrintFormatList'](
+                                  processResult.processUuid
+                                )
               if (
                 printFormatList &&
                                 !printFormatList.childs.length
               ) {
                 context
-                  .dispatch('getListPrintFormats', {
+                  .dispatch(Namespaces.Report + '/' + 'getListPrintFormats', {
                     processUuid: processResult.processUuid,
                     instanceUuid,
                     processId: processDefinition.id,
                     tableName: output.tableName,
                     printFormatUuid: output.printFormatUuid,
                     reportViewUuid: output.reportViewUuid
-                  })
+                  }, { root: true })
                   .then(
                     (
-                      printFormarResponse: Omit<
-                                                IPrintFormatDataExtended,
-                                                'printFormatUuid'
-                                            >[]
+                      printFormarResponse: Omit<IPrintFormatDataExtended, 'printFormatUuid'>[]
                     ) => {
                       printFormatList.childs = printFormarResponse
                       if (printFormatList.childs.length) {
                         // Get contextMenu metadata and concat print Format List with contextMenu actions
-                        const printFormatListActions: PrintFormatsAction = <
-                                                    PrintFormatsAction
-                                                >printFormatList
+                        const printFormatListActions: PrintFormatsAction = <PrintFormatsAction>printFormatList
                         contextMenuMetadata.actions.push(
                           printFormatListActions
                         )
@@ -793,8 +759,7 @@ export const actions: ProcessActionTree = {
                   (action: IContextActionData) => {
                     const printFormatActionItem = action as PrintFormatsAction
                     return (
-                      printFormatActionItem.option ===
-                                            PrintFormatOptions.PrintFormat
+                      printFormatActionItem.option === PrintFormatOptions.PrintFormat
                     )
                   }
                 )
@@ -817,7 +782,7 @@ export const actions: ProcessActionTree = {
                 option: PrintFormatOptions.DrillTable //  'drillTable'
               }
               if (output.tableName) {
-                drillTablesList.childs = context.rootGetters.getDrillTablesList(
+                drillTablesList.childs = context.rootGetters[Namespaces.Report + '/' + 'getDrillTablesList'](
                   processResult.processUuid
                 )
                 if (
@@ -825,26 +790,20 @@ export const actions: ProcessActionTree = {
                                     !drillTablesList.childs
                 ) {
                   context
-                    .dispatch('getDrillTablesFromServer', {
-                      processUuid:
-                                                processResult.processUuid,
+                    .dispatch(Namespaces.Report + '/' + 'getDrillTablesFromServer', {
+                      processUuid: processResult.processUuid,
                       instanceUuid,
                       processId: processDefinition.id,
                       tableName: output.tableName,
-                      printFormatUuid:
-                                                output.printFormatUuid,
-                      reportViewUuid:
-                                                output.reportViewUuid
+                      printFormatUuid: output.printFormatUuid,
+                      reportViewUuid: output.reportViewUuid
                     })
                     .then(drillTablesResponse => {
                       drillTablesList.childs = drillTablesResponse
-                      if (
-                                                drillTablesList.childs!.length
+                      if (drillTablesList.childs!.length
                       ) {
                         // Get contextMenu metadata and concat print Format List with contextMenu actions
-                        const drillTableListActions = <
-                                                    DrillTableAction
-                                                >drillTablesList
+                        const drillTableListActions = <DrillTableAction>drillTablesList
                         contextMenuMetadata.actions.push(
                           drillTableListActions
                         )
@@ -864,8 +823,9 @@ export const actions: ProcessActionTree = {
             resolve(processResult)
             if (processResult.output) {
               context.dispatch(
-                'setReportTypeToShareLink',
-                processResult.output.reportType
+                Namespaces.Utils + '/' + 'setReportTypeToShareLink',
+                processResult.output.reportType,
+                { root: true }
               )
             }
           })
@@ -885,18 +845,19 @@ export const actions: ProcessActionTree = {
               if (panelType === PanelContextType.Window) {
                 // TODO: Add conditional to indicate when update record
                 context.dispatch(
-                  'updateRecordAfterRunProcess',
+                  Namespaces.Window + '/' + 'updateRecordAfterRunProcess',
                   {
                     parentUuid,
                     containerUuid,
                     tab
-                  }
+                  },
+                  { root: true }
                 )
               } else if (panelType === PanelContextType.Browser) {
                 if (allData!.record.length >= 100) {
-                  context.dispatch('getBrowserSearch', {
+                  context.dispatch(Namespaces.Browser + '/' + 'getBrowserSearch', {
                     containerUuid
-                  })
+                  }, { root: true })
                 }
               }
             }
@@ -955,7 +916,7 @@ export const actions: ProcessActionTree = {
     const reportType: ReportExportContextType = ReportExportContextType.Pdf
     if (!parametersList) {
       parametersList = <IPanelParameters[]>(
-                context.rootGetters.getParametersToServer({
+                context.rootGetters[Namespaces.Panel + '/' + 'getParametersToServer']({
                   containerUuid: processDefinition!.uuid
                 })
             )
@@ -972,7 +933,7 @@ export const actions: ProcessActionTree = {
     const timeInitialized: number = new Date().getTime()
     // Run process on server and wait for it for notify
     if (isProcessTableSelection) {
-      const windowSelectionProcess: Partial<ISelectionProcessData> = context.getters.getProcessSelect()
+      const windowSelectionProcess: Partial<ISelectionProcessData> = context.rootGetters[Namespaces.Utils + '/' + 'getProcessSelect']()
             windowSelectionProcess.selection!.forEach(selection => {
               const processResult: INotificationProcessData = {
                 // panel attributes from where it was executed
@@ -1071,8 +1032,7 @@ export const actions: ProcessActionTree = {
                       output
                     })
                     if (processResult.output) {
-                      context.dispatch(
-                        'setReportTypeToShareLink',
+                      context.dispatch(Namespaces.Utils + '/' + 'setReportTypeToShareLink',
                         processResult.output.reportType
                       )
                     }
@@ -1318,12 +1278,25 @@ export const actions: ProcessActionTree = {
         menuParentUuid = processOutput.menuParentUuid!
       }
 
-      let tableName: string
+      let tableName = ''
       if (processOutput.option && processOutput.option) {
         if (processOutput.option === PrintFormatOptions.DrillTable) {
           tableName = processOutput.resultTableName!
         }
       }
+
+      context.rootState.router.push(
+        {
+          name: 'Report Viewer',
+          params: {
+            processId: processOutput.processId!.toString(),
+            instanceUuid: processOutput.instanceUuid!,
+            fileName: (!processOutput.output?.fileName) ? processOutput.fileName! : processOutput.output.fileName,
+            menuParentUuid,
+            tableName
+          }
+        }
+      )
 
       // router.push(
       //     {

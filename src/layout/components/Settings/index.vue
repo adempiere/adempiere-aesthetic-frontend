@@ -97,7 +97,7 @@ export default class extends Vue {
   }
 
   set showContextMenu(value: boolean) {
-    this.$store.dispatch('settings/changeSetting', {
+    SettingsModule.ChangeSetting({
       key: 'showContextMenu',
       value: value
     })
@@ -108,7 +108,7 @@ export default class extends Vue {
   }
 
   set supportPinyinSearch(value: boolean) {
-    this.$store.dispatch('settings/changeSetting', {
+    SettingsModule.ChangeSetting({
       key: 'supportPinyinSearch',
       value: value
     })

@@ -4,6 +4,7 @@ import { extractPagingToken } from '@/ADempiere/shared/utils/valueUtils'
 import { ActionContext, ActionTree } from 'vuex'
 import { requestListProductPrice } from '../../POSService'
 import { IListProductPriceResponse, IPointOfSalesData, ListProductPriceState } from '../../POSType'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type ListProductPriceActionContext = ActionContext<ListProductPriceState, IRootState>
 type ListProductPriceActionTree = ActionTree<ListProductPriceState, IRootState>
@@ -23,7 +24,7 @@ export const actions: ListProductPriceActionTree = {
       }): Promise<IListProductPriceResponse> | undefined {
     const { containerUuid = payload.containerUuid || 'Products-Price-List' } = payload
     let { pageNumber, searchValue } = payload
-    const posUuid: string | undefined = context.rootGetters.getPointOfSalesUuid()
+    const posUuid: string | undefined = context.rootGetters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']()
     if (!posUuid) {
       const message = 'Sin punto de venta seleccionado'
       showMessage({
@@ -44,13 +45,13 @@ export const actions: ListProductPriceActionTree = {
       }
     }
 
-    const { priceList, templateBusinessPartner } = <IPointOfSalesData>context.rootGetters.getCurrentPOS()
+    const { priceList, templateBusinessPartner } = <IPointOfSalesData>context.rootGetters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']()
     const { uuid: businessPartnerUuid } = templateBusinessPartner
     const { uuid: priceListUuid } = priceList
     const { uuid: warehouseUuid } = context.rootGetters['user/getWarehouse']
 
     if (!searchValue) {
-      searchValue = context.rootGetters.getValueOfField({
+      searchValue = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid,
         columnName: 'ProductValue'
       })

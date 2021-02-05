@@ -62,10 +62,10 @@ export const actions: CallOutControlActionTree = {
     }
     //  Else
     return new Promise((resolve, reject) => {
-      const window: IWindowDataExtended = context.rootGetters.getWindow(
+      const window: IWindowDataExtended = context.rootGetters[Namespaces.WindowDefinition + '/' + 'getWindow'](
         parentUuid
       )
-      const attributesList: IPanelParameters[] = <IPanelParameters[]>context.rootGetters.getParametersToServer({
+      const attributesList: IPanelParameters[] = <IPanelParameters[]>context.rootGetters[Namespaces.Panel + '/' + 'getParametersToServer']({
         containerUuid,
         row
       })

@@ -159,7 +159,7 @@ export default class BrowserView extends Vue {
     // Hooks
     created() {
       this.getBrowser()
-      this.$store.dispatch('settings/changeSetting', {
+      SettingsModule.ChangeSetting({
         key: 'showContextMenu',
         value: true
       })
