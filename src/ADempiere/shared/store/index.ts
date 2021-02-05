@@ -40,6 +40,8 @@ import { windowModule } from '@/ADempiere/modules/persistence/store/Window'
 import { preferenceModule } from '@/ADempiere/shared/store/modules/preference'
 import { dashboardModule } from '@/ADempiere/modules/dashboard'
 import { getters } from './getters'
+import { mutations } from './mutations'
+import { actions } from './actions'
 //
 import { IRootState } from '@/store'
 
@@ -80,6 +82,8 @@ const store: StoreOptions<IRootState> = {
     browserModule
   },
   getters: getters,
+  mutations: mutations,
+  actions: actions,
   plugins: [vuexLocal.plugin]
 }
 

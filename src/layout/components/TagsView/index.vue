@@ -243,8 +243,7 @@ export default class extends Mixins(MixinI18n) {
         parentUuid,
         containerUuid,
         panelType: view.meta.type,
-        isNewRecord: false,
-        oldRoute: this.$router.currentRoute
+        isNewRecord: false
       })
 
       if (['window', 'browser'].includes(view.meta.type)) {

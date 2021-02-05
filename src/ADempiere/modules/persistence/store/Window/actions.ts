@@ -8,7 +8,6 @@ import { parseContext } from '@/ADempiere/shared/utils/contextUtils'
 import { fieldIsDisplayed } from '@/ADempiere/shared/utils/DictionaryUtils'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
-// import router from '@/router'
 import { ActionTree, ActionContext } from 'vuex'
 import {
   IContextInfoValuesExtends,
@@ -23,7 +22,6 @@ import {
   WindowState
 } from '@/ADempiere/modules/persistence/PersistenceType'
 import language from '@/ADempiere/shared/lang'
-import { Route } from 'vue-router'
 import { typeValue } from '@/ADempiere/shared/utils/valueUtils'
 import {
   IContextInfoValuesResponse,
@@ -39,6 +37,7 @@ import {
 } from '@/ADempiere/modules/persistence/PersistenceService'
 import { IValueData } from '@/ADempiere/modules/core'
 import { convertObjectToKeyValue } from '@/ADempiere/shared/utils/valueFormat'
+import { Route } from 'vue-router'
 
 type WindowActionTree = ActionTree<WindowState, IRootState>
 type WindowActionContext = ActionContext<WindowState, IRootState>
@@ -53,17 +52,14 @@ export const actions: WindowActionTree = {
     const { field } = payload
     if (fieldIsDisplayed(field) && field.isShowedFromUser) {
       // change action to advanced query on field value is changed in this panel
-      // if (router.currentRoute.query.action !== 'advancedQuery') {
-      //   // router.push(
-      //   //   {
-      //   //     query: {
-      //   //       ...router.currentRoute.query,
-      //   //       action: 'advancedQuery'
-      //   //     }
-      //   //   },
-      //   //   () => {}
-      //   // )
-      // }
+      if (context.rootState.route.query.action !== 'advancedQuery') {
+        context.rootState.router.push({
+          query: {
+            ...context.rootState.router.currentRoute.query,
+            action: 'advancedQuery'
+          }
+        })
+      }
       const {
         parentUuid,
         containerUuid,
@@ -201,20 +197,20 @@ export const actions: WindowActionTree = {
             .then(response => {
               resolve(response)
               if (!recordUuid) {
+                const oldRoute: Route = context.rootState.router.currentRoute
                 // const oldRoute: Route = router.app.$route // ._route
-                // router.push(
-                //   {
-                //     name: oldRoute.name!,
-                //     params: {
-                //       ...oldRoute.params
-                //     },
-                //     query: {
-                //       ...oldRoute.query,
-                //       action: response.uuid
-                //     }
-                //   },
-                //   () => {}
-                // )
+                context.rootState.router.push(
+                  {
+                    name: oldRoute.name!,
+                    params: {
+                      ...oldRoute.params
+                    },
+                    query: {
+                      ...oldRoute.query,
+                      action: response.uuid
+                    }
+                  }
+                )
               }
             })
             .catch(error => reject(error))
@@ -480,20 +476,19 @@ export const actions: WindowActionTree = {
         })
         if (isParentTab) {
           // redirect to create new record
-          // const oldRoute: Route = router.app.$route
-          // router.push(
-          //   {
-          //     name: oldRoute.name!,
-          //     params: {
-          //       ...oldRoute.params
-          //     },
-          //     query: {
-          //       ...oldRoute.query,
-          //       action: createEntityResponse.uuid
-          //     }
-          //   },
-          //   () => {}
-          // )
+          const oldRoute: Route = context.rootState.route
+          context.rootState.router.push(
+            {
+              name: oldRoute.name!,
+              params: {
+                ...oldRoute.params
+              },
+              query: {
+                ...oldRoute.query,
+                action: createEntityResponse.uuid
+              }
+            }
+          )
         }
         return {
           // data: createEntityResponse.attributes, // It is Boilerplate
@@ -692,34 +687,34 @@ export const actions: WindowActionTree = {
   ): void {
     const { parentUuid, containerUuid, tab } = payload
     const recordUuid = <string>(
-            context.rootGetters.getUuidOfContainer(containerUuid)
+            context.rootGetters[Namespaces.FieldValue + '/' + 'getUuidOfContainer'](containerUuid)
         )
         // get new values
     context
-      .dispatch('getEntity', {
+      .dispatch(Namespaces.BusinessData + '/' + 'getEntity', {
         parentUuid,
         containerUuid,
         tableName: tab.tableName,
         recordUuid
-      })
+      }, { root: true })
       .then((response: KeyValueData<IValueData>[]) => {
         // update panel
         if (tab.isParentTab) {
-          context.dispatch('notifyPanelChange', {
+          context.dispatch(Namespaces.Panel + '/' + 'notifyPanelChange', {
             parentUuid,
             containerUuid,
             newValues: response,
             isSendCallout: false,
             isSendToServer: false
-          })
+          }, { root: true })
         }
         // update row in table
-        context.dispatch('notifyRowTableChange', {
+        context.dispatch(Namespaces.BusinessData + '/' + 'notifyRowTableChange', {
           parentUuid,
           containerUuid,
           row: response,
           isEdit: false
-        })
+        }, { root: true })
       })
   },
   deleteEntity(
@@ -730,15 +725,14 @@ export const actions: WindowActionTree = {
             recordUuid?: string
             recordId?: number
             row: IKeyValueObject<IValueData>
-            oldRoute: Route
         }
   ) {
-    const { parentUuid, containerUuid, row, oldRoute } = payload
+    const { parentUuid, containerUuid, row } = payload
     let { recordUuid, recordId } = payload
 
     return new Promise(resolve => {
       const panel = <IPanelDataExtended>(
-                context.rootGetters.getPanel(containerUuid)
+                context.rootGetters[Namespaces.Panel + '/' + 'getPanel'](containerUuid)
             )
       if (row) {
         recordUuid = <string>row.UUID
@@ -765,25 +759,23 @@ export const actions: WindowActionTree = {
                     parentUuid,
                     containerUuid,
                     panelType: 'window',
-                    isNewRecord: true,
-                    oldRoute
+                    isNewRecord: true
                   }, { root: true })
                 } else {
-                  // const oldRoute = router.app.$route
+                  const oldRoute: Route = context.rootState.route
                   // else display first record of table in panel
-                  // router.push(
-                  //   {
-                  //     name: oldRoute.name!,
-                  //     params: {
-                  //       ...oldRoute.params
-                  //     },
-                  //     query: {
-                  //       ...oldRoute.query,
-                  //       action: responseDataList[0].UUID
-                  //     }
-                  //   },
-                  //   () => {}
-                  // )
+                  context.rootState.router.push(
+                    {
+                      name: oldRoute.name!,
+                      params: {
+                        ...oldRoute.params
+                      },
+                      query: {
+                        ...oldRoute.query,
+                        action: responseDataList[0].UUID
+                      }
+                    }
+                  )
                 }
               }
             })
@@ -890,32 +882,31 @@ export const actions: WindowActionTree = {
       }).then(() => {
         if (isParentTab) {
           // redirect to create new record
-          // const oldRoute: Route = router.app.$route
-          // if (record.UUID === oldRoute.query.action) {
-          //   // router.push(
-          //   //   {
-          //   //     name: oldRoute.name!,
-          //   //     params: {
-          //   //       ...oldRoute.params
-          //   //     },
-          //   //     query: {
-          //   //       ...oldRoute.query,
-          //   //       action: 'create-new'
-          //   //     }
-          //   //   },
-          //   //   () => {}
-          //   // )
-          //   // clear fields with default values
-          //   context.dispatch('setDefaultValues', {
-          //     parentUuid,
-          //     containerUuid
-          //   })
-          //   // delete view with uuid record delete
-          //   // context.dispatch('tagsView/delView', oldRoute, true)
-          //   context.dispatch('tagsView/delView', oldRoute, {
-          //     root: true
-          //   })
-          // }
+          const oldRoute: Route = context.rootState.route
+          if (record.UUID === oldRoute.query.action) {
+            context.rootState.router.push(
+              {
+                name: oldRoute.name!,
+                params: {
+                  ...oldRoute.params
+                },
+                query: {
+                  ...oldRoute.query,
+                  action: 'create-new'
+                }
+              }
+            )
+            // clear fields with default values
+            context.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {
+              parentUuid,
+              containerUuid
+            }, { root: true })
+            // delete view with uuid record delete
+            // context.dispatch('tagsView/delView', oldRoute, true)
+            context.dispatch('tagsView/delView', oldRoute, {
+              root: true
+            })
+          }
         }
 
         if (index + 1 >= selectionLength) {
@@ -998,7 +989,6 @@ export const actions: WindowActionTree = {
             isRefreshPanel?: boolean
             isReference?: boolean
             isShowNotification?: boolean
-            oldRoute: Route
         }
   ) {
     payload.referenceWhereClause = payload.referenceWhereClause || ''
@@ -1019,11 +1009,9 @@ export const actions: WindowActionTree = {
       criteria,
       isLoadAllRecords,
       isRefreshPanel,
-      isShowNotification,
-      oldRoute
+      isShowNotification
     } = payload
     let { isAddRecord } = payload
-
     const tab: ITabDataExtended = <ITabDataExtended>(
             context.rootGetters[Namespaces.WindowDefinition + '/' + 'getTab'](parentUuid, containerUuid)
         )
@@ -1112,8 +1100,7 @@ export const actions: WindowActionTree = {
             // this record is missing (Deleted or the query does not include it)
             context.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {
               parentUuid,
-              containerUuid,
-              oldRoute
+              containerUuid
             }, { root: true })
           }
         }
@@ -1161,7 +1148,7 @@ export const actions: WindowActionTree = {
         }
         if (isAdd && isAdd !== isAddRecord) {
           if (tab.isSortTab) {
-            const record: any[] = context.rootGetters.getDataRecordsList(
+            const record: any[] = context.rootGetters[Namespaces.BusinessData + '/' + 'getDataRecordsList'](
               containerUuid
             )
             const recordToTab = record

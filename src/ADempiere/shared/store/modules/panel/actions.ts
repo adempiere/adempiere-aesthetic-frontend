@@ -10,7 +10,7 @@ import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import language from '@/ADempiere/shared/lang'
 import { IRecordSelectionData, KeyValueData } from '@/ADempiere/modules/persistence/PersistenceType'
-import { convertObjectToKeyValue } from '@/ADempiere/shared/utils/valueFormat'
+import { convertIRangeAttributeDataToKeyValueData, convertObjectToKeyValue } from '@/ADempiere/shared/utils/valueFormat'
 import { typeValue } from '@/ADempiere/shared/utils/valueUtils'
 import evaluator from '@/ADempiere/shared/utils/evaluator'
 import { getContext, parseContext } from '@/ADempiere/shared/utils/contextUtils'
@@ -330,7 +330,18 @@ export const actions: PanelActionTree = {
 
       if (panelType === 'window' && isNewRecord) {
         // redirect to create new record
-        if (!(context.rootState.route.query && context.rootState.route.query.action === 'create-new')) {
+        const oldRoute = context.rootState.route
+        if (!(oldRoute.query && oldRoute.query.action === 'create-new')) {
+          context.rootState.router.push({
+            name: oldRoute.name!,
+            params: {
+              ...oldRoute.params
+            },
+            query: {
+              ...oldRoute.query,
+              action: 'create-new'
+            }
+          })
           // router.push({
           //   name: oldRoute.name!,
           //   params: {
@@ -371,12 +382,14 @@ export const actions: PanelActionTree = {
         //   })
         // }
       }
-
+      const defaultAttributesParsed: KeyValueData[] = defaultAttributes.map((element: IRangeAttributeData) => {
+        return convertIRangeAttributeDataToKeyValueData(element)
+      })
       context.dispatch(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
         parentUuid,
         containerUuid,
         isOverWriteParent,
-        attributes: defaultAttributes
+        attributes: defaultAttributesParsed
       }, { root: true })
         .then(() => {
           if ([PanelContextType.Browser, PanelContextType.Form, PanelContextType.Process, PanelContextType.Report].includes(panelType)) {
@@ -433,17 +446,23 @@ export const actions: PanelActionTree = {
     attributes?: any[] | IKeyValueObject
   }) {
     const { parentUuid, containerUuid } = params
-    let { attributes = params.attributes || [] } = params
+    const { attributes = params.attributes || [] } = params
+    let attributesParsed: KeyValueData[] = []
     if (typeValue(attributes) === 'OBJECT') {
-      attributes = convertObjectToKeyValue({
+      attributesParsed = convertObjectToKeyValue({
         object: attributes
       })
+    } else {
+      attributesParsed = attributes.map((item: any) => {
+        return convertIRangeAttributeDataToKeyValueData(item)
+      })
     }
+
     // Update field
     context.dispatch(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
       parentUuid,
       containerUuid,
-      attributes
+      attributes: attributesParsed
     }, { root: true })
       .then(() => {
         const panel: IPanelDataExtended | undefined = context.getters.getPanel(containerUuid)

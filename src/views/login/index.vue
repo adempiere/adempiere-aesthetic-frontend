@@ -245,6 +245,7 @@ export default class extends Vue {
               //   path: this.redirect || '/',
               //   query: this.otherQuery
               // })
+              this.$store.dispatch('setRouter', this.$router)
               location.reload()
             })
             .catch(error => {
