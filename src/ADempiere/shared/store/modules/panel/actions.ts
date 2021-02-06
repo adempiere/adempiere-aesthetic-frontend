@@ -854,11 +854,11 @@ export const actions: PanelActionTree = {
     })
   },
   dictionaryResetCache(context: PanelActionContext): void {
-    context.commit('dictionaryResetCache')
-    context.commit(Namespaces.ContextMenu + '/' + 'dictionaryResetCacheContext')
-    context.commit(Namespaces.ContextMenu + '/' + 'dictionaryResetCacheContextMenu')
-    context.commit(Namespaces.WindowDefinition + '/' + 'dictionaryResetCacheWindow')
-    context.commit(Namespaces.ProcessDefinition + '/' + 'dictionaryResetCacheProcess')
-    context.commit(Namespaces.BrowserDefinition + '/' + 'dictionaryResetCacheBrowser')
+    context.commit(Namespaces.Panel + '/' + 'dictionaryResetCache', undefined, { root: true })
+    context.commit(Namespaces.Preference + '/' + 'dictionaryResetCacheContext', undefined, { root: true })
+    context.commit(Namespaces.ContextMenu + '/' + 'dictionaryResetCacheContextMenu', undefined, { root: true })
+    context.commit(Namespaces.WindowDefinition + '/' + 'dictionaryResetCacheWindow', undefined, { root: true })
+    context.commit(Namespaces.ProcessDefinition + '/' + 'dictionaryResetCacheProcess', undefined, { root: true })
+    context.commit(Namespaces.BrowserDefinition + '/' + 'dictionaryResetCacheBrowser', undefined, { root: true })
   }
 }

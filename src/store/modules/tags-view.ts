@@ -160,7 +160,8 @@ class TagsView extends VuexModule implements ITagsViewState {
   }
 
   @Action
-  public setCustomTagView(isCloseAllViews = true, route: Route) {
+  public setCustomTagView(isCloseAllViews = true) {
+    const route = this.context.rootState.route
     const selectedTag: ITagView = {
       fullPath: route.fullPath,
       hash: route.hash,

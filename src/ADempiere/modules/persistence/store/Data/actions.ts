@@ -1196,7 +1196,7 @@ export const actions: BusinessDataActionTree = {
   resetStateBusinessData(context: BusinessDataActionContext) {
     const { commit } = context
     commit(Namespaces.ContainerInfo + '/' + 'resetStateContainerInfo', undefined, { root: true })
-    commit('setInitialContext', {})
+    commit(Namespaces.Preference + '/' + 'setInitialContext', {}, { root: true })
     commit(Namespaces.Language + '/' + 'resetStateTranslations', undefined, { root: true })
     commit('resetStateBusinessData')
     commit(Namespaces.ContextMenu + '/' + 'resetContextMenu', undefined, { root: true })

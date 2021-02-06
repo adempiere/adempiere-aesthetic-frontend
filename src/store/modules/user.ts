@@ -425,12 +425,7 @@ class User extends VuexModule implements IUserState {
     const { route, organizationId, organizationUuid, isCloseAllViews = params.isCloseAllViews || true } = params
     // TODO: Check if there are no tagViews in the new routes to close them, and
     // if they exist, reload with the new route using name (uuid)
-    TagsViewModule.setCustomTagView(isCloseAllViews, route)
-    this.context.dispatch('tagsView/setCustomTagView', {
-      isCloseAllViews
-    }, {
-      root: true
-    })
+    TagsViewModule.setCustomTagView(isCloseAllViews)
 
     return await requestChangeRole({
       // token: getToken(),
@@ -457,10 +452,10 @@ class User extends VuexModule implements IUserState {
         // Update user info and context associated with session
         this.GetSessionInfo(uuid)
 
-        this.context.dispatch('resetStateBusinessData', null, {
+        this.context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData', null, {
           root: true
         })
-        this.context.dispatch('dictionaryResetCache', null, {
+        this.context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache', null, {
           root: true
         })
 
@@ -547,11 +542,12 @@ public async ChangeRole(params: {
     isCloseAllViews?: boolean
   }) {
   const { roleUuid, organizationUuid, warehouseUuid, isCloseAllViews = params.isCloseAllViews || true } = params
-  this.context.dispatch('tagsView/setCustomTagView', {
-    isCloseAllViews
-  }, {
-    root: true
-  })
+  TagsViewModule.setCustomTagView(isCloseAllViews)
+  // this.context.dispatch('tagsView/setCustomTagView', {
+  //   isCloseAllViews
+  // }, {
+  //   root: true
+  // })
 
   return await requestChangeRole({
     // token: getToken(),
@@ -570,12 +566,8 @@ public async ChangeRole(params: {
 
       this.GetSessionInfo(uuid)
       // Update user info and context associated with session
-      this.context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData', null, {
-        root: true
-      })
-      this.context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache', null, {
-        root: true
-      })
+      this.context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData')
+      this.context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache')
 
       showMessage({
         message: language.t('notifications.successChangeRole').toString(),

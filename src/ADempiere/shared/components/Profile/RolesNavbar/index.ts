@@ -83,7 +83,7 @@ export default class RolesNavbar extends Vue {
             path: '/'
           })
         }
-        this.$store.dispatch('listDashboard', {
+        this.$store.dispatch(Namespaces.Dashboard + '/' + 'listDashboard', {
           roleId: response.id,
           roleUuid: response.uuid
         })

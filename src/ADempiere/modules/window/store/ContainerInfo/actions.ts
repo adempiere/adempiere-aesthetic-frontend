@@ -45,7 +45,7 @@ export const actions: ContainerInfoActionTree = {
     const { tableName, recordUuid, recordId } = payload
     const pageSize = 0
     const pageToken = '0'
-    context.dispatch('listWorkflows', tableName)
+    // context.dispatch('listWorkflows', tableName)
     return requestListWorkflowsLogs({
       tableName,
       recordId,
