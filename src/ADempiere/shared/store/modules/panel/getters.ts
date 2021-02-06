@@ -613,7 +613,7 @@ export const getters: PanelGetterTree = {
   getFieldsListNotMandatory: (state: PanelState, getters) => (params: { containerUuid: string, isEvaluateShowed?: boolean}): IFieldDataExtendedUtils[] => {
     const { containerUuid, isEvaluateShowed = params.isEvaluateShowed || true } = params
     // all optionals (not mandatory) fields
-    return getters.getFieldsListFromPanel(containerUuid).filter((fieldItem: IFieldDataExtendedUtils) => {
+    const notMandatoryFields = getters.getFieldsListFromPanel(containerUuid).filter((fieldItem: IFieldDataExtendedUtils) => {
       const isMandatory: boolean = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
       if (!isMandatory) {
         if (isEvaluateShowed) {
@@ -622,5 +622,6 @@ export const getters: PanelGetterTree = {
         return !isMandatory
       }
     })
+    return notMandatoryFields
   }
 }

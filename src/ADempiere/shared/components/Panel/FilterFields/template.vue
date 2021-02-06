@@ -1,7 +1,7 @@
 <template>
   <el-select
     v-model="selectedFields"
-    :filterable="!isMobile"
+    :filterable="!this.isMobile"
     :placeholder="$t('components.filterableItems')"
     multiple
     collapse-tags

@@ -81,8 +81,7 @@ export default class MixinMainPanel extends Vue {
 
     get getContainerProcessing(): boolean {
       if (
-        this.panelType === PanelContextType.Window &&
-            !this.isAdvancedQuery
+        this.panelType === PanelContextType.Window && !this.isAdvancedQuery
       ) {
         return this.$store.getters[
           Namespaces.FieldValue + '/' + 'getContainerProcessing'
@@ -543,7 +542,7 @@ export default class MixinMainPanel extends Vue {
      */
 
     sortAndGroup(fieldsList: any[]) {
-      if (!fieldsList) {
+      if (!fieldsList.length) {
         return
       }
       let groupsList: {

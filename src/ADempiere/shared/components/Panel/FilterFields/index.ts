@@ -11,7 +11,7 @@ import Template from './template.vue'
 })
 export default class FilterFields extends Vue {
     @Prop({ type: String, required: true }) containerUuid!: string
-    @Prop({ type: String, default: '' }) groupField!: string
+    @Prop({ type: String, default: undefined }) groupField?: string
     @Prop({ type: String, default: 'window' }) panelType!: PanelContextType
     @Prop({ type: Boolean, default: false }) isAdvancedQuery!: boolean
     public selectedFields: any[] = []
@@ -30,10 +30,12 @@ export default class FilterFields extends Vue {
           })
       } else if (this.panelType === PanelContextType.Window) {
         // compare group fields to window
-        return this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListNotMandatory']({ containerUuid: this.containerUuid })
+        const notMandatoryList = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListNotMandatory']({ containerUuid: this.containerUuid })
           .filter((fieldItem: any) => {
             return fieldItem.groupAssigned === this.groupField
           })
+
+        return notMandatoryList
       }
       // get fields not mandatory
       return this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListNotMandatory']({ containerUuid: this.containerUuid })
@@ -49,7 +51,6 @@ export default class FilterFields extends Vue {
 
       // Watchers
       @Watch('getFieldSelected')
-      // TODO: Verify peformance with computed set (dispatch) and get (state)
     handleGetFieldSelectedChange(value: any) {
       this.selectedFields = value
     }
