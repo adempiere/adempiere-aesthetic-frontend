@@ -327,7 +327,7 @@ export default class WindowView extends Vue {
 
     get isDocument(): boolean {
       const panel = this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](this.windowMetadata.currentTabUuid)
-      if (panel && this.isDocument && this.$route.query.action !== 'create-new') {
+      if (panel && this.$route.query.action !== 'create-new') {
         return true
       }
       return false
@@ -466,7 +466,31 @@ export default class WindowView extends Vue {
         recordId = record[tableName + '_ID']
       }
 
-      this.$store.dispatch(tab.name, {
+      let tabNameWithModule = ''
+
+      // switch(tab.name){
+      //   case 'listRecordLogs': tabNameWithModule = Namespaces.ContainerInfo + '/' + tab.name
+      //   break
+      //   case 'listWorkflowLogs': tabNameWithModule = Namespaces.ContainerInfo + '/' + tab.name
+      //   default: tabNameWithModule = tab.name
+      //   break
+      // }
+      switch (tab.name) {
+        case 'listRecordLogs':
+          tabNameWithModule = Namespaces.ContainerInfo + '/' + tab.name
+          break
+        case 'listWorkflowLogs':
+          tabNameWithModule = Namespaces.ContainerInfo + '/' + tab.name
+          break
+        case 'listChatEntries':
+          tabNameWithModule = Namespaces.ChatEntries + '/' + tab.name
+          break
+        default:
+          tabNameWithModule = Namespaces.ContainerInfo + '/' + tab.name
+          break
+      }
+
+      this.$store.dispatch(tabNameWithModule, {
         tableName,
         recordId,
         recordUuid
