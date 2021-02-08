@@ -13,18 +13,18 @@ export default class MixinTable extends Vue {
     @Prop({ type: String, default: 'window' }) panelType?: PanelContextType
     @Prop({ type: Boolean, default: false }) isParent!: boolean
     // eslint-disable-next-line
-    @Prop({ type: Object, default: () => {} }) panelMetadata?: any
+    // @Prop({ type: Object, default: () => {} }) panelMetadata?: any
 
     // private panelMetadata: any = () => undefined
 
     // Computed properties
-    // get panelMetadata(): any {
-    //   return this.panelMetadata || undefined
-    // }
+    get panelMetadata(): any {
+      return this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](this.containerUuid)
+    }
 
-    // set panelMetadata(value: any) {
-    //   this.panelMetadata = value
-    // }
+    set panelMetadata(value: any) {
+      this.panelMetadata = value
+    }
 
     get isMobile(): boolean {
       return AppModule.device === DeviceType.Mobile
