@@ -32,7 +32,7 @@ export default class FieldContextInfo extends Vue {
         treeData: this.permissionRoutes,
         attributeValue: window.uuid,
         attributeName: 'meta',
-        secondAttribute: 'uuid',
+        secondAttributeName: 'uuid',
         attributeChilds: 'children'
       })
 

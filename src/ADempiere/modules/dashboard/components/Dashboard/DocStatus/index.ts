@@ -64,7 +64,7 @@ export default class PendingDocuments extends Mixins(MixinDasboard) {
         treeData: this.permissionRoutes,
         attributeValue: row.windowUuid,
         attributeName: 'meta',
-        secondAttribute: 'uuid',
+        secondAttributeName: 'uuid',
         attributeChilds: 'children'
       })
 

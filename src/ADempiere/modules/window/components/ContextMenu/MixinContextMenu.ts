@@ -766,7 +766,7 @@ export default class MixinContextMenu extends Vue {
           treeData: this.permissionRoutes,
           attributeValue: referenceElement.windowUuid,
           attributeName: 'meta',
-          secondAttribute: 'uuid',
+          secondAttributeName: 'uuid',
           attributeChilds: 'children'
         })
         if (viewSearch) {
