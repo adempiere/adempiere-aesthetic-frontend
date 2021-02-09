@@ -94,16 +94,18 @@ export const actions: ReportActionTree = {
             processUuid: string
             instanceUuid: string
             printFormatUuid: string
+            tableName: string
         }
   ): Promise<IReportViewDataExtended[]> {
     const {
       processUuid,
       processId,
       printFormatUuid,
-      instanceUuid
+      instanceUuid,
+      tableName
     } = payload
     return new Promise(resolve => {
-      requestListReportsViews({ processUuid })
+      requestListReportsViews({ processUuid, tableName })
         .then((reportViewResponse: IReportsViewResponse) => {
           const reportViewList: IReportViewDataExtended[] = reportViewResponse.list.map(
             (reportViewItem: IReportViewData) => {
