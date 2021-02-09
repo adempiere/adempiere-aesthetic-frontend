@@ -479,7 +479,7 @@ class User extends VuexModule implements IUserState {
         console.warn(`Error change role: ${error.message}. Code: ${error.code}.`)
       })
       .finally(() => {
-        PermissionModule.sendRequestMenu(organizationId)
+        PermissionModule.sendRequestMenu()
       })
   }
 

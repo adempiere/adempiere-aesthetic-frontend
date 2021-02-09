@@ -60,32 +60,26 @@ class Permission extends VuexModule implements IPermissionState {
   }
 
   @Action
-  public GenerateRoutes(organizationId?: number) {
-    organizationId = organizationId || 0
+  public GenerateRoutes() {
     return new Promise<RouteConfig[]>((resolve) => {
       const organization = UserModule.organization
       let organizationUuid = ''
 
       if (organization) {
-        organizationId = organization.id
         organizationUuid = organization.uuid!
       }
 
       const role: Partial<IRoleData> = UserModule.role // store.getters['user/getRole'] // UserModule.getRole
       let roleUuid = ''
-      let clientId = 0
       if (role) {
         roleUuid = role.uuid!
-        clientId = role.clientId!
       }
 
       const sessionUuid: string = getToken()!
 
       loadMainMenu({
         sessionUuid,
-        // clientId,
         roleUuid,
-        // organizationId,
         organizationUuid
       }).then((menuResponse: RouteConfig[]) => {
         this.SET_ROUTES(menuResponse)
@@ -95,7 +89,7 @@ class Permission extends VuexModule implements IPermissionState {
   }
 
   @Action
-  public sendRequestMenu(organizationId?:number): void {
+  public sendRequestMenu(): void {
     this.clearTimeOutMenu()
     const timeOutMenu = setTimeout(async() => {
       NProgress
@@ -106,7 +100,7 @@ class Permission extends VuexModule implements IPermissionState {
         .start()
 
       resetRouter()
-      this.GenerateRoutes(organizationId)
+      this.GenerateRoutes()
         .then((accessRoutes: RouteConfig[]) => {
           router.addRoutes(accessRoutes)
         })
