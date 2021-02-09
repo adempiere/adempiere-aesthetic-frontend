@@ -49,23 +49,29 @@ export default class FilterFields extends Vue {
         .map(itemField => itemField.columnName)
     }
 
-      // Watchers
-      @Watch('getFieldSelected')
+    // Watchers
+    @Watch('getFieldSelected')
     handleGetFieldSelectedChange(value: any) {
       this.selectedFields = value
     }
 
-      // Methods
-      /**
+    // Methods
+    /**
      * @param {array} selectedValues
      */
-      addField(selectedValues: any[]): void {
-        this.$store.dispatch(Namespaces.Panel + '/' + 'changeFieldShowedFromUser', {
-          containerUuid: this.containerUuid,
-          fieldsUser: selectedValues,
-          show: true,
-          groupField: this.groupField,
-          isAdvancedQuery: this.isAdvancedQuery
-        })
-      }
+    addField(selectedValues: any[]): void {
+      this.$store.dispatch(Namespaces.Panel + '/' + 'changeFieldShowedFromUser', {
+        containerUuid: this.containerUuid,
+        fieldsUser: selectedValues,
+        show: true,
+        groupField: this.groupField,
+        isAdvancedQuery: this.isAdvancedQuery
+      })
+    }
+
+    created() {
+      console.log('selected fields')
+      console.log(this.getFieldSelected)
+      this.selectedFields = this.getFieldSelected
+    }
 }
