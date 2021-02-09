@@ -74,20 +74,14 @@ export default class extends Mixins(MixinI18n) {
   }
 
   private handleLink(item: any) {
-    const { redirect, path } = item
-    if (redirect) {
-      this.$router.push(redirect).catch(err => {
-        // Throw Error "NavigationDuplicated"
-        // https://github.com/vuejs/vue-router/issues/2872#issuecomment-522341874
-        console.warn(err)
+    if (this.$route.name !== item.name) {
+      this.$router.push({
+        name: item.name,
+        params: {
+          childs: item.meta.childs
+        }
       })
-      return
     }
-    this.$router.push(this.pathCompile(path)).catch(err => {
-      // Throw Error "NavigationDuplicated"
-      // https://github.com/vuejs/vue-router/issues/2872#issuecomment-522341874
-      console.warn(err)
-    })
   }
 }
 </script>
