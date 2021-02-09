@@ -420,9 +420,8 @@ class User extends VuexModule implements IUserState {
     organizationUuid: string
     organizationId: number
     isCloseAllViews?: boolean
-    route: Route
   }) {
-    const { route, organizationId, organizationUuid, isCloseAllViews = params.isCloseAllViews || true } = params
+    const { organizationId, organizationUuid, isCloseAllViews = params.isCloseAllViews || true } = params
     // TODO: Check if there are no tagViews in the new routes to close them, and
     // if they exist, reload with the new route using name (uuid)
     TagsViewModule.setCustomTagView(isCloseAllViews)

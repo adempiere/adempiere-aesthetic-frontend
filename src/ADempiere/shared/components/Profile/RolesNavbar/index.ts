@@ -22,7 +22,7 @@ export default class RolesNavbar extends Vue {
   }
 
   get rolesList(): IRoleData[] {
-    return this.$store.state.user.rolesList
+    return UserModule.rolesList
   }
 
   get currentOrganizationUuid(): string {
@@ -99,8 +99,7 @@ export default class RolesNavbar extends Vue {
       })
       UserModule.ChangeOrganization({
         organizationUuid,
-        organizationId: currentOrganization.id,
-        route: this.$router.currentRoute
+        organizationId: currentOrganization.id
       })
     }
   }
