@@ -21,8 +21,8 @@
       @change="change"
     >
       <el-option
-        v-for="item in options"
-        :key="item.name"
+        v-for="(item, key) in options"
+        :key="key"
         :value="item"
         :label="item.meta.title.join(' > ')"
       />
