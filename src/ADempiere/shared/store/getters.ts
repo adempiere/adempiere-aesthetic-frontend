@@ -11,6 +11,7 @@ export const getters: GetterTree<IRootState, IRootState> = {
   cachedViews: (state: IRootState) => state.tagsView.cachedViews,
   token: (state: IRootState) => state.user.token,
   avatar: (state: IRootState) => state.user.avatar,
+  corporateBrandingImage: (state: IRootState) => state.user.corporateBrandingImage,
   name: (state: IRootState) => state.user.name,
   router: (state: IRootState) => state.permission.dynamicRoutes,
   introduction: (state: IRootState) => state.user.introduction,

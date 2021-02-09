@@ -30,7 +30,7 @@ export default class PriceChecking extends Mixins(MixinForm) {
 
     // Computed properties
     get organizationImagePath(): string {
-      return this.$store.getters.avatar
+      return this.$store.getters.corporateBrandingImage
     }
 
     get defaultImage() {

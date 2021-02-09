@@ -97,7 +97,8 @@ export function convertOrganization(
     taxId: organizationToConvert.tax_id,
     phone: organizationToConvert.phone,
     phone2: organizationToConvert.phone2,
-    fax: organizationToConvert.fax
+    fax: organizationToConvert.fax,
+    corporateBrandingImage: organizationToConvert.corporateBrandingImage
   }
 }
 

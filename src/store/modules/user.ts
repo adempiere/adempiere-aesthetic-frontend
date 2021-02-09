@@ -14,7 +14,6 @@ import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import language from '@/ADempiere/shared/lang'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { PermissionModule } from './permission'
-import { Route } from 'vue-router'
 
 export interface IUserState {
   token: string
@@ -34,6 +33,7 @@ export interface IUserState {
   warehouse: any
   isSession: boolean
   sessionInfo: Partial<ISessionData>
+  corporateBrandingImage: string
 }
 
 @Module({ dynamic: true, store, name: 'user' })
@@ -41,6 +41,7 @@ class User extends VuexModule implements IUserState {
   public token: string = getToken() || ''
   public name = ''
   public avatar = ''
+  public corporateBrandingImage = ''
   public introduction = ''
   public roles: string[] = []
   public email = ''
@@ -99,6 +100,9 @@ class User extends VuexModule implements IUserState {
   @Mutation
   private SET_ORGANIZATION(organization: Partial<IOrganizationData>) {
     this.organization = organization
+    if (organization) {
+      this.corporateBrandingImage = organization.corporateBrandingImage!
+    }
   }
 
   @Mutation

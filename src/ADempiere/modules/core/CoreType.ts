@@ -94,6 +94,7 @@ export interface IOrganizationData {
     phone: string
     phone2: string
     fax: string
+    corporateBrandingImage: string
 }
 
 export interface ILanguageData {
