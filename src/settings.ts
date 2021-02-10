@@ -11,6 +11,8 @@ interface ISettings {
   // ADempiere
   supportPinyinSearch: boolean
   showContextMenu?: boolean
+  showMenu?: boolean
+  showNavar?: boolean
 }
 
 // You can customize below settings :)
@@ -26,7 +28,8 @@ const settings: ISettings = {
   mockServerPort: 9528,
   // ADempiere
   supportPinyinSearch: true,
-  showContextMenu: true
+  showContextMenu: true,
+  showNavar: true
 }
 
 export default settings

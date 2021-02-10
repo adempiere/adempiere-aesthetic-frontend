@@ -14,6 +14,8 @@ import {
 import {
   IProductPriceData
 } from '@/ADempiere/modules/core/CoreType'
+import { request } from 'http'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 @Component({
   name: 'PriceChecking',
@@ -25,6 +27,7 @@ export default class PriceChecking extends Mixins(MixinForm) {
     public productPrice: any = {}
     public organizationBackground = ''
     public currentImageOfProduct = ''
+    public search = 'sad'
     // eslint-disable-next-line
     public unsubscribe: Function = () => {}
 
@@ -55,8 +58,11 @@ export default class PriceChecking extends Mixins(MixinForm) {
         isSetOrg = true
         imageName = this.organizationImagePath
       }
+      // the name of the image plus the height of the container is sent
       const imageBuffer = await requestImage({
-        file: imageName
+        file: imageName,
+        width: 750,
+        height: 380
       }).then((responseImage: AxiosResponse) => {
         const arrayBufferAsImage = buildImageFromArrayBuffer({
           arrayBuffer: responseImage.data
@@ -85,59 +91,60 @@ export default class PriceChecking extends Mixins(MixinForm) {
 
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
-        if (
-          mutation.type === 'addActionKeyPerformed' &&
-                mutation.payload.columnName === 'ProductValue'
-        ) {
+        if ((mutation.type === 'updateValueOfField' || mutation.type === 'addFocusGained') && mutation.payload.columnName === 'ProductValue') {
           // cleans all values except column name 'ProductValue'
-          requestGetProductPrice({
-            searchValue: mutation.payload.value
-          })
-            .then((productPrice: IProductPriceData) => {
-              const {
-                product,
-                taxRate,
-                priceStandard: priceBase
-              } = productPrice
-              const { rate } = taxRate
-              const { imageUrl: image } = product
+          this.search = mutation.payload.value
+          if (this.search.length >= 6) {
+            requestGetProductPrice({
+              searchValue: mutation.payload.value
+            })
+              .then((productPrice: IProductPriceData) => {
+                const {
+                  product,
+                  taxRate,
+                  priceStandard: priceBase
+                } = productPrice
+                const { rate } = taxRate
+                const { imageUrl: image } = product
 
-              this.productPrice = {
-                productName: product.name,
-                productDescription: product.description,
-                priceBase,
-                priceStandard: productPrice.priceStandard,
-                priceList: productPrice.priceList,
-                priceLimit: productPrice.priceLimit,
-                taxRate: rate,
-                image,
-                taxName: taxRate.name,
-                taxIndicator: taxRate.taxIndicator,
-                taxAmt: this.getTaxAmount(priceBase, rate),
-                grandTotal: this.getGrandTotal(priceBase, rate),
-                currency: productPrice.currency
-              }
-            })
-            .catch(error => {
-              this.$message({
-                type: 'info',
-                message: error.message,
-                showClose: true
+                this.productPrice = {
+                  productName: product.name,
+                  productDescription: product.description,
+                  priceBase,
+                  priceStandard: productPrice.priceStandard,
+                  priceList: productPrice.priceList,
+                  priceLimit: productPrice.priceLimit,
+                  taxRate: rate,
+                  image,
+                  taxName: taxRate.name,
+                  taxIndicator: taxRate.taxIndicator,
+                  taxAmt: this.getTaxAmount(priceBase, rate),
+                  grandTotal: this.getGrandTotal(priceBase, rate),
+                  currency: productPrice.currency
+                }
               })
-              this.productPrice = {}
-            })
-            .finally(() => {
-              this.$store.commit('updateValueOfField', {
-                containerUuid: this.containerUuid,
-                columnName: 'ProductValue',
-                value: ''
+              .catch(error => {
+                this.$message({
+                  type: 'info',
+                  message: error.message,
+                  showClose: true
+                })
+                this.productPrice = {}
               })
+              .finally(() => {
+                this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
+                  containerUuid: this.containerUuid,
+                  columnName: 'ProductValue',
+                  value: ''
+                })
 
-              this.currentImageOfProduct = ''
-              if (!this.productPrice.image) {
-                this.getImage(this.productPrice.image)
-              }
-            })
+                this.search = ''
+                this.currentImageOfProduct = ''
+                if (!this.productPrice.image) {
+                  this.getImage(this.productPrice.image)
+                }
+              })
+          }
         }
       })
     }

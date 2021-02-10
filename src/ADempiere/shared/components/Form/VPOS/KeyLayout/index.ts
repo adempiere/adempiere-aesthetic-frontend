@@ -139,8 +139,11 @@ export default class KeyLayout extends Vue {
             isLoaded: false
           })
         }
+        // the name of the image plus height and width of the container is sent
         requestImage({
-          file: fileName
+          file: fileName,
+          width: 300,
+          height: 300
         }).then(response => {
           const responseImage = <any[]>response.data
           const arrayBufferAsImage = buildImageFromArrayBuffer({

@@ -4,6 +4,10 @@ export interface DecorableCss {
     cssClassName: string
     inputSize?: string
     handleActionKeyPerformed?: boolean
+    handleFocusGained?: boolean
+    handleFocusLost?: boolean
+    isDisplayed?: boolean
+    isReadOnly?: boolean
 }
 
 export interface IProductCodeData {
@@ -22,7 +26,10 @@ const productCode: IProductCodeData[] = [
       sequence: 10,
       cssClassName: 'price-inquiry',
       inputSize: 'large',
-      handleActionKeyPerformed: true
+      handleFocusGained: true,
+      handleFocusLost: true,
+      isDisplayed: true,
+      isReadOnly: false
     }
   }
 ]

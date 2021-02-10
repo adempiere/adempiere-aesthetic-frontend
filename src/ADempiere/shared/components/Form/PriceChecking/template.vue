@@ -2,7 +2,6 @@
   <div
     v-if="isLoaded"
     style="height: 100% !important;"
-    @click="focusProductValue"
   >
     <el-container style="height: 100% !important;">
       <img
@@ -83,12 +82,12 @@
 
   .product-description {
     color: #32363a;
-    font-size: 25px;
+    font-size: 30px;
     float: right;
     padding-bottom: 0px;
   }
   .product-price-base, .product-tax {
-    font-size: 35px;
+    font-size: 30px;
     float: right;
   }
   .product-price {
@@ -99,7 +98,7 @@
 
   .inquiry-form {
     position: absolute;
-    right: 5%;
+    right: 20%;
     width: 100%;
     top: 10%;
     z-index: 0;

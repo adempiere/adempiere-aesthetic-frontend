@@ -14,6 +14,8 @@ export interface ISettingsState {
   // ADempiere
   supportPinyinSearch: boolean
   showContextMenu?: boolean
+  showMenu?: boolean
+  showNavar?: boolean
 }
 
 @Module({ dynamic: true, store, name: 'settings' })
@@ -27,6 +29,8 @@ class Settings extends VuexModule implements ISettingsState {
   // ADempiere
   public supportPinyinSearch = defaultSettings.supportPinyinSearch
   public showContextMenu = defaultSettings.showContextMenu
+  public showNavar = defaultSettings.showNavar
+  public showMenu = true
 
   @Mutation
   private CHANGE_SETTING(payload: { key: string, value: any }) {
