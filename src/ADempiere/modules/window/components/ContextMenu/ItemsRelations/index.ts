@@ -4,7 +4,7 @@ import { icon } from '../icon'
 import Template from './template.vue'
 
 @Component({
-  name: 'Item',
+  name: 'ItemContextMenu',
   mixins: [Template]
 })
 export default class Item extends Vue {
@@ -16,6 +16,17 @@ export default class Item extends Vue {
     }
 
     // methods
+
+    getChilds(item: any): any[] {
+      if (item.meta.childs) {
+        return item.children
+      }
+
+      if (item.meta && (item.meta.childs)) {
+        return item.meta.childs
+      }
+      return []
+    }
 
     classIconMenuRight(iconMenu: any) {
       iconMenu = icon.find((element) => {
@@ -30,6 +41,6 @@ export default class Item extends Vue {
         query: {
           tabParent: ''
         }
-      }, undefined)
+      })
     }
 }

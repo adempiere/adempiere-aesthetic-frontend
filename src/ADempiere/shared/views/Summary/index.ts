@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator'
-import Dropdown from '@/ADempiere/shared/components/Dropdown'
+import DropdownMenu from '@/ADempiere/shared/components/DropdownMenu'
 import Template from './template.vue'
 import { PermissionModule } from '@/store/modules/permission'
 
@@ -7,7 +7,7 @@ import { PermissionModule } from '@/store/modules/permission'
   name: 'Summary',
   mixins: [Template],
   components: {
-    Dropdown
+    DropdownMenu
   }
 })
 export default class Summary extends Vue {

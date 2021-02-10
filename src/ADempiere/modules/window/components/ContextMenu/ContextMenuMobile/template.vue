@@ -13,18 +13,24 @@
         unique-opened
         style="width: 258px; float: right;"
       >
-        <el-submenu index="relations">
+      <!-- menu relations -->
+        <el-submenu v-if="!isEmptyChilds" index="relations">
           <template slot="title">
             <svg-icon icon-class="tree" />
             {{ $t('components.contextMenuRelations') }}
           </template>
           <el-menu-item-group>
             <el-scrollbar wrap-class="scroll">
-              <item v-for="(relation, index) in relationsList" :key="index" :item="relation" />
+              <item-relations v-for="(relation, index) in relationsList" :key="index" :item="relation" />
             </el-scrollbar>
           </el-menu-item-group>
         </el-submenu>
 
+        <el-menu-item v-else disabled index="relations">
+          {{ $t('components.contextMenuRelations') }}
+        </el-menu-item>
+
+        <!-- actions or process on container -->
         <el-submenu index="actions">
           <template slot="title">
             <svg-icon icon-class="link" />
@@ -93,6 +99,7 @@
           </el-menu-item-group>
         </el-submenu>
 
+        <!-- references of record -->
         <el-submenu :disabled="!(isReferencesContent && isLoadedReferences)" class="el-menu-item" index="references">
           <template slot="title">
             {{ $t('components.contextMenuReferences') }}

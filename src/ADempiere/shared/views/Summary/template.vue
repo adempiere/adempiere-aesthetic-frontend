@@ -12,12 +12,12 @@
     <el-row :gutter="10">
       <template v-if="optionList">
         <template v-for="(item, key) in optionList">
-          <dropdown v-if="$route.name !== item.name" :key="key" :items="item" :title="item.meta.title" />
+          <dropdown-menu v-if="$route.name !== item.name" :key="key" :items="item" :title="item.meta.title" />
         </template>
       </template>
       <template v-else>
         <template v-for="(item, key) in optionList">
-          <dropdown v-if="$route.name !== item.name" :key="key" :items="item" :title="item.meta.title" />
+          <dropdown-menu v-if="$route.name !== item.name" :key="key" :items="item" :title="item.meta.title" />
         </template>
       </template>
     </el-row>

@@ -3,10 +3,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
 
 @Component({
-  name: 'Dropdown',
+  name: 'DropdownMenu',
   mixins: [Template]
 })
-export default class Dropdown extends Vue {
+export default class DropdownMenu extends Vue {
     @Prop({ type: Object, default: {} }) items?: any
     @Prop({ type: String, default: '' }) title?: string
     public activeNames: string[] = ['1']

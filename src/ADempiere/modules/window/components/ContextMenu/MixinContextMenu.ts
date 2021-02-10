@@ -9,7 +9,7 @@ import {
   supportedTypes
 } from '@/ADempiere/shared/utils/exportUtil'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
+import { Component, Prop, Watch, Ref, Mixins } from 'vue-property-decorator'
 import {
   IContextActionData,
   IContextMenuData,
@@ -28,7 +28,7 @@ import {
   IWindowOldRoute,
   KeyValueData
 } from '@/ADempiere/modules/persistence/PersistenceType'
-import Item from './Items'
+import ItemRelations from './ItemsRelations'
 import { RouteConfig } from 'vue-router'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { INotificationProcessData } from '@/ADempiere/modules/process/ProcessType'
@@ -38,16 +38,17 @@ import { convertFieldsListToShareLink, recursiveTreeSearch } from '@/ADempiere/s
 import ROUTES from '@/ADempiere/shared/utils/zoomWindow'
 import { UserModule } from '@/store/modules/user'
 import { PermissionModule } from '@/store/modules/permission'
+import MixinRelations from './MixinRelations'
 
 @Component({
   name: 'MixinContextMenu',
   components: {
-    Item
+    ItemRelations
   }
 })
-export default class MixinContextMenu extends Vue {
+export default class MixinContextMenu extends Mixins(MixinRelations) {
     @Ref() readonly contextMenu!: any
-    @Prop({ default: undefined, type: String }) private menuParentUuid?: string
+    // @Prop({ default: undefined, type: String }) private menuParentUuid?: string
     @Prop({ default: undefined, type: String }) private parentUuid?: string
     @Prop({ type: String, required: true }) private containerUuid?: string
     @Prop({ default: undefined, type: String }) private panelType?: PanelContextType
@@ -119,19 +120,19 @@ export default class MixinContextMenu extends Vue {
       return []
     }
 
-    get relationsList(): any[] {
-      let menuUuid: string = this.$route.params.menuParentUuid
-      if (!menuUuid) {
-        menuUuid = this.menuParentUuid!
-      }
-      const relations: any = this.$store.getters[
-        Namespaces.ContextMenu + '/' + 'getRelations'
-      ](menuUuid, this.permissionRoutes)
-      if (relations) {
-        return relations.children
-      }
-      return []
-    }
+    // get relationsList(): any[] {
+    //   let menuUuid: string = this.$route.params.menuParentUuid
+    //   if (!menuUuid) {
+    //     menuUuid = this.menuParentUuid!
+    //   }
+    //   const relations: any = this.$store.getters[
+    //     Namespaces.ContextMenu + '/' + 'getRelations'
+    //   ](menuUuid)
+    //   if (relations && relations.children) {
+    //     return relations.children
+    //   }
+    //   return []
+    // }
 
     get permissionRoutes(): RouteConfig[] {
       return PermissionModule.routes
