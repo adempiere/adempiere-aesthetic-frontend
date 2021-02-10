@@ -6,11 +6,13 @@ export function getConfig(): IConfigData {
     adempiere: {
       api: {
         service: JSON.stringify(config.adempiere.api.service).replace(/['"]+/g, ''),
-        url: JSON.stringify(config.adempiere.api.url).replace(/['"]+/g, '')
+        url: JSON.stringify(config.adempiere.api.url).replace(/['"]+/g, ''),
+        fullPath: JSON.stringify(config.adempiere.api.fullPath).replace(/['"]+/g, '')
       },
       images: {
         service: JSON.stringify(config.adempiere.images.service).replace(/['"]+/g, ''),
-        url: JSON.stringify(config.adempiere.images.url).replace(/['"]+/g, '')
+        url: JSON.stringify(config.adempiere.images.url).replace(/['"]+/g, ''),
+        fullPath: JSON.stringify(config.adempiere.api.fullPath).replace(/['"]+/g, '')
       }
     },
     server: {

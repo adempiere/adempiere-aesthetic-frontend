@@ -20,8 +20,7 @@ export function ApiRest(requestConfig: AxiosRequestConfig): Promise<any> {
   }
 
   const config: IConfigData = getConfig()
-  const { api } = config.adempiere
-  const apiRestAddress = api.url.concat(api.service)
+  const apiRestAddress = config.adempiere.api.fullPath
   const instance: AxiosInstance = axios.create({
     baseURL: apiRestAddress,
     headers: {

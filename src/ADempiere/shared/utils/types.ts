@@ -7,10 +7,12 @@ export interface IConfigData {
         api: {
             url: string
             service: string
+            fullPath: string
         }
         images: {
             url: string
             service: string
+            fullPath: string
         }
     }
 }
