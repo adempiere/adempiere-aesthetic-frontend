@@ -80,7 +80,7 @@
 <script lang="ts">
 import path from 'path'
 import { Component, Mixins, Vue, Watch } from 'vue-property-decorator'
-import { RouteConfig } from 'vue-router'
+import { Route, RouteConfig } from 'vue-router'
 import { PermissionModule } from '@/store/modules/permission'
 import { TagsViewModule, ITagView } from '@/store/modules/tags-view'
 import ScrollPane from './ScrollPane.vue'

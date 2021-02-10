@@ -1,14 +1,18 @@
 
 /* Layout  */
-import Layout from '@/layout/index.vue'
 import { requestMenu } from '@/ADempiere/modules/user/UserService/user'
 import staticRoutes from './staticRoutes'
 import { IMenuData } from '@/ADempiere/modules/user'
 import { RouteConfig } from 'vue-router'
-import { convertAction } from '../utils/DictionaryUtils'
-import { RouteConfigSingleView } from 'vue-router/types/router'
+import { convertAction } from '@/ADempiere/shared/utils/DictionaryUtils'
 
 // Get Menu from server
+/**
+ * Get Menu from server
+ * @param { string } sessionUuid
+ * @param { string } roleUuid
+ * @param { string } organizationUuid
+ */
 export function loadMainMenu(params: {
   sessionUuid: string
   roleUuid?: string
@@ -24,7 +28,7 @@ export function loadMainMenu(params: {
     requestMenu({
       sessionUuid
     }).then((menuResponse: IMenuData) => {
-      const asyncRoutesMap: RouteConfigSingleView[] = []
+      const asyncRoutesMap: RouteConfig[] = []
 
       menuResponse.childs.forEach(menuElement => {
         const optionMenu = getRouteFromMenuItem({
@@ -35,14 +39,14 @@ export function loadMainMenu(params: {
 
         if (optionMenu.meta.isSummary) {
           menuElement.childs.forEach(menu => {
-            const childsSumaryConverted: RouteConfigSingleView = getChildFromAction({
+            const childsSumaryConverted: RouteConfig = getChildFromAction({
               menu,
               index: 0,
               roleUuid,
               organizationUuid
             })
             optionMenu.children?.push(childsSumaryConverted)
-            optionMenu.children![0].meta.childs.push(childsSumaryConverted)
+            // optionMenu.children![0].meta.childs.push(childsSumaryConverted)
             optionMenu.meta.childs.push(childsSumaryConverted)
           })
         } else {
@@ -58,7 +62,6 @@ export function loadMainMenu(params: {
         }
         asyncRoutesMap.push(optionMenu)
       })
-
       resolve(staticRoutes.concat(asyncRoutesMap))
     }).catch(error => {
       console.warn(`Error getting menu: ${error.message}. Code: ${error.code}.`)
@@ -75,8 +78,9 @@ export function loadMainMenu(params: {
  */
 function getChildFromAction(params: { menu: any, index?: number, roleUuid: string, organizationUuid: string }): RouteConfig {
   const { menu, index = params.index || 0, roleUuid, organizationUuid } = params
-  const { component, icon, name, isIndex } = convertAction(menu.action)
-  const routeIdentifier = name + '/' + menu.id
+  const { component, icon, name: type } = convertAction(menu.action)
+  const routeIdentifier = type + '/' + menu.id
+  const isIndex = menu.is_summary
 
   const option: RouteConfig = {
     path: '/' + roleUuid + '/' + organizationUuid + '/' + routeIdentifier,
@@ -96,14 +100,16 @@ function getChildFromAction(params: { menu: any, index?: number, roleUuid: strin
       referenceUuid: menu.reference_uuid,
       tabUuid: '',
       title: menu.name,
-      type: name,
+      type,
       uuid: menu.reference_uuid,
       childs: []
     }
   }
 
-  if (isIndex || name === 'summary') {
-    option.children = []
+  if (isIndex) {
+    if (!option.children) {
+      option.children = []
+    }
     menu.childs.forEach((child: any) => {
       const menuConverted: RouteConfig = getChildFromAction({
         menu: child,
@@ -111,7 +117,7 @@ function getChildFromAction(params: { menu: any, index?: number, roleUuid: strin
         roleUuid,
         organizationUuid
       })
-      option.children?.push(menuConverted)
+      option.children!.push(menuConverted)
       option.meta.childs.push(menuConverted)
     })
   }
@@ -128,45 +134,28 @@ function getChildFromAction(params: { menu: any, index?: number, roleUuid: strin
  */
 function getRouteFromMenuItem(params: { menu: any, roleUuid: string, organizationUuid: string }): RouteConfig {
   const { menu, roleUuid, organizationUuid } = params
-  const { component, icon, name, isIndex } = convertAction(menu.action)
+  const { component, icon, name: type } = convertAction(menu.action)
+  const isIndex = menu.is_summary
 
   const optionMenu: RouteConfig = {
     path: '/' + roleUuid + '/' + organizationUuid + '/' + menu.id,
-    redirect: '/' + menu.id + '/index',
-    component: Layout,
+    redirect: '/' + menu.id,
+    component: () => import('@/layout/index.vue'),
     name: menu.uuid,
     meta: {
       description: menu.description,
       icon,
       isReadOnly: menu.is_read_only,
       isSummary: menu.is_summary,
+      isIndex,
       isSalesTransaction: menu.is_sales_transaction,
       noCache: true,
       referenceUuid: menu.reference_uuid,
       title: menu.name,
-      type: name,
+      type,
       childs: []
     },
-    children: [{
-      path: 'index',
-      component,
-      name: menu.uuid + '-index',
-      meta: {
-        hidden: true,
-        breadcrumb: false,
-        description: menu.description,
-        icon,
-        isIndex,
-        isReadOnly: menu.is_read_only,
-        isSalesTransaction: menu.is_sales_transaction,
-        noCache: true,
-        parentUuid: menu.uuid,
-        referenceUuid: menu.reference_uuid,
-        title: menu.name,
-        type: name,
-        childs: []
-      }
-    }]
+    children: []
   }
   return optionMenu
 }

@@ -12,8 +12,8 @@ import { Namespaces } from '@/ADempiere/shared/utils/types'
   mixins: [Template]
 })
 export default class ChatEntries extends Vue {
-  @Prop() private tableName?: string = undefined
-  @Prop() private recordId?: number = undefined
+  @Prop({ default: undefined }) private tableName?: string
+  @Prop({ default: undefined }) private recordId?: number
   private language!: string
 
   // Computed properties

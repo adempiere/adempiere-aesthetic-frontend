@@ -2,13 +2,13 @@ import { IValueData } from '@/ADempiere/modules/core'
 import { IWindowDataExtended } from '@/ADempiere/modules/dictionary'
 import { IRootState } from '@/store'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
-import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { ActionContext, ActionTree } from 'vuex'
 import { runCallOutRequest } from '../../UIService/rule'
 import { CallOutControlState, ICallOutData } from '../../UITypes'
 import language from '@/ADempiere/shared/lang'
 import { IPanelParameters } from '@/ADempiere/shared/store/modules/panel/type'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type CallOutControlActionContext = ActionContext<CallOutControlState, IRootState>
 type CallOutControlActionTree = ActionTree<CallOutControlState, IRootState>
@@ -62,10 +62,10 @@ export const actions: CallOutControlActionTree = {
     }
     //  Else
     return new Promise((resolve, reject) => {
-      const window: IWindowDataExtended = context.rootGetters.getWindow(
+      const window: IWindowDataExtended = context.rootGetters[Namespaces.WindowDefinition + '/' + 'getWindow'](
         parentUuid
       )
-      const attributesList: IPanelParameters[] = <IPanelParameters[]>context.rootGetters.getParametersToServer({
+      const attributesList: IPanelParameters[] = <IPanelParameters[]>context.rootGetters[Namespaces.Panel + '/' + 'getParametersToServer']({
         containerUuid,
         row
       })
@@ -88,14 +88,14 @@ export const actions: CallOutControlActionTree = {
               ...row,
               ...calloutResponse.values
             }
-            context.dispatch('notifyRowTableChange', {
+            context.dispatch(Namespaces.BusinessData + '/' + 'notifyRowTableChange', {
               parentUuid,
               containerUuid,
               row: newValues,
               isEdit: true
-            })
+            }, { root: true })
           } else {
-            context.dispatch('notifyPanelChange', {
+            context.dispatch(Namespaces.Panel + '/' + 'notifyPanelChange', {
               parentUuid,
               containerUuid,
               panelType: PanelContextType.Window,
@@ -104,7 +104,7 @@ export const actions: CallOutControlActionTree = {
               withOutColumnNames,
               isSendCallout: false,
               isChangeFromCallout: true
-            })
+            }, { root: true })
           }
           resolve(calloutResponse.values)
         })

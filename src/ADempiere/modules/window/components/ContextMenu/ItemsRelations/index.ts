@@ -1,18 +1,32 @@
+import { AppModule, DeviceType } from '@/store/modules/app'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { icon } from '../icon'
+import Template from './template.vue'
 
 @Component({
-  name: 'Item'
+  name: 'ItemContextMenu',
+  mixins: [Template]
 })
 export default class Item extends Vue {
     @Prop({ required: true }) item: any
 
     // Computed properties
     get isMobile(): boolean {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     // methods
+
+    getChilds(item: any): any[] {
+      if (item.meta.childs) {
+        return item.children
+      }
+
+      if (item.meta && (item.meta.childs)) {
+        return item.meta.childs
+      }
+      return []
+    }
 
     classIconMenuRight(iconMenu: any) {
       iconMenu = icon.find((element) => {
@@ -27,6 +41,6 @@ export default class Item extends Vue {
         query: {
           tabParent: ''
         }
-      }, undefined)
+      })
     }
 }

@@ -11,11 +11,10 @@ export const getters: GetterTree<IRootState, IRootState> = {
   cachedViews: (state: IRootState) => state.tagsView.cachedViews,
   token: (state: IRootState) => state.user.token,
   avatar: (state: IRootState) => state.user.avatar,
+  corporateBrandingImage: (state: IRootState) => state.user.corporateBrandingImage,
   name: (state: IRootState) => state.user.name,
-  // router: (state: IRootState) => state.permission,
   router: (state: IRootState) => state.permission.dynamicRoutes,
   introduction: (state: IRootState) => state.user.introduction,
-  // TODO: Migrate the following getters in the corresponding files
   currentRole: (state: IRootState) => state.user.role,
   getRoleUuid: (state: IRootState) => state.user.role.uuid,
   roles: (state: IRootState) => state.user.roles,

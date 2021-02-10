@@ -1,3 +1,4 @@
+import { UserModule } from '@/store/modules/user'
 import { Component, Mixins } from 'vue-property-decorator'
 import { getPendingDocumentsFromServer } from '../../../DashboardService'
 import {
@@ -25,8 +26,8 @@ export default class PendingDocuments extends Mixins(MixinDasboard) {
 
     // Methods
     getPendingDocuments(): Promise<IPendingDocumentDataExtended[]> {
-      const userUuid = this.$store.getters['user/getUserUuid']
-      const roleUuid = this.$store.getters.getRoleUuid
+      const userUuid = UserModule.userUuid // this.$store.getters['user/getUserUuid']
+      const roleUuid = UserModule.role.uuid! // this.$store.getters.getRoleUuid
       return new Promise(resolve => {
         getPendingDocumentsFromServer({ userUuid, roleUuid })
           .then((response: IPendingDocumentsFromServerResponse) => {
@@ -63,7 +64,7 @@ export default class PendingDocuments extends Mixins(MixinDasboard) {
         treeData: this.permissionRoutes,
         attributeValue: row.windowUuid,
         attributeName: 'meta',
-        secondAttribute: 'uuid',
+        secondAttributeName: 'uuid',
         attributeChilds: 'children'
       })
 

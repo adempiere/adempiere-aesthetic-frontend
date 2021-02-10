@@ -1,7 +1,7 @@
 <template>
   <div v-if="isIndex" key="sumary" class="app-container">
     <el-popover
-      v-if="!isEmptyValue($route.meta.description)"
+      v-if="($route.meta.description)"
       ref="routeDescription"
       placement="top"
       width="400"
@@ -10,14 +10,14 @@
     />
     <h3 v-popover:routeDescription class="description">{{ $route.meta.title }}</h3>
     <el-row :gutter="10">
-      <template v-if="optionList.children">
-        <template v-for="(item, key) in optionList.children">
-          <dropdown v-if="$route.name !== item.name" :key="key" :items="item" :title="item.meta.title" />
+      <template v-if="optionList">
+        <template v-for="(item, key) in optionList">
+          <dropdown-menu v-if="$route.name !== item.name" :key="key" :items="item" :title="item.meta.title" />
         </template>
       </template>
       <template v-else>
         <template v-for="(item, key) in optionList">
-          <dropdown v-if="$route.name !== item.name" :key="key" :items="item" :title="item.meta.title" />
+          <dropdown-menu v-if="$route.name !== item.name" :key="key" :items="item" :title="item.meta.title" />
         </template>
       </template>
     </el-row>

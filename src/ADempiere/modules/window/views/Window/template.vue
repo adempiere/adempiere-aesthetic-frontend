@@ -8,9 +8,9 @@
         <SplitArea :size="sizePanel" :min-size="100">
           <el-aside width="100%">
             <split-pane :min-percent="10" :default-percent="defaultPorcentSplitPane" split="vertical">
-              <template>
+              <template slot="paneL">
                 <!-- this slot is 'paneL' (with 'L' in uppercase) do not change -->
-                <div slot="paneL" class="left-container">
+                <div class="left-container">
                   <el-aside v-show="isShowedRecordNavigation" width="100%">
                     <div class="small-4 columns">
                       <div class="w">
@@ -117,7 +117,6 @@
                               </el-tab-pane>
 
                               <el-tab-pane
-                                v-if="getIsWorkflowLog"
                                 name="listWorkflowLogs"
                               >
                                 <span slot="label">
@@ -125,7 +124,6 @@
                                   {{ $t('window.containerInfo.workflowLog') }}
                                 </span>
                                 <div
-                                  v-if="getIsWorkflowLog"
                                   key="workflow-log-loaded"
                                 >
                                   <workflow-logs />
@@ -149,7 +147,7 @@
                         <div class="small-4 columns">
                           <div class="wrapper">
                             <div
-                              v-show="!isEmptyValue(windowMetadata.tabsListChildren)"
+                              v-show="(windowMetadata.tabsListChildren)"
                               class="open-detail"
                             />
                             <!-- open childs tabs -->
@@ -187,7 +185,7 @@
                     </SplitArea>
                     <SplitArea v-show="isShowedTabsChildren" :size="50">
                       <el-header
-                        v-if="isShowedTabsChildren && !isEmptyValue(windowMetadata.tabsListChildren)"
+                        v-if="isShowedTabsChildren && (windowMetadata.tabsListChildren)"
                         style="height: auto; padding-right: 35px !important; padding-bottom: 33px;"
                       >
                         <div class="w-33">

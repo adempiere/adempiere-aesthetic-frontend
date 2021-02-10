@@ -190,8 +190,6 @@ export default class extends Vue {
 
     @Watch('$route', { immediate: true })
     private onRouteChange(route: Route) {
-      console.log('cambio de ruta')
-      console.log(route)
       // TODO: remove the "as Dictionary<string>" hack after v4 release for vue-router
       // See https://github.com/vuejs/vue-router/pull/2050 for details
       const query = route.query as Dictionary<string>
@@ -230,7 +228,6 @@ export default class extends Vue {
       (this.$refs.loginForm as ElForm).validate(async(valid: boolean) => {
         const expr = '/'
         const query = (this.$route.query.redirect as string)
-
         if (query) {
           this.loginForm = {
             ...this.loginForm,
@@ -244,11 +241,12 @@ export default class extends Vue {
 
           await UserModule.Login(this.loginForm)
             .then((res) => {
-              console.log('Ruta: ' + this.redirect)
-              this.$router.push({
-                path: this.redirect || '/',
-                query: this.otherQuery
-              })
+              // this.$router.push({
+              //   path: this.redirect || '/',
+              //   query: this.otherQuery
+              // })
+              this.$store.dispatch('setRouter', this.$router)
+              location.reload()
             })
             .catch(error => {
               let message: string = this.$t(

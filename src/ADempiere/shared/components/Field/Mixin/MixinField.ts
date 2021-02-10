@@ -1,4 +1,5 @@
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { AppModule, DeviceType } from '@/store/modules/app'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
@@ -10,11 +11,11 @@ export default class MixinField extends Vue {
       type: [String, Number, Boolean, Date, Array, Object],
       default: null
     })
-    valueModel?: [[String, Number, Boolean, Date, any[], Object]] = undefined
+    valueModel?: [[String, Number, Boolean, Date, any[], Object]]
 
     // Computed properties
     get isMobile(): boolean {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     get isDisabled(): boolean {
@@ -55,7 +56,7 @@ export default class MixinField extends Vue {
 
     set value(value: any) {
       if (this.metadata.inTable) {
-        this.$store.dispatch('notifyCellTableChange', {
+        this.$store.dispatch(Namespaces.BusinessData + '/' + 'notifyCellTableChange', {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           newValue: value,
@@ -63,7 +64,7 @@ export default class MixinField extends Vue {
         })
         return
       }
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid: this.metadata.parentUuid,
         containerUuid: this.metadata.containerUuid,
         columnName: this.metadata.columnName,
@@ -104,7 +105,7 @@ export default class MixinField extends Vue {
       const { value, valueTo, label } = params
       // Global Action performed
       if (this.metadata.handleActionPerformed) {
-        this.$store.dispatch('notifyActionPerformed', {
+        this.$store.dispatch(Namespaces.Event + '/' + 'notifyActionPerformed', {
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
           value
@@ -114,7 +115,7 @@ export default class MixinField extends Vue {
       // if is custom field, set custom handle change value
       if (this.metadata.isCustomField) {
         if (this.metadata.isActiveLogics) {
-          this.$store.dispatch('changeDependentFieldsList', {
+          this.$store.dispatch(Namespaces.Panel + '/' + 'changeDependentFieldsList', {
             field: this.metadata
           })
         }
@@ -122,13 +123,13 @@ export default class MixinField extends Vue {
       }
 
       if (this.metadata.inTable) {
-        this.$store.dispatch('notifyCellTableChange', {
+        this.$store.dispatch(Namespaces.BusinessData + '/' + 'notifyCellTableChange', {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           field: this.metadata
         })
       }
-      this.$store.dispatch('notifyFieldChange', {
+      this.$store.dispatch(Namespaces.Panel + '/' + 'notifyFieldChange', {
         containerUuid: this.metadata.containerUuid,
         field: this.metadata
       })
@@ -152,7 +153,7 @@ export default class MixinField extends Vue {
         }
       }
       if (this.metadata.handleFocusGained) {
-        this.$store.dispatch('notifyFocusGained', {
+        this.$store.dispatch(Namespaces.Event + '/' + 'notifyFocusGained', {
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
           value: this.value
@@ -162,7 +163,7 @@ export default class MixinField extends Vue {
 
     focusLost(value: any): void {
       if (this.metadata.handleFocusLost) {
-        this.$store.dispatch('notifyFocusLost', {
+        this.$store.dispatch(Namespaces.Event + '/' + 'notifyFocusLost', {
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
           value: this.value
@@ -172,7 +173,7 @@ export default class MixinField extends Vue {
 
     keyPressed(value: any) {
       if (this.metadata.handleKeyPressed) {
-        this.$store.dispatch('notifyKeyPressed', {
+        this.$store.dispatch(Namespaces.Event + '/' + 'notifyKeyPressed', {
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
           value: value.key,
@@ -183,7 +184,7 @@ export default class MixinField extends Vue {
 
     actionKeyPerformed(value: any): void {
       if (this.metadata.handleActionKeyPerformed) {
-        this.$store.dispatch('notifyActionKeyPerformed', {
+        this.$store.dispatch(Namespaces.Event + '/' + 'notifyActionKeyPerformed', {
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
           value: value.target.value,
@@ -194,7 +195,7 @@ export default class MixinField extends Vue {
 
     keyReleased(value: any): void {
       if (this.metadata.handleKeyReleased) {
-        this.$store.dispatch('notifyKeyReleased', {
+        this.$store.dispatch(Namespaces.Event + '/' + 'notifyKeyReleased', {
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
           value: value.key,
@@ -209,7 +210,7 @@ export default class MixinField extends Vue {
         this.metadata.isSQLValue &&
             (!this.metadata.value || this.metadata.value.isSQL)
       ) {
-        const value = await this.$store.dispatch('getValueBySQL', {
+        const value = await this.$store.dispatch(Namespaces.BusinessData + '/' + 'getValueBySQL', {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           query: this.metadata.defaultValue

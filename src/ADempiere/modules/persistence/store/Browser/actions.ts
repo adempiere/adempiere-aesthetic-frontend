@@ -8,6 +8,7 @@ import { IEntityData, IEntityListData, IRecordSelectionData } from '../../Persis
 import { parseContext } from '@/ADempiere/shared/utils/contextUtils'
 import { requestBrowserSearch } from '../../PersistenceService/browser'
 import { IRootState } from '@/store'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type BrowserActionTree = ActionTree<BrowserDefinitionState, IRootState>
 type BrowserActionContext = ActionContext<BrowserDefinitionState, IRootState>
@@ -19,9 +20,9 @@ export const actions: BrowserActionTree = {
         value: any
       }) {
     const { containerUuid, field, value } = params
-    const fieldsEmpty: string[] = context.getters.getFieldsListEmptyMandatory({
+    const fieldsEmpty: string[] = context.rootGetters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
       containerUuid,
-      fieldsList: context.getters.getFieldsListFromPanel(containerUuid)
+      fieldsList: context.rootGetters[Namespaces.Panel + '/' + 'getFieldsListFromPanel'](containerUuid)
     })
     if (fieldsEmpty) {
       showMessage({
@@ -35,21 +36,21 @@ export const actions: BrowserActionTree = {
     if (fieldIsDisplayed(field)) {
       let isReadyForQuery = true
       if (field.isSQLValue) {
-        const panel: IPanelDataExtended = context.getters.getPanel(containerUuid)
+        const panel: IPanelDataExtended = context.rootGetters[Namespaces.Panel + '/' + 'getPanel'](containerUuid)
         let awaitForValuesToQuery = panel.awaitForValuesToQuery
         awaitForValuesToQuery--
-        context.dispatch('changeBrowserAttribute', {
+        context.dispatch(Namespaces.BrowserDefinition + '/' + 'changeBrowserAttribute', {
           containerUuid,
           attributeName: 'awaitForValuesToQuery',
           attributeValue: awaitForValuesToQuery
-        })
+        }, { root: true })
         if (awaitForValuesToQuery === 0) {
           if (panel.isShowedCriteria) {
-            context.dispatch('changeBrowserAttribute', {
+            context.dispatch(Namespaces.BrowserDefinition + '/' + 'changeBrowserAttribute', {
               containerUuid,
               attributeName: 'isShowedCriteria',
               attributeValue: false
-            })
+            }, { root: true })
           }
         } else if (awaitForValuesToQuery > 0) {
           isReadyForQuery = false
@@ -74,15 +75,15 @@ export const actions: BrowserActionTree = {
       message: language.t('notifications.searching').toString(),
       type: 'info'
     })
-    const allData: IRecordSelectionData = context.rootGetters.getDataRecordAndSelection(containerUuid)
+    const allData: IRecordSelectionData = context.rootGetters[Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'](containerUuid)
     // deletes the data from the container to replace it and to report the searches in the table
-    context.dispatch('deleteRecordContainer', {
+    context.dispatch(Namespaces.BusinessData + '/' + 'deleteRecordContainer', {
       viewUuid: containerUuid
-    })
+    }, { root: true })
 
-    const browser: IBrowserDataExtended = context.rootGetters.getBrowser(containerUuid)
+    const browser: IBrowserDataExtended = context.rootGetters[Namespaces.BrowserDefinition + '/' + 'getBrowser'](containerUuid)
     // parameters isQueryCriteria
-    const parametersList = context.rootGetters.getParametersToServer({
+    const parametersList = context.rootGetters[Namespaces.Panel + '/' + 'getParametersToServer']({
       containerUuid,
       fieldsList: browser.fieldsList
     })
@@ -142,14 +143,14 @@ export const actions: BrowserActionTree = {
           token = token.slice(0, -2)
         }
 
-        context.dispatch('setRecordSelection', {
+        context.dispatch(Namespaces.BusinessData + '/' + 'setRecordSelection', {
           containerUuid,
           record: recordsList,
-          pageNumber: context.rootGetters.getPageNumber(containerUuid),
+          pageNumber: context.rootGetters[Namespaces.BusinessData + '/' + 'getPageNumber'](containerUuid),
           selection: selection,
           recordCount: browserSearchResponse.recordCount,
           nextPageToken: token
-        })
+        }, { root: true })
         showMessage({
           // title: language.t('notifications.succesful').toString(),
           message: language.t('notifications.succcessSearch').toString(),
@@ -160,10 +161,10 @@ export const actions: BrowserActionTree = {
       .catch(error => {
         // Set default registry values so that the table does not say loading,
         // there was already a response from the server
-        context.dispatch('setRecordSelection', {
+        context.dispatch(Namespaces.BusinessData + '/' + 'setRecordSelection', {
           containerUuid,
           panelType: 'browser'
-        })
+        }, { root: true })
 
         showMessage({
           // title: language.t('notifications.error').toString(),

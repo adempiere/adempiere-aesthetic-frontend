@@ -1,4 +1,5 @@
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { AppModule, DeviceType } from '@/store/modules/app'
 import { Vue, Component } from 'vue-property-decorator'
 import { IEntityLogData } from '../../../WindowType'
 import MixinInfo from '../mixinInfo'
@@ -17,7 +18,7 @@ export default class RecordLogs extends Vue {
 
     // Computed Properties
     get isMobile(): boolean {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     get classIsMobileScroll(): string {
@@ -25,6 +26,13 @@ export default class RecordLogs extends Vue {
         return 'scroll-window-log-change-mobile'
       }
       return 'scroll-window-log-change'
+    }
+
+    get classIsMobilePanel() {
+      if (this.isMobile) {
+        return 'panel-mobile'
+      }
+      return 'panel'
     }
 
     get gettersListRecordLogs(): IEntityLogData[] {

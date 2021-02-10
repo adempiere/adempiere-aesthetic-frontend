@@ -28,7 +28,7 @@ import {
 export function requestLookup(data: ILookupParams): Promise<ILookupItemData> {
   const { columnName, tableName, directQuery, value } = data
   let filters: any[] = []
-  if (!value) {
+  if (value) {
     filters = [
       {
         column_name: columnName,
@@ -74,7 +74,7 @@ export function requestLookupList(
   } = data
   let filters: any[] = []
 
-  if (valuesList === []) {
+  if (!(valuesList.length === 0)) {
     filters = [
       {
         column_name: columnName,

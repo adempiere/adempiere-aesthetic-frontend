@@ -1,5 +1,6 @@
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { AppModule, DeviceType } from '@/store/modules/app'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
 
@@ -14,7 +15,7 @@ export default class FixedColumns extends Vue {
 
     // Compouted properties
     get isMobile(): boolean {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     get fieldsList(): IFieldDataExtendedUtils[] {
@@ -47,7 +48,7 @@ export default class FixedColumns extends Vue {
        * @param {array} selectedValues
        */
     addField(selectedValues: string[]): void {
-      this.$store.dispatch('changeFieldAttributesBoolean', {
+      this.$store.dispatch(Namespaces.Panel + '/' + 'changeFieldAttributesBoolean', {
         containerUuid: this.containerUuid,
         fieldsIncludes: selectedValues,
         attribute: 'isFixedTableColumn',

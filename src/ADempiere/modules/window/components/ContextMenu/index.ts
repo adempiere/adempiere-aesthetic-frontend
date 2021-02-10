@@ -1,7 +1,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import ContextMenuMobile from '@/ADempiere/modules/window/components/ContextMenu/ContextMenuMobile'
-import ContextMenuDesktop from '@/ADempiere/modules/window/components/ContextMenu/ContextMenuDesktop'
 import Template from './template.vue'
+import { AppModule, DeviceType } from '@/store/modules/app'
 
 @Component({
   name: 'ContextMenu',
@@ -13,20 +12,20 @@ export default class ContextMenu extends Vue {
     @Prop({ type: String, required: true }) public containerUuid?: string
     @Prop({ type: String, default: undefined }) public panelType?: string
     @Prop({ type: String, default: undefined }) public tableName?: string
-    @Prop({ type: Boolean, default: false }) public isReport = false
+    @Prop({ type: Boolean, default: false }) public isReport!: boolean
     @Prop({ type: String, default: undefined }) public lastParameter?: string
     @Prop({ type: String, default: undefined }) public reportFormat?: string
     @Prop({ type: Boolean, default: undefined }) public isInsertRecord?: boolean
 
     // Computed properties
     get isMobile(): boolean {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     get templateDevice() {
       if (this.isMobile) {
-        return new ContextMenuMobile() // () => ContextMenuMobile
+        return () => import('@/ADempiere/modules/window/components/ContextMenu/ContextMenuMobile')
       }
-      return new ContextMenuDesktop() // () => ContextMenuDesktop
+      return () => import('@/ADempiere/modules/window/components/ContextMenu/ContextMenuDesktop') // () => ContextMenuDesktop
     }
 }

@@ -27,7 +27,7 @@
           </el-select>
 
           <el-tag
-            v-if="!isEmptyValue(value)"
+            v-if="(value)"
             index="tag-with-value"
             :type="tagStatus(value)"
           >
@@ -41,7 +41,7 @@
             {{ infoDocumentAction.name }}
           </el-tag>
 
-          <p v-if="!isEmptyValue(infoDocumentAction.description)" index="with-description">
+          <p v-if="(infoDocumentAction.description)" index="with-description">
             {{ infoDocumentAction.description }}
           </p>
           <p v-else index="without-description">

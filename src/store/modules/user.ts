@@ -13,6 +13,7 @@ import { setCurrentRole, getCurrentRole, removeCurrentRole, getCurrentOrganizati
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import language from '@/ADempiere/shared/lang'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { PermissionModule } from './permission'
 
 export interface IUserState {
   token: string
@@ -32,6 +33,7 @@ export interface IUserState {
   warehouse: any
   isSession: boolean
   sessionInfo: Partial<ISessionData>
+  corporateBrandingImage: string
 }
 
 @Module({ dynamic: true, store, name: 'user' })
@@ -39,6 +41,7 @@ class User extends VuexModule implements IUserState {
   public token: string = getToken() || ''
   public name = ''
   public avatar = ''
+  public corporateBrandingImage = ''
   public introduction = ''
   public roles: string[] = []
   public email = ''
@@ -97,6 +100,9 @@ class User extends VuexModule implements IUserState {
   @Mutation
   private SET_ORGANIZATION(organization: Partial<IOrganizationData>) {
     this.organization = organization
+    if (organization) {
+      this.corporateBrandingImage = organization.corporateBrandingImage!
+    }
   }
 
   @Mutation
@@ -342,21 +348,24 @@ class User extends VuexModule implements IUserState {
       removeToken()
 
       this.setIsSession(false)
-      this.context.dispatch('resetStateBusinessData', null, {
+      this.context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData', {
         root: true
       })
-      this.context.dispatch('dictionaryResetCache', null, {
+      this.context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache', {
         root: true
       })
 
       // reset visited views and cached views
       // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-      this.context.dispatch('tagsView/delAllViews', null, { root: true })
+      // this.context.dispatch('tagsView/delAllViews', null, { root: true })
+      TagsViewModule.delAllViews()
 
       removeCurrentRole()
       resetRouter()
       logout(this.token).catch(error => {
         console.warn(error)
+      }).finally(() => {
+        resolve({})
       })
     })
   }
@@ -419,11 +428,7 @@ class User extends VuexModule implements IUserState {
     const { organizationId, organizationUuid, isCloseAllViews = params.isCloseAllViews || true } = params
     // TODO: Check if there are no tagViews in the new routes to close them, and
     // if they exist, reload with the new route using name (uuid)
-    this.context.dispatch('tagsView/setCustomTagView', {
-      isCloseAllViews
-    }, {
-      root: true
-    })
+    TagsViewModule.setCustomTagView(isCloseAllViews)
 
     return await requestChangeRole({
       // token: getToken(),
@@ -450,10 +455,10 @@ class User extends VuexModule implements IUserState {
         // Update user info and context associated with session
         this.GetSessionInfo(uuid)
 
-        this.context.dispatch('resetStateBusinessData', null, {
+        this.context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData', null, {
           root: true
         })
-        this.context.dispatch('dictionaryResetCache', null, {
+        this.context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache', null, {
           root: true
         })
 
@@ -474,9 +479,7 @@ class User extends VuexModule implements IUserState {
         console.warn(`Error change role: ${error.message}. Code: ${error.code}.`)
       })
       .finally(() => {
-        this.context.dispatch('permission/sendRequestMenu', organizationId, {
-          root: true
-        })
+        PermissionModule.sendRequestMenu()
       })
   }
 
@@ -542,11 +545,12 @@ public async ChangeRole(params: {
     isCloseAllViews?: boolean
   }) {
   const { roleUuid, organizationUuid, warehouseUuid, isCloseAllViews = params.isCloseAllViews || true } = params
-  this.context.dispatch('tagsView/setCustomTagView', {
-    isCloseAllViews
-  }, {
-    root: true
-  })
+  TagsViewModule.setCustomTagView(isCloseAllViews)
+  // this.context.dispatch('tagsView/setCustomTagView', {
+  //   isCloseAllViews
+  // }, {
+  //   root: true
+  // })
 
   return await requestChangeRole({
     // token: getToken(),
@@ -565,12 +569,8 @@ public async ChangeRole(params: {
 
       this.GetSessionInfo(uuid)
       // Update user info and context associated with session
-      this.context.dispatch('resetStateBusinessData', null, {
-        root: true
-      })
-      this.context.dispatch('dictionaryResetCache', null, {
-        root: true
-      })
+      this.context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData')
+      this.context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache')
 
       showMessage({
         message: language.t('notifications.successChangeRole').toString(),
@@ -591,9 +591,7 @@ public async ChangeRole(params: {
       console.warn(`Error change role: ${error.message}. Code: ${error.code}.`)
     })
     .finally(() => {
-      this.context.dispatch('permission/sendRequestMenu', null, {
-        root: true
-      })
+      PermissionModule.sendRequestMenu()
     })
 }
 

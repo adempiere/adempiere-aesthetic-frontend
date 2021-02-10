@@ -9,8 +9,8 @@ import { TEXT } from '@/ADempiere/shared/utils/references'
   mixins: [Template, MixinField, MixinFieldText]
 })
 export default class FieldText extends Mixins(MixinField, MixinFieldText) {
-    @Prop({ type: Boolean, default: false }) inTable = false
-    @Prop({ type: String, default: undefined }) pattern?: string = undefined
+    @Prop({ type: Boolean, default: false }) inTable!: boolean
+    @Prop({ type: String, default: undefined }) pattern?: string
     public patternFileName = '[A-Za-zñÑ0-9-_]{1,}'
     public patternFilePath = '[A-Za-zñÑ0-9-_/.]{1,}'
 

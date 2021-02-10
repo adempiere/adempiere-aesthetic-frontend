@@ -9,7 +9,9 @@ import Template from './template.vue'
 })
 export default class FieldContextInfo extends Vue {
     @Prop({ type: Object, required: true }) fieldAttributes!: any
-    @Prop({ type: [Number, String, Boolean, Array, Object, Date], default: undefined }) fieldValue?: [Number, String, Boolean, any[], Object, Date] = undefined
+    @Prop({ type: [Number, String, Boolean, Array, Object, Date], default: undefined }) fieldValue?: [Number, String, Boolean, any[], Object, Date]
+    // eslint-disable-next-line
+    // @ts-ignore
     public value?: [Number, String, Boolean, any[], Object, Date] = this.fieldValue
 
     // Computed properties
@@ -30,7 +32,7 @@ export default class FieldContextInfo extends Vue {
         treeData: this.permissionRoutes,
         attributeValue: window.uuid,
         attributeName: 'meta',
-        secondAttribute: 'uuid',
+        secondAttributeName: 'uuid',
         attributeChilds: 'children'
       })
 

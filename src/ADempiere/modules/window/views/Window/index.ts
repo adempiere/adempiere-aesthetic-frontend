@@ -17,6 +17,7 @@ import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IWindowDataExtended } from '@/ADempiere/modules/dictionary'
 import { IEntityLogData, IWorkflowProcessData } from '../../WindowType'
 import { IRecordSelectionData } from '@/ADempiere/modules/persistence'
+import { AppModule, DeviceType } from '@/store/modules/app'
 
 @Component({
   name: 'WindowView',
@@ -35,7 +36,8 @@ import { IRecordSelectionData } from '@/ADempiere/modules/persistence'
   }
 })
 export default class WindowView extends Vue {
-    @Prop({ type: Object, default: {} }) styleSteps: any = {}
+  // eslint-disable-next-line
+    @Prop({ type: Object, default: () => {} }) styleSteps: any
     public windowMetadata: Partial<IWindowDataExtended> = {}
     public windowUuid: string = this.$route.meta.uuid
     public panelType: PanelContextType = PanelContextType.Window
@@ -68,7 +70,7 @@ export default class WindowView extends Vue {
     }
 
     get isMobile(): boolean {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     // convert ternary operator into computed property
@@ -235,7 +237,7 @@ export default class WindowView extends Vue {
       const recordLogs: {
             recordCount: number
             entityLogs: IEntityLogData[]
-        } = this.$store.getters.getRecordLogs
+        } = this.$store.getters[Namespaces.ContainerInfo + '/' + 'getRecordLogs']
 
       const changeLog: IEntityLogData[] = recordLogs.entityLogs
       if (!changeLog) {
@@ -259,7 +261,7 @@ export default class WindowView extends Vue {
 
     get getIsWorkflowLog(): boolean {
       const workflowLogs: IWorkflowProcessData[] = this.$store.getters[
-        Namespaces.ContainerInfo + '/' + 'getWorkflow'
+        Namespaces.ContainerInfo + '/' + 'getNodeWorkflow'
       ]
       if (!workflowLogs) {
         return false
@@ -323,13 +325,21 @@ export default class WindowView extends Vue {
       return currentRecord
     }
 
+    get isDocument(): boolean {
+      const panel = this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](this.windowMetadata.currentTabUuid)
+      if (panel && this.$route.query.action !== 'create-new') {
+        return true
+      }
+      return false
+    }
+
     get isWorkflowBarStatus(): boolean {
-      const panel = this.$store.getters.getPanel(
+      const panel = this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](
         this.windowMetadata.currentTabUuid
       )
       if (
         panel &&
-            panel.isDocument &&
+            this.isDocument &&
             this.$route.query.action !== 'create-new'
       ) {
         return true
@@ -340,7 +350,7 @@ export default class WindowView extends Vue {
     // Navigation Guards
 
     beforeRouteUpdate(to: Route, from: Route, next: Function) {
-      this.$store.dispatch('setWindowOldRoute', {
+      this.$store.dispatch(Namespaces.Window + '/' + 'setWindowOldRoute', {
         path: from.path,
         fullPath: from.fullPath,
         params: {
@@ -358,13 +368,13 @@ export default class WindowView extends Vue {
     handleRoute(value: Route) {
       if (this.showContainerInfo) {
         this.$store
-          .dispatch(this.activeInfo, {
+          .dispatch(Namespaces.ChatEntries + '/' + this.activeInfo, {
             tableName: this.$route.params.tableName,
             recordId: this.$route.params.recordId
           })
           .then(response => {
             if (value.query.action === 'create-new') {
-              this.$store.commit('isNote', false)
+              this.$store.commit(Namespaces.ChatEntries + '/' + 'isNote', false)
             }
           })
       }
@@ -376,7 +386,7 @@ export default class WindowView extends Vue {
       if (this.isShowedRecordNavigation) {
         this.handleResize()
       }
-      this.$store.dispatch('settings/changeSetting', {
+      SettingsModule.ChangeSetting({
         key: 'showContextMenu',
         value: true
       })
@@ -389,7 +399,7 @@ export default class WindowView extends Vue {
       )
       if (panelRight) {
         const widthPanel: number = panelRight.clientWidth - 350
-        this.$store.commit('setPanelRight', String(widthPanel))
+        this.$store.commit(Namespaces.WindowDefinition + '/' + 'setPanelRight', String(widthPanel))
       }
     }
 
@@ -415,8 +425,7 @@ export default class WindowView extends Vue {
             query: {
               ...this.$route.query
             }
-          },
-          undefined
+          }
         )
 
         const action = this.$route.query.action
@@ -424,20 +433,19 @@ export default class WindowView extends Vue {
         if (action && action !== 'create-new') {
           recordUuid = action
         }
-
         // TODO: Verify if first tab is document
-        this.$store.dispatch('listWorkflowLogs', {
+        this.$store.dispatch(Namespaces.ContainerInfo + '/' + 'listWorkflowLogs', {
           tableName,
           recordUuid,
           recordId
         })
-        this.$store.dispatch(this.activeInfo, {
+        this.$store.dispatch(Namespaces.ChatEntries + '/' + this.activeInfo, {
           tableName,
           recordId,
           recordUuid
         })
       }
-      this.$store.dispatch('showContainerInfo', !this.getterShowContainerInfo)
+      this.$store.dispatch(Namespaces.Utils + '/' + 'showContainerInfo', !this.getterShowContainerInfo)
     }
 
     handleClick(tab: any, event: any) {
@@ -458,7 +466,31 @@ export default class WindowView extends Vue {
         recordId = record[tableName + '_ID']
       }
 
-      this.$store.dispatch(tab.name, {
+      let tabNameWithModule = ''
+
+      // switch(tab.name){
+      //   case 'listRecordLogs': tabNameWithModule = Namespaces.ContainerInfo + '/' + tab.name
+      //   break
+      //   case 'listWorkflowLogs': tabNameWithModule = Namespaces.ContainerInfo + '/' + tab.name
+      //   default: tabNameWithModule = tab.name
+      //   break
+      // }
+      switch (tab.name) {
+        case 'listRecordLogs':
+          tabNameWithModule = Namespaces.ContainerInfo + '/' + tab.name
+          break
+        case 'listWorkflowLogs':
+          tabNameWithModule = Namespaces.ContainerInfo + '/' + tab.name
+          break
+        case 'listChatEntries':
+          tabNameWithModule = Namespaces.ChatEntries + '/' + tab.name
+          break
+        default:
+          tabNameWithModule = Namespaces.ContainerInfo + '/' + tab.name
+          break
+      }
+
+      this.$store.dispatch(tabNameWithModule, {
         tableName,
         recordId,
         recordUuid
@@ -467,10 +499,10 @@ export default class WindowView extends Vue {
 
     // callback new size
     onDrag(size: any[]): void {
-      this.$store.dispatch('setSplitHeightTop', {
+      this.$store.dispatch(Namespaces.Utils + '/' + 'setSplitHeightTop', {
         splitHeightTop: size[0]
       })
-      this.$store.dispatch('setSplitHeight', {
+      this.$store.dispatch(Namespaces.Utils + '/' + 'setSplitHeight', {
         splitHeight: size[1]
       })
     }
@@ -483,7 +515,7 @@ export default class WindowView extends Vue {
         return
       }
       this.$store
-        .dispatch('getWindowFromServer', {
+        .dispatch(Namespaces.WindowDefinition + '/' + 'getWindowFromServer', {
           windowUuid: this.windowUuid,
           routeToDelete: this.$route
         })
@@ -515,10 +547,16 @@ export default class WindowView extends Vue {
         this.handleChangeShowedRecordNavigation(isShowRecords)
       }
       this.isLoaded = true
+      const record = this.currentRecord
+      this.$store.dispatch(Namespaces.ContextMenu + '/' + 'listDocumentStatus', {
+        tableName: this.getTableName,
+        recordUuid: this.$route.query.action,
+        recordId: record[this.getTableName + '_ID']
+      })
     }
 
     handleChangeShowedRecordNavigation(valueToChange: any): void {
-      this.$store.dispatch('changeWindowAttribute', {
+      this.$store.dispatch(Namespaces.WindowDefinition + '/' + 'changeWindowAttribute', {
         parentUuid: this.windowUuid, // act as parentUuid
         window: this.windowMetadata,
         attributeName: 'isShowedRecordNavigation',
@@ -531,7 +569,7 @@ export default class WindowView extends Vue {
     }
 
     handleChangeShowedTabChildren(isShowedChilds: any): void {
-      this.$store.dispatch('changeWindowAttribute', {
+      this.$store.dispatch(Namespaces.WindowDefinition + '/' + 'changeWindowAttribute', {
         parentUuid: this.windowUuid, // act as parentUuid
         window: this.windowMetadata,
         attributeName: 'isShowedTabsChildren',

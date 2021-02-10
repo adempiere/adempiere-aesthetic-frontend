@@ -14,8 +14,10 @@ import Field from '@/ADempiere/shared/components/Field'
   }
 })
 export default class MixinForm extends Vue {
-    @Prop({ type: Object, default: () => undefined }) metadata: any = () => undefined
+    @Prop({ type: Object, default: undefined }) metadata?: any
     public formUuid: string = this.$route.meta.uuid
+    // eslint-disable-next-line
+    // @ts-ignore
     public containerUuid: string = this.metadata.containerUuid || this.$route.meta.uuid || this.metadata.uuid
     public fieldList: any[] = []
     public panelMetadata: any = {}
@@ -51,7 +53,9 @@ export default class MixinForm extends Vue {
         this.panelMetadata = panel
       } else {
         await this.generateFieldsList()
-        this.$store.dispatch('addPanel', {
+        console.log('getPanel MixinForm')
+        console.log(...this.metadata)
+        this.$store.dispatch(Namespaces.Panel + '/' + 'addPanel', {
           ...this.metadata,
           isCustomForm: this.isCustomForm,
           uuid: this.containerUuid,

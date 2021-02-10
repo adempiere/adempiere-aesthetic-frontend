@@ -23,7 +23,7 @@
 
     <el-main>
       <el-card
-        v-if="!isEmptyValue(getKeyList)"
+        v-if="(getKeyList)"
       >
         <el-row style="padding: 2px">
           <template v-for="(keyValue, key) in getKeyList">

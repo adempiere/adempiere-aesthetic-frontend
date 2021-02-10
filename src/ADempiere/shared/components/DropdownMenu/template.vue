@@ -13,7 +13,7 @@
                 @click.native="redirect(item)"
               >
                 <div class="icon-wrapper">
-                  <svg-icon :icon-class="item.meta.icon" />
+                  <svg-icon :icon="item.meta.icon" :icon-class="item.meta.icon" />
                 </div>
                 <div class="text-wrapper">
                   <b>{{ item.meta.title }}</b>
@@ -34,7 +34,7 @@
       @click.native="redirect(items)"
     >
       <div class="icon-wrapper">
-        <svg-icon :icon-class="items.meta.icon" />
+        <svg-icon :icon="items.meta.icon" :icon-class="items.meta.icon" />
       </div>
       <div class="text-wrapper">
         <b>{{ items.meta.title }}</b>

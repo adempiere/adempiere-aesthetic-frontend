@@ -29,7 +29,7 @@
         </el-form>
 
         <div class="inquiry-product">
-          <el-row v-if="!isEmptyValue(productPrice)" :gutter="20">
+          <el-row v-if="(productPrice)" :gutter="20">
             <el-col style="padding-left: 0px; padding-right: 0%;">
               <div class="product-description">
                 {{ productPrice.productName }} {{ productPrice.productDescription }}

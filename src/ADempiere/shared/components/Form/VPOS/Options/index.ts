@@ -100,23 +100,23 @@ export default class Options extends Vue {
         this.$store.commit('updateValuesOfContainer', {
           containerUuid: this.metadata.containerUuid,
           attributes: [{
-            columnName: 'UUID',
+            key: 'UUID',
             value: undefined
           },
           {
-            columnName: 'ProductValue',
+            key: 'ProductValue',
             value: undefined
           },
           {
-            columnName: 'C_BPartner_ID',
+            key: 'C_BPartner_ID',
             value: templateBusinessPartner.id
           },
           {
-            columnName: 'DisplayColumn_C_BPartner_ID',
+            key: 'DisplayColumn_C_BPartner_ID',
             value: templateBusinessPartner.name
           },
           {
-            columnName: ' C_BPartner_ID_UUID',
+            key: ' C_BPartner_ID_UUID',
             value: templateBusinessPartner.uuid
           }]
         })

@@ -36,7 +36,7 @@
               <el-tag
                 :type="tagStatus(order.documentStatus.value)"
               >
-                <span v-if="isEmptyValue(order.documentStatus.value)">
+                <span v-if="!(order.documentStatus.value)">
                   Borrador
                 </span>
                 {{ order.documentStatus.name }}

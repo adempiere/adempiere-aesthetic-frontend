@@ -45,7 +45,7 @@ export const actions: ContainerInfoActionTree = {
     const { tableName, recordUuid, recordId } = payload
     const pageSize = 0
     const pageToken = '0'
-    context.dispatch('listWorkflows', tableName)
+    // context.dispatch('listWorkflows', tableName)
     return requestListWorkflowsLogs({
       tableName,
       recordId,
@@ -70,7 +70,7 @@ export const actions: ContainerInfoActionTree = {
       pageToken
     })
       .then((responseWorkFlowList: IListWorkflowsResponse) => {
-        context.commit('addListWorkflows', responseWorkFlowList)
+        context.commit('addListWorkflows', responseWorkFlowList.list)
         return responseWorkFlowList
       })
       .catch(error => {

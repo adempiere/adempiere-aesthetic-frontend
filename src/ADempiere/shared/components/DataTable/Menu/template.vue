@@ -18,21 +18,21 @@
             <el-menu-item
                 v-if="isPanelWindow"
                 :disabled="
-                    isEmptyValue(getDataSelection) ||
+                    !(getDataSelection) ||
                         (isReadOnlyParent && !isParent)
                 "
                 @click="deleteSelection()"
             >
                 {{ $t('table.dataTable.deleteSelection') }}
             </el-menu-item>
-            <template v-if="isPanelWindow && !isEmptyValue(processMenu)">
+            <template v-if="isPanelWindow && (processMenu)">
                 <el-menu-item
                     v-for="(process, key) in processMenu"
                     :key="key"
                     :disabled="
                         process.type === 'application'
                             ? false
-                            : isEmptyValue(getDataSelection)
+                            : !(getDataSelection)
                     "
                     :index="'process' + key"
                     @click="showModalTable(process)"
@@ -44,7 +44,7 @@
                 {{ $t('table.dataTable.exportZip') }}
             </el-menu-item>
             <el-submenu
-                :disabled="isEmptyValue(getDataSelection)"
+                :disabled="!(getDataSelection)"
                 index="xlsx"
                 @click.native="exporRecordTable(defaultFromatExport)"
             >
@@ -78,7 +78,7 @@
             </el-menu-item>
             <el-menu-item
                 v-if="!isPanelWindow"
-                :disabled="isEmptyValue(getDataSelection)"
+                :disabled="!(getDataSelection)"
                 index="zoom-record"
                 @click="zoomRecord()"
             >

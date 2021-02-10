@@ -1,6 +1,7 @@
 import { convertAction } from '@/ADempiere/shared/utils/DictionaryUtils'
+import { UserModule } from '@/store/modules/user'
 import { getLanguage } from '@/utils/cookies'
-import { Component, Vue, Mixins } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { requestListRecentItems } from '../../../DashboardService'
 import { IRecentItemData, IRecentItemDataExtended, IRecentItemResponseData } from '../../../DashboardType'
 import MixinDasboard from '../MixinDashboard'
@@ -26,11 +27,13 @@ export default class RecentItems extends Mixins(MixinDasboard) {
     }
 
     get userUuid(): string {
-      return this.$store.getters['user/getUserUuid']
+      return UserModule.userUuid
+      // return this.$store.getters['user/getUserUuid']
     }
 
     get roleUuid(): string {
-      return this.$store.getters['user/getRole'].uuid
+      return UserModule.role.uuid!
+      // return this.$store.getters['user/getRole'].uuid
     }
 
     // Methods

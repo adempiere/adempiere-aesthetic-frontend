@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <el-form
-      v-if="isLoadPanel"
+      v-if="this.isLoadPanel"
       key="panel-loaded"
       v-model="dataRecords"
       label-position="top"
@@ -102,7 +102,7 @@
     <div
       v-else
       key="panel-loading"
-      v-loading="!isLoadPanel"
+      v-loading="!this.isLoadPanel"
       :element-loading-text="$t('notifications.loading')"
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(255, 255, 255, 0.8)"
@@ -111,4 +111,4 @@
   </div>
 </template>
 
-<style scoped src="./index.css">
+<style scoped src="../index.css">

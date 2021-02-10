@@ -12,14 +12,9 @@ const staticRoutes: RouteConfig[] = [
   },
   {
     path: '/ProcessActivity',
-    component: Layout,
-    meta: {
-      title: 'ProcessActivity',
-      icon: 'tree-table',
-      noCache: true,
-      breadcrumb: false
-    },
+    component: () => import('@/layout/index.vue'),
     redirect: '/ProcessActivity/index',
+    meta: { title: 'ProcessActivity', icon: 'tree-table', noCache: true, breadcrumb: false },
     children: [
       {
         path: 'index',
@@ -34,9 +29,33 @@ const staticRoutes: RouteConfig[] = [
       }
     ]
   },
+  // {
+  //   path: '/ProcessActivity',
+  //   component: Layout,
+  //   meta: {
+  //     title: 'ProcessActivity',
+  //     icon: 'tree-table',
+  //     noCache: true,
+  //     breadcrumb: false
+  //   },
+  //   redirect: '/ProcessActivity/index',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/ADempiere/modules/process/views/ProcessActivity'),
+  //       name: 'ProcessActivity',
+  //       meta: {
+  //         title: 'ProcessActivity',
+  //         icon: 'tree-table',
+  //         noCache: true,
+  //         isIndex: true
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: '/report-viewer',
-    component: Layout,
+    component: () => import('@/layout/index.vue'),
     redirect: 'report-viewer/:processId/:instanceUuid/:fileName/:tableName?',
     children: [
       {
@@ -53,7 +72,7 @@ const staticRoutes: RouteConfig[] = [
   },
   {
     path: '/test',
-    component: Layout,
+    component: () => import('@/layout/index.vue'),
     children: [
       {
         path: '/test',

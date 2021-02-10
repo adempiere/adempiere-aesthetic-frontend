@@ -8,13 +8,12 @@
           <el-timeline-item
             v-for="(workflow,index) in gettersListWorkflow"
             :key="index"
-            :timestamp="translateDate(workflow.logDate)"
             placement="top"
             color="#008fd3"
           >
             <el-card shadow="hover" class="clearfix">
               <div slot="header" class="clearfix">
-                <span> {{ workflow.workflowName }} </span>
+                <span> {{ workflow.name }} </span>
               </div>
               <div>
                 <el-steps
@@ -23,7 +22,7 @@
                   finish-status="success"
                 >
                   <el-step
-                    v-for="(nodeList, key) in workflow.workflowEventsList"
+                    v-for="(nodeList, key) in workflow.workflowNodesList"
                     :key="key"
                   >
                     <span slot="title">
@@ -34,26 +33,10 @@
                       >
                         <p>
                           <b> {{ $t('login.userName') }}:</b>
-                          {{ nodeList.userName }}
-                        </p>
-                        <p v-if="!isEmptyValue(nodeList.textMessage)">
-                          <b> {{ $t('window.containerInfo.logWorkflow.message') }}:</b>
-                          {{ nodeList.textMessage }}
-                        </p>
-                        <p>
-                          <b> {{ $t('window.containerInfo.logWorkflow.responsible') }}:</b>
-                          {{ nodeList.responsibleName }}
-                        </p>
-                        <p>
-                          <b> {{ $t('window.containerInfo.logWorkflow.workflowName') }}:</b>
-                          {{ nodeList.workflowStateName }}
-                        </p>
-                        <p>
-                          <b> {{ $t('window.containerInfo.logWorkflow.timeElapsed') }}:</b>
-                          {{ nodeList.timeElapsed }}
+                          {{ nodeList.name }}
                         </p>
                         <el-button slot="reference" type="text">
-                          {{ nodeList.nodeName }}
+                          {{ nodeList.name }}
                         </el-button>
                       </el-popover>
                     </span>

@@ -140,7 +140,7 @@ export default class FieldDate extends Mixins(MixinField) {
 
         // table records values
         if (this.metadata.inTable) {
-          const row = this.$store.getters[Namespaces.BusinessData + '' + 'getRowData']({
+          const row = this.$store.getters[Namespaces.BusinessData + '/' + 'getRowData']({
             containerUuid,
             index: this.metadata.tableIndex
           })
@@ -148,7 +148,7 @@ export default class FieldDate extends Mixins(MixinField) {
         }
 
         // main panel values
-        let value: any = this.$store.getters[Namespaces.FieldValue + '' + 'getValueOfField']({
+        let value: any = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
           parentUuid: this.metadata.parentUuid,
           containerUuid,
           columnName
@@ -157,7 +157,7 @@ export default class FieldDate extends Mixins(MixinField) {
           return this.parseValue(value)
         }
 
-        const valueTo = this.$store.getters[Namespaces.FieldValue + '' + 'getValueOfField']({
+        const valueTo = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
           parentUuid: this.metadata.parentUuid,
           containerUuid,
           columnName: this.metadata.columnNameTo
@@ -172,7 +172,7 @@ export default class FieldDate extends Mixins(MixinField) {
         if (Array.isArray(value)) {
           startValue = value[0]
         }
-        this.$store.commit('updateValueOfField', {
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnName,
@@ -184,7 +184,7 @@ export default class FieldDate extends Mixins(MixinField) {
 
         const endValue = value[1]
 
-        this.$store.commit('updateValueOfField', {
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
           parentUuid: this.metadata.parentUuid,
           containerUuid: this.metadata.containerUuid,
           columnName: this.metadata.columnNameTo,

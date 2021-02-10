@@ -1,6 +1,7 @@
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { AppModule, DeviceType } from '@/store/modules/app'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import Template from './template.vue'
 
@@ -10,14 +11,14 @@ import Template from './template.vue'
 })
 export default class FilterFields extends Vue {
     @Prop({ type: String, required: true }) containerUuid!: string
-    @Prop({ type: String, default: '' }) groupField = ''
-    @Prop({ type: String, default: 'window' }) panelType: PanelContextType = PanelContextType.Window
-    @Prop({ type: Boolean, default: false }) isAdvancedQuery = false
+    @Prop({ type: String, default: undefined }) groupField?: string
+    @Prop({ type: String, default: 'window' }) panelType!: PanelContextType
+    @Prop({ type: Boolean, default: false }) isAdvancedQuery!: boolean
     public selectedFields: any[] = []
 
     // Computed properties
     get isMobile(): boolean {
-      return this.$store.state.app.device === 'mobile'
+      return AppModule.device === DeviceType.Mobile
     }
 
     get fieldsListOptional(): any[] {
@@ -29,10 +30,12 @@ export default class FilterFields extends Vue {
           })
       } else if (this.panelType === PanelContextType.Window) {
         // compare group fields to window
-        return this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListNotMandatory']({ containerUuid: this.containerUuid })
+        const notMandatoryList = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListNotMandatory']({ containerUuid: this.containerUuid })
           .filter((fieldItem: any) => {
             return fieldItem.groupAssigned === this.groupField
           })
+
+        return notMandatoryList
       }
       // get fields not mandatory
       return this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListNotMandatory']({ containerUuid: this.containerUuid })
@@ -46,24 +49,29 @@ export default class FilterFields extends Vue {
         .map(itemField => itemField.columnName)
     }
 
-      // Watchers
-      @Watch('getFieldSelected')
-      // TODO: Verify peformance with computed set (dispatch) and get (state)
+    // Watchers
+    @Watch('getFieldSelected')
     handleGetFieldSelectedChange(value: any) {
       this.selectedFields = value
     }
 
-      // Methods
-      /**
+    // Methods
+    /**
      * @param {array} selectedValues
      */
-      addField(selectedValues: any[]): void {
-        this.$store.dispatch('changeFieldShowedFromUser', {
-          containerUuid: this.containerUuid,
-          fieldsUser: selectedValues,
-          show: true,
-          groupField: this.groupField,
-          isAdvancedQuery: this.isAdvancedQuery
-        })
-      }
+    addField(selectedValues: any[]): void {
+      this.$store.dispatch(Namespaces.Panel + '/' + 'changeFieldShowedFromUser', {
+        containerUuid: this.containerUuid,
+        fieldsUser: selectedValues,
+        show: true,
+        groupField: this.groupField,
+        isAdvancedQuery: this.isAdvancedQuery
+      })
+    }
+
+    created() {
+      console.log('selected fields')
+      console.log(this.getFieldSelected)
+      this.selectedFields = this.getFieldSelected
+    }
 }

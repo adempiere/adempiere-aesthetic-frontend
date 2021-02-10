@@ -35,7 +35,7 @@ export default class FormView extends Vue {
     }
 
     set showContextMenu(value: boolean | undefined) {
-      this.$store.dispatch('settings/changeSetting', {
+      SettingsModule.ChangeSetting({
         key: 'showContextMenu',
         value: value
       })
@@ -56,7 +56,7 @@ export default class FormView extends Vue {
         this.formMetadata = panel
         this.isLoaded = true
       } else {
-        this.$store.dispatch('getPanelAndFields', {
+        this.$store.dispatch(Namespaces.Panel + '/' + 'getPanelAndFields', {
           containerUuid: this.formUuid,
           panelType: this.panelType,
           routeToDelete: this.$route

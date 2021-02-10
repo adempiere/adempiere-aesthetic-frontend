@@ -14,10 +14,10 @@ import Template from './template.vue'
   mixins: [Template]
 })
 export default class WorkflowStatusBar extends Vue {
-    @Prop({ type: Object, default: {} }) styleSteps: any = {}
-    @Prop({ type: String, default: '' }) parentUuid = ''
-    @Prop({ type: String, default: '' }) containerUuid = ''
-    @Prop({ type: String, default: 'window' }) panelType = 'window'
+    @Prop({ type: Object, default: {} }) styleSteps: any
+    @Prop({ type: String, default: '' }) parentUuid!: string
+    @Prop({ type: String, default: '' }) containerUuid!: string
+    @Prop({ type: String, default: 'window' }) panelType!: string
     public currentKey = 100
     public typeAction = 0
     public chatNote = ''

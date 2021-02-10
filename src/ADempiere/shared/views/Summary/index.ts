@@ -1,19 +1,19 @@
 import { Component, Vue } from 'vue-property-decorator'
-import Dropdown from '@/ADempiere/shared/components/Dropdown'
+import DropdownMenu from '@/ADempiere/shared/components/DropdownMenu'
 import Template from './template.vue'
+import { PermissionModule } from '@/store/modules/permission'
 
 @Component({
   name: 'Summary',
   mixins: [Template],
   components: {
-    Dropdown
+    DropdownMenu
   }
 })
 export default class Summary extends Vue {
-    public routes = this.$store.state.permission.addRoutes
+    public routes = PermissionModule.dynamicRoutes
     public parentUuid: string = this.$route.meta.parentUuid
-    public optionList: any[] = []
-
+    public optionList?:any
     // Computed properties
     get isIndex(): boolean {
       return this.$route.meta.isIndex

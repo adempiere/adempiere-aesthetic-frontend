@@ -13,18 +13,24 @@
         unique-opened
         style="width: 258px; float: right;"
       >
-        <el-submenu index="relations">
+      <!-- menu relations -->
+        <el-submenu v-if="!isEmptyChilds" index="relations">
           <template slot="title">
             <svg-icon icon-class="tree" />
             {{ $t('components.contextMenuRelations') }}
           </template>
           <el-menu-item-group>
             <el-scrollbar wrap-class="scroll">
-              <item v-for="(relation, index) in relationsList" :key="index" :item="relation" />
+              <item-relations v-for="(relation, index) in relationsList" :key="index" :item="relation" />
             </el-scrollbar>
           </el-menu-item-group>
         </el-submenu>
 
+        <el-menu-item v-else disabled index="relations">
+          {{ $t('components.contextMenuRelations') }}
+        </el-menu-item>
+
+        <!-- actions or process on container -->
         <el-submenu index="actions">
           <template slot="title">
             <svg-icon icon-class="link" />
@@ -86,21 +92,22 @@
               <el-menu-item v-if="isManageDataRecords" index="refreshData" @click="refreshData">
                 {{ $t('components.contextMenuRefresh') }}
               </el-menu-item>
-              <el-menu-item index="shareLink" @click="setShareLink">
+              <el-menu-item index="shareLink" @click="setShareLink()">
                 {{ $t('components.contextMenuShareLink') }}
               </el-menu-item>
             </el-scrollbar>
           </el-menu-item-group>
         </el-submenu>
 
-        <el-submenu :disabled="!(isReferecesContent && isLoadedReferences)" class="el-menu-item" index="references">
+        <!-- references of record -->
+        <el-submenu :disabled="!(isReferencesContent && isLoadedReferences)" class="el-menu-item" index="references">
           <template slot="title">
             {{ $t('components.contextMenuReferences') }}
           </template>
-          <template v-if="references && !isEmptyValue(references.referencesList)">
+          <template v-if="this.references && (this.references.referencesList)">
             <el-scrollbar wrap-class="scroll-child">
               <el-menu-item
-                v-for="(reference, index) in references.referencesList"
+                v-for="(reference, index) in this.references.referencesList"
                 :key="index"
                 :index="reference.displayName"
                 @click="openReference(reference)"

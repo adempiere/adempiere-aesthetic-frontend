@@ -4,6 +4,7 @@ import { IKeyValueObject } from './types'
 import moment from 'moment'
 import store from '@/ADempiere/shared/store'
 import { ILanguageData } from '@/ADempiere/modules/core/CoreType'
+import { IRangeAttributeData } from '../store/modules/panel/type'
 
 export function convertArrayKeyValueToObject({
   array = [],
@@ -33,6 +34,17 @@ export function convertObjectToKeyValue<T = any>(object: IKeyValueObject<T>): Ke
   })
 
   return array
+}
+/**
+ * Converts a IRangeAttributeData in a KeyValueData
+ */
+export const convertIRangeAttributeDataToKeyValueData = (item: IRangeAttributeData): KeyValueData => {
+  const keyValueData: KeyValueData = {
+    ...item,
+    key: item.columnName
+  }
+
+  return keyValueData
 }
 
 export function convertDateFormat(dateFormat: string): Date {

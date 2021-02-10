@@ -140,7 +140,6 @@ export default class extends Vue {
     }
 
     get device(): string {
-      console.log(AppModule.device)
       if (this.isMobile) {
         return 'mobile'
       }

@@ -214,7 +214,7 @@ export class FieldAutocomplete extends Mixins(MixinField) {
             showClose: true
           }
   
-          this.$store.dispatch('getLookupListFromServer', {
+          this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
             parentUuid: this.metadata.parentUuid,
             containerUuid: this.metadata.containerUuid,
             tableName: this.metadata.reference.tableName,

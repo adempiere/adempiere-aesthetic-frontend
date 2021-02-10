@@ -19,7 +19,7 @@ export const getters: SystemGetter = {
   getCountryLanguage: (state: SystemState) => {
     return state.systemDefinition!.language.replace('_', '-')
   },
-  getLanguagesList: state => {
+  getLanguagesList: (state: SystemState) => {
     return state.languagesList
   },
   getCurrentLanguageDefinition: (state: SystemState) => {

@@ -12,7 +12,7 @@ export default class WorkflowLogs extends Vue {
   // Computed properties
   get gettersListWorkflow(): IWorkflowProcessData[] {
     return this.$store.getters[
-      Namespaces.ContainerInfo + '/' + 'getWorkflow'
+      Namespaces.ContainerInfo + '/' + 'getNodeWorkflow'
     ]
   }
 

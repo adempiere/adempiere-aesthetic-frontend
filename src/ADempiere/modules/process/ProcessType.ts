@@ -22,6 +22,8 @@ export interface IProcessLogData {
     // parametersList?: any
     parameters?: KeyValueData[]
     output: IReportOutputData
+    //
+    processUuid?: string
 }
 
 type ParameterData = {
@@ -80,6 +82,7 @@ export interface IProcessLogDataExtended extends IProcessLogData {
 export type INotificationProcessData = Partial<IPrintFormatChild> & Partial<IProcessLogDataExtended> & {
         menuParentUuid?: string | undefined
         message?: string
+        fileName?: string
         option?: PrintFormatOptions
         selection?: any
         record?: any

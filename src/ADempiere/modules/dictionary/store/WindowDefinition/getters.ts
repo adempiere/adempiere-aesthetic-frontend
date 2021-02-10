@@ -1,8 +1,7 @@
-import { GetterTree } from 'vuex'
+import { ActionContext, GetterTree } from 'vuex'
 import { IRootState } from '@/store'
 import { WindowDefinitionState } from '@/ADempiere/modules/dictionary'
 import { ITabData, ITabDataExtended, IWindowDataExtended } from '../../DictionaryType'
-import store from '@/ADempiere/shared/store'
 
 type WindowDefinitionGetterTree = GetterTree<WindowDefinitionState, IRootState>
 
@@ -11,13 +10,13 @@ export const getters: WindowDefinitionGetterTree = {
     windowUuid: string
   ): IWindowDataExtended | undefined => {
     return state.window.find(
-      (item: IWindowDataExtended) => item.uuid === windowUuid
+      (item: IWindowDataExtended) => (item.uuid === windowUuid)
     )
   },
-  getIsShowedRecordNavigation: () => (
+  getIsShowedRecordNavigation: (state, getters) => (
     windowUuid: string
   ): boolean | undefined => {
-    const window = store.getters.getwindow(windowUuid)
+    const window = getters.getWindow(windowUuid)
     if (window) {
       return window.isShowedRecordNavigation
     }
@@ -26,11 +25,11 @@ export const getters: WindowDefinitionGetterTree = {
   getPanelRight: (state: WindowDefinitionState) => {
     return state.panelRight
   },
-  getTab: () => (
+  getTab: (state: WindowDefinitionState, getters) => (
     windowUuid: string,
     tabUuid: string
   ): ITabDataExtended | undefined => {
-    const window = <IWindowDataExtended | undefined>store.getters.getwindow(windowUuid)
+    const window = <IWindowDataExtended | undefined>getters.getWindow(windowUuid)
     if (window) {
       return window.tabsList.find((tabItem: ITabDataExtended) => {
         return tabItem.uuid === tabUuid
@@ -38,8 +37,8 @@ export const getters: WindowDefinitionGetterTree = {
     }
     return window
   },
-  getCurrentTab: () => (windowUuid: string) => {
-    const window: IWindowDataExtended = store.getters.getwindow(windowUuid)
+  getCurrentTab: (state, getters) => (windowUuid: string) => {
+    const window: IWindowDataExtended = getters.getWindow(windowUuid)
     if (window) {
       return window.tabsList.find((tabItem: ITabData) => {
         return tabItem.uuid === window.currentTabUuid
@@ -49,11 +48,11 @@ export const getters: WindowDefinitionGetterTree = {
       isInsertRecord: false
     }
   },
-  getTableNameFromTab: () => (
+  getTableNameFromTab: (state, getters) => (
     windowUuid: string,
     tabUuid: string
   ): string => {
-    const tab: ITabData = store.getters.getTab(windowUuid, tabUuid)
+    const tab: ITabData = getters.getTab(windowUuid, tabUuid)
     return tab.tableName
   }
 }

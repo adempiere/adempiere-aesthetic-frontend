@@ -38,8 +38,8 @@ import evaluator from '../../utils/evaluator'
   }
 })
 export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
-    @Prop({ type: Boolean, default: true }) isTableSelection = true
-    @Prop({ type: Boolean, default: true }) isShowedPanelRecord = false
+    @Prop({ type: Boolean, default: true }) isTableSelection!: boolean
+    @Prop({ type: Boolean, default: true }) isShowedPanelRecord!: boolean
     @Ref() readonly headerSearchInput!: ElInput
     public topContextualMenu = 0
     public leftContextualMenu = 0
@@ -93,9 +93,9 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
       return this.$store.getters[Namespaces.Utils + '/' + 'getShowContextMenuTabChildren']
     }
 
-    get panelMetadata(): IPanelDataExtended | undefined {
-      return this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](this.containerUuid)
-    }
+    // get panelMetadata(): IPanelDataExtended | undefined {
+    //   return this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](this.containerUuid)
+    // }
 
     get isLoadedPanel(): boolean {
       const panelMetadata: IPanelDataExtended | undefined = this.$store.getters[Namespaces.Panel + '/' + 'getPanel']('table_' + this.containerUuid)
@@ -279,7 +279,7 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
           if (this.isParent) {
             const { isShowedRecordNavigation } = this.$store.getters.getWindow(this.parentUuid)
             if (!isShowedRecordNavigation) {
-              this.$store.dispatch('changeWindowAttribute', {
+              this.$store.dispatch(Namespaces.WindowDefinition + '/' + 'changeWindowAttribute', {
                 parentUuid: this.parentUuid, // act as parentUuid
                 attributeName: 'isShowedRecordNavigation',
                 attributeValue: true
@@ -335,10 +335,10 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
         this.visible = true
 
         // TODO: Verify use
-        this.$store.dispatch('showMenuTable', {
+        this.$store.dispatch(Namespaces.Utils + '/' + 'showMenuTable', {
           isShowedTable: this.isParent
         })
-        this.$store.dispatch('showMenuTabChildren', {
+        this.$store.dispatch(Namespaces.Utils + '/' + 'showMenuTabChildren', {
           isShowedTabChildren: !this.isParent
         })
       }
@@ -488,7 +488,7 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
 
       addNewRow(): void {
         if (this.newRecordsQuantity <= 0) {
-          this.$store.dispatch('addNewRow', {
+          this.$store.dispatch(Namespaces.BusinessData + '/' + 'addNewRow', {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             fieldsList: this.fieldsList,
@@ -587,7 +587,7 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
           if (this.uuidCurrentRecordSelected !== row.UUID) {
             this.uuidCurrentRecordSelected = row.UUID
             // disabled rollback when change route
-            this.$store.dispatch('setDataLog', {})
+            this.$store.dispatch(Namespaces.Window + '/' + 'setDataLog', {})
           }
           const tableName: string = this.panelMetadata!.tableName
           // this.$router.push({
@@ -625,14 +625,14 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
       }
 
       handleSelection(rowsSelection: any, rowSelected: any) {
-        this.$store.dispatch('setSelection', {
+        this.$store.dispatch(Namespaces.BusinessData + '/' + 'setSelection', {
           containerUuid: this.containerUuid,
           selection: rowsSelection
         })
       }
 
       handleSelectionAll(rowsSelection: any) {
-        this.$store.dispatch('setSelection', {
+        this.$store.dispatch(Namespaces.BusinessData + '/' + 'setSelection', {
           containerUuid: this.containerUuid,
           selection: rowsSelection
         })
@@ -673,7 +673,7 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
       getPanel(): void {
         // get panel from server only window and tab children
         if (this.isPanelWindow && !this.isParent && !this.panelMetadata) {
-          this.$store.dispatch('getPanelAndFields', {
+          this.$store.dispatch(Namespaces.Panel + '/' + 'getPanelAndFields', {
             containerUuid: this.containerUuid,
             parentUuid: this.parentUuid,
             panelType: this.panelType
@@ -738,7 +738,7 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
       }
 
       handleChangePage(newPage: number) {
-        this.$store.dispatch('setPageNumber', {
+        this.$store.dispatch(Namespaces.BusinessData + '/' + 'setPageNumber', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
           pageNumber: newPage,

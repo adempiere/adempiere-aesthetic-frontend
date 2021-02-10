@@ -227,7 +227,7 @@ export default class FieldBusinessPartner extends Vue {
             this.$store.commit('updateValuesOfContainer', {
               containerUuid: 'Business-Partner-List',
               attributes: [{
-                columnName,
+                key: columnName,
                 value: `%${value}%`
               }]
             })

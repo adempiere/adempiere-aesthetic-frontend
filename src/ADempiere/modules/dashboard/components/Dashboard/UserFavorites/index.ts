@@ -1,5 +1,6 @@
 import { convertAction } from '@/ADempiere/shared/utils/DictionaryUtils'
 import { IActionAttributesData } from '@/ADempiere/shared/utils/DictionaryUtils/type'
+import { UserModule } from '@/store/modules/user'
 import { Component, Mixins } from 'vue-property-decorator'
 import { getFavoritesFromServer } from '../../../DashboardService'
 import {
@@ -28,7 +29,7 @@ export default class Favorites extends Mixins(MixinDasboard) {
 
     // Methods
     getFavoritesList(): Promise<IFavoriteDataExtended[]> {
-      const userUuid: string = this.$store.getters['user/getUserUuid']
+      const userUuid: string = UserModule.userUuid // this.$store.getters['user/getUserUuid']
       return new Promise(resolve => {
         getFavoritesFromServer({
           userUuid
@@ -73,7 +74,7 @@ export default class Favorites extends Mixins(MixinDasboard) {
         treeData: this.permissionRoutes,
         attributeValue: row.referenceUuid,
         attributeName: 'meta',
-        secondAttribute: 'uuid',
+        secondAttributeName: 'uuid',
         attributeChilds: 'children'
       })
 
@@ -86,7 +87,7 @@ export default class Favorites extends Mixins(MixinDasboard) {
               // tabParent: 0
               tabParent: String(0)
             }
-          }, undefined)
+          })
       } else {
         this.$message({
           type: 'error',

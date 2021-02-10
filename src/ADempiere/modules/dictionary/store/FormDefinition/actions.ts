@@ -8,6 +8,7 @@ import language from '@/ADempiere/shared/lang'
 import { ActionTree, ActionContext } from 'vuex'
 import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type FormDefinitionActionTree = ActionTree<FormDefinitionState, IRootState>
 type FormDefinitionActionContext = ActionContext<FormDefinitionState, IRootState>
@@ -55,10 +56,10 @@ export const actions: FormDefinitionActionTree = {
           const actions: any[] = []
 
           // Add process menu
-          context.dispatch('setContextMenu', {
+          context.dispatch(Namespaces.ContextMenu + '/' + 'setContextMenu', {
             containerUuid,
             actions
-          })
+          }, { root: true })
         })
         .catch(error => {
           // router.push(
@@ -69,7 +70,7 @@ export const actions: FormDefinitionActionTree = {
           //     return true
           //   }
           // )
-          context.dispatch('tagsView/delView', routeToDelete)
+          context.dispatch('tagsView/delView', routeToDelete, { root: true })
           showMessage({
             message: language.t('login.unexpectedError').toString(),
             type: 'error'

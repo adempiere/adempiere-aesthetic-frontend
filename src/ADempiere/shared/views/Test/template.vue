@@ -17,11 +17,11 @@
             v-if="isLoaded"
             key="form-loaded"
             class="content-collapse"
-            :style="isEmptyValue(metadata.fieldsList) ? 'height: max-content !important;' : ''"
+            :style="!(metadata.fieldsList) ? 'height: max-content !important;' : ''"
           >
             <h3 class="warn-content text-center">
               <el-popover
-                v-if="!isEmptyValue(metadata.help)"
+                v-if="(metadata.help)"
                 ref="helpTitle"
                 placement="top-start"
                 :title="formTitle"

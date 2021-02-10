@@ -129,7 +129,7 @@ export default class FieldSelect extends Mixins(MixinField) {
         // always update uuid
         this.uuidValue = option.uuid
 
-        this.$store.commit('updateValueOfField', {
+        this.$store.dispatch(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             parentUuid: this.metadata.parentUuid,
             containerUuid: this.metadata.containerUuid,
             columnName: this.metadata.columnName,
@@ -155,7 +155,7 @@ export default class FieldSelect extends Mixins(MixinField) {
         if (this.metadata.inTable) {
             return
         }
-        this.$store.commit('updateValueOfField', {
+        this.$store.dispatch(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             parentUuid: this.metadata.parentUuid,
             containerUuid: this.metadata.containerUuid,
             // 'ColumnName'_UUID
@@ -188,7 +188,7 @@ export default class FieldSelect extends Mixins(MixinField) {
     }
 
     set displayedValue(value: any) {
-        this.$store.commit('updateValueOfField', {
+        this.$store.dispatch(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             parentUuid: this.metadata.parentUuid,
             containerUuid: this.metadata.containerUuid,
             // DisplayColumn_'ColumnName'
@@ -266,14 +266,14 @@ export default class FieldSelect extends Mixins(MixinField) {
 
     async getDataLookupItem() {
         if (
-            !this.metadata.reference.directQuery ||
+            (!this.metadata.reference.directQuery) ||
             (this.metadata.isAdvancedQuery && this.isSelectMultiple)
         ) {
             return
         }
         this.isLoading = true
         this.$store
-            .dispatch('getLookupItemFromServer', {
+            .dispatch(Namespaces.Lookup + '/' + 'getLookupItemFromServer', {
                 parentUuid: this.metadata.parentUuid,
                 containerUuid: this.metadata.containerUuid,
                 columnName: this.metadata.columnName,
@@ -282,8 +282,8 @@ export default class FieldSelect extends Mixins(MixinField) {
                 value: this.value
             })
             .then(responseLookupItem => {
-                this.displayedValue = responseLookupItem.label
-                this.uuidValue = responseLookupItem.uuid
+                this.displayedValue = responseLookupItem?.label
+                this.uuidValue = responseLookupItem?.uuid
                 this.$nextTick(() => {
                     this.optionsList = this.getterLookupAll
                 })
@@ -296,7 +296,7 @@ export default class FieldSelect extends Mixins(MixinField) {
     remoteMethod(): void {
         this.isLoading = true
         this.$store
-            .dispatch('getLookupListFromServer', {
+            .dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
                 parentUuid: this.metadata.parentUuid,
                 containerUuid: this.metadata.containerUuid,
                 columnName: this.metadata.columnName,
@@ -326,9 +326,7 @@ export default class FieldSelect extends Mixins(MixinField) {
         if (isShowList) {
             // TODO: Evaluate if length = 1 and this element id = blankOption
             const list = this.getterLookupList
-            if (
-                !list ||
-                (list.length === 1 && this.blankValues.includes(list[0]))
+            if ((!list.length) || (list.length === 1 && this.blankValues.includes(list[0]))
             ) {
                 this.remoteMethod()
             }
@@ -339,7 +337,7 @@ export default class FieldSelect extends Mixins(MixinField) {
         // set empty list and empty option
         this.optionsList = [this.blankOption]
 
-        this.$store.dispatch('deleteLookupList', {
+        this.$store.dispatch(Namespaces.Lookup + '/' + 'deleteLookupList', {
             parentUuid: this.metadata.parentUuid,
             containerUuid: this.metadata.containerUuid,
             tableName: this.metadata.reference.tableName,

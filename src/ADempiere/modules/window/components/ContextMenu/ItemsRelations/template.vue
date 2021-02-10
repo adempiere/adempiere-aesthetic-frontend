@@ -1,4 +1,5 @@
 <template>
+    <!-- summary elements view -->
     <el-submenu
         v-if="item.meta.type === 'summary'"
         key="is-summary"
@@ -9,14 +10,18 @@
             <svg-icon v-if="isMobile" icon-class="nested" />
             {{ item.meta.title }}
         </template>
-        <item
-            v-for="(child, subKey) in item.children"
-            :key="subKey"
-            :item="child"
-        >
+        <el-scrollbar wrap-class="scroll-child">
+            <el-menu-item
+            v-for="(child, subkey) in getChilds(item)"
+            :key="subkey"
+            :index="child.meta.uuid"
+            >
             {{ child.meta.title }}
-        </item>
+            </el-menu-item>
+        </el-scrollbar>
     </el-submenu>
+
+    <!-- item menu views -->
     <el-menu-item
         v-else
         v-show="item.meta.uuid !== $route.meta.uuid"

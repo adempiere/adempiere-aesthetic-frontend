@@ -9,6 +9,7 @@ import {
   ILookupOptions,
   LookupState
 } from '@/ADempiere/modules/ui/UITypes'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type LookupGettersTree = GetterTree<LookupState, IRootState>
 type LookupActionContext = ActionContext<LookupState, IRootState>
@@ -50,7 +51,7 @@ export const getters: LookupGettersTree = {
                     itemLookup.tableName === tableName &&
                     itemLookup.sessionUuid === getSession() &&
                     itemLookup.clientId ===
-                        context.rootGetters.getPreferenceClientId &&
+                        context.rootGetters[Namespaces.Preference + '/' + 'getPreferenceClientId'] &&
                     itemLookup.value === value
                 )
               }
@@ -87,8 +88,7 @@ export const getters: LookupGettersTree = {
                   itemLookup.parsedQuery === parsedQuery &&
                     itemLookup.tableName === tableName &&
                     itemLookup.sessionUuid === getSession() &&
-                    itemLookup.clientId ===
-                        context.rootGetters.getPreferenceClientId
+                    itemLookup.clientId === context.rootGetters[Namespaces.Preference + '/' + 'getPreferenceClientId']
                 )
               }
             )
@@ -102,7 +102,7 @@ export const getters: LookupGettersTree = {
      */
   getLookupAll: (
     state: LookupState,
-    context: LookupActionContext
+    getters
   ) => (parameters: {
         parentUuid: string
         containerUuid: string
@@ -119,20 +119,19 @@ export const getters: LookupGettersTree = {
       directQuery,
       value
     } = parameters
-    const list: ILookupOptions[] = <ILookupOptions[]>(
-            context.getters.getLookupList({
-              parentUuid,
-              containerUuid,
-              tableName,
-              query
-            })
-        )
+    const list: ILookupOptions[] = getters.getLookupList({
+      parentUuid,
+      containerUuid,
+      tableName,
+      query
+    })
+
     const allList: ILookupOptions[] = list
     // set item values getter from server into list
     if (!list) {
       const item:
                 | Required<ILookupOptions>
-                | undefined = context.getters.getLookupItem({
+                | undefined = getters.getLookupItem({
                   parentUuid,
                   containerUuid,
                   tableName,

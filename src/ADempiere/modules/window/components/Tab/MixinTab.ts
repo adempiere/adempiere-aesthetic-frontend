@@ -6,9 +6,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
   name: 'MixinTab'
 })
 export default class MixinTab extends Vue {
-    @Prop({ type: String, default: '' }) windowUuid = ''
-    @Prop({ type: Object, default: {} }) windowMetadata: any = {}
-    @Prop({ type: Array, default: [] }) tabsList: any[] = []
+    @Prop({ type: String, default: '' }) windowUuid!: string
+    // eslint-disable-next-line
+    @Prop({ type: Object, default: () => {} }) windowMetadata: any
+    @Prop({ type: Array, default: () => [] }) tabsList!: any[]
     public tabUuid = ''
     public panelType: PanelContextType = PanelContextType.Window
 

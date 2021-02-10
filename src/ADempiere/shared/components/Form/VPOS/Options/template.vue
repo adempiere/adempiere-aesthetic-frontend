@@ -12,7 +12,7 @@
           <el-col :span="size">
             <el-card shadow="hover">
               <p
-                :style="isEmptyValue($route.query.action) ? 'cursor: not-allowed; text-align: center !important; color: gray;' : blockOption"
+                :style="!($route.query.action) ? 'cursor: not-allowed; text-align: center !important; color: gray;' : blockOption"
                 @click="newOrder"
               >
                 <i class="el-icon-news" />

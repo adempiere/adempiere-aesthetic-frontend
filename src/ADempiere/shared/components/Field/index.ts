@@ -1,25 +1,10 @@
 import Template from './template.vue'
-import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import ContextInfo from './Popover/ContextInfo'
 import DocumentStatus from './Popover/DocumentStatus'
 import OperatorComparison from './Popover/OperatorComparison'
 import Calculator from './Popover/Calculator'
 import Translated from './Popover/Translated'
-import FieldText from './FieldText'
-import FieldSelectMultiple from './FieldSelectMultiple'
-import { FieldAutocomplete } from './FieldAutocomplete'
-import FieldBinary from './FieldBinary'
-import FieldButton from './FieldButton'
-import FieldColor from './FieldColor'
-import FieldDate from './FieldDate'
-import FieldImage from './FieldImage'
-import FieldLocation from './FieldLocation'
-import FieldLocator from './FieldLocator'
-import FieldNumber from './FieldNumber'
-import FieldSelect from './FieldSelect'
-import FieldTextLong from './FieldTextLong'
-import FieldTime from './FieldTime'
-import FieldYesNo from './FieldYesNo'
 import {
   evalutateTypeField,
   fieldIsDisplayed
@@ -44,71 +29,71 @@ import { Namespaces } from '../../utils/types'
   mixins: [Template]
 })
 export default class FieldDefinition extends Vue {
-    @Prop({ type: Object }) metadataField?: any = {}
+    @Prop({ type: Object, default: {} }) metadataField?: any
     @Prop({
       type: [Number, String, Boolean, Array, Object, Date],
       default: undefined
     })
-    recordDataFields?: any = undefined
+    recordDataFields?: any
 
-    @Prop({ type: Boolean, default: false }) inGroup?: boolean = false
-    @Prop({ type: Boolean, default: false }) inTable?: boolean = false
-    @Prop({ type: Boolean, default: false }) isAdvancedQuery?: boolean = false
+    @Prop({ type: Boolean, default: false }) inGroup?: boolean
+    @Prop({ type: Boolean, default: false }) inTable?: boolean
+    @Prop({ type: Boolean, default: false }) isAdvancedQuery?: boolean
     public field: any = {}
 
     // Computed properties
     // load the component that is indicated in the attributes of received property
     get componentRender() {
       if (!(this.field.componentPath || !this.field.isSupported)) {
-        return () => new FieldText() // import('@/components/ADempiere/Field/FieldText')
+        return () => import('@/ADempiere/shared/components/Field/FieldText')
       }
       if (this.isSelectCreated!) {
-        return () => new FieldSelectMultiple() // import('@/components/ADempiere/Field/FieldSelectMultiple')
+        return () => import('@/ADempiere/shared/components/Field/FieldSelectMultiple')
       }
 
       let field
       switch (this.field.componentPath) {
         case 'FieldAutocomplete':
-          field = () => new FieldAutocomplete() // import('@/components/ADempiere/Field/FieldAutocomplete')
+          field = () => import('@/ADempiere/shared/components/Field/FieldAutocomplete')
           break
         case 'FieldBinary':
-          field = () => new FieldBinary() // import('@/components/ADempiere/Field/FieldBinary')
+          field = () => import('@/ADempiere/shared/components/Field/FieldBinary')
           break
         case 'FieldButton':
-          field = () => new FieldButton() // import('@/components/ADempiere/Field/FieldButton')
+          field = () => import('@/ADempiere/shared/components/Field/FieldButton')
           break
         case 'FieldColor':
-          field = () => new FieldColor() // import('@/components/ADempiere/Field/FieldColor')
+          field = () => import('@/ADempiere/shared/components/Field/FieldColor')
           break
         case 'FieldDate':
-          field = () => new FieldDate() // import('@/components/ADempiere/Field/FieldDate')
+          field = () => import('@/ADempiere/shared/components/Field/FieldDate')
           break
         case 'FieldImage':
-          field = () => new FieldImage() // import('@/components/ADempiere/Field/FieldImage')
+          field = () => import('@/ADempiere/shared/components/Field/FieldImage')
           break
         case 'FieldLocation':
-          field = () => new FieldLocation() // import('@/components/ADempiere/Field/FieldLocation')
+          field = () => import('@/ADempiere/shared/components/Field/FieldLocation')
           break
         case 'FieldLocator':
-          field = () => new FieldLocator() // import('@/components/ADempiere/Field/FieldLocator')
+          field = () => import('@/ADempiere/shared/components/Field/FieldLocator')
           break
         case 'FieldNumber':
-          field = () => new FieldNumber() // import('@/components/ADempiere/Field/FieldNumber')
+          field = () => import('@/ADempiere/shared/components/Field/FieldNumber')
           break
         case 'FieldSelect':
-          field = () => new FieldSelect() // import('@/components/ADempiere/Field/FieldSelect')
+          field = () => import('@/ADempiere/shared/components/Field/FieldSelect')
           break
         case 'FieldText':
-          field = () => new FieldText() // import('@/components/ADempiere/Field/FieldText')
+          field = () => import('@/ADempiere/shared/components/Field/FieldText')
           break
         case 'FieldTextLong':
-          field = () => new FieldTextLong() // import('@/components/ADempiere/Field/FieldTextLong')
+          field = () => import('@/ADempiere/shared/components/Field/FieldTextLong')
           break
         case 'FieldTime':
-          field = () => new FieldTime() // import('@/components/ADempiere/Field/FieldTime')
+          field = () => import('@/ADempiere/shared/components/Field/FieldTime')
           break
         case 'FieldYesNo':
-          field = () => new FieldYesNo() // import('@/components/ADempiere/Field/FieldYesNo')
+          field = () => import('@/ADempiere/shared/components/Field/FieldYesNo')
           break
       }
       return field

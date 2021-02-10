@@ -25,6 +25,7 @@ import {
   IReportViewDataExtended,
   ReportState
 } from '@/ADempiere/modules/report/ReportType'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type ReportActionTree = ActionTree<ReportState, IRootState>
 type ReportActionContext = ActionContext<ReportState, IRootState>
@@ -93,16 +94,18 @@ export const actions: ReportActionTree = {
             processUuid: string
             instanceUuid: string
             printFormatUuid: string
+            tableName: string
         }
   ): Promise<IReportViewDataExtended[]> {
     const {
       processUuid,
       processId,
       printFormatUuid,
-      instanceUuid
+      instanceUuid,
+      tableName
     } = payload
     return new Promise(resolve => {
-      requestListReportsViews({ processUuid })
+      requestListReportsViews({ processUuid, tableName })
         .then((reportViewResponse: IReportsViewResponse) => {
           const reportViewList: IReportViewDataExtended[] = reportViewResponse.list.map(
             (reportViewItem: IReportViewData) => {
@@ -216,7 +219,7 @@ export const actions: ReportActionTree = {
         ).printFormatUuid
       }
       const parametersList: IPanelParameters[] = <IPanelParameters[]>(
-                context.rootGetters.getParametersToServer({
+                context.rootGetters[Namespaces.Panel + '/' + 'getParametersToServer']({
                   containerUuid: processUuid
                 })
             )

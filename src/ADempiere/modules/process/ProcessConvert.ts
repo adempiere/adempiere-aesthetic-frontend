@@ -15,6 +15,13 @@ export function convertProcessLog(processLogToConvert: any): IProcessLogData {
     // }),
     parameters: [],
     logsList: processLogToConvert.logs_list,
-    output: convertReportOutput(processLogToConvert.output)
+    output: (!processLogToConvert.output) ? {
+      description: '',
+      fileName: '',
+      name: '',
+      output: '',
+      reportType: '',
+      uuid: ''
+    } : convertReportOutput(processLogToConvert.output)
   }
 }

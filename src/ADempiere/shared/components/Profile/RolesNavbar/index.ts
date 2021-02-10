@@ -1,5 +1,7 @@
-import { IOrganizationData } from '@/ADempiere/modules/core'
+import { ILanguageData, IOrganizationData } from '@/ADempiere/modules/core'
 import { IRoleData } from '@/ADempiere/modules/user'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { AppModule, DeviceType } from '@/store/modules/app'
 import { UserModule } from '@/store/modules/user'
 import { Component, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
@@ -9,9 +11,10 @@ import Template from './template.vue'
   mixins: [Template]
 })
 export default class RolesNavbar extends Vue {
+  public getLanguageList: ILanguageData[] | undefined = this.$store.getters[Namespaces.System + '/' + 'getLanguagesList']
   // Computed properties
   get currentRoleUuid(): string {
-    return this.$store.state.user.role.uuid
+    return UserModule.role.uuid!
   }
 
   set currentRoleUuid(roleToSet: string) {
@@ -19,11 +22,11 @@ export default class RolesNavbar extends Vue {
   }
 
   get rolesList(): IRoleData[] {
-    return this.$store.state.user.rolesList
+    return UserModule.rolesList
   }
 
   get currentOrganizationUuid(): string {
-    const organization: Partial<IOrganizationData> = this.$store.state.user.organization
+    const organization: Partial<IOrganizationData> = UserModule.organization
     if (organization) {
       return organization.uuid!
     }
@@ -35,11 +38,11 @@ export default class RolesNavbar extends Vue {
   }
 
   get organizationsList(): IOrganizationData[] {
-    return this.$store.state.user.organizationsList
+    return UserModule.organizationsList
   }
 
   get currentWarehouseUuid(): string {
-    const warehouse: any = this.$store.state.user.warehouse
+    const warehouse: any = UserModule.warehouse
     if (warehouse) {
       return warehouse.uuid
     }
@@ -51,17 +54,17 @@ export default class RolesNavbar extends Vue {
   }
 
   get warehousesList(): any[] {
-    return this.$store.state.user.warehousesList
+    return UserModule.warehousesList
   }
 
   get isFiltrable(): boolean {
-    return this.$store.state.app.device !== 'mobile'
+    return AppModule.device !== DeviceType.Mobile
   }
 
   // Hooks
-  //   created() {
-  //     this.getLanguages()
-  //   }
+  created() {
+    this.getLanguages()
+  }
 
   // Methods
   changeRole(roleUuid: string) {
@@ -80,7 +83,7 @@ export default class RolesNavbar extends Vue {
             path: '/'
           })
         }
-        this.$store.dispatch('listDashboard', {
+        this.$store.dispatch(Namespaces.Dashboard + '/' + 'listDashboard', {
           roleId: response.id,
           roleUuid: response.uuid
         })
@@ -120,9 +123,9 @@ export default class RolesNavbar extends Vue {
     }
   }
 
-  //   getLanguages() {
-  //     if (!(this.getLanguageList)) {
-  //       this.$store.dispatch('getLanguagesFromServer')
-  //     }
-  //   }
+  getLanguages() {
+    if (!(this.getLanguageList)) {
+      this.$store.dispatch(Namespaces.System + '/' + 'getLanguagesFromServer')
+    }
+  }
 }

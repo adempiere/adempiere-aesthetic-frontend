@@ -7,6 +7,7 @@ import { UserModule } from '@/store/modules/user'
 import { PermissionModule } from '@/store/modules/permission'
 import i18n from '@/ADempiere/shared/lang' // Internationalization
 import settings from './settings'
+import store from '@/ADempiere/shared/store'
 
 NProgress.configure({ showSpinner: false })
 
@@ -24,6 +25,7 @@ const getPageTitle = (key: string) => {
 router.beforeEach(async(to: Route, _: Route, next: any) => {
   // Start progress bar
   NProgress.start()
+  store.dispatch('setRouter', router)
 
   // Determine whether the user has logged in
   if (UserModule.token) {
@@ -43,7 +45,7 @@ router.beforeEach(async(to: Route, _: Route, next: any) => {
           // Generate accessible routes map based on role
           // PermissionModule.GenerateRoutes()
           // Dynamically add accessible routes
-          router.addRoutes(accessRoutes)
+          await router.addRoutes(accessRoutes)
           // Hack: ensure addRoutes is complete
           // Set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })

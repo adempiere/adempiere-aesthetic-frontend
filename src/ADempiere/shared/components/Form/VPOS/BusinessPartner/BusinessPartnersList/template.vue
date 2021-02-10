@@ -7,7 +7,7 @@
       <el-collapse-item name="query-criteria">
         <template slot="title">
           Business Partner
-          <template v-if="!isEmptyValue(parentMetadata.name)">
+          <template v-if="(parentMetadata.name)">
             ({{ parentMetadata.name }})
           </template>
           <!-- <i class="el-icon-circle-plus" /> -->

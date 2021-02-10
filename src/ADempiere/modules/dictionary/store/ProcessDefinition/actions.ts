@@ -9,6 +9,8 @@ import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { generateProcess } from '@/ADempiere/shared/utils/DictionaryUtils'
 import language from '@/ADempiere/shared/lang'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { Route } from 'vue-router'
 
 type ProcessDefinitionActionContext = ActionContext<
     ProcessDefinitionState,
@@ -32,39 +34,43 @@ export const actions: ProcessDefinitionActionTree = {
         }
   ) {
     const { containerUuid, processId, routeToDelete } = payload
-
     return new Promise(resolve => {
       requestProcessMetadata({
         uuid: containerUuid,
         id: processId
       })
         .then(async(responseProcess: IProcessData) => {
-          let printFormatsAvailable = []
+          let printFormatsAvailable: any = []
           if (responseProcess.isReport) {
             printFormatsAvailable = await context.dispatch(
-              'getListPrintFormats',
+              Namespaces.Report + '/' + 'getListPrintFormats',
               {
                 processUuid: containerUuid
-              }
+              },
+              { root: true }
             )
           }
 
-          const { processDefinition, actions } = generateProcess({
+          const cont = generateProcess({
             processToGenerate: {
               ...responseProcess,
               printFormatsAvailable
             }
           })
 
-          context.dispatch('addPanel', processDefinition)
+          const { processDefinition, actions } = cont
+          const processDefinitionRoute = {
+            ...processDefinition
+          }
+          context.dispatch(Namespaces.Panel + '/' + 'addPanel', processDefinitionRoute, { root: true })
           context.commit('addProcess', processDefinition)
           resolve(processDefinition)
 
           //  Add process menu
-          context.dispatch('setContextMenu', {
+          context.dispatch(Namespaces.ContextMenu + '/' + 'setContextMenu', {
             containerUuid,
             actions
-          })
+          }, { root: true })
         })
         .catch(error => {
           // router.push(
@@ -73,7 +79,7 @@ export const actions: ProcessDefinitionActionTree = {
           //     },
           //     () => {}
           // )
-          context.dispatch('tagsView/delView', routeToDelete)
+          context.dispatch('tagsView/delView', routeToDelete, { root: true })
           showMessage({
             message: language.t('login.unexpectedError').toString(),
             type: 'error'
@@ -98,15 +104,18 @@ export const actions: ProcessDefinitionActionTree = {
         processToGenerate
       })
 
-      context.dispatch('addPanel', processDefinition)
+      const processDefinitionRoute = {
+        ...processDefinition
+      }
+      context.dispatch(Namespaces.Panel + '/' + 'addPanel', processDefinitionRoute, { root: true })
       context.commit('addProcess', processDefinition)
       resolve(processDefinition)
 
       //  Add process menu
-      context.dispatch('setContextMenu', {
+      context.dispatch(Namespaces.ContextMenu + '/' + 'setContextMenu', {
         containerUuid: processDefinition.uuid,
         actions
-      })
+      }, { root: true })
     })
   }
 }

@@ -1,5 +1,6 @@
 import { fieldIsDisplayed } from '@/ADempiere/shared/utils/DictionaryUtils'
 import { FIELDS_READ_ONLY_FORM, IFieldFormType } from '@/ADempiere/shared/utils/references'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { convertStringToBoolean } from '@/ADempiere/shared/utils/valueFormat'
 import { Component, Mixins } from 'vue-property-decorator'
 import MixinField from '../Mixin/MixinField'
@@ -51,7 +52,7 @@ export default class FieldYesNo extends Mixins(MixinField) {
           fieldsExcludes.push(this.metadata.columnName)
         }
 
-        this.$store.dispatch('changeFieldAttributesBoolean', {
+        this.$store.dispatch(Namespaces.Panel + '/' + 'changeFieldAttributesBoolean', {
           containerUuid: this.metadata.containerUuid,
           fieldsIncludes: [],
           attribute: 'isReadOnlyFromForm',

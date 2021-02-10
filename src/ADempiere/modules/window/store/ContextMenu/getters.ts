@@ -1,5 +1,5 @@
 import { IRootState } from '@/store'
-import { ActionContext, GetterTree } from 'vuex'
+import { GetterTree } from 'vuex'
 import {
   ContextMenuState,
   IContextActionData,
@@ -10,7 +10,6 @@ import {
 import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 
 type ContextMenuGetterTree = GetterTree<ContextMenuState, IRootState>
-type ContextMenuActionContext = ActionContext<ContextMenuState, IRootState>
 
 export const getters: ContextMenuGetterTree = {
   getContextMenu: (state: ContextMenuState) => (containerUuid: string): IContextMenuData | undefined => {
@@ -20,13 +19,13 @@ export const getters: ContextMenuGetterTree = {
   },
   getRelations: (
     state: ContextMenuState,
-    context: ContextMenuActionContext
-  ) => (containerUuid: string) => {
-    const dataTree = context.rootGetters.permission_routes
+    getters, rootState, rootGetters
+  ) => (containerOrMenuUuid: string) => {
+    const dataTree = rootGetters.permission_routes
     return recursiveTreeSearch({
       treeData: dataTree,
       attributeName: 'name',
-      attributeValue: containerUuid,
+      attributeValue: containerOrMenuUuid,
       attributeChilds: 'children'
     })
   },

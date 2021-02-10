@@ -7,6 +7,7 @@ import {
   requestUpdateEntity,
   PersistenceState
 } from '@/ADempiere/modules/persistence'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type PersistenceActionTree = ActionTree<PersistenceState, IRootState>
 type PersistenceActionContext = ActionContext<PersistenceState, IRootState>
@@ -36,11 +37,11 @@ export const actions: PersistenceActionTree = {
             attributes
           })
             .then(response => {
-              context.dispatch('listRecordLogs', {
+              context.dispatch(Namespaces.ContainerInfo + '/' + 'listRecordLogs', {
                 tableName: response.tableName,
                 recordId: response.id,
                 recordUuid: response.uuid
-              })
+              }, { root: true })
               resolve(response)
             })
             .catch(error => reject(error))

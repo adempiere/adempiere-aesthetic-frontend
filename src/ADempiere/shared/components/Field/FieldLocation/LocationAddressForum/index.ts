@@ -206,10 +206,10 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
 
         // set context values to parent continer
         if (this.parentMetadata.isSendParentValues) {
-          this.$store.dispatch('updateValuesOfContainer', {
+          this.$store.dispatch(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
             parentUuid: this.parentMetadata.parentUuid,
             containerUuid: this.parentMetadata.containerUuid,
-            attributes
+            attributes: <KeyValueData[]>attributes
           })
         }
       }
