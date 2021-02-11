@@ -35,10 +35,6 @@ export default class PriceChecking extends Mixins(MixinForm) {
       return this.$store.getters.corporateBrandingImage
     }
 
-    get defaultImageLogo() {
-      return require('@/image/ADempiere/priceChecking/todoagro.png')
-    }
-
     get defaultImage() {
       return require('@/image/ADempiere/priceChecking/no-image.jpg')
     }

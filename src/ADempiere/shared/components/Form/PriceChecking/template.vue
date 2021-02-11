@@ -6,7 +6,7 @@
     <el-container style="height: 100% !important;">
       <img
         fit="contain"
-        :src="defaultImageLogo"
+        :src="defaultImage"
         class="background-price-checking"
       >
       <el-main>
