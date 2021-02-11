@@ -11,7 +11,7 @@
     <sidebar v-show="showMenu" class="sidebar-container" />
     <div
       :class="{hasTagsView: showTagsView}"
-      class="main-container"
+      class="main-container" :style="showMenu ? '' : 'margin-left:0px'"
     >
       <div :class="{'fixed-header': fixedHeader}">
         <navbar v-show="showNavar" />

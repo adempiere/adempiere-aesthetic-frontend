@@ -1,7 +1,7 @@
 import Template from './template.vue'
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { settings } from 'nprogress'
 import { SettingsModule } from '@/store/modules/settings'
+import { AppModule } from '@/store/modules/app'
 
 @Component({
   name: 'FormPanel',
@@ -18,13 +18,10 @@ export default class FormPanel extends Vue {
         case 'PriceChecking':
           form = import('@/ADempiere/shared/components/Form/PriceChecking') // import('@/components/ADempiere/Form/PriceChecking')
           SettingsModule.ChangeSetting({
-            key: 'showNavar',
-            value: true
-          })
-          SettingsModule.ChangeSetting({
             key: 'showMenu',
             value: false
           })
+          AppModule.ToggleSideBar(false)
           SettingsModule.ChangeSetting({
             key: 'tagsView',
             value: false

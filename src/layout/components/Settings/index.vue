@@ -65,6 +65,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { SettingsModule } from '@/store/modules/settings'
 import ThemePicker from '@/components/ThemePicker/index.vue'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { AppModule } from '@/store/modules/app'
 
 @Component({
   name: 'Settings',
@@ -109,6 +110,7 @@ export default class extends Vue {
   }
 
   set showMenu(val: boolean | undefined) {
+    AppModule.ToggleSideBar(false)
     SettingsModule.ChangeSetting({
       key: 'showMenu',
       value: val
