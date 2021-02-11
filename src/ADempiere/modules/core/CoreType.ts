@@ -283,6 +283,12 @@ export interface IProductPriceData {
     quantityReserved: number
     quantityOrdered: number
     quantityAvailable: number
+    // Schema
+    schemaCurrency?: ICurrencyData
+    schemaGrandTotal?: number
+    schemaPriceStandard?: number
+    schemaPriceList?: number
+    schemaPriceLimit?: number
 }
 
 // Service api

@@ -89,9 +89,7 @@ const staticRoutes: RouteConfig[] = [
   {
     path: '/PriceChecking',
     component: () => import('@/layout/index.vue'),
-    meta: {
-      hidden: false
-    },
+    meta: { hidden: false },
     children: [
       {
         path: '/PriceChecking',
@@ -107,15 +105,13 @@ const staticRoutes: RouteConfig[] = [
   {
     path: '/BarcodeReader',
     component: () => import('@/layout/index.vue'),
-    meta: {
-      hidden: true
-    },
     children: [
       {
         path: '/BarcodeReader',
         component: () => import('@/ADempiere/modules/dictionary/views/Form'),
         name: 'BarcodeReader',
         meta: {
+          icon: 'search',
           title: 'BarcodeReader',
           isIndex: true
         }

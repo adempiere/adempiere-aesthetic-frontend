@@ -2,64 +2,63 @@
   <div
     v-if="isLoaded"
     style="height: 100% !important;"
+    @click="focusProductValue"
   >
     <el-container style="height: 100% !important;">
-      <!-- <el-main> -->
       <img
         fit="contain"
-        :src="backgroundForm"
+        :src="defaultImageLogo"
         class="background-price-checking"
       >
-      <el-form
-        key="form-loaded"
-        class="inquiry-form"
-        label-position="top"
-        label-width="10px"
-        @submit.native.prevent="notSubmitForm"
-      >
-        <template v-for="(field) in fieldsList">
-          ---------------------------------------------------{{ field }} {{ typeof field.values }}
+      <el-main>
+        <el-form
+          key="form-loaded"
+          class="inquiry-form"
+          label-position="top"
+          label-width="10px"
+          @submit.native.prevent="notSubmitForm"
+        >
           <field
+            v-for="(field) in fieldsList"
             ref="ProductValue"
             :key="field.columnName"
             :metadata-field="field"
-            :v-model="field.defaultValue"
+            :v-model="field.value"
             class="product-value"
           />
-        </template>
-      </el-form>
+        </el-form>
 
-      <div class="inquiry-product">
-        <el-row v-if="(productPrice)" :gutter="20">
-          <el-col style="padding-left: 0px; padding-right: 0%;">
-            <div class="product-description">
-              {{ productPrice.productName }} {{ productPrice.productDescription }}
-            </div>
-            <br><br><br>
+        <div class="inquiry-product">
+          <el-row v-if="!isEmptyValue(productPrice)" :gutter="20">
+            <el-col style="padding-left: 0px; padding-right: 0%;">
+              <div class="product-description">
+                {{ productPrice.productName }} {{ productPrice.productDescription }}
+              </div>
+              <br><br><br>
 
-            <div class="product-price-base">
-              Precio Base
-              <span class="amount">
-                {{ formatPrice(productPrice.priceBase, productPrice.currency.iSOCode) }}
-              </span>
-            </div>
-            <br><br><br>
+              <div class="product-price-base">
+                Precio Base
+                <span class="amount">
+                  {{ formatPrice(productPrice.priceBase, productPrice.currency.iSOCode) }}
+                </span>
+              </div>
+              <br><br><br>
 
-            <div class="product-tax">
-              {{ productPrice.taxName }}
-              <span class="amount">
-                {{ formatPrice(productPrice.taxAmt, productPrice.currency.iSOCode) }}
-              </span>
-            </div>
-            <br><br><br>
+              <div class="product-tax">
+                {{ productPrice.taxName }}
+                <span class="amount">
+                  {{ formatPrice(productPrice.taxAmt, productPrice.currency.iSOCode) }}
+                </span>
+              </div>
+              <br><br><br>
 
-            <div class="product-price amount">
-              {{ formatPrice(productPrice.grandTotal, productPrice.currency.iSOCode) }}
-            </div>
-          </el-col>
-        </el-row>
-      </div>
-      <!-- </el-main> -->
+              <div class="product-price amount">
+                {{ formatPrice(productPrice.grandTotal, productPrice.currency.iSOCode) }}
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+      </el-main>
     </el-container>
   </div>
   <div
@@ -72,13 +71,11 @@
     class="loading-panel"
   />
 </template>
-
 <style lang="scss" scoped>
   .background-price-checking {
     width: 100%;
     height: 100%;
     float: inherit;
-    z-index: 0;
     // color: white;
     // opacity: 0.5;
   }
@@ -102,7 +99,7 @@
     right: 5%;
     width: 100%;
     top: 10%;
-    z-index: 1;
+    z-index: 0;
   }
   .inquiry-product {
     position: absolute;
@@ -115,7 +112,6 @@
     }
   }
 </style>
-
 <style lang="scss">
   .price-inquiry {
     input {

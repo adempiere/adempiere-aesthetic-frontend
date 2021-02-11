@@ -173,7 +173,8 @@ export default class extends Vue {
       password: '',
       // Adempiere
       roleUuid: '',
-      organizationUuid: ''
+      organizationUuid: '',
+      token: ''
     }
 
     private loginRules = {

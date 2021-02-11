@@ -395,6 +395,10 @@ export default {
       },
       keyLayout: {
         noProducto: 'No product available. Back to top'
+      },
+      priceChecking: {
+        messageError: 'This Product Not Available',
+        basePrice: 'Base price'
       }
     }
   }

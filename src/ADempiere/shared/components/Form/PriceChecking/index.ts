@@ -24,9 +24,12 @@ export default class PriceChecking extends Mixins(MixinForm) {
     public fieldsList: IProductCodeData[] = fieldList
     @Ref() readonly ProductValue?: HTMLElement[]
     public productPrice: any = {}
+    public messageError = true
     public organizationBackground = ''
     public currentImageOfProduct = ''
     public search = 'sad'
+    public resul = ''
+    public load = ''
     // eslint-disable-next-line
     public unsubscribe: Function = () => {}
 
@@ -93,11 +96,12 @@ export default class PriceChecking extends Mixins(MixinForm) {
         if ((mutation.type === 'updateValueOfField' || mutation.type === 'addActionKeyPerformed') && mutation.payload.columnName === 'ProductValue') {
           // cleans all values except column name 'ProductValue'
           this.search = mutation.payload.value
-          if (this.search.length >= 6) {
+          if (this.search && this.search.length >= 4) {
             requestGetProductPrice({
               searchValue: mutation.payload.value
             })
               .then((productPrice: IProductPriceData) => {
+                this.messageError = true
                 const {
                   product,
                   taxRate,
@@ -107,6 +111,9 @@ export default class PriceChecking extends Mixins(MixinForm) {
                 const { imageUrl: image } = product
 
                 this.productPrice = {
+                  currency: productPrice.currency,
+                  image,
+                  grandTotal: this.getGrandTotal(priceBase, rate),
                   productName: product.name,
                   productDescription: product.description,
                   priceBase,
@@ -114,20 +121,19 @@ export default class PriceChecking extends Mixins(MixinForm) {
                   priceList: productPrice.priceList,
                   priceLimit: productPrice.priceLimit,
                   taxRate: rate,
-                  image,
                   taxName: taxRate.name,
                   taxIndicator: taxRate.taxIndicator,
-                  taxAmt: this.getTaxAmount(priceBase, rate),
-                  grandTotal: this.getGrandTotal(priceBase, rate),
-                  currency: productPrice.currency
+                  schemaCurrency: productPrice.schemaCurrency,
+                  schemaGrandTotal: this.getGrandTotal(productPrice.schemaPriceStandard!, rate),
+                  schemaPriceStandard: productPrice.schemaPriceStandard,
+                  schemaPriceList: productPrice.schemaPriceList,
+                  schemaPriceLimit: productPrice.schemaPriceLimit,
+                  taxAmt: this.getTaxAmount(priceBase, rate)
                 }
               })
-              .catch(error => {
-                this.$message({
-                  type: 'info',
-                  message: error.message,
-                  showClose: true
-                })
+              .catch(() => {
+                this.messageError = false
+                this.timeMessage()
                 this.productPrice = {}
               })
               .finally(() => {
@@ -146,6 +152,12 @@ export default class PriceChecking extends Mixins(MixinForm) {
           }
         }
       })
+    }
+
+    timeMessage() {
+      setTimeout(() => {
+        this.messageError = true
+      }, 2000)
     }
 
     getTaxAmount(basePrice: number, taxRate: number): number {

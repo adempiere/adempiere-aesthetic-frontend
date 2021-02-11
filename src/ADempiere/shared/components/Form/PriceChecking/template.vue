@@ -1,14 +1,12 @@
 <template>
-  <div
-    v-if="isLoaded"
-    style="height: 100% !important;"
-  >
+  <div v-if="isLoaded" style="height: 100% !important;">
     <el-container style="height: 100% !important;">
       <img
         fit="contain"
         :src="defaultImage"
         class="background-price-checking"
-      >
+        style="z-index: 2;"
+      />
       <el-main>
         <el-form
           key="form-loaded"
@@ -18,7 +16,7 @@
           @submit.native.prevent="notSubmitForm"
         >
           <field
-            v-for="(field) in fieldsList"
+            v-for="field in fieldsList"
             ref="ProductValue"
             :key="field.columnName"
             :metadata-field="field"
@@ -27,32 +25,66 @@
           />
         </el-form>
 
-        <div class="inquiry-product">
-          <el-row v-if="(productPrice)" :gutter="20">
+        <div class="inquiry-product" style="z-index: 4;">
+          <el-row v-if="productPrice" :gutter="20">
             <el-col style="padding-left: 0px; padding-right: 0%;">
               <div class="product-description">
-                {{ productPrice.productName }} {{ productPrice.productDescription }}
+                {{ productPrice.productName }}
+                {{ productPrice.productDescription }}
               </div>
-              <br><br><br>
+              <br /><br /><br />
 
               <div class="product-price-base">
-                Precio Base
+                {{ $t('form.priceChecking.basePrice') }}
                 <span class="amount">
-                  {{ formatPrice(productPrice.priceBase, productPrice.currency.iSOCode) }}
+                  {{
+                    formatPrice(
+                      productPrice.priceBase,
+                      productPrice.currency.iSOCode
+                    )
+                  }}
                 </span>
               </div>
-              <br><br><br>
+              <br /><br /><br />
 
               <div class="product-tax">
                 {{ productPrice.taxName }}
                 <span class="amount">
-                  {{ formatPrice(productPrice.taxAmt, productPrice.currency.iSOCode) }}
+                  {{
+                    formatPrice(
+                      productPrice.taxAmt,
+                      productPrice.currency.iSOCode
+                    )
+                  }}
                 </span>
               </div>
-              <br><br><br>
+              <br /><br /><br />
 
               <div class="product-price amount">
-                {{ formatPrice(productPrice.grandTotal, productPrice.currency.iSOCode) }}
+                <span style="float: right;">
+                  {{
+                    formatPrice(
+                      productPrice.grandTotal,
+                      productPrice.currency.iSOCode
+                    )
+                  }}
+                </span>
+                <br />
+                {{
+                  formatPrice(
+                    productPrice.schemaGrandTotal,
+                    productPrice.schemaCurrency.iSOCode
+                  )
+                }}
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+        <div class="inquiry-product" style="z-index: 4;">
+          <el-row v-if="!messageError" :gutter="20">
+            <el-col style="padding-left: 0px; padding-right: 0%;">
+              <div class="product-price amount">
+                {{ $t('form.priceChecking.messageError') }}
               </div>
             </el-col>
           </el-row>
@@ -72,74 +104,75 @@
 </template>
 
 <style lang="scss" scoped>
-  .background-price-checking {
-    width: 100%;
-    height: 100%;
-    float: inherit;
-    // color: white;
-    // opacity: 0.5;
-  }
+.background-price-checking {
+  width: 100%;
+  height: 100%;
+  float: inherit;
+  // color: white;
+  // opacity: 0.5;
+}
 
-  .product-description {
-    color: #32363a;
-    font-size: 30px;
-    float: right;
-    padding-bottom: 0px;
-  }
-  .product-price-base, .product-tax {
-    font-size: 30px;
-    float: right;
-  }
-  .product-price {
-    padding-top: 15px;
-    font-size: 50px;
-    float: right;
-  }
+.product-description {
+  color: #32363a;
+  font-size: 30px;
+  float: right;
+  padding-bottom: 0px;
+}
+.product-price-base,
+.product-tax {
+  font-size: 30px;
+  float: right;
+}
+.product-price {
+  padding-top: 15px;
+  font-size: 50px;
+  float: right;
+}
 
-  .inquiry-form {
-    position: absolute;
-    right: 20%;
-    width: 100%;
-    top: 10%;
-    z-index: 0;
+.inquiry-form {
+  position: absolute;
+  right: 20%;
+  width: 100%;
+  top: 10%;
+  z-index: 0;
+}
+.inquiry-product {
+  position: absolute;
+  right: 5%;
+  width: 100%;
+  top: 33%;
+  .amount {
+    color: black;
+    font-weight: bold;
   }
-  .inquiry-product {
-    position: absolute;
-    right: 5%;
-    width: 100%;
-    top: 33%;
-    .amount {
-      color: black;
-      font-weight: bold;
-    }
-  }
+}
 </style>
 <style lang="scss">
-  .price-inquiry {
-    input {
-      color: #606266 !important;
-      font-size: 100% !important;
-    }
+.price-inquiry {
+  input {
+    color: #606266 !important;
+    font-size: 100% !important;
   }
-  .product-value {
-    float: right;
-    padding-right: 0% !important;
-    z-index: 0;
-    .el-form-item__label {
-      font-size: 15px !important;
-      color: #000 !important;
-    }
+}
+.product-value {
+  float: right;
+  padding-right: 0% !important;
+  z-index: 0;
+  .el-form-item__label {
+    font-size: 15px !important;
+    color: #000 !important;
   }
+}
 
-  .el-aside {
-    background: white;
-    width: 60%;
-    overflow: hidden;
-  }
+.el-aside {
+  background: white;
+  width: 60%;
+  overflow: hidden;
+}
 
-  .el-form-item {
-    margin-bottom: 10px !important;
-    margin-left: 10px;
-    margin-right: 0px !important;
-  }
+.el-form-item {
+  margin-bottom: 10px !important;
+  margin-left: 10px;
+  margin-right: 0px !important;
+}
 </style>
