@@ -1,5 +1,7 @@
 import Template from './template.vue'
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import { settings } from 'nprogress'
+import { SettingsModule } from '@/store/modules/settings'
 
 @Component({
   name: 'FormPanel',
@@ -15,6 +17,21 @@ export default class FormPanel extends Vue {
       switch (this.metadata.fileName) {
         case 'PriceChecking':
           form = import('@/ADempiere/shared/components/Form/PriceChecking') // import('@/components/ADempiere/Form/PriceChecking')
+          SettingsModule.ChangeSetting({
+            key: 'showNavar',
+            value: true
+          })
+          SettingsModule.ChangeSetting({
+            key: 'showMenu',
+            value: false
+          })
+          SettingsModule.ChangeSetting({
+            key: 'tagsView',
+            value: false
+          })
+          break
+        case 'BarcodeReader':
+          form = import('@/ADempiere/shared/components/Form/BarcodeReader')
           break
         case 'VPOS':
           form = import('@/ADempiere/shared/components/Form/VPOS') // import('@/components/ADempiere/Form/VPOS')

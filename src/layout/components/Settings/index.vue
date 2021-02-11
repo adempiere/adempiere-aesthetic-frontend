@@ -19,6 +19,11 @@
       </div>
 
       <div class="drawer-item">
+        <span> Show Title }}</span>
+        <el-switch v-model="isShowTitleForm" class="drawer-switch" />
+      </div>
+
+      <div class="drawer-item">
         <span>{{ $t('settings.fixedHeader') }}</span>
         <el-switch v-model="fixedHeader" class="drawer-switch" />
       </div>
@@ -59,6 +64,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { SettingsModule } from '@/store/modules/settings'
 import ThemePicker from '@/components/ThemePicker/index.vue'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 @Component({
   name: 'Settings',
@@ -67,6 +73,14 @@ import ThemePicker from '@/components/ThemePicker/index.vue'
   }
 })
 export default class extends Vue {
+  get isShowTitleForm() {
+    return this.$store.getters[Namespaces.FormDefinition + '/' + 'getIsShowTitleForm']
+  }
+
+  set isShowTitleForm(val: boolean) {
+    this.$store.commit(Namespaces.FormDefinition + '/' + 'changeShowTitleForm', val)
+  }
+
   get isShowJob() {
     return this.$store.getters.language === 'zh'
   }
@@ -149,6 +163,10 @@ export default class extends Vue {
 
   get lang(): string {
     return this.$store.getters.language
+  }
+
+  private changeDisplatedTitle() {
+    this.$store.commit(Namespaces.FormDefinition + '/' + 'changeShowTitleForm', !this.isShowTitleForm)
   }
 
   private themeChange(value: string) {

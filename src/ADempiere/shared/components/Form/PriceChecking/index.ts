@@ -14,7 +14,6 @@ import {
 import {
   IProductPriceData
 } from '@/ADempiere/modules/core/CoreType'
-import { request } from 'http'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 @Component({
@@ -34,6 +33,10 @@ export default class PriceChecking extends Mixins(MixinForm) {
     // Computed properties
     get organizationImagePath(): string {
       return this.$store.getters.corporateBrandingImage
+    }
+
+    get defaultImageLogo() {
+      return require('@/image/ADempiere/priceChecking/todoagro.png')
     }
 
     get defaultImage() {
@@ -91,7 +94,7 @@ export default class PriceChecking extends Mixins(MixinForm) {
 
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
-        if ((mutation.type === 'updateValueOfField' || mutation.type === 'addFocusGained') && mutation.payload.columnName === 'ProductValue') {
+        if ((mutation.type === 'updateValueOfField' || mutation.type === 'addActionKeyPerformed') && mutation.payload.columnName === 'ProductValue') {
           // cleans all values except column name 'ProductValue'
           this.search = mutation.payload.value
           if (this.search.length >= 6) {

@@ -13,6 +13,7 @@ export interface DecorableCss {
 export interface IProductCodeData {
     elementColumnName: string
     isFromDictionary: boolean
+    value?: string
     overwriteDefinition: Partial<IOverwriteDefinitionData> & DecorableCss
 }
 
