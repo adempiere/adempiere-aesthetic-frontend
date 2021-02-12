@@ -5,6 +5,7 @@ import { ActionContext, ActionTree } from 'vuex'
 import { requestListProductPrice } from '../../POSService'
 import { IListProductPriceResponse, IPointOfSalesData, ListProductPriceState } from '../../POSType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import language from '@/lang'
 
 type ListProductPriceActionContext = ActionContext<ListProductPriceState, IRootState>
 type ListProductPriceActionTree = ActionTree<ListProductPriceState, IRootState>
@@ -26,7 +27,7 @@ export const actions: ListProductPriceActionTree = {
     let { pageNumber, searchValue } = payload
     const posUuid: string | undefined = context.rootGetters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']()
     if (!posUuid) {
-      const message = 'Sin punto de venta seleccionado'
+      const message = language.t('notifications.errorPointOfSale').toString()
       showMessage({
         type: 'info',
         message

@@ -52,7 +52,6 @@ export default class ProductInfo extends Mixins(MixinField) {
       formatQuantity = formatQuantity
 
       shortcutKeyMethod(event: any) {
-        console.log(event)
         switch (event.srcKey) {
           case 'refreshList':
           case 'refreshList2':
@@ -67,7 +66,6 @@ export default class ProductInfo extends Mixins(MixinField) {
           callBack([])
           return
         }
-        console.log(stringToMatch, callBack)
         let results: IProductPriceData[] = this.listWithPrice
         if (stringToMatch) {
           const parsedValue = stringToMatch.toLowerCase().trim()
@@ -87,8 +85,6 @@ export default class ProductInfo extends Mixins(MixinField) {
           // Remote search
           if (!results && String(stringToMatch.length > 3)) {
             clearTimeout(this.timeOut)
-            const epa = this.$store.getters[Namespaces.ListProductPrice + '/' + 'getSearchProduct']
-            console.log({ epa })
             this.timeOut = setTimeout(() => {
               this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo', {
                 containerUuid: 'Products-Price-List-ProductInfo',
@@ -122,5 +118,10 @@ export default class ProductInfo extends Mixins(MixinField) {
           // TODO: Verify with 'value' or 'searchValue' attribute
           value: valueProduct
         })
+      }
+
+      // Hooks
+      beforeMount() {
+        this.$store.dispatch(Namespaces.PointOfSales + '/' + 'listPointOfSalesFromServer')
       }
 }

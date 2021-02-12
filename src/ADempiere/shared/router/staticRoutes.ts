@@ -131,6 +131,7 @@ const staticRoutes: RouteConfig[] = [
         name: 'ProductInfo',
         meta: {
           title: 'ProductInfo',
+          icon: 'search',
           isIndex: true,
           hidden: false
         }

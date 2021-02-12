@@ -85,7 +85,6 @@ export default class ProductList extends Mixins(MixinForm) {
 
   // Hooks
   created() {
-    this.$store.dispatch(Namespaces.PointOfSales + '/' + 'listPointOfSalesFromServer')
     this.unsubscribe = this.subscribeChanges()
     if (this.isReadyFromGetData) {
       this.loadProductsPricesList()
