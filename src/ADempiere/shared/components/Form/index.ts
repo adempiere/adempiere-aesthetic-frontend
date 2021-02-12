@@ -30,6 +30,9 @@ export default class FormPanel extends Vue {
         case 'BarcodeReader':
           form = import('@/ADempiere/shared/components/Form/BarcodeReader')
           break
+        case 'ProductInfo':
+          form = import('@/ADempiere/shared/components/Form/ProductInfo')
+          break
         case 'VPOS':
           form = import('@/ADempiere/shared/components/Form/VPOS') // import('@/components/ADempiere/Form/VPOS')
           break

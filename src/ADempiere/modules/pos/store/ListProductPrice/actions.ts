@@ -89,5 +89,86 @@ export const actions: ListProductPriceActionTree = {
         })
       })
     })
+  },
+  listProductPriceFromServerProductInfo(context: ListProductPriceActionContext, payload: {
+    containerUuid?: string
+    pageNumber?: number // 1
+    searchValue?: string
+  }) {
+    const {
+      containerUuid = payload.containerUuid || 'Products-Price-List-ProductInfo'
+    } = payload
+    let { pageNumber, searchValue } = payload
+    const posUuid = context.rootGetters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
+    if (!posUuid) {
+      const message = 'Sin punto de venta seleccionado'
+      showMessage({
+        type: 'info',
+        message
+      })
+      console.warn(message)
+      return
+    }
+    context.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice')
+    let pageToken: string, token: string | undefined
+    if (!pageNumber) {
+      pageNumber = context.state.productPrice.pageNumber
+      if (!pageNumber) {
+        pageNumber = 1
+      }
+
+      token = context.state.productPrice.token
+      if (token) {
+        pageToken = token + '-' + pageNumber
+      }
+    }
+
+    const getCurrentPOSData: IPointOfSalesData = context.rootGetters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+    const { priceList, templateBusinessPartner } = getCurrentPOSData
+    const { uuid: businessPartnerUuid } = templateBusinessPartner
+    const { uuid: priceListUuid } = priceList
+    const { uuid: warehouseUuid } = context.rootGetters['user/getWarehouse']
+
+    if (!searchValue) {
+      searchValue = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        containerUuid,
+        columnName: 'ProductValue'
+      })
+    }
+    return new Promise<IListProductPriceResponse>(resolve => {
+      requestListProductPrice({
+        searchValue: searchValue!,
+        priceListUuid,
+        businessPartnerUuid,
+        warehouseUuid,
+        pageToken
+      }).then((responseProductPrice: IListProductPriceResponse) => {
+        if (!token || !pageToken) {
+          token = extractPagingToken(responseProductPrice.nextPageToken)
+        }
+
+        context.commit('setListProductPrice', {
+          ...responseProductPrice,
+          isLoaded: true,
+          isReload: false,
+          businessPartnerUuid,
+          warehouseUuid,
+          token,
+          pageNumber
+        })
+
+        resolve(responseProductPrice)
+      }).catch(error => {
+        console.warn(`getKeyLayoutFromServer: ${error.message}. Code: ${error.code}.`)
+        showMessage({
+          type: 'error',
+          message: error.message,
+          showClose: true
+        })
+      })
+    })
+  },
+  updateSearch(context: ListProductPriceActionContext, newValue: string) {
+    context.commit('updtaeSearchProduct', newValue)
   }
 }

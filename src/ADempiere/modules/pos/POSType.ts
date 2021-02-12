@@ -329,4 +329,5 @@ export interface IListProductPriceItemData {
 // List Product Price Module
 export interface ListProductPriceState {
     productPrice: IListProductPriceItemData
+    searchProduct: string
 }

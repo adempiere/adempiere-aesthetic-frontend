@@ -34,5 +34,8 @@ export const mutations: ListProductPriceMutationTree = {
   setIsReloadProductPrice(state: ListProductPriceState) {
     Vue.set(state.productPrice, 'isReload', true)
     Vue.set(state.productPrice, 'isLoaded', false)
+  },
+  updateSearchProduct(state: ListProductPriceState, searchProduct: string) {
+    state.searchProduct = searchProduct
   }
 }

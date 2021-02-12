@@ -117,6 +117,25 @@ const staticRoutes: RouteConfig[] = [
         }
       }
     ]
+  },
+  {
+    path: '/ProductInfo',
+    component: Layout,
+    meta: {
+      hidden: false
+    },
+    children: [
+      {
+        path: '/ProductInfo',
+        component: () => import('@/ADempiere/modules/dictionary/views/Form'),
+        name: 'ProductInfo',
+        meta: {
+          title: 'ProductInfo',
+          isIndex: true,
+          hidden: false
+        }
+      }
+    ]
   }
 ]
 

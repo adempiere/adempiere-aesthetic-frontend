@@ -1,4 +1,5 @@
 import { IProductPriceData } from '@/ADempiere/modules/core'
+import { IListProductPriceItemData } from '@/ADempiere/modules/pos/POSType'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
 import { Component, Mixins } from 'vue-property-decorator'
@@ -18,13 +19,14 @@ export default class FieldProductInfo extends Mixins(MixinField) {
 
     // Computed properties
 
-    get isShowProductsPriceList(): boolean {
-      return this.$store.state['pointOfSales/listProductPrice'].productPrice.isShowPopoverField
+    get isShowProductsPriceList(): boolean | undefined {
+      const productPrice: IListProductPriceItemData = this.$store.state[Namespaces.ListProductPrice + '/' + 'productPrice']
+      return productPrice.isShowPopoverField
     }
 
-    set isShowProductsPriceList(isShowed: boolean) {
+    set isShowProductsPriceList(isShowed: boolean | undefined) {
       if (this.$route.query.pos) {
-        this.$store.commit('showListProductPrice', {
+        this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
           attribute: 'isShowPopoverField',
           isShowed
         })
@@ -55,7 +57,7 @@ export default class FieldProductInfo extends Mixins(MixinField) {
       switch (event.srcKey) {
         case 'refreshList':
         case 'refreshList2':
-          this.$store.dispatch('listProductPriceFromServer', {})
+          this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {})
           break
       }
     }
@@ -89,7 +91,8 @@ export default class FieldProductInfo extends Mixins(MixinField) {
           clearTimeout(this.timeOut)
 
           this.timeOut = setTimeout(() => {
-            this.$store.dispatch('listProductPriceFromServer', {
+            this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {
+              containerUuid: 'Products-Price-List',
               pageNumber: 1,
               searchValue: stringToMatch
             })
@@ -117,7 +120,7 @@ export default class FieldProductInfo extends Mixins(MixinField) {
 
     handleSelect(elementSelected: any) {
       const valueProduct = elementSelected.product.value
-      this.$store.dispatch('notifyActionKeyPerformed', {
+      this.$store.dispatch(Namespaces.Event + '/' + 'notifyActionKeyPerformed', {
         containerUuid: 'POS',
         columnName: 'ProductValue',
         // TODO: Verify with 'value' or 'searchValue' attribute

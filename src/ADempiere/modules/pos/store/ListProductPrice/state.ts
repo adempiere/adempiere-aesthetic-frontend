@@ -8,5 +8,6 @@ export const state: ListProductPriceState = {
     nextPageToken: undefined,
     isShowPopoverField: false, // with field
     isShowPopoverMenu: false // with menu
-  }
+  },
+  searchProduct: ''
 }
