@@ -42,10 +42,6 @@ export default class BarcodeReader extends Mixins(MixinForm) {
    return require('@/image/ADempiere/priceChecking/no-image.jpg')
  }
 
- get defaultImageLogo() {
-   return require('@/image/ADempiere/priceChecking/todoagro.png')
- }
-
  get backgroundForm(): string {
    if (!this.currentImageOfProduct) {
      return this.organizationBackground
