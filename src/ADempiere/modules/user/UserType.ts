@@ -66,4 +66,5 @@ export interface IMenuParams {
 export interface ILoginParams {
     userName: string
     password: string
+    token: string
 }

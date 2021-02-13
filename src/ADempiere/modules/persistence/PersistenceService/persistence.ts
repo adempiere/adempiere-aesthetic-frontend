@@ -11,7 +11,6 @@ import {
   convertTranslation
 } from '../PersistenceConvert'
 import {
-  IAttributeData,
   IDeleteEntityParams,
   IEntityData,
   IEntityListData,
@@ -249,7 +248,7 @@ export function requestResource(
 }
 
 export function requestImage(data: IRequestImageData): AxiosPromise<any> {
-  const { file, width, height, operation } = data
+  const { file, width, height, operation = data.operation || 'fit' } = data
   const { urn } = getImagePath({
     file,
     width,

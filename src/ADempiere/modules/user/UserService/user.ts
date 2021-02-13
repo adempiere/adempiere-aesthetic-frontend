@@ -19,13 +19,14 @@ import { convertMenu, convertSession } from '@/ADempiere/modules/user'
  */
 
 export function login(data: ILoginParams) {
-  const { userName, password } = data
+  const { userName, password, token } = data
   return requestRest({
     url: '/user/login',
     method: 'post',
     data: {
       username: userName,
-      password
+      password,
+      token
     }
   })
 }

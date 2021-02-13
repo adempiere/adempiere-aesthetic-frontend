@@ -233,7 +233,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
       let customerUuid
       if (update.columnName === 'C_BPartner_ID_UUID') {
         customerUuid = update.value
-        if (!customerUuid) {
+        if (!customerUuid && this.currentPoint) {
           customerUuid = this.currentPoint!.templateBusinessPartner.uuid
         }
       }
@@ -497,12 +497,13 @@ export default class MixinPOS extends Mixins(MixinForm) {
 
             case 'C_BPartner_ID_UUID': {
               const bPartnerValue = mutation.payload.value
-              const bPartnerPOS = this.currentPoint!
-                .templateBusinessPartner.uuid
-              // Does not send values to server, when empty values are set or
-              // if BPartner set equal to BPartner POS template
-              if (!bPartnerValue || bPartnerValue === bPartnerPOS) {
-                break
+              if (this.currentPoint) {
+                const bPartnerPOS = this.currentPoint!.templateBusinessPartner.uuid
+                // Does not send values to server, when empty values are set or
+                // if BPartner set equal to BPartner POS template
+                if (!bPartnerValue || bPartnerValue === bPartnerPOS) {
+                  break
+                }
               }
 
               this.updateOrder(mutation.payload)

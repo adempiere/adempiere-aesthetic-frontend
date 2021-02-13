@@ -11,6 +11,7 @@ export default {
     page404: '404',
     profile: 'Profile',
     ProcessActivity: 'Process Logs',
+    ProductInfo: 'Product Information',
     role: 'Role',
     organization: 'Organization',
     warehouse: 'Warehouse',
@@ -48,7 +49,8 @@ export default {
     invalidEmailFormat: 'Invalid email format',
     recordLocked: 'This record has been locked',
     recordUnlocked: 'This record has been unlocked',
-    noRoleAccess: 'With your current role and settings, you cannot view this information.'
+    noRoleAccess: 'With your current role and settings, you cannot view this information.',
+    errorPointOfSale: 'No point of sale selected'
   },
   navbar: {
     badge: {
@@ -363,15 +365,6 @@ export default {
         editQuantities: 'Edit Quantities',
         remove: 'Remove'
       },
-      product: {
-        productInformation: 'Product information',
-        code: 'Code',
-        name: 'Name',
-        description: 'Description',
-        price: 'Price',
-        taxRate: 'Tax Rate',
-        quantityAvailable: 'Quantity Avalible'
-      },
       order: {
         order: 'Order',
         seller: 'Seller',
@@ -396,6 +389,21 @@ export default {
       keyLayout: {
         noProducto: 'No product available. Back to top'
       }
+    },
+    priceChecking: {
+      messageError: 'This Product Not Available',
+      basePrice: 'Base price'
+    },
+    productInfo: {
+      productInformation: 'Product information',
+      code: 'Code',
+      name: 'Name',
+      description: 'Description',
+      price: 'Price',
+      taxAmount: 'Tax Amount',
+      grandTotal: 'Grand Total',
+      quantityAvailable: 'Quantity Avalible',
+      upc: 'UPC / EAN'
     }
   }
 }

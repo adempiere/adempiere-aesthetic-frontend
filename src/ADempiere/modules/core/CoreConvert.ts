@@ -280,7 +280,13 @@ export function convertProductPrice(
     quantityOnHand: productPriceToConvert.quantity_on_hand,
     quantityReserved: productPriceToConvert.quantity_reserved,
     quantityOrdered: productPriceToConvert.quantity_ordered,
-    quantityAvailable: productPriceToConvert.quantity_available
+    quantityAvailable: productPriceToConvert.quantity_available,
+    // Schema
+    schemaCurrency: convertCurrency(productPriceToConvert.schemaCurrency),
+    schemaGrandTotal: productPriceToConvert.schemaGrandTotal,
+    schemaPriceStandard: productPriceToConvert.schemaPriceStand,
+    schemaPriceList: productPriceToConvert.schemaPriceList,
+    schemaPriceLimit: productPriceToConvert.schemaPriceLimit
   }
 }
 

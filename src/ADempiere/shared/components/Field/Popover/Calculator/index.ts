@@ -3,6 +3,7 @@ import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
 import { calculationValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
 import calculatorRows, { ICalculatorObject } from './calculatorRows'
+import buttons from './buttons'
 import Template from './template.vue'
 
 @Component({
@@ -17,7 +18,12 @@ export default class FieldCalc extends Vue {
     // @ts-ignore
     public calcValue?: any = this.fieldValue
     public valueToDisplay = ''
-    public tableData: ICalculatorObject[] = calculatorRows
+
+    // Computed properties
+    // public tableData: ICalculatorObject[] = calculatorRows
+    get tableData(): ICalculatorObject[] {
+      return buttons
+    }
 
     // Watchers
     @Watch('fieldValue')
@@ -27,9 +33,11 @@ export default class FieldCalc extends Vue {
 
     // Methods
     sendValue(row: IKeyValueObject, column: any): void {
-      const isAcceptedType: boolean = ['result', 'clear'].includes(row[column.property].type)
+      const button = row[column.property]
+      const { value, type } = button
+      const isAcceptedType: boolean = ['result', 'clear'].includes(type)
       if (!isAcceptedType && !this.isDisabled(row, column)) {
-        !this.calcValue ? this.calcValue = row[column.property].value : this.calcValue += row[column.property].value
+        !this.calcValue ? this.calcValue = value : this.calcValue += value
         const result = calculationValue(this.calcValue, event)
         if (result) {
           this.valueToDisplay = result
@@ -37,15 +45,15 @@ export default class FieldCalc extends Vue {
           this.valueToDisplay = '...'
         }
       }
-      if (row[column.property].type === 'clear') {
-        if (row[column.property].value === 'C') {
+      if (type === 'clear') {
+        if (value === 'C') {
           this.calcValue = this.calcValue.slice(0, -1)
-        } else if (row[column.property].value === 'AC') {
+        } else if (value === 'AC') {
           this.calcValue = ''
           this.valueToDisplay = ''
         }
       }
-      if (row[column.property].value === '=') {
+      if (value === '=') {
         this.changeValue()
       }
     }
@@ -80,51 +88,42 @@ export default class FieldCalc extends Vue {
       //   })
     }
 
-    spanMethod(params: { row: IKeyValueObject, column: any, rowIndex: number, columnIndex: number }): {
+    spanMethod(params: { row: IKeyValueObject, column: any }): {
         rowspan: number
         colspan: number
       } | undefined {
-      const { row, column, rowIndex, columnIndex } = params
-      if (rowIndex === 1) {
-        if (row[column.property].value === '+') {
-          return {
-            rowspan: 2,
-            colspan: 1
-          }
+      const { row, column } = params
+      const button = row[column.property]
+      const { value } = button
+      if (!value) {
+        return {
+          rowspan: 0,
+          colspan: 0
         }
-      } else if (rowIndex === 2) {
-        if (!row[column.property].value) {
-          return {
-            rowspan: 0,
-            colspan: 0
-          }
+      }
+      if (['+', '='].includes(value)) {
+        return {
+          rowspan: 2,
+          colspan: 1
         }
-      } else if (rowIndex === 3) {
-        if (row[column.property].value === '=') {
-          return {
-            rowspan: 2,
-            colspan: 1
-          }
+      }
+      if (value === '0') {
+        return {
+          rowspan: 1,
+          colspan: 2
         }
-      } else if (rowIndex === 4) {
-        if (row[column.property].value === '0') {
-          return {
-            rowspan: 1,
-            colspan: 2
-          }
-        } else if (!row[column.property].value) {
-          return {
-            rowspan: 0,
-            colspan: 0
-          }
-        }
+      }
+
+      return {
+        rowspan: 1,
+        colspan: 1
       }
     }
 
     isDisabled(row: IKeyValueObject, column: any): boolean {
       // Integer or ID
       const isInteger: boolean = [ID.id, INTEGER.id].includes(this.fieldAttributes.displayType)
-      const value = row[column.property].value
+      const { value } = row[column.property]
       if (isInteger && value === ',') {
         return true
       }

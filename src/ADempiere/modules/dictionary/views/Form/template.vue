@@ -2,7 +2,7 @@
   <el-container
     v-if="isLoaded"
     key="form-loaded"
-    class="view-base"
+    :class="showNavar ? 'view-base' : 'show-header-view-base'"
     style="height: 84vh;"
   >
     <el-header
@@ -15,7 +15,7 @@
         :panel-type="panelType"
       />
     </el-header>
-    <el-main style="padding-right: 10px !important;">
+    <el-main style="padding-right: 0px !important; padding-bottom: 0px !important; padding-top: 0px !important; padding-left: 0px !important;">
       <el-row :gutter="20">
         <el-col :span="24">
           <el-card
@@ -60,6 +60,7 @@
             <form-panel
               :metadata="{
                 ...formMetadata,
+                fileName: fromFileName,
                 title: formTitle
               }"
             />
@@ -102,6 +103,13 @@
   .view-base {
     height: 100%;
     min-height: calc(100vh - 84px);
+    overflow: hidden;
+  }
+
+  .show-header-view-base {
+    height: 100%;
+    min-height: calc(100vh - 26px);
+    overflow: hidden;
   }
 
   .view-loading {

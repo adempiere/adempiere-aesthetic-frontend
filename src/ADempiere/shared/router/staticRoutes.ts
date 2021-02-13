@@ -85,6 +85,58 @@ const staticRoutes: RouteConfig[] = [
         }
       }
     ]
+  },
+  {
+    path: '/PriceChecking',
+    component: () => import('@/layout/index.vue'),
+    meta: { hidden: false },
+    children: [
+      {
+        path: '/PriceChecking',
+        component: () => import('@/ADempiere/modules/dictionary/views/Form'),
+        name: 'PriceChecking',
+        meta: {
+          title: 'PriceChecking',
+          isIndex: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/BarcodeReader',
+    component: () => import('@/layout/index.vue'),
+    children: [
+      {
+        path: '/BarcodeReader',
+        component: () => import('@/ADempiere/modules/dictionary/views/Form'),
+        name: 'BarcodeReader',
+        meta: {
+          icon: 'search',
+          title: 'BarcodeReader',
+          isIndex: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/ProductInfo',
+    component: Layout,
+    meta: {
+      hidden: false
+    },
+    children: [
+      {
+        path: '/ProductInfo',
+        component: () => import('@/ADempiere/modules/dictionary/views/Form'),
+        name: 'ProductInfo',
+        meta: {
+          title: 'ProductInfo',
+          icon: 'search',
+          isIndex: true,
+          hidden: false
+        }
+      }
+    ]
   }
 ]
 

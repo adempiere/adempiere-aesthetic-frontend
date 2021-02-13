@@ -141,14 +141,16 @@ class User extends VuexModule implements IUserState {
     password: string
     roleUuid: string
     organizationUuid: string
+    token: string
   }) {
-    const { userName, organizationUuid, roleUuid, password } = userInfo
+    const { userName, organizationUuid, token, password } = userInfo
     return await new Promise((resolve, reject) => {
       login({
         userName,
-        password
+        password,
+        token
+        // organizationUuid,
         // roleUuid,
-        // organizationUuid
       })
         .then((logInResponse: any) => {
           if ([13, 500].includes(logInResponse.code)) {

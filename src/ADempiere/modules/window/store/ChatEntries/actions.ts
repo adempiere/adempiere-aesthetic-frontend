@@ -34,7 +34,7 @@ export const actions: ChatEntriesActionTree = {
         })
       })
       .catch(error => {
-        console.warn(`Error getting epale error en guardar: ${error.message}. Code: ${error.code}.`)
+        console.warn(`Error getting ProductInfo error en guardar: ${error.message}. Code: ${error.code}.`)
       })
   },
   listChatEntries(context: ChatEntriesActionContext, payload: {

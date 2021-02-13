@@ -8,13 +8,13 @@
       class="drawer-bg"
       @click="handleClickOutside"
     />
-    <sidebar class="sidebar-container" />
+    <sidebar v-show="showMenu" class="sidebar-container" />
     <div
       :class="{hasTagsView: showTagsView}"
-      class="main-container"
+      class="main-container" :style="showMenu ? '' : 'margin-left:0px'"
     >
       <div :class="{'fixed-header': fixedHeader}">
-        <navbar />
+        <navbar v-show="showNavar" />
         <tags-view v-if="showTagsView" />
       </div>
       <app-main />
@@ -65,6 +65,14 @@ export default class extends mixins(ResizeMixin) {
 
   get fixedHeader() {
     return SettingsModule.fixedHeader
+  }
+
+  get showNavar() {
+    return SettingsModule.showNavar
+  }
+
+  get showMenu() {
+    return SettingsModule.showMenu
   }
 
   private handleClickOutside() {

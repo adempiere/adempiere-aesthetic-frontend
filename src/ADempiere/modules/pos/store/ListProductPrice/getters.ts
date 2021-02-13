@@ -16,5 +16,8 @@ export const getters: ListProductPriceGetterTree = {
       }
     }
     return state.productPrice
+  },
+  getSearchProduct(state: ListProductPriceState) {
+    return state.searchProduct
   }
 }

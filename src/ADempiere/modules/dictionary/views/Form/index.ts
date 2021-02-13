@@ -26,6 +26,10 @@ export default class FormView extends Vue {
       return this.formMetadata.name || this.$route.meta.title
     }
 
+    get formFileName() {
+      return this.formMetadata.fileName || this.$route.meta.title
+    }
+
     get getterForm(): IFormDataExtended | undefined {
       return this.$store.getters[Namespaces.FormDefinition + '/' + 'getForm'](this.formUuid)
     }
@@ -41,13 +45,17 @@ export default class FormView extends Vue {
       })
     }
 
+    get showNavar() {
+      return SettingsModule.showNavar
+    }
+
     get isShowTitleForm(): boolean {
       return this.$store.getters[Namespaces.FormDefinition + '/' + 'getIsShowTitleForm']
     }
 
     // Methods
     changeDisplatedTitle(): void {
-      this.$store.commit('changeShowTitleForm', !this.isShowTitleForm)
+      this.$store.commit(Namespaces.FormDefinition + '/' + 'changeShowTitleForm', !this.isShowTitleForm)
     }
 
     getForm(): void {
