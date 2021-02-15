@@ -140,7 +140,7 @@ export const actions: PanelActionTree = {
     const fieldsList: IFieldDataExtendedUtils[] = panel.fieldsList.map(itemField => {
       const isShowedOriginal: boolean | undefined = itemField.isShowedFromUser
       // if (groupField === itemField.groupAssigned) {
-      if (groupField === itemField.fieldGroup) {
+      if (groupField === itemField.groupAssigned) {
         itemField.isShowedFromUser = false
         if (fieldsUser.includes(itemField.columnName)) {
           itemField.isShowedFromUser = true
@@ -168,6 +168,9 @@ export const actions: PanelActionTree = {
       attributeName: 'fieldsList',
       attributeValue: fieldsList
     })
+
+    console.log('panel')
+    console.log(panel)
 
     if (isChangedDisplayedWithValue) {
       // Updated record result
@@ -514,7 +517,6 @@ export const actions: PanelActionTree = {
     //         lookup = await dispatch('getLookupItemFromServer', {
     //           parentUuid,
     //           containerUuid,
-    //           columnName: actionField.columnName,
     //           tableName: actionField.reference.tableName,
     //           directQuery: actionField.reference.parsedDirectQuery,
     //           value: newValues[actionField.columnName]

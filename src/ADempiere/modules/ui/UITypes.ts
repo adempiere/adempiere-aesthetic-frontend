@@ -61,7 +61,6 @@ export interface IReferenceListData {
 }
 
 export interface ILookupParams {
-    columnName: string
     tableName: string
     directQuery: string
     value: string | number

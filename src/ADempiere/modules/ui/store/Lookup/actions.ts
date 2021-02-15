@@ -31,16 +31,16 @@ export const actions: LookupActionTree = {
     payload: {
             parentUuid: string
             containerUuid: string
-            columnName: string
             tableName: string
             directQuery: string
             value: string | number
         }
   ) {
+    console.log('getLookupItemFromServer')
+    console.log(payload)
     const {
       parentUuid,
       containerUuid,
-      columnName,
       tableName,
       directQuery,
       value
@@ -49,6 +49,8 @@ export const actions: LookupActionTree = {
       return
     }
 
+    console.log('prequery')
+    console.log(directQuery)
     let parsedDirectQuery: string = directQuery
     if (parsedDirectQuery.includes('@')) {
       parsedDirectQuery = parseContext({
@@ -59,8 +61,10 @@ export const actions: LookupActionTree = {
       }).value
     }
 
+    console.log('parsedDirectQuery')
+    console.log(parsedDirectQuery)
+
     return requestLookup({
-      columnName,
       tableName,
       directQuery: parsedDirectQuery,
       value
@@ -87,6 +91,12 @@ export const actions: LookupActionTree = {
         console.warn(
                     `Get Lookup, Select Base - Error ${error.code}: ${error.message}.`
         )
+        console.log(payload)
+        console.log('Directquery')
+        console.log(directQuery)
+        console.log('parsedQuery')
+        console.log(parsedDirectQuery)
+        console.log(directQuery === parsedDirectQuery)
       })
   },
   /**
