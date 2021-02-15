@@ -147,7 +147,7 @@ export function parsedValueComponent(data: {
  * Find element in an array recursively
  * @param {object|array} treeData
  * @param {string} attributeName, key to get value, default id
- * @param {string} secondAttributeName, key to get value, default id
+ * @param {string} secondAttribute, key to get value, default id
  * @param {mixed}  attributeValue, value to compare with search
  * @param {string} attributeChilds, childs list into element
  */
@@ -156,18 +156,13 @@ export interface IRecursiveTreeSearchParams {
     treeData: any[]
     attributeValue: string
     attributeName?: string
-    secondAttributeName?: string
+    secondAttribute?: string | false
     attributeChilds?: string
     isParent?: boolean
 }
 export const recursiveTreeSearch = (data: IRecursiveTreeSearchParams) => {
-  data.attributeName = data.attributeName || 'id'
-  data.attributeChilds = data.attributeChilds || 'childsList'
-  data.isParent = data.isParent || false
-
-  const { treeData, attributeChilds, attributeName, attributeValue, secondAttributeName = data.secondAttributeName || '', isParent } = data
+  const { treeData, attributeChilds = data.attributeChilds || 'childsList', attributeName = data.attributeName || 'id', attributeValue, secondAttribute = data.secondAttribute || false, isParent = data.isParent || false } = data
   if (Array.isArray(treeData)) {
-    // search in childs attribute
     let index = 0
     const length: number = treeData.length
     while (index < length) {
@@ -175,8 +170,8 @@ export const recursiveTreeSearch = (data: IRecursiveTreeSearchParams) => {
       if (value && Object.prototype.hasOwnProperty.call(value, attributeName)) {
         value = value[attributeName]
       }
-      if (value && secondAttributeName && Object.prototype.hasOwnProperty.call(value, secondAttributeName)) {
-        value = value[(secondAttributeName)]
+      if (value && secondAttribute && Object.prototype.hasOwnProperty.call(value, secondAttribute)) {
+        value = value[(secondAttribute)]
       }
 
       // compare item to search
@@ -185,12 +180,11 @@ export const recursiveTreeSearch = (data: IRecursiveTreeSearchParams) => {
       }
 
       if (treeData[index] && treeData[index][attributeChilds]) {
-        const newTree = treeData[index]
         const found: Function = recursiveTreeSearch({
-          treeData: newTree,
+          treeData: treeData[index][attributeChilds],
           attributeValue,
           attributeName,
-          secondAttributeName,
+          secondAttribute,
           attributeChilds,
           isParent
         })
@@ -205,8 +199,8 @@ export const recursiveTreeSearch = (data: IRecursiveTreeSearchParams) => {
     if (value && Object.prototype.hasOwnProperty.call(value, attributeName)) {
       value = value[attributeName]
     }
-    if (value && secondAttributeName && Object.prototype.hasOwnProperty.call(value, secondAttributeName)) {
-      value = value[secondAttributeName]
+    if (value && secondAttribute && Object.prototype.hasOwnProperty.call(value, secondAttribute)) {
+      value = value[secondAttribute]
     }
 
     // compare item to search
@@ -218,7 +212,7 @@ export const recursiveTreeSearch = (data: IRecursiveTreeSearchParams) => {
       treeData: treeData[attributeChilds],
       attributeValue,
       attributeName,
-      secondAttributeName,
+      secondAttribute,
       attributeChilds
     })
     return found

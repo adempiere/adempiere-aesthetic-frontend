@@ -26,7 +26,7 @@ export default class MixinDasboard extends Vue {
         treeData: this.permissionRoutes,
         attributeValue: row.referenceUuid,
         attributeName: 'meta',
-        secondAttributeName: 'uuid',
+        secondAttribute: 'uuid',
         attributeChilds: 'children'
       })
 

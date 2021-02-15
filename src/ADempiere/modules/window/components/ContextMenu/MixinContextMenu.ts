@@ -767,7 +767,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
           treeData: this.permissionRoutes,
           attributeValue: referenceElement.windowUuid,
           attributeName: 'meta',
-          secondAttributeName: 'uuid',
+          secondAttribute: 'uuid',
           attributeChilds: 'children'
         })
         if (viewSearch) {

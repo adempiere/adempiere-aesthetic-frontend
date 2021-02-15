@@ -122,7 +122,7 @@ export default class ProcessActivity extends Vue {
           treeData: this.permissionRoutes,
           attributeValue: activity.uuid,
           attributeName: 'meta',
-          secondAttributeName: 'uuid',
+          secondAttribute: 'uuid',
           attributeChilds: 'children'
         })
         if (viewSearch) {

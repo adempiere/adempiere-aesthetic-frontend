@@ -262,7 +262,7 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
         treeData: this.permissionRoutes,
         attributeValue: browserMetadata.window.uuid,
         attributeName: 'meta',
-        secondAttributeName: 'uuid',
+        secondAttribute: 'uuid',
         attributeChilds: 'children'
       })
       if (viewSearch) {
