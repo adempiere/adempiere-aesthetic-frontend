@@ -43,6 +43,9 @@ export default class PriceChecking extends Mixins(MixinForm) {
     }
 
     get backgroundForm(): string {
+      if (!this.organizationImagePath) {
+        return this.defaultImage
+      }
       if (!this.currentImageOfProduct) {
         return this.organizationBackground
       }
