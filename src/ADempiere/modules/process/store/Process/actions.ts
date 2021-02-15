@@ -657,10 +657,10 @@ export const actions: ProcessActionTree = {
               download: undefined
             }
             if (
-              runProcessResponse.isReport ||
-                            processDefinition.isReport
+              (runProcessResponse.isReport || processDefinition.isReport) && output.outputStream
             ) {
-              const blob = new Blob([output.outputStream], {
+              const reportObject: any = Object.values(output.outputStream)
+              const blob = new Blob([Uint8Array.from(reportObject)], {
                 type: output.mimeType
               })
               link = document.createElement('a')
