@@ -1,7 +1,7 @@
 import { IProductPriceData } from '@/ADempiere/modules/core'
 import { IListProductPriceItemData, IPointOfSalesData } from '@/ADempiere/modules/pos'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
-import { formatPrice } from '@/ADempiere/shared/utils/valueFormat'
+import { formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
 import { Table } from 'element-ui'
 import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import CustomPagination from '../../../Pagination'
@@ -68,7 +68,7 @@ export default class ProductList extends Mixins(MixinForm) {
   get shortsKey() {
     return {
       closeProductList: ['esc'],
-      refreshList: ['f5']
+      refreshList: ['enter']
     }
   }
 
@@ -97,6 +97,8 @@ export default class ProductList extends Mixins(MixinForm) {
 
   // Methods
   formatPrice = formatPrice
+
+  formatQuantity = formatQuantity
 
   srcImage(keyValue: string) {
     if (!keyValue) {
