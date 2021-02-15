@@ -81,9 +81,9 @@ export function requestListPrintFormats(
 // Get drill tables for a report
 export function requestListDrillTables(
   data: IListReportDrillTablesRequest
-): Promise<IReportDrillTableResponse> {
+): any /* Promise<IReportDrillTableResponse> */ {
   const { tableName, pageToken, pageSize } = data
-  return requestRest({
+  requestRest({
     url: '/ui/list-drill-tables',
     data: {
       table_name: tableName

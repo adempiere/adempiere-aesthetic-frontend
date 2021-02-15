@@ -178,7 +178,7 @@ export const actions: ReportActionTree = {
 
           resolve(drillTablesList)
         })
-        .catch(error => {
+        .catch((error: any) => {
           console.warn(
                         `Error getting drill tables: ${error.message}. Code: ${error.code}.`
           )

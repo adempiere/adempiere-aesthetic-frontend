@@ -490,7 +490,7 @@ export function generateProcess(data: {
         isReport: processToGenerate.isReport,
         isDirectPrint: processToGenerate.isDirectPrint,
         reportExportType: <ReportExportContextType>(
-                    actionValue.reportExportType
+                    actionValue.type
                 )
       })
     }
