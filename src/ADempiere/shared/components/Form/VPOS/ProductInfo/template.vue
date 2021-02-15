@@ -1,16 +1,13 @@
 <template>
   <div>
-    <el-popover
-      ref="productsList"
-      v-model="isShowProductsPriceList"
-      placement="right"
-      width="800"
-      trigger="manual"
-    >
-      <product-info-list
-        v-if="isShowProductsPriceList"
-      />
-    </el-popover>
+    <el-collapse-transition name="el-fade-in">
+      <el-card
+      v-show="isShowProductsPriceList"
+      class="transition-box"
+      >
+
+      </el-card>
+    </el-collapse-transition>
 
     <el-form-item>
       <template slot="label">
@@ -90,6 +87,12 @@
 </template>
 
 <style lang="scss" scope>
+  .transition-box {
+    z-index: 3;
+    position: absolute;
+    width: 800px;
+    left: 15%;
+  }
   .custom-field-prodcut-info {
     li {
       line-height: normal;

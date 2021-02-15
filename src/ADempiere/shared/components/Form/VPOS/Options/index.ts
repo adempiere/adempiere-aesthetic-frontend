@@ -3,8 +3,8 @@ import Template from './template.vue'
 import ListProductPrice from '@/ADempiere/shared/components/Form/VPOS/ProductInfo/ProductList'
 import OrdersList from '@/ADempiere/shared/components/Form/VPOS/OrderList'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { IPointOfSalesData } from '@/ADempiere/modules/pos/POSType'
-import { requestCashClosing, requestCompletePreparedOrder, requestCreateNewCustomerReturnOrder, requestCreateWithdrawal, requestGenerateImmediateInvoice, requestPrintOrder, requestReverseSalesTransaction } from '@/ADempiere/modules/pos/POSService'
+import { IListOrderItemData, IListProductPriceItemData, IPointOfSalesData } from '@/ADempiere/modules/pos/POSType'
+import { requestCashClosing, requestCompletePreparedOrder, requestCreateNewCustomerReturnOrder, requestCreateWithdrawal, requestGenerateImmediateInvoice, requestPrintOrder, requestReverseSalesTransaction, requestDeleteOrder } from '@/ADempiere/modules/pos/POSService'
 
 @Component({
   name: 'Options',
@@ -20,25 +20,27 @@ export default class Options extends Vue {
 
     // Computed properties
     get isShowProductsPriceList(): boolean {
-      return this.$store.state['pointOfSales/listProductPrice'].productPrice.isShowPopoverMenu
+      const productPrice: IListProductPriceItemData = this.$store.state[Namespaces.ListProductPrice + '/' + 'productPrice']
+      return productPrice.isShowPopoverMenu!
     }
 
     set isShowProductsPriceList(isShowed: boolean) {
       if ((this.$route.query.pos)) {
-        this.$store.commit('showListProductPrice', {
+        this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
           attribute: 'isShowPopoverMenu',
           isShowed
         })
       }
     }
 
-    get isShowOrdersList() {
-      return this.$store.getters.getListOrder.isShowPopover
+    get isShowOrdersList(): boolean {
+      const listOrder: IListOrderItemData = this.$store.getters[Namespaces.Order + '/' + 'getListOrder']
+      return listOrder.isShowPopover
     }
 
-    set isShowOrdersList(value: any) {
+    set isShowOrdersList(value: boolean) {
       if (this.$route.query.pos) {
-        this.$store.commit('showListOrders', value)
+        this.$store.commit(Namespaces.Order + '/' + 'showListOrders', value)
       }
     }
 
@@ -66,7 +68,7 @@ export default class Options extends Vue {
     }
 
     get size(): number {
-      const size = this.$store.getters.getWidthLeft
+      const size = this.$store.getters[Namespaces.Utils + '/' + 'getWidthLeft']
       return 24 / size
     }
 
@@ -77,12 +79,12 @@ export default class Options extends Vue {
     }
 
     changePos(posElement: IPointOfSalesData): void {
-      this.$store.dispatch('setCurrentPOS', posElement)
+      this.$store.dispatch(Namespaces.PointOfSales + '/' + 'setCurrentPOS', posElement)
       this.newOrder()
     }
 
     newOrder(): void {
-      this.$store.dispatch('findOrderServer', {})
+      this.$store.dispatch(Namespaces.Order + '/' + 'findOrderServer', {})
 
       const pos: string = String(this.pointOfSalesId) || this.$route.query.pos.toString()
       this.$router.push({
@@ -97,7 +99,7 @@ export default class Options extends Vue {
       }).finally(() => {
         const { templateBusinessPartner } = this.currentPOS!
 
-        this.$store.commit('updateValuesOfContainer', {
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
           containerUuid: this.metadata.containerUuid,
           attributes: [{
             key: 'UUID',
@@ -127,7 +129,7 @@ export default class Options extends Vue {
         //   documentStatus: {},
         //   salesRepresentative: this.currentPOS.salesRepresentative
         //
-        this.$store.dispatch('listOrderLine', [])
+        this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
       })
     }
 
@@ -180,5 +182,12 @@ export default class Options extends Vue {
         posId,
         posUuid: posUuid!
       })
+    }
+
+    deleteOrder() {
+      requestDeleteOrder({
+        posUuid: <string> this.$route.query.action
+      })
+      this.newOrder()
     }
 }
