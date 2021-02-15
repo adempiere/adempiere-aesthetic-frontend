@@ -35,7 +35,7 @@ import { INotificationProcessData } from '@/ADempiere/modules/process/ProcessTyp
 import { showNotification } from '@/ADempiere/shared/utils/notifications'
 import { IReportOutputDataExtended } from '@/ADempiere/modules/report'
 import { convertFieldsListToShareLink, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
-import ROUTES from '@/ADempiere/shared/utils/zoomWindow'
+import ROUTES from '@/ADempiere/shared/utils/Constants/zoomWindow'
 import { UserModule } from '@/store/modules/user'
 import { PermissionModule } from '@/store/modules/permission'
 import MixinRelations from './MixinRelations'
