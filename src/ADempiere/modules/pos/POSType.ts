@@ -179,8 +179,8 @@ export interface UpdateOrderLineParams {
     orderLineUuid: string
     description?: string
     quantity: number
-    price: number
-    discountRate: number
+    price?: number
+    discountRate?: number
 }
 
 export interface IDeleteOrderLineParams {

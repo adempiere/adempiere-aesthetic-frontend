@@ -19,8 +19,15 @@ import Template from './template.vue'
 })
 export default class Order extends Mixins(MixinOrderLine) {
   public fieldList = fieldListOrders
+  public seeConversion = false
 
   // Computed properties
+  get shortsKey() {
+    return {
+      popoverConvet: ['ctrl', 'x']
+    }
+  }
+
   get isShowedPOSKeyLayout(): boolean {
     return this.$store.getters[Namespaces.PointOfSales + '/' + 'getShowPOSKeyLayout']
   }
@@ -179,5 +186,11 @@ export default class Order extends Mixins(MixinOrderLine) {
 
       this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
     })
+  }
+
+  open() : void {
+    if (!this.seeConversion) {
+      this.seeConversion = true
+    }
   }
 }

@@ -29,6 +29,7 @@
         style="width: 100%;"
         popper-class="custom-field-prodcut-info"
         :fetch-suggestions="localSearch"
+        :select-when-unmatched="true"
         @shortkey.native="shortcutKeyMethod"
         @select="handleSelect"
       >

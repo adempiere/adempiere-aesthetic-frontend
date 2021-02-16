@@ -8,6 +8,7 @@ const fieldListOrders: IFieldLocation[] = [
     overwriteDefinition: {
       size: 24,
       sequence: 10,
+      handleActionPerformed: true,
       handleActionKeyPerformed: true
     }
   },
