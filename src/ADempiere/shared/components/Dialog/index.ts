@@ -37,11 +37,11 @@ export default class ModalProcess extends Vue {
     }
 
     get isVisibleDialog(): boolean {
-      return this.$store.state.processModule.isVisibleDialog
+      return this.$store.state[Namespaces.Process + '/' + 'index'].isVisibleDialog
     }
 
     get modalMetadata(): Partial<IPanelDataExtended> {
-      return this.$store.state.processModule.metadata
+      return this.$store.state[Namespaces.Process + '/' + 'index'].metadata
     }
 
     get windowRecordSelected(): any {
