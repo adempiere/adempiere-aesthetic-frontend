@@ -243,6 +243,9 @@ export default class PriceChecking extends Mixins(MixinForm) {
 
     // Hooks
     created() {
+      if (!this.currentPoint) {
+        this.$store.dispatch(Namespaces.PointOfSales + '/' + 'listPointOfSalesFromServer')
+      }
       this.unsubscribe = this.subscribeChanges()
     }
 
