@@ -15,6 +15,7 @@ import {
   IProductPriceData
 } from '@/ADempiere/modules/core/CoreType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { IPointOfSalesData } from '@/ADempiere/modules/pos'
 
 @Component({
   name: 'PriceChecking',
@@ -51,6 +52,10 @@ export default class PriceChecking extends Mixins(MixinForm) {
         return this.organizationBackground
       }
       return this.currentImageOfProduct
+    }
+
+    get currentPoint(): IPointOfSalesData | undefined {
+      return this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
     }
 
     // Methods
@@ -102,7 +107,8 @@ export default class PriceChecking extends Mixins(MixinForm) {
           this.search = mutation.payload.value
           if (this.search && this.search.length >= 4) {
             requestGetProductPrice({
-              searchValue: mutation.payload.value
+              searchValue: mutation.payload.value,
+              priceListUuid: this.currentPoint!.priceList.uuid
             })
               .then((productPrice: IProductPriceData) => {
                 this.messageError = true
@@ -161,7 +167,8 @@ export default class PriceChecking extends Mixins(MixinForm) {
           }
           this.timeOut = setTimeout(() => {
             requestGetProductPrice({
-              searchValue: mutation.payload.value
+              searchValue: mutation.payload.value,
+              priceListUuid: this.currentPoint?.priceList.uuid
             })
               .then((productPrice: IProductPriceData) => {
                 this.messageError = true

@@ -1,3 +1,4 @@
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
 import { IPointOfSalesData, KeyLayoutState } from '../../POSType'
@@ -6,8 +7,8 @@ type KeyLayoutGetterTree = GetterTree<KeyLayoutState, IRootState>
 
 export const getters: KeyLayoutGetterTree = {
   // current pos uuid
-  getKeyLayoutUuidWithPOS: (state: KeyLayoutState, getters): string | undefined => {
-    const currentPOS: IPointOfSalesData = getters.getCurrentPOS()
+  getKeyLayoutUuidWithPOS: (state: KeyLayoutState, getters, rootState, rootGetters): string | undefined => {
+    const currentPOS: IPointOfSalesData = rootGetters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
     if (!currentPOS) {
       return undefined
     }
