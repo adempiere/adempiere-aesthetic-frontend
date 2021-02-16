@@ -25,7 +25,10 @@
         :key="element.path"
         :value="element.item"
         :label="element.item.meta.title.join(' > ')"
-      />
+      >
+      {{ element.item.title.join(' > ') }}
+      <svg-icon :icon-class="element.item.meta.icon" />
+      </el-option>
     </el-select>
   </div>
 </template>
@@ -38,7 +41,7 @@ import { RouteConfig } from 'vue-router'
 import { AppModule, DeviceType } from '@/store/modules/app'
 import { PermissionModule } from '@/store/modules/permission'
 import MixinI18n from '@/ADempiere/shared/utils/i18n'
-import i18n from '@/ADempiere/shared/lang' // Internationalization
+// import i18n from '@/ADempiere/shared/lang' // Internationalization
 
 @Component({
   name: 'HeaderSearch',
