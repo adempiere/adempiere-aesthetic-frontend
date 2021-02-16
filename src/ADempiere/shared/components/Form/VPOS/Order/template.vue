@@ -86,7 +86,7 @@
                         <el-popover
                           placement="right"
                           trigger="click"
-                          :title="$t('form.pos.product.productInformation')"
+                          :title="$t('form.productInfo.productInformation')"
                         >
                           <el-form
                             label-position="top"
@@ -112,20 +112,20 @@
                               </el-col>
                               <el-col :span="10">
                                 <div style="float: right">
-                                  {{ $t('form.pos.product.price') }}:
+                                  {{ $t('form.productInfo.price') }}:
                                   <b>{{ formatPrice(currentOrderLine.product.priceStandard, currencyPoint.iSOCode) }}</b>
                                   <br>
-                                  {{ $t('form.pos.product.taxRate') }}:
+                                  {{ $t('form.productInfo.taxAmount') }}:
                                   <b>{{ currentOrderLine.taxIndicator }}</b>
                                   <br>
-                                  {{ $t('form.pos.product.quantityAvailable') }}:
+                                  {{ $t('form.productInfo.quantityAvailable') }}:
                                   <b>{{ formatQuantity(currentOrderLine.quantityOrdered) }}</b>
                                 </div>
                               </el-col>
                             </el-row>
                           </el-form>
                           <el-button slot="reference" type="text">
-                            {{ $t('form.pos.product.productInformation') }}
+                            {{ $t('form.productInfo.productInformation') }}
                           </el-button>
                         </el-popover>
                       </el-dropdown-item>

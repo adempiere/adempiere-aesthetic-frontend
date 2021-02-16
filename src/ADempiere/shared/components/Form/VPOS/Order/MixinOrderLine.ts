@@ -17,7 +17,7 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
       },
       currentPrice: {
         columnName: 'CurrentPrice',
-        label: this.$t('form.pos.product.price').toString(),
+        label: this.$t('form.productInfo.price').toString(),
         isNumeric: true
       },
       quantityOrdered: {

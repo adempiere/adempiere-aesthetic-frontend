@@ -32,6 +32,7 @@ export default class PriceChecking extends Mixins(MixinForm) {
     public load = ''
     // eslint-disable-next-line
     public unsubscribe: Function = () => {}
+    public timeOut?: NodeJS.Timeout
 
     // Computed properties
     get organizationImagePath(): string {
@@ -96,7 +97,7 @@ export default class PriceChecking extends Mixins(MixinForm) {
 
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
-        if ((mutation.type === 'updateValueOfField' || mutation.type === 'addActionKeyPerformed') && mutation.payload.columnName === 'ProductValue') {
+        if ((mutation.type === 'addActionKeyPerformed') && mutation.payload.columnName === 'ProductValue') {
           // cleans all values except column name 'ProductValue'
           this.search = mutation.payload.value
           if (this.search && this.search.length >= 4) {
@@ -153,6 +154,59 @@ export default class PriceChecking extends Mixins(MixinForm) {
                 }
               })
           }
+        } else if ((mutation.type === 'updateValueOfField') && (mutation.payload.columnName === 'ProductValue') &&
+        mutation.payload.value) {
+          if (this.timeOut) {
+            clearTimeout(this.timeOut)
+          }
+          this.timeOut = setTimeout(() => {
+            requestGetProductPrice({
+              searchValue: mutation.payload.value
+            })
+              .then((productPrice: IProductPriceData) => {
+                this.messageError = true
+                const { product, taxRate, priceStandard: priceBase } = productPrice
+                const { rate } = taxRate
+                const { imageUrl: image } = product
+                this.productPrice = {
+                  currency: productPrice.currency,
+                  image,
+                  grandTotal: this.getGrandTotal(priceBase, rate),
+                  productName: product.name,
+                  productDescription: product.description,
+                  priceBase,
+                  priceStandard: productPrice.priceStandard,
+                  priceList: productPrice.priceList,
+                  priceLimit: productPrice.priceLimit,
+                  schemaCurrency: productPrice.schemaCurrency,
+                  schemaGrandTotal: this.getGrandTotal(productPrice.schemaPriceStandard!, rate),
+                  schemaPriceStandard: productPrice.schemaPriceStandard,
+                  schemaPriceList: productPrice.schemaPriceList,
+                  schemaPriceLimit: productPrice.schemaPriceLimit,
+                  taxRate: rate,
+                  taxName: taxRate.name,
+                  taxIndicator: taxRate.taxIndicator,
+                  taxAmt: this.getTaxAmount(priceBase, rate)
+                }
+              })
+              .catch(() => {
+                this.messageError = false
+                this.timeMessage()
+                this.productPrice = {}
+              })
+              .finally(() => {
+                this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
+                  containerUuid: this.containerUuid,
+                  columnName: 'ProductValue',
+                  value: ''
+                })
+                this.search = ''
+                this.currentImageOfProduct = ''
+                if (!this.productPrice.image) {
+                  this.getImage(this.productPrice.image)
+                }
+              })
+          }, 500)
         }
         if (mutation.type === 'changeFormAttribute') {
           this.focusProductValue()
