@@ -91,9 +91,11 @@ export default class PriceChecking extends Mixins(MixinForm) {
     }
 
     focusProductValue(): void {
-        this.ProductValue![0].focus()!
+      if (this.ProductValue && this.ProductValue[0]) {
+        this.ProductValue[0].focus()
         // eslint-disable-next-line
-        this.ProductValue![0].children[0].children[0].children[1].children[0]
+        this.ProductValue[0].children[0].children[0].children[1].children[0] 
+      }
     }
 
     formatPercent = formatPercent
@@ -251,6 +253,9 @@ export default class PriceChecking extends Mixins(MixinForm) {
 
     mounted() {
       this.getImage()
+      setTimeout(() => {
+        this.focusProductValue()
+      }, 1000)
     }
 
     beforeDestroy() {
