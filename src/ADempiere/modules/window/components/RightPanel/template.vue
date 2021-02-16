@@ -19,7 +19,7 @@
 <style>
 .setting {
   z-index: 3;
-  width: 5%;
+  width: 2.5%;
   height: 10%;
   right: 0%;
   position: absolute;

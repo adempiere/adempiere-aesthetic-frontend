@@ -33,14 +33,46 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     public isCustomForm = true
+    public checked = false
     public currencyConversion = 1
     public convertAllPayment = 1
     public allPayCurrency = 0
+    public labelTenderType = ''
+    public defaultLabel = ''
     fieldsList = fieldListCollection
 
     // Computed properties
+    get validateCompleteCollection(): boolean {
+      if (this.order.grandTotal === this.pay) {
+        return false
+      } else if (this.isCashAmt >= this.change) {
+        return false
+      } else if (this.pay >= this.order.grandTotal && this.checked) {
+        return false
+      }
+      return true
+    }
+
+    get fullCopper(): boolean {
+      if ((this.change > this.isCashAmt) && this.pay > this.order.grandTotal) {
+        return true
+      }
+      return false
+    }
+
     get isPaymentBox(): any[] {
       return this.$store.getters[Namespaces.Collection + '/' + 'getPaymentBox']
+    }
+
+    get addPay(): boolean {
+      const amount = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        containerUuid: this.containerUuid,
+        columnName: 'PayAmt'
+      })
+      if (amount <= 0) {
+        return true
+      }
+      return false
     }
 
     get paymentBox(): any[] {
@@ -82,7 +114,7 @@ export default class Collection extends Mixins(MixinForm) {
         }
         return false
       }
-      const cash = this.pending === 0 ? true : this.isMandatory
+      const cash = this.isMandatory
       return cash
     }
 
@@ -161,12 +193,25 @@ export default class Collection extends Mixins(MixinForm) {
       return true
     }
 
+    get validPay(): boolean {
+      const containerUuid = this.containerUuid
+      const fieldsEmpty: string[] = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
+        containerUuid,
+        fieldsList: this.fieldsList
+      })
+      return !!(fieldsEmpty.length)
+    }
+
     get change(): number {
       const missing = this.pay - this.order.grandTotal
       if (this.pay > 0 && this.pay > this.order.grandTotal) {
         return missing
       }
       return 0
+    }
+
+    get fieldpending(): number {
+      return this.pending * this.multiplyRate
     }
 
     get order(): IOrderData {
@@ -240,18 +285,17 @@ export default class Collection extends Mixins(MixinForm) {
       }
       return true
     }
-    // fieldpending() {
-    //   return this.pending / this.divideRate
-    // }
 
     // Watchers
-    // fieldpending(value) {
-    //   this.$store.commit('updateValueOfField', {
-    //     containerUuid: this.containerUuid,
-    //     columnName: 'PayAmt',
-    //     value: value
-    //   })
-    // },
+    @Watch('fieldpending')
+    handleFieldpending(value: number) {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
+        containerUuid: this.containerUuid,
+        columnName: 'PayAmt',
+        value: value
+      })
+    }
+
     @Watch('pending')
     handlePendingChange(value: number) {
       this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
@@ -267,13 +311,21 @@ export default class Collection extends Mixins(MixinForm) {
         this.$store.dispatch(Namespaces.Collection + '/' + 'conversionDivideRate', {
           conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
           currencyFromUuid: this.currencyPoint.uuid,
-          currencyToUuid: value,
-          conversionDate: this.currentOrder!.dateOrdered
+          currencyToUuid: value
         })
+      }
+      if (value) {
+        this.$store.dispatch(Namespaces.Collection + '/' + 'conversionMultiplyRate', {
+          conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
+          currencyFromUuid: this.currencyPoint.uuid,
+          currencyToUuid: value
+        })
+      } else {
+        this.$store.commit(Namespaces.Collection + '/' + 'currencyMultiplyRate', 1)
       }
     }
 
-      @Watch('convertAllPayment')
+    @Watch('convertAllPayment')
     handleConvertAllPaymentChange(value: number) {
       if (value) {
         this.allPayCurrency = this.pay / value
@@ -282,18 +334,17 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
       @Watch('converCurrency')
-      handleConverCurrencyChange(value: any) {
-        if (value) {
-          this.$store.dispatch(Namespaces.Collection + '/' + 'conversionMultiplyRate', {
-            conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
-            currencyFromUuid: this.currencyPoint.uuid,
-            currencyToUuid: value,
-            conversionDate: this.currentOrder!.dateOrdered
-          })
-        } else {
-          this.$store.commit(Namespaces.Collection + '/' + 'currencyMultiplyRate', 1)
-        }
+    handleConverCurrencyChange(value: any) {
+      if (value) {
+        this.$store.dispatch(Namespaces.Collection + '/' + 'conversionMultiplyRate', {
+          conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
+          currencyFromUuid: this.currencyPoint.uuid,
+          currencyToUuid: value
+        })
+      } else {
+        this.$store.commit(Namespaces.Collection + '/' + 'currencyMultiplyRate', 1)
       }
+    }
 
       @Watch('isLoaded')
       handleIsLoadedChange(value: boolean) {
@@ -324,39 +375,39 @@ export default class Collection extends Mixins(MixinForm) {
       return false
     }
 
-    displayTenderType(type: string) {
-      let label = ''
-      switch (type) {
-        case 'A':
-          label = 'Depósito directo'
-          break
-        case 'C':
-          label = 'Tarjeta de crédito'
-          break
-        case 'D':
-          label = 'Débito directo'
-          break
-        case 'K':
-          label = 'Cheque'
-          break
-        case 'M':
-          label = 'Nota de crédito'
-          break
-        case 'P':
-          label = 'Pago móvil interbancario'
-          break
-        case 'T':
-          label = 'Cuenta'
-          break
-        case 'X':
-          label = 'Efectivo'
-          break
-        case 'Z':
-          label = 'Zelle'
-          break
-      }
-      return label
-    }
+    // displayTenderType(type: string) {
+    //   let label = ''
+    //   switch (type) {
+    //     case 'A':
+    //       label = 'Depósito directo'
+    //       break
+    //     case 'C':
+    //       label = 'Tarjeta de crédito'
+    //       break
+    //     case 'D':
+    //       label = 'Débito directo'
+    //       break
+    //     case 'K':
+    //       label = 'Cheque'
+    //       break
+    //     case 'M':
+    //       label = 'Nota de crédito'
+    //       break
+    //     case 'P':
+    //       label = 'Pago móvil interbancario'
+    //       break
+    //     case 'T':
+    //       label = 'Cuenta'
+    //       break
+    //     case 'X':
+    //       label = 'Efectivo'
+    //       break
+    //     case 'Z':
+    //       label = 'Zelle'
+    //       break
+    //   }
+    //   return label
+    // }
 
     addCollectToList(): void {
       const containerUuid = this.containerUuid
@@ -388,7 +439,7 @@ export default class Collection extends Mixins(MixinForm) {
         currency = this.currencyPoint.iSOCode
       }
 
-      const displayType: string = this.displayTenderType(typePay)
+      const displayType: string = this.labelTenderType
       this.$store.dispatch(Namespaces.Collection + '/' + 'setPaymentBox', {
         isVisible: true,
         quantityCahs: amount,
@@ -425,6 +476,12 @@ export default class Collection extends Mixins(MixinForm) {
           value: this.currencyPoint.id
         })
         this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
+          parentUuid: '',
+          containerUuid: 'Collection',
+          columnName: 'DisplayColumn_TenderType',
+          value: this.defaultLabel
+        })
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
           containerUuid: this.containerUuid,
           columnName: 'PayAmt',
           value: this.pending
@@ -432,6 +489,8 @@ export default class Collection extends Mixins(MixinForm) {
       })
       this.defaultValueCurrency()
       this.$store.dispatch(Namespaces.Collection + '/' + 'conversionDivideRate', 1)
+      this.$store.dispatch(Namespaces.Collection + '/' + 'currencyMultiplyRate', 1)
+      this.cancel()
     }
 
     cancel() {
@@ -503,8 +562,28 @@ export default class Collection extends Mixins(MixinForm) {
       })
     }
 
+    defaulTenderType(): void {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
+        parentUuid: '',
+        containerUuid: 'Collection',
+        columnName: 'DisplayColumn_TenderType',
+        value: this.$t('form.pos.collect.TenderType.cash')
+      })
+    }
+
+    subscribeChanges() {
+      return this.$store.subscribe((mutation, state) => {
+        if (mutation.type === 'updateValueOfField') {
+          if (mutation.payload.columnName === 'DisplayColumn_TenderType') {
+            this.labelTenderType = mutation.payload.value
+          }
+        }
+      })
+    }
+
     // Hooks
     created() {
+      this.unsubscribe = this.subscribeChanges()
       this.defaultValueCurrency()
     }
 }

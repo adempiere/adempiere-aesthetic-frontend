@@ -44,6 +44,10 @@ export interface IOverwriteDefinitionData extends IAdditionalAttributesData {
     displayLogic?: string
     validationCode?: string
     isReadOnly?: boolean
+    handleFocusGained?: boolean
+    handleFocusLost?: boolean
+    handleKeyPressed?: boolean
+    handleKeyReleased?: boolean
 }
 
 export type IFieldTemplateMetadataType = Partial<IFieldDataExtendedUtils> & {

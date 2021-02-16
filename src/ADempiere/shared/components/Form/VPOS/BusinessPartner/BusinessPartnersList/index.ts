@@ -120,7 +120,7 @@ export default class BusinessPartnersList extends Mixins(
             format: 'object'
           })
 
-          this.searchBPartnerList(values)
+          this.searchBPartnerList({ contactName: values.Name2 })
         }
       })
     }
@@ -132,7 +132,6 @@ export default class BusinessPartnersList extends Mixins(
       if (isConvert && values) {
         values = this.convertValuesToSend(values)
       }
-
       return this.$store
         .dispatch('listBPartnerFromServer', values)
         .then((response: IBusinessPartnerData[]) => {

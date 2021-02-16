@@ -17,15 +17,11 @@ export const actions: CollectionActionTree = {
         payAmt: number
         quantityCahs: number
     }) {
-    const payments = context.getters.getPaymentBox().find((element: any) => {
-      if (element.tenderType === params.tenderType && element.currency.id === params.currency.id) {
-        return element
-      }
-    })
+    const payments: any = undefined
     if (!payments) {
       context.commit('addPaymentBox', params)
     } else {
-      const addPayment = context.getters.getPaymentBox().map((item: any) => {
+      const addPayment = context.getters.getPaymentBox.map((item: any) => {
         if (item.tenderType === params.tenderType && item.currency.id === params.currency.id) {
           return {
             ...item,
@@ -51,9 +47,8 @@ export const actions: CollectionActionTree = {
       conversionTypeUuid: params.conversionTypeUuid,
       currencyFromUuid: params.currencyFromUuid,
       currencyToUuid: params.currencyToUuid
-      // conversionDate: params.conversionDate
     })
-      .then((response: IConversionRateData) => {
+      .then((response: IConversionRateData | Partial<IConversionRateData>) => {
         const divideRate: number = (!response.divideRate) ? 1 : response.divideRate
         context.commit('currencyDivideRate', divideRate)
       })
@@ -79,7 +74,7 @@ export const actions: CollectionActionTree = {
       currencyToUuid
       // conversionDate
     })
-      .then((response: IConversionRateData) => {
+      .then((response: IConversionRateData| Partial<IConversionRateData>) => {
         const multiplyRate: number = (!response.multiplyRate) ? 1 : response.multiplyRate
 
         context.commit('currencyMultiplyRate', multiplyRate)

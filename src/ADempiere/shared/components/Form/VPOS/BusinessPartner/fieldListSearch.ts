@@ -22,15 +22,15 @@ const fieldListSearch: Partial<IFieldLocation>[] = [
       isCustomField: true
     }
   },
-  {
-    elementColumnName: 'Name2',
-    tableName: 'C_BPartner',
-    isFromDictionary: true,
-    columnName: 'Name2',
-    overwriteDefinition: {
-      isCustomField: true
-    }
-  },
+  // {
+  //   elementColumnName: 'Name2',
+  //   tableName: 'C_BPartner',
+  //   isFromDictionary: true,
+  //   columnName: 'Name2',
+  //   overwriteDefinition: {
+  //     isCustomField: true
+  //   }
+  // },
   {
     elementColumnName: 'EMail',
     columnName: 'EMail',
