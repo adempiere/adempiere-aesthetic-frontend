@@ -254,7 +254,7 @@ export default class Collection extends Mixins(MixinForm) {
     // },
     @Watch('pending')
     handlePendingChange(value: number) {
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         containerUuid: this.containerUuid,
         columnName: 'PayAmt',
         value
@@ -263,12 +263,14 @@ export default class Collection extends Mixins(MixinForm) {
 
     @Watch('currencyUuid')
     handleCurrencyUuidChange(value: string) {
-      this.$store.dispatch('conversionDivideRate', {
-        conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
-        currencyFromUuid: this.currencyPoint.uuid,
-        currencyToUuid: value,
-        conversionDate: this.currentOrder!.dateOrdered
-      })
+      if (value) {
+        this.$store.dispatch(Namespaces.Collection + '/' + 'conversionDivideRate', {
+          conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
+          currencyFromUuid: this.currencyPoint.uuid,
+          currencyToUuid: value,
+          conversionDate: this.currentOrder!.dateOrdered
+        })
+      }
     }
 
       @Watch('convertAllPayment')
@@ -281,18 +283,22 @@ export default class Collection extends Mixins(MixinForm) {
 
       @Watch('converCurrency')
       handleConverCurrencyChange(value: any) {
-        this.$store.dispatch('conversionMultiplyRate', {
-          conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
-          currencyFromUuid: this.currencyPoint.uuid,
-          currencyToUuid: value,
-          conversionDate: this.currentOrder!.dateOrdered
-        })
+        if (value) {
+          this.$store.dispatch(Namespaces.Collection + '/' + 'conversionMultiplyRate', {
+            conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
+            currencyFromUuid: this.currencyPoint.uuid,
+            currencyToUuid: value,
+            conversionDate: this.currentOrder!.dateOrdered
+          })
+        } else {
+          this.$store.commit(Namespaces.Collection + '/' + 'currencyMultiplyRate', 1)
+        }
       }
 
       @Watch('isLoaded')
       handleIsLoadedChange(value: boolean) {
         if (value) {
-          this.$store.commit('updateValueOfField', {
+          this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             containerUuid: this.containerUuid,
             columnName: 'PayAmt',
             value: this.pending
@@ -383,7 +389,7 @@ export default class Collection extends Mixins(MixinForm) {
       }
 
       const displayType: string = this.displayTenderType(typePay)
-      this.$store.dispatch('setPaymentBox', {
+      this.$store.dispatch(Namespaces.Collection + '/' + 'setPaymentBox', {
         isVisible: true,
         quantityCahs: amount,
         payAmt: amount * this.divideRate,
@@ -402,57 +408,57 @@ export default class Collection extends Mixins(MixinForm) {
     addCollect(): void {
       this.fieldsList.forEach((element: IFieldLocation) => {
         if (element.columnName !== 'PayAmt') {
-          this.$store.commit('updateValueOfField', {
+          this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             containerUuid: this.containerUuid,
             columnName: element.columnName,
             value: element.overwriteDefinition.defaultValue
           })
 
           // set default logics
-          this.$store.dispatch('changeDependentFieldsList', {
+          this.$store.dispatch(Namespaces.Panel + '/' + 'changeDependentFieldsList', {
             field: element
           })
         }
-        this.$store.commit('updateValueOfField', {
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
           containerUuid: this.containerUuid,
           columnName: 'C_Currency_ID',
           value: this.currencyPoint.id
         })
-        this.$store.commit('updateValueOfField', {
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
           containerUuid: this.containerUuid,
           columnName: 'PayAmt',
           value: this.pending
         })
       })
       this.defaultValueCurrency()
-      this.$store.dispatch('conversionDivideRate', 1)
+      this.$store.dispatch(Namespaces.Collection + '/' + 'conversionDivideRate', 1)
     }
 
     cancel() {
       this.fieldsList.forEach((element) => {
         if (element.columnName !== 'PayAmt' && element.columnName !== 'C_Currency_ID') {
-          this.$store.commit('updateValueOfField', {
+          this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             containerUuid: this.containerUuid,
             columnName: element.columnName,
             value: element.overwriteDefinition.defaultValue
           })
         }
-        this.$store.dispatch('changeDependentFieldsList', {
+        this.$store.dispatch(Namespaces.Panel + '/' + 'changeDependentFieldsList', {
           field: element
         })
       })
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         containerUuid: this.containerUuid,
         columnName: 'C_Currency_ID',
         value: this.currencyPoint.id
       })
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         containerUuid: this.containerUuid,
         columnName: 'PayAmt',
         value: this.pending
       })
       this.defaultValueCurrency()
-      this.$store.dispatch('conversionDivideRate', 1)
+      this.$store.dispatch(Namespaces.Collection + '/' + 'conversionDivideRate', 1)
     }
 
     getPriceApplyingDiscount(price?: number, discount?: number): number {
@@ -480,17 +486,17 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     defaultValueCurrency(): void {
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         containerUuid: this.containerUuid,
         columnName: 'DisplayColumn_C_Currency_ID',
         value: this.currencyPoint.iSOCode
       })
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         containerUuid: this.containerUuid,
         columnName: 'C_Currency_ID',
         value: this.currencyPoint.id
       })
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         containerUuid: this.containerUuid,
         columnName: 'C_Currency_ID_UUID',
         value: this.currencyPoint.uuid

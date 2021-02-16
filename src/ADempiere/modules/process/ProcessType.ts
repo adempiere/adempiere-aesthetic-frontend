@@ -1,5 +1,5 @@
-import { IValueData } from '@/ADempiere/modules/core'
 import { IReportOutputData } from '@/ADempiere/modules/report'
+import { IPanelParameters } from '@/ADempiere/shared/store/modules/panel/type'
 import { PanelContextType, PrintFormatOptions } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { IPanelDataExtended, IPrintFormatChild } from '../dictionary'
 import { KeyValueData } from '../persistence'
@@ -35,7 +35,7 @@ export interface IProcessRequestData {
     recordId?: number
     recordUuid?: string
     processUuid?: string
-    tableName: string
+    tableName?: string
     id: number
     uuid: string
     isSummary?: boolean
@@ -43,7 +43,7 @@ export interface IProcessRequestData {
     tableSelectedId?: number
     reportViewUuid?: string
     parameters: KeyValueData[]
-    selections: any[]
+    selections?: any[]
     printFormatUuid?: string
 }
 
@@ -73,7 +73,7 @@ export interface IProcessLogDataExtended extends IProcessLogData {
     processId?: number
     processName?: string
     panelType: PanelContextType
-    // parametersList: IPanelParameters[]
+    parametersList: IPanelParameters[]
     logs: any[]
     output: IReportOutputData
     processIdPath?: string

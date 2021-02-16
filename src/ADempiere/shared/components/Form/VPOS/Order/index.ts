@@ -1,10 +1,11 @@
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import BusinessPartner from '@/ADempiere/shared/components/Form/VPOS/BusinessPartner'
 import ProductInfo from '@/ADempiere/shared/components/Form/VPOS/ProductInfo'
 import MixinOrderLine from './MixinOrderLine'
 import fieldListOrders from './fieldListOrders'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IPointOfSalesData } from '@/ADempiere/modules/pos'
+import convertAmount from '@/ADempiere/shared/components/Form/VPOS/Collection/ConvertAmount/index'
 import Template from './template.vue'
 
 @Component({
@@ -12,7 +13,8 @@ import Template from './template.vue'
   mixins: [MixinOrderLine, Template],
   components: {
     BusinessPartner,
-    ProductInfo
+    ProductInfo,
+    convertAmount
   }
 })
 export default class Order extends Mixins(MixinOrderLine) {
@@ -24,7 +26,7 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   set isShowedPOSKeyLayout(value: boolean) {
-    this.$store.commit('setShowPOSKeyLayout', value)
+    this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSKeyLayout', value)
   }
 
   get styleTab() {
@@ -77,20 +79,70 @@ export default class Order extends Mixins(MixinOrderLine) {
     return this.allOrderLines.length
   }
 
+  get multiplyRate(): number {
+    return this.$store.getters[Namespaces.Collection + '/' + 'getMultiplyRate']
+  }
+
+  get converCurrency(): any {
+    return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+      containerUuid: 'Collection-Convert-Amount',
+      columnName: 'C_Currency_ID_UUID'
+    })
+  }
+
+  get currencyUuid(): any {
+    return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+      containerUuid: this.containerUuid,
+      columnName: 'C_Currency_ID_UUID'
+    })
+  }
+
+  get displayeTypeCurrency(): any {
+    return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+      containerUuid: this.containerUuid,
+      columnName: 'DisplayColumn_C_Currency_ID'
+    })
+  }
+
+  // Watchers
+  @Watch('currencyUuid')
+  handleCurrencyUuid(value: string) {
+    if (value) {
+      this.$store.dispatch(Namespaces.Collection + '/' + 'conversionDivideRate', {
+        conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
+        currencyFromUuid: this.currencyPoint.uuid,
+        currencyToUuid: value
+      })
+    }
+  }
+
+  @Watch('converCurrency')
+  handleConverCurrency(value: any) {
+    if (value) {
+      this.$store.dispatch(Namespaces.Collection + '/' + 'conversionMultiplyRate', {
+        conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
+        currencyFromUuid: this.currencyPoint.uuid,
+        currencyToUuid: value
+      })
+    } else {
+      this.$store.commit(Namespaces.Collection + '/' + 'currencyMultiplyRate', 1)
+    }
+  }
+
   // Methods
   changePos(posElement: IPointOfSalesData) {
-    this.$store.dispatch('setCurrentPOS', posElement)
+    this.$store.dispatch(Namespaces.PointOfSales + '/' + 'setCurrentPOS', posElement)
     this.newOrder()
   }
 
   openCollectionPanel(): void {
-    this.$store.commit('setShowPOSCollection', !this.$store.getters[Namespaces.PointOfSales + '/' + 'getShowCollectionPos'])
+    this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', !this.$store.getters[Namespaces.PointOfSales + '/' + 'getShowCollectionPos'])
     this.isShowedPOSKeyLayout = true
-    this.$store.commit('setShowPOSOptions', false)
+    this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSOptions', false)
   }
 
   newOrder(): void {
-    this.$store.dispatch('findOrderServer', {})
+    this.$store.dispatch(Namespaces.Order + '/' + 'findOrderServer', {})
     this.$router.push({
       params: {
         ...this.$route.params
@@ -101,7 +153,7 @@ export default class Order extends Mixins(MixinOrderLine) {
     }).finally(() => {
       const { templateBusinessPartner } = this.currentPoint!
 
-      this.$store.commit('updateValuesOfContainer', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
         containerUuid: this.metadata.containerUuid,
         attributes: [{
           key: 'UUID',
@@ -125,7 +177,7 @@ export default class Order extends Mixins(MixinOrderLine) {
         }]
       })
 
-      this.$store.dispatch('listOrderLine', [])
+      this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
     })
   }
 }

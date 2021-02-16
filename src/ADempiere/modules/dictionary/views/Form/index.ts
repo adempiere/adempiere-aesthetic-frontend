@@ -31,8 +31,7 @@ export default class FormView extends Vue {
       return this.formMetadata.name || this.$route.meta.title
     }
 
-    get formFileName() {
-      console.log(this.$route)
+    get fromFileName() {
       return this.formMetadata.fileName || this.$route.meta.title
     }
 

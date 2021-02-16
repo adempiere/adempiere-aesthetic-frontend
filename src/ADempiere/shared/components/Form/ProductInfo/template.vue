@@ -1,6 +1,8 @@
 <template>
   <div>
-    <product-info-list />
+    <product-info-list
+     :report-asociated="process"
+    />
   </div>
 </template>
 

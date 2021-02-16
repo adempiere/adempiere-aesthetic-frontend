@@ -400,7 +400,7 @@ export interface IGetConversionRateParams {
     conversionTypeUuid: string
     currencyFromUuid: string
     currencyToUuid: string
-    conversionDate: any
+    // conversionDate: any
 }
 
 // VUEX State

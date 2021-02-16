@@ -53,7 +53,7 @@
       <el-table-column
         :label="$t('form.productInfo.quantityOnHand')"
         align="right"
-        width="200"
+        width="100"
       >
         <template slot-scope="scope">
           {{ formatQuantity(scope.row.quantityOnHand) }}
@@ -62,7 +62,7 @@
       <el-table-column
         :label="$t('form.productInfo.price')"
         align="right"
-        width="200"
+        width="100"
       >
         <template slot-scope="scope">
           {{ formatPrice(scope.row.priceStandard, scope.row.currency.iSOCode) }}
@@ -84,6 +84,28 @@
       >
         <template slot-scope="scope">
           {{ formatPrice(getTaxAmount(scope.row.priceStandard, scope.row.taxRate.rate) + scope.row.priceStandard, scope.row.currency.iSOCode) }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        label=""
+        width="120"
+      >
+        <template slot-scope="scope">
+          <el-dropdown trigger="click">
+            <span class="el-dropdown-link">
+              {{ $t('form.pos.tableProduct.options') }}
+              <i class="el-icon-arrow-down el-icon--right" />
+            </span>
+            <el-dropdown-menu slot="dropdown" style="padding-bottom: 0px;">
+              <span v-show="!isEmptyValue(process)">
+                <el-dropdown-item v-for="(report, key) in process" :key="key" icon="el-icon-document">
+                  <span @click="associatedprocesses(scope.row.product.id, report)">
+                    {{ report.name }}
+                  </span>
+                </el-dropdown-item>
+              </span>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
     </el-table>

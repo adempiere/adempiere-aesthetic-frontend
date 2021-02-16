@@ -5,6 +5,7 @@ import { formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueForma
 import { Component, Mixins } from 'vue-property-decorator'
 import MixinField from '../../Field/Mixin/MixinField'
 import ProductInfoList from './ProductList'
+import staticReportRoutes, { IZoomWindowRoute } from '@/ADempiere/shared/utils/Constants/zoomWindow'
 
 @Component({
   name: 'ProductInfo',
@@ -15,6 +16,7 @@ import ProductInfoList from './ProductList'
 })
 export default class ProductInfo extends Mixins(MixinField) {
     public timeOut: any = null
+    public process = staticReportRoutes
 
     // Computed
     get isShowProductsPriceList(): boolean | undefined {
@@ -40,6 +42,10 @@ export default class ProductInfo extends Mixins(MixinField) {
       return []
     }
 
+    get currentPos() {
+      return this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+    }
+
     get keyShortcuts() {
       return {
         refreshList: ['f5'],
@@ -49,79 +55,91 @@ export default class ProductInfo extends Mixins(MixinField) {
 
     formatPrice = formatPrice
 
-      formatQuantity = formatQuantity
+    formatQuantity = formatQuantity
 
-      shortcutKeyMethod(event: any) {
-        switch (event.srcKey) {
-          case 'refreshList':
-          case 'refreshList2':
-            this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo', {})
-            break
-        }
+    shortcutKeyMethod(event: any) {
+      switch (event.srcKey) {
+        case 'refreshList':
+        case 'refreshList2':
+          this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo', {})
+          break
       }
+    }
 
-      localSearch(stringToMatch: string, callBack: Function): void {
-        if (!stringToMatch) {
-          // not show list
-          callBack([])
+    localSearch(stringToMatch: string, callBack: Function): void {
+      if (!stringToMatch) {
+        // not show list
+        callBack([])
+        return
+      }
+      let results: IProductPriceData[] = this.listWithPrice
+      if (stringToMatch) {
+        const parsedValue = stringToMatch.toLowerCase().trim()
+        results = results.filter(rowProduct => {
+          const productAttributes: IProductData = rowProduct.product
+          const productAttributesObject: IKeyValueObject = {
+            ...productAttributes
+          }
+          for (const columnProductPrice in productAttributes) {
+            const valueToCompare: string = String(productAttributesObject[columnProductPrice]).toLowerCase()
+            if (valueToCompare.includes(parsedValue)) {
+              return true
+            }
+          }
+          return false
+        })
+        // Remote search
+        if (!results && String(stringToMatch.length > 3)) {
+          clearTimeout(this.timeOut)
+          this.timeOut = setTimeout(() => {
+            this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo', {
+              containerUuid: 'Products-Price-List-ProductInfo',
+              pageNumber: 1,
+              searchValue: stringToMatch
+            })
+              .then(() => {
+                const recordsList: IProductPriceData[] = this.listWithPrice
+                if (!recordsList || !recordsList.length) {
+                  this.$message({
+                    message: 'Sin resultados coincidentes con la busqueda',
+                    type: 'info',
+                    showClose: true
+                  })
+                }
+                callBack(recordsList)
+              })
+          }, 2000)
           return
         }
-        let results: IProductPriceData[] = this.listWithPrice
-        if (stringToMatch) {
-          const parsedValue = stringToMatch.toLowerCase().trim()
-          results = results.filter(rowProduct => {
-            const productAttributes: IProductData = rowProduct.product
-            const productAttributesObject: IKeyValueObject = {
-              ...productAttributes
-            }
-            for (const columnProductPrice in productAttributes) {
-              const valueToCompare: string = String(productAttributesObject[columnProductPrice]).toLowerCase()
-              if (valueToCompare.includes(parsedValue)) {
-                return true
-              }
-            }
-            return false
-          })
-          // Remote search
-          if (!results && String(stringToMatch.length > 3)) {
-            clearTimeout(this.timeOut)
-            this.timeOut = setTimeout(() => {
-              this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo', {
-                containerUuid: 'Products-Price-List-ProductInfo',
-                pageNumber: 1,
-                searchValue: stringToMatch
-              })
-                .then(() => {
-                  const recordsList: IProductPriceData[] = this.listWithPrice
-                  if (!recordsList || !recordsList.length) {
-                    this.$message({
-                      message: 'Sin resultados coincidentes con la busqueda',
-                      type: 'info',
-                      showClose: true
-                    })
-                  }
-                  callBack(recordsList)
-                })
-            }, 2000)
-            return
-          }
-        }
-        // call callback function to return suggestions
-        callBack(results)
       }
+      // call callback function to return suggestions
+      callBack(results)
+    }
 
-      handleSelect(elementSelected: any) {
-        const valueProduct = elementSelected.product.value
-        this.$store.dispatch('notifyActionKeyPerformed', {
-          containerUuid: 'POS',
-          columnName: 'ProductValue',
-          // TODO: Verify with 'value' or 'searchValue' attribute
-          value: valueProduct
-        })
-      }
+    handleSelect(elementSelected: any) {
+      const valueProduct = elementSelected.product.value
+      this.$store.dispatch(Namespaces.Event + '/' + 'notifyActionKeyPerformed', {
+        containerUuid: 'POS',
+        columnName: 'ProductValue',
+        // TODO: Verify with 'value' or 'searchValue' attribute
+        value: valueProduct
+      })
+    }
 
-      // Hooks
-      beforeMount() {
-        this.$store.dispatch(Namespaces.PointOfSales + '/' + 'listPointOfSalesFromServer')
-      }
+    findProcess(procces: any) {
+      // if (this.isEmptyValue(this.currentPos)) {
+      procces.forEach((report: any) => {
+        this.$store.dispatch(Namespaces.ProcessDefinition + '/' + 'getProcessFromServer', { containerUuid: report.uuid })
+      })
+    }
+
+    // Hooks
+    // beforeMount() {
+    //   this.$store.dispatch(Namespaces.PointOfSales + '/' + 'listPointOfSalesFromServer')
+    // }
+
+    async created() {
+      this.$store.dispatch(Namespaces.PointOfSales + '/' + 'listPointOfSalesFromServer')
+      this.findProcess(this.process)
+    }
 }
