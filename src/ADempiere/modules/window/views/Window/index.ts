@@ -556,6 +556,9 @@ export default class WindowView extends Vue {
     }
 
     handleChangeShowedRecordNavigation(valueToChange: any): void {
+      const panelRight: HTMLElement = document.getElementById('PanelRight')!
+      const heightPanel = panelRight?.clientHeight + 50
+      this.$store.dispatch('setHeight', heightPanel)
       this.$store.dispatch(Namespaces.WindowDefinition + '/' + 'changeWindowAttribute', {
         parentUuid: this.windowUuid, // act as parentUuid
         window: this.windowMetadata,

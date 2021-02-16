@@ -3,6 +3,18 @@ import { exportTxtToZip } from '@/ADempiere/shared/vendor/Export2Zip'
 import language from '@/ADempiere/shared/lang'
 import XLSX from 'xlsx'
 
+export const reportFormatsList: string[] = [
+  'ps',
+  'xml',
+  'pdf',
+  'txt',
+  'ssv',
+  'csv',
+  'xls',
+  'xlsx',
+  'arxml'
+]
+
 export const supportedTypes = {
   xlsx: language.t('report.ExportXlsx'),
   xls: language.t('report.ExportXls'),

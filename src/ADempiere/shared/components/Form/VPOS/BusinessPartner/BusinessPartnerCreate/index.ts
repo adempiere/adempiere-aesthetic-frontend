@@ -36,6 +36,14 @@ export default class BusinessPartnerCreate extends Mixins(
     // eslint-disable-next-line
     public unsubscribe: Function = () => {}
 
+    // Computed properties
+    get emptyMandatoryFields(): string[] {
+      const field: string[] = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
+        containerUuid: this.containerUuid
+      })
+      return field
+    }
+
     // Methods
     // TODO: Get locations values.
     createBusinessParter(): void {
@@ -49,41 +57,49 @@ export default class BusinessPartnerCreate extends Mixins(
         return
       }
       values = this.convertValuesToSend(values)
-
-      this.isLoadingRecord = true
-      requestCreateBusinessPartner(values)
-        .then((responseBPartner: IBusinessPartnerData) => {
-          // TODO: Add new record into vuex store.
-          this.setBusinessPartner(responseBPartner)
-          this.clearValues()
-          this.$message({
-            type: 'success',
-            message: 'Socio de negocio creado exitosamente',
-            duration: 1500,
-            showClose: true
+      if (!this.emptyMandatoryFields) {
+        this.isLoadingRecord = true
+        requestCreateBusinessPartner(values)
+          .then((responseBPartner: IBusinessPartnerData) => {
+            // TODO: Add new record into vuex store.
+            this.setBusinessPartner(responseBPartner)
+            this.clearValues()
+            this.$message({
+              type: 'success',
+              message: this.$t('form.pos.order.BusinessPartnerCreate.businessPartner').toString(),
+              duration: 1500,
+              showClose: true
+            })
           })
-        })
-        .catch(error => {
-          this.showsPopovers.isShowCreate = true
-          this.$message({
-            type: 'warning',
-            message: error.message,
-            duration: 1500,
-            showClose: true
+          .catch(error => {
+            this.showsPopovers.isShowCreate = true
+            this.$message({
+              type: 'warning',
+              message: error.message,
+              duration: 1500,
+              showClose: true
+            })
+            console.warn(
+                      `Error create Business Partner. Message: ${error.message}, code ${error.code}.`
+            )
           })
-          console.warn(
-                    `Error create Business Partner. Message: ${error.message}, code ${error.code}.`
-          )
+          .finally(() => {
+            this.isLoadingRecord = false
+          })
+      } else {
+        this.$message({
+          type: 'warning',
+          message: this.$t('notifications.mandatoryFieldMissing').toString() + this.emptyMandatoryFields,
+          duration: 1500,
+          showClose: true
         })
-        .finally(() => {
-          this.isLoadingRecord = false
-        })
+      }
     }
 
     clearValues(): void {
       this.showsPopovers.isShowCreate = false
 
-      this.$store.dispatch('setDefaultValues', {
+      this.$store.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {
         containerUuid: this.containerUuid,
         panelType: this.panelType
       })
@@ -91,7 +107,7 @@ export default class BusinessPartnerCreate extends Mixins(
     }
 
     clearLocationValues(): void {
-      this.$store.commit('updateValuesOfContainer', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
         containerUuid: this.containerUuid,
         attributes: [
           {

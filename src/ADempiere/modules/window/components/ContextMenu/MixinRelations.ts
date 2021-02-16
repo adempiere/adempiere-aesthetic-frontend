@@ -14,11 +14,13 @@ export default class MixinRelations extends Vue {
       }
       const relations: any = this.$store.getters[Namespaces.ContextMenu + '/' + 'getRelations'](menuUuid)
 
-      if (relations && relations.children) {
-        return relations.children
-      }
-      if (relations && relations.meta && relations.meta.childs.length) {
-        return relations.meta.childs
+      if (relations) {
+        if (relations.children) {
+          return relations.children
+        }
+        if (relations.meta && relations.meta.childs.length) {
+          return relations.meta.childs
+        }
       }
       return []
     }

@@ -63,8 +63,19 @@
             </div>
           </el-card>
           <samp style="float: right;padding-right: 10px;">
+            <el-checkbox v-show="fullCopper" v-model="checked">
+              <el-link
+                type="danger"
+                class="stylefullPayment">
+                <b>
+                  {{ $t('form.pos.collect.fullPayment') }}
+                </b>
+              </el-link>
+            </el-checkbox>
             <el-button type="danger" icon="el-icon-close" @click="cancel" />
-            <el-button type="primary" :disabled="isValidForPay || validateConvertion" icon="el-icon-plus" @click="addCollectToList(paymentBox)" />
+
+            <el-button type="primary" :disabled="validPay || addPay" icon="el-icon-plus" @click="addCollectToList(paymentBox)" />
+            <el-button type="success" :disabled="validateCompleteCollection" icon="el-icon-shopping-cart-full" />
           </samp>
         </el-header>
         <el-main style="padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px;">
@@ -174,6 +185,10 @@
 </template>
 
 <style scoped>
+  .stylefullPayment {
+    font-size: 15px;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif
+  }
   .el-button--text {
     border-color: transparent;
     color: #1890ff;

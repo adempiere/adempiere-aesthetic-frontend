@@ -15,7 +15,8 @@ export default {
     role: 'Role',
     organization: 'Organization',
     warehouse: 'Warehouse',
-    reportViewer: 'Report Viewer'
+    reportViewer: 'Report Viewer',
+    PriceChecking: 'Price checking'
   },
   notifications: {
     // simplex
@@ -344,7 +345,8 @@ export default {
           completePreparedOrder: 'Complete Prepared Order',
           cancelSaleTransaction: 'Cancel Sale Transaction',
           createPos: 'Create Point of Sale Withdrawal',
-          toPrint: 'To Print'
+          print: 'To Print',
+          cancelOrder: 'Cancel Order'
         },
         cashManagement: {
           title: 'Cash Management',
@@ -377,31 +379,54 @@ export default {
         itemQuantity: 'Item Quantity',
         numberLines: 'Number of Lines',
         pointSale: 'Point of Sale',
-        collect: 'Collect'
+        collect: 'Collect',
+        BusinessPartnerCreate: {
+          businessPartner: 'Business Partner',
+          successfullyCreated: 'Successful Business Partner',
+          taxId: 'Tax Identification'
+        }
       },
       collect: {
         orderTotal: 'Order Total',
         pending: 'Pending',
         payment: 'Payment',
         change: 'Change',
-        convertAmount: 'Convert Quantity'
+        convertAmount: 'Convert Quantity',
+        fullPayment: 'Full Payment',
+        TenderType: {
+          directDeposit: 'Direct Deposit',
+          creditCard: 'Credit Card',
+          directDebit: 'Direct Debit',
+          check: 'Check',
+          creditNote: 'Credit Note',
+          mobilePayment: 'Interbank mobile payment',
+          account: 'Account',
+          cash: 'Cash',
+          zelle: 'Zelle'
+        }
       },
       keyLayout: {
         noProducto: 'No product available. Back to top'
       }
     },
     priceChecking: {
-      messageError: 'This Product Not Available',
+      productNotFound: 'Unavailable Product',
       basePrice: 'Base price'
     },
     productInfo: {
+      product: 'Product',
+      codeProduct: 'Códe Product',
       productInformation: 'Product information',
       code: 'Code',
       name: 'Name',
+      lastName: 'Nombre2',
+      id: 'ID',
       description: 'Description',
       price: 'Price',
+      quantityOnHand: 'Quantity On Hand',
       taxAmount: 'Tax Amount',
       grandTotal: 'Grand Total',
+      grandTotalConverted: 'Grand Total Converted',
       quantityAvailable: 'Quantity Avalible',
       upc: 'UPC / EAN'
     }

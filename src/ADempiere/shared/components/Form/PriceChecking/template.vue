@@ -3,7 +3,7 @@
     <el-container style="height: 100% !important;">
       <img
         fit="contain"
-        :src="defaultImage"
+        :src="backgroundForm"
         class="background-price-checking"
         style="z-index: 2;"
       />
@@ -84,7 +84,7 @@
           <el-row v-if="!messageError" :gutter="20">
             <el-col style="padding-left: 0px; padding-right: 0%;">
               <div class="product-price amount">
-                {{ $t('form.priceChecking.messageError') }}
+                {{ $t('form.priceChecking.productNotFound') }}
               </div>
             </el-col>
           </el-row>

@@ -6,7 +6,7 @@
     <el-collapse v-model="activeAccordion" accordion>
       <el-collapse-item name="query-criteria">
         <template slot="title">
-          Business Partner
+          {{ $t('form.pos.order.BusinessPartnerCreate.businessPartner') }}
           <template v-if="(parentMetadata.name)">
             ({{ parentMetadata.name }})
           </template>
@@ -18,9 +18,9 @@
         >
           <el-row>
             <field-definition
-              v-for="(field) in fieldsList"
+              v-for="(field) in fieldList"
               :key="field.columnName"
-              :metadata-field="field"
+              :metadata-field="{...field, definition: field.overwriteDefinition}"
             />
           </el-row>
         </el-form>
@@ -38,33 +38,27 @@
       @current-change="handleCurrentChange"
     >
       <el-table-column
-        label="Key"
+        :label="$t('form.productInfo.code')"
         prop="value"
-        width="180"
+        width="100"
       />
       <el-table-column
-        label="ID"
+        :label="$('form.productInfo.id')"
         prop="id"
-        width="100"
+        width="90"
       />
       <el-table-column
         prop="name"
-        label="Name"
+        :label="$t('form.productInfo.name')"
       />
       <el-table-column
-        label="Last Name"
+        :label="$t('form.productInfo.lastName')"
         prop="lastName"
       />
       <el-table-column
-        label="NAICS"
-        prop="naics"
-        width="100"
-      />
-      <el-table-column
-        label="Tax ID"
+        :label="$t('form.pos.order.BusinessPartnerCreate.taxId')"
         prop="taxId"
         align="right"
-        width="100"
       />
     </el-table>
     <custom-pagination

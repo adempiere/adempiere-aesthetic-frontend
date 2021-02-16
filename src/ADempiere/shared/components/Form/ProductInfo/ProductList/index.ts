@@ -1,7 +1,7 @@
 import { IProductPriceData } from '@/ADempiere/modules/core'
 import { IListProductPriceItemData, IPointOfSalesData } from '@/ADempiere/modules/pos'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
-import { formatPrice } from '@/ADempiere/shared/utils/valueFormat'
+import { formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
 import { Table } from 'element-ui'
 import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import CustomPagination from '../../../Pagination'
@@ -17,6 +17,7 @@ export default class ProductList extends Mixins(MixinForm) {
   @Ref() readonly singleTable!: Table
   @Prop({ type: Boolean, default: true }) isSelectable!: boolean
   @Prop({ type: String, default: 'isShowPopoverField' }) popoverName!: string
+  @Prop({ type: Array, default: () => [] }) reportAssociated!: any[]
   @Prop({
     type: Object,
     default: () => {
@@ -35,6 +36,7 @@ export default class ProductList extends Mixins(MixinForm) {
   public timeOut: any = null
   private currentRow: any
   public attribute = ''
+  public indexTable = 0
 
   // Computed properties
   get defaultImage() {
@@ -67,8 +69,9 @@ export default class ProductList extends Mixins(MixinForm) {
 
   get shortsKey() {
     return {
-      closeProductList: ['esc'],
-      refreshList: ['f5']
+      options: ['enter'],
+      up: ['arrowup'],
+      down: ['arrowdown']
     }
   }
 
@@ -77,10 +80,41 @@ export default class ProductList extends Mixins(MixinForm) {
     return (!isLoaded || isReload) // && this.isShowProductsPriceList
   }
 
+  get listPrice(): number {
+    const pos: IPointOfSalesData | undefined = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+    if (pos) {
+      return pos.priceList.id
+    }
+    return 0
+  }
+
+  get process() {
+    if (this.reportAssociated) {
+      const process = this.reportAssociated.map(element => {
+        const findProcess = this.$store.getters.getProcess(element.uuid)
+        if (findProcess) {
+          return {
+            ...element,
+            name: findProcess.name,
+            id: findProcess.id
+          }
+        }
+        return []
+      })
+      return process
+    }
+    return []
+  }
+
   // Watchers
   @Watch('isReadyFromGetData')
   handleIsReadyFromGetData(isToLoad: boolean) {
     this.loadProductsPricesList()
+  }
+
+  @Watch('indexTable')
+  handleIndexTable(value: number) {
+    this.setCurrent(this.listWithPrice[value])
   }
 
   // Hooks
@@ -97,6 +131,8 @@ export default class ProductList extends Mixins(MixinForm) {
 
   // Methods
   formatPrice = formatPrice
+
+  formatQuantity = formatQuantity
 
   srcImage(keyValue: string) {
     if (!keyValue) {
@@ -116,6 +152,7 @@ export default class ProductList extends Mixins(MixinForm) {
 
   handleCurrentChange(val: any) {
     this.currentRow = val
+    this.findPosition(val)
     this.setCurrent(this.currentRow)
   }
 
@@ -133,6 +170,19 @@ export default class ProductList extends Mixins(MixinForm) {
           attribute: this.popoverName,
           isShowed: false
         })
+        break
+      case 'down':
+        if (this.indexTable < (this.listWithPrice.length - 1)) {
+          this.indexTable++
+        }
+        break
+      case 'up':
+        if (this.indexTable > 0) {
+          this.indexTable--
+        }
+        break
+      case 'options':
+        this.$store.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice')
         break
     }
   }
@@ -173,6 +223,25 @@ export default class ProductList extends Mixins(MixinForm) {
     return (basePrice * taxRate) / 100
   }
 
+  associatedprocesses(product: any, report: { parametersList: { columnName: string, value: any }[] }) {
+    report.parametersList.push({ columnName: 'M_Product_ID', value: product }, { columnName: 'M_PriceList_ID', value: this.listPrice })
+    this.$store.dispatch('processOption', {
+      action: report,
+      parametersList: report.parametersList,
+      reportFormat: 'pdf',
+      routeToDelete: this.$route
+    })
+  }
+
+  findPosition(current: any) {
+    const arrow: number = this.listWithPrice.findIndex(element => {
+      if (element.product.id === current.product.id) {
+        return element
+      }
+    })
+    this.indexTable = arrow
+  }
+
   subscribeChanges() {
     return this.$store.subscribe((mutation, state) => {
       // if (!this.isEmptyValue(this.listWithPrice)) {
@@ -184,7 +253,9 @@ export default class ProductList extends Mixins(MixinForm) {
         clearTimeout(this.timeOut)
         this.timeOut = setTimeout(() => {
           this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'updateSearch', mutation.payload.value)
-          this.$store.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice')
+          if (this.productPrice.isLoaded) {
+            this.$store.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice')
+          }
         }, 1000)
       }
     })

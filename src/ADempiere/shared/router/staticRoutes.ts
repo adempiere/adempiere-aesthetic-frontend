@@ -1,5 +1,4 @@
 /* Layout */
-import Layout from '@/layout/index.vue'
 import { RouteConfig } from 'vue-router'
 
 const staticRoutes: RouteConfig[] = [
@@ -89,7 +88,7 @@ const staticRoutes: RouteConfig[] = [
   {
     path: '/PriceChecking',
     component: () => import('@/layout/index.vue'),
-    meta: { hidden: false },
+    meta: { hidden: true, title: 'PriceChecking', isIndex: true },
     children: [
       {
         path: '/PriceChecking',
@@ -120,9 +119,10 @@ const staticRoutes: RouteConfig[] = [
   },
   {
     path: '/ProductInfo',
-    component: Layout,
+    component: () => import('@/layout/index.vue'),
     meta: {
-      hidden: false
+      hidden: false,
+      title: 'ProductInfo'
     },
     children: [
       {

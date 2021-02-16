@@ -43,17 +43,9 @@
                         height="100%"
                     />
                     <div
-                        v-else-if="
-                            collectionReportFormat.includes(reportFormat)
-                        "
-                        key="report-content-all"
-                        class="content-api"
-                        :src="url"
-                    />
-                    <div
-                        v-else-if="reportFormat === 'html'"
-                        key="report-content-html"
-                        class="content-txt"
+                    v-else-if="['html', 'txt'].includes(reportFormat)"
+                    key="report-content-html"
+                    class="content-txt"
                     >
                         <el-container class="sub-content-html">
                             <el-main style="padding: 0;">
@@ -64,9 +56,16 @@
                             </el-main>
                         </el-container>
                     </div>
+                    <div
+                    v-else-if="collectionReportFormat.includes(reportFormat)"
+                    key="report-content-all"
+                    class="content-api"
+                    :src="url"
+                    />
                 </div>
             </el-col>
         </el-row>
+
         <modal-dialog
             :metadata="processMetadata"
             :parent-uuid="reportResult.processUuid"

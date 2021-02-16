@@ -31,7 +31,7 @@ export const getters: PointOfSalesGetterTree = {
     state: PointOfSalesState,
     context: PointOfSalesActionContext
   ): string | undefined => {
-    const currentPOS: IPOSData| undefined = context.getters.getCurrentPOS()
+    const currentPOS: IPOSData| undefined = context.getters.getCurrentPOS
     if (!currentPOS) {
       return undefined
     }

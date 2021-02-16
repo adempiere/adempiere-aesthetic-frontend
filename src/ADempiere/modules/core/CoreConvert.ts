@@ -292,14 +292,22 @@ export function convertProductPrice(
 
 export function convertConversionRate(
   conversionRateToConvert: any
-): IConversionRateData {
+): IConversionRateData | Partial<IConversionRateData> {
   const { id, uuid } = conversionRateToConvert
+  if (!conversionRateToConvert.currency_from) {
+    return {
+      uuid,
+      id,
+      multiplyRate: conversionRateToConvert.multiply_rate,
+      divideRate: conversionRateToConvert.divide_rate
+    }
+  }
+
   return {
     uuid,
     id,
     conversionTypeUuid: conversionRateToConvert.conversion_type_uuid,
     validFrom: conversionRateToConvert.valid_from,
-    validTo: conversionRateToConvert.valid_to,
     currencyFrom: convertCurrency(conversionRateToConvert.currency_from),
     currencyTo: convertCurrency(conversionRateToConvert.currency_to),
     multiplyRate: conversionRateToConvert.multiply_rate,

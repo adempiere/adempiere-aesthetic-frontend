@@ -23,10 +23,15 @@ export default class FormView extends Vue {
 
     // Computed properties
     get formTitle(): string {
+      if (this.$route.meta.title === 'PriceChecking') {
+        return this.$t('route.PriceChecking').toString()
+      } else if (this.$route.meta.title === 'ProductInfo') {
+        return this.$t('route.ProductInfo').toString()
+      }
       return this.formMetadata.name || this.$route.meta.title
     }
 
-    get formFileName() {
+    get fromFileName() {
       return this.formMetadata.fileName || this.$route.meta.title
     }
 

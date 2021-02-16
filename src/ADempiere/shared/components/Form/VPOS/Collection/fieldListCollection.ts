@@ -27,7 +27,7 @@ const fieldListCollection: IFieldLocation[] = [
       handleActionKeyPerformed: true,
       handleContentSelection: true,
       handleActionPerformed: true,
-      size: 8,
+      size: 24,
       isActiveLogics: true,
       isMandatory: true
     }
@@ -42,7 +42,7 @@ const fieldListCollection: IFieldLocation[] = [
       handleActionPerformed: true,
       handleContentSelection: true,
       displayLogic: '@TenderType@==\'D\'',
-      size: 8,
+      size: 24,
       isActiveLogics: true,
       isMandatory: true
     }
@@ -53,9 +53,13 @@ const fieldListCollection: IFieldLocation[] = [
     elementColumnName: 'DateTrx',
     isFromDictionary: true,
     overwriteDefinition: {
+      handleFocusGained: true,
+      handleFocusLost: true,
+      handleKeyPressed: true,
+      handleKeyReleased: true,
       handleActionKeyPerformed: true,
       handleActionPerformed: true,
-      size: 8,
+      size: 24,
       displayLogic: '@TenderType@==\'K\'',
       isActiveLogics: true,
       isMandatory: true
@@ -67,7 +71,7 @@ const fieldListCollection: IFieldLocation[] = [
     columnName: 'C_Currency_ID',
     isFromDictionary: true,
     overwriteDefinition: {
-      size: 8,
+      size: 24,
       handleActionKeyPerformed: true,
       handleActionPerformed: true,
       validationCode: 'C_Currency.C_Currency_ID = 100',
@@ -85,7 +89,7 @@ const fieldListCollection: IFieldLocation[] = [
       handleContentSelection: true,
       handleActionPerformed: true,
       displayLogic: '@TenderType@<>\'X\'&@TenderType@<>\'C\' ',
-      size: 8,
+      size: 24,
       isActiveLogics: true,
       isMandatory: true
     }
@@ -100,7 +104,7 @@ const fieldListCollection: IFieldLocation[] = [
       handleActionKeyPerformed: true,
       handleContentSelection: true,
       handleActionPerformed: true,
-      size: 8,
+      size: 24,
       displayLogic: '@TenderType@==\'C\'',
       isActiveLogics: true,
       isMandatory: true
@@ -115,7 +119,7 @@ const fieldListCollection: IFieldLocation[] = [
       handleActionKeyPerformed: true,
       handleContentSelection: true,
       handleActionPerformed: true,
-      size: 8,
+      size: 24,
       displayLogic: '@TenderType@==\'C\'',
       isActiveLogics: true,
       isMandatory: true
@@ -130,7 +134,7 @@ const fieldListCollection: IFieldLocation[] = [
       handleActionKeyPerformed: true,
       handleContentSelection: true,
       handleActionPerformed: true,
-      size: 8,
+      size: 24,
       displayLogic: '@TenderType@==\'M\'',
       isActiveLogics: true,
       isMandatory: true

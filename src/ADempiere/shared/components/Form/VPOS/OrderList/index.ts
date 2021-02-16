@@ -70,7 +70,7 @@ export default class OrdersList extends Mixins(MixinForm) {
       if (order) {
         return order
       }
-      this.$store.dispatch('listOrderLine', [])
+      this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
       return null
     }
 
@@ -87,12 +87,12 @@ export default class OrdersList extends Mixins(MixinForm) {
     }
 
     // Watcher
-    @Watch('isReadyFromGetData')
-    handleIsReadyFromGetDataChange(isToLoad: boolean) {
-      if (isToLoad) {
-        this.loadOrdersList()
-      }
-    }
+    // @Watch('isReadyFromGetData')
+    // handleIsReadyFromGetDataChange(isToLoad: boolean) {
+    //   if (isToLoad) {
+    //     this.loadOrdersList()
+    //   }
+    // }
 
     // Hooks
     created() {
@@ -119,7 +119,7 @@ export default class OrdersList extends Mixins(MixinForm) {
           break
 
         case 'closeOrdersList':
-          this.$store.commit('showListOrders', false)
+          this.$store.commit(Namespaces.Order + '/' + 'showListOrders', false)
           break
       }
     }
@@ -133,21 +133,21 @@ export default class OrdersList extends Mixins(MixinForm) {
 
       values = this.convertValuesToSend(values)
 
-      this.$store.dispatch('listOrdersFromServer', {
+      this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
         ...values
       })
     }
 
     handleChangePage(newPage: number): void {
-      this.$store.dispatch('setOrdersListPageNumber', newPage)
+      this.$store.dispatch(Namespaces.Order + '/' + 'setOrdersListPageNumber', newPage)
     }
 
     handleCurrentChange(row: any): void {
       // close popover
-      this.$store.commit('showListOrders', false)
-      this.$store.dispatch('currentOrder', row)
+      this.$store.commit(Namespaces.Order + '/' + 'showListOrders', false)
+      this.$store.dispatch(Namespaces.Order + '/' + 'currentOrder', row)
       if (row) {
-        this.$store.dispatch('deleteAllCollectBox')
+        this.$store.dispatch(Namespaces.Collection + '/' + 'deleteAllCollectBox')
         this.$router.push(
           {
             params: {

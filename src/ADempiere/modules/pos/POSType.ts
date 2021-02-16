@@ -136,9 +136,9 @@ export interface IUpdateOrderParams {
 
 export interface IDeleteOrderParams {
     posUuid: string
-    customerUuid: string
-    documentTypeUuid: string
-    salesRepresentativeUuid: string
+    customerUuid?: string
+    documentTypeUuid?: string
+    salesRepresentativeUuid?: string
 }
 
 export interface IListOrdersParams {

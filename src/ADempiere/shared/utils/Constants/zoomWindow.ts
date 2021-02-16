@@ -1,10 +1,11 @@
+export interface IZoomWindowRouteData {
+  uuid: string
+  action?: any
+  tabParent: string
+  tabChild?: any
+}
 export interface IZoomWindowRoute {
-    [key: string]: {
-        uuid: string
-        action?: any
-        tabParent: string
-        tabChild?: any
-    }
+    [key: string]: IZoomWindowRouteData
 }
 
 const ROUTES: IZoomWindowRoute = {

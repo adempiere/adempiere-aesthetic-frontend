@@ -15,7 +15,8 @@ export default {
     role: 'Rol',
     organization: 'Organización',
     warehouse: 'Almacén',
-    reportViewer: 'Visor de Reportes'
+    reportViewer: 'Visor de Reportes',
+    PriceChecking: 'Consulta del precio'
   },
   notifications: {
     // simplex
@@ -319,7 +320,8 @@ export default {
           completePreparedOrder: 'Completar Orden Preparada',
           cancelSaleTransaction: 'Anular Transacción de Venta',
           createPos: 'Crear Retiro de Punto de Venta',
-          toPrint: 'Imprimir'
+          print: 'Imprimir',
+          cancelOrder: 'Cancelar Orden'
         },
         cashManagement: {
           title: 'Gestión de Caja',
@@ -343,7 +345,7 @@ export default {
       order: {
         order: 'Orden',
         seller: 'Vendedor',
-        date: 'Date',
+        date: 'Fecha',
         subTotal: 'Sub-Total',
         type: 'Tipo',
         discount: 'Descuento',
@@ -352,31 +354,54 @@ export default {
         itemQuantity: 'Cantidad de Árticulo',
         numberLines: 'Cantidad de Lineas',
         pointSale: 'Punto de Venta',
-        collect: 'Cobrar'
+        collect: 'Cobrar',
+        BusinessPartnerCreate: {
+          businessPartner: 'Socio de Negocios',
+          successfullyCreated: 'Socio de Negocio Creado Exitosamente',
+          taxId: 'Identificación Fiscal'
+        }
       },
       collect: {
         orderTotal: 'Total de Orden',
         pending: 'Pendiente',
         payment: 'Pago',
         change: 'Cambio',
-        convertAmount: 'Convertir Cantidad'
+        convertAmount: 'Convertir Cantidad',
+        fullPayment: 'Cobro Completo',
+        TenderType: {
+          directDeposit: 'Depósito Directo',
+          creditCard: 'Tarjeta de Crédito',
+          directDebit: 'Débito Directo',
+          check: 'Cheque',
+          creditNote: 'Nota de crédito',
+          mobilePayment: 'Pago Móvil Interbancario',
+          account: 'Cuenta',
+          cash: 'Efectivo',
+          zelle: 'Zelle'
+        }
       },
       keyLayout: {
         noProducto: 'No hay producto disponible Regresar al Principio'
       }
     },
     priceChecking: {
-      messageError: 'Este Producto No Disponible',
+      productNotFound: 'Producto No Disponible',
       basePrice: 'Precio Base'
     },
     productInfo: {
-      productInformation: 'Product information',
+      product: 'Producto',
+      codeProduct: 'Código de Producto',
+      productInformation: 'Informacion de Producto',
       code: 'Código',
       name: 'Nombre',
+      id: 'ID',
+      lastName: 'Nombre2',
       description: 'Descripción',
+      quantityOnHand: 'Existencia',
       price: 'Precio',
       taxAmount: 'Monto de Impuesto',
       grandTotal: 'Total General',
+      grandTotalConverted: 'Grand Total Convertido',
       quantityAvailable: 'Cantidad Disponible',
       upc: 'Código de Barras'
     }

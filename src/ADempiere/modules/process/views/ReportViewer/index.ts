@@ -7,6 +7,7 @@ import { SettingsModule } from '@/store/modules/settings'
 import { Component, Vue } from 'vue-property-decorator'
 import { INotificationProcessData } from '../../ProcessType'
 import Template from './template.vue'
+import { reportFormatsList } from '@/ADempiere/shared/utils/exportUtil'
 
 @Component({
   name: 'ReportViewer',
@@ -19,17 +20,7 @@ export default class ReportViewer extends Vue {
     public reportContent?: string | IReportOutputData = ''
     public isLoading = false
     public reportResult?: Partial<INotificationProcessData> = {}
-    public collectionReportFormat: string[] = [
-      'ps',
-      'xml',
-      'pdf',
-      'txt',
-      'ssv',
-      'csv',
-      'xls',
-      'xlsx',
-      'arxml'
-    ]
+    public reportFormatsList: string[] = reportFormatsList
 
     // Computed properties
     // TODO: Add get metadata from server to open report view from link
@@ -82,8 +73,12 @@ export default class ReportViewer extends Vue {
     getCachedReport(): void {
       this.reportResult = this.getterCachedReport
       if (this.reportResult === undefined) {
-        this.$store
-          .dispatch(Namespaces.Process + '/' + 'getSessionProcessFromServer', undefined, { root: true })
+        const pageSize = undefined
+        const pageToken = undefined
+        this.$store.dispatch(Namespaces.Process + '/' + 'getSessionProcessFromServer', {
+          pageSize,
+          pageToken
+        }, { root: true })
           .then(response => {
             this.reportResult = this.getterCachedReport
             if (this.reportResult === undefined) {

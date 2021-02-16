@@ -9,6 +9,22 @@ export interface IRoleData {
     isCanReport: boolean
     isPersonalAccess: boolean
     isPersonalLock: boolean
+
+    isAllowHtmlView?: boolean
+    isAllowInfoAccount?: boolean
+    isAllowInfoAsset?: boolean
+    isAllowInfoBusinessPartner?: boolean
+    isAllowInfoCashJournal?: boolean
+    isAllowInfoCrp: boolean
+    isAllowInfoInOut?: boolean
+    isAllowInfoInvoice?: boolean
+    isAllowInfoMrp?: boolean
+    isAllowInfoOrder?: boolean
+    isAllowInfoPayment?: boolean
+    isAllowInfoProduct?: boolean
+    isAllowInfoResource?: boolean
+    isAllowInfoSchedule?: boolean
+    isAllowXlsView?: boolean
 }
 
 export interface IUserInfoData {

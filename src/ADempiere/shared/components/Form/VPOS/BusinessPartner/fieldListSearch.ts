@@ -3,58 +3,56 @@ import { IFieldLocation } from '../../../Field/FieldLocation/fieldList'
 // List of fields to send in search
 const fieldListSearch: Partial<IFieldLocation>[] = [
   {
-    columnName: 'Code',
-    // displayType: CHAR.id,
-    overwriteDefinition: {
-      name: 'Search Value',
-      isCustomField: true
-    }
-  },
-  {
+    elementColumnName: 'Value',
     columnName: 'Value',
+    tableName: 'C_BPartner',
+    isFromDictionary: true,
     // displayType: CHAR.id,
     overwriteDefinition: {
-      name: 'Search Key',
       isCustomField: true
     }
   },
   {
+    elementColumnName: 'Name',
     columnName: 'Name',
+    tableName: 'C_BPartner',
+    isFromDictionary: true,
     // displayType: CHAR.id,
     overwriteDefinition: {
-      name: 'Name',
       isCustomField: true
     }
   },
+  // {
+  //   elementColumnName: 'Name2',
+  //   tableName: 'C_BPartner',
+  //   isFromDictionary: true,
+  //   columnName: 'Name2',
+  //   overwriteDefinition: {
+  //     isCustomField: true
+  //   }
+  // },
   {
-    columnName: 'Contact',
-    // displayType: CHAR.id,
-    overwriteDefinition: {
-      name: 'Contact Name',
-      isCustomField: true
-    }
-  },
-  {
+    elementColumnName: 'EMail',
     columnName: 'EMail',
-    // displayType: CHAR.id,
+    tableName: 'AD_user',
+    isFromDictionary: true,
     overwriteDefinition: {
-      name: 'E-Mail Address',
       isCustomField: true
     }
   },
   {
+    elementColumnName: 'Postal',
     columnName: 'Postal',
-    // displayType: CHAR.id,
+    isFromDictionary: true,
     overwriteDefinition: {
-      name: 'Postal Code',
       isCustomField: true
     }
   },
   {
+    elementColumnName: 'Phone',
     columnName: 'Phone',
-    // displayType: CHAR.id,
+    isFromDictionary: true,
     overwriteDefinition: {
-      name: 'Phone',
       isCustomField: true
     }
   }

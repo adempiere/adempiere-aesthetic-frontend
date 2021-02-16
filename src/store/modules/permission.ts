@@ -80,7 +80,8 @@ class Permission extends VuexModule implements IPermissionState {
       loadMainMenu({
         sessionUuid,
         roleUuid,
-        organizationUuid
+        organizationUuid,
+        role: <IRoleData>role
       }).then((menuResponse: RouteConfig[]) => {
         this.SET_ROUTES(menuResponse)
         resolve(menuResponse)

@@ -12,13 +12,13 @@
                 <!-- this slot is 'paneL' (with 'L' in uppercase) do not change -->
                 <div class="left-container">
                   <el-aside v-show="isShowedRecordNavigation" width="100%">
-                    <div class="small-4 columns">
+                    <div class="small-4 columns" style="height: 100%;">
                       <div class="w">
                         <div class="open-left" />
                         <div :class="styleTableNavigation">
                           <!-- close record navigation and advanced query panel -->
                           <el-button
-                            :icon="iconShowedRecordNavigation"
+                            :icon="!isShowedRecordPanel"
                             circle
                             style="margin-left: 10px;"
                             class="el-button-window"
@@ -367,6 +367,9 @@
   .w-33 {
     width: 100%;
     background-color: transparent;
+  }
+  .w {
+    height: 100%;
   }
   .open-table-detail-mobile {
     position: absolute;

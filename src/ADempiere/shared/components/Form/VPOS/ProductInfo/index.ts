@@ -2,7 +2,7 @@ import { IProductPriceData } from '@/ADempiere/modules/core'
 import { IListProductPriceItemData } from '@/ADempiere/modules/pos/POSType'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import MixinField from '../../../Field/Mixin/MixinField'
 import ProductInfoList from './ProductList'
 import Template from './template.vue'
@@ -15,6 +15,7 @@ import Template from './template.vue'
   mixins: [MixinField, Template]
 })
 export default class FieldProductInfo extends Mixins(MixinField) {
+    @Prop({ type: String, default: 'isShowPopoverField' }) popoverName!: string
     public timeOut: any = null
 
     // Computed properties
@@ -44,7 +45,8 @@ export default class FieldProductInfo extends Mixins(MixinField) {
     get keyShortcuts() {
       return {
         refreshList: ['f5'],
-        refreshList2: ['shift', 'f5']
+        refreshList2: ['shift', 'f5'],
+        closeProductList: ['esc']
       }
     }
 
@@ -58,6 +60,12 @@ export default class FieldProductInfo extends Mixins(MixinField) {
         case 'refreshList':
         case 'refreshList2':
           this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {})
+          break
+        case 'closeProductList':
+          this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
+            attribute: this.popoverName,
+            isShowed: false
+          })
           break
       }
     }

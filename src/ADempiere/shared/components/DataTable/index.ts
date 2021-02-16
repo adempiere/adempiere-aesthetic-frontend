@@ -161,7 +161,7 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
           }
         }
         return {
-          height: '17%',
+          height: '11%',
           overflow: 'hidden'
         }
       }

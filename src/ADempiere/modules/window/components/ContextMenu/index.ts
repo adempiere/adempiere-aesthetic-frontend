@@ -9,7 +9,7 @@ import { AppModule, DeviceType } from '@/store/modules/app'
 export default class ContextMenu extends Vue {
     @Prop({ type: String, default: undefined }) public menuParentUuid?: string
     @Prop({ type: String, default: undefined }) public parentUuid?: string
-    @Prop({ type: String, required: true }) public containerUuid?: string
+    @Prop({ type: String, default: undefined }) public containerUuid?: string
     @Prop({ type: String, default: undefined }) public panelType?: string
     @Prop({ type: String, default: undefined }) public tableName?: string
     @Prop({ type: Boolean, default: false }) public isReport!: boolean

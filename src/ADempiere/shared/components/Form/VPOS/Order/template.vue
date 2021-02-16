@@ -86,7 +86,7 @@
                         <el-popover
                           placement="right"
                           trigger="click"
-                          :title="$t('form.pos.product.productInformation')"
+                          :title="$t('form.productInfo.productInformation')"
                         >
                           <el-form
                             label-position="top"
@@ -112,20 +112,20 @@
                               </el-col>
                               <el-col :span="10">
                                 <div style="float: right">
-                                  {{ $t('form.pos.product.price') }}:
+                                  {{ $t('form.productInfo.price') }}:
                                   <b>{{ formatPrice(currentOrderLine.product.priceStandard, currencyPoint.iSOCode) }}</b>
                                   <br>
-                                  {{ $t('form.pos.product.taxRate') }}:
+                                  {{ $t('form.productInfo.taxAmount') }}:
                                   <b>{{ currentOrderLine.taxIndicator }}</b>
                                   <br>
-                                  {{ $t('form.pos.product.quantityAvailable') }}:
+                                  {{ $t('form.productInfo.quantityAvailable') }}:
                                   <b>{{ formatQuantity(currentOrderLine.quantityOrdered) }}</b>
                                 </div>
                               </el-col>
                             </el-row>
                           </el-form>
                           <el-button slot="reference" type="text">
-                            {{ $t('form.pos.product.productInformation') }}
+                            {{ $t('form.productInfo.productInformation') }}
                           </el-button>
                         </el-popover>
                       </el-dropdown-item>
@@ -234,7 +234,27 @@
               <p class="total"> {{ $t('form.pos.order.subTotal') }}:<b class="order-info">{{ formatPrice(order.totalLines, currencyPoint.iSOCode) }}</b></p>
               <p class="total"> {{ $t('form.pos.order.discount') }}:<b class="order-info">{{ formatPrice(0, currencyPoint.iSOCode) }}</b> </p>
               <p class="total"> {{ $t('form.pos.order.tax') }}:<b style="float: right;">{{ getOrderTax(currencyPoint.iSOCode) }}</b> </p>
-              <p class="total"><b>{{ $t('form.pos.order.total') }}:</b><b style="float: right;">{{ formatPrice(order.grandTotal, currencyPoint.iSOCode) }}</b></p>
+               <p class="total">
+                <b>
+                  {{ $t('form.pos.order.total') }}:
+                </b>
+                <b style="float: right;">
+                  <el-popover
+                    placement="top-start"
+                    trigger="click"
+                  >
+                    <convert-amount
+                      :convert="multiplyRate"
+                      :amount="order.grandTotal"
+                      :currency="currencyPoint"
+                    />
+                    <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;">
+                      {{ formatPrice(order.grandTotal, currencyPoint.iSOCode) }}
+                    </el-button>
+                  </el-popover>
+                  <!-- {{ formatPrice(order.grandTotal, currencyPoint.iSOCode) }} -->
+                </b>
+              </p>
             </span>
             <span style="float: right;padding-right: 40px;">
               <p class="total">{{ $t('form.pos.order.order') }}: <b class="order-info">{{ order.documentNo }}</b></p>
@@ -385,7 +405,12 @@
     color: #333;
     line-height: 10px;
   }
-
+  .el-button--text {
+    border-color: transparent;
+    color: #1890ff;
+    background: transparent;
+    padding: 0px;
+  }
   .el-aside {
     color: #333;
   }

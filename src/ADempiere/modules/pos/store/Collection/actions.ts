@@ -17,15 +17,11 @@ export const actions: CollectionActionTree = {
         payAmt: number
         quantityCahs: number
     }) {
-    const payments = context.getters.getPaymentBox().find((element: any) => {
-      if (element.tenderType === params.tenderType && element.currency.id === params.currency.id) {
-        return element
-      }
-    })
+    const payments: any = undefined
     if (!payments) {
       context.commit('addPaymentBox', params)
     } else {
-      const addPayment = context.getters.getPaymentBox().map((item: any) => {
+      const addPayment = context.getters.getPaymentBox.map((item: any) => {
         if (item.tenderType === params.tenderType && item.currency.id === params.currency.id) {
           return {
             ...item,
@@ -50,10 +46,9 @@ export const actions: CollectionActionTree = {
     requestGetConversionRate({
       conversionTypeUuid: params.conversionTypeUuid,
       currencyFromUuid: params.currencyFromUuid,
-      currencyToUuid: params.currencyToUuid,
-      conversionDate: params.conversionDate
+      currencyToUuid: params.currencyToUuid
     })
-      .then((response: IConversionRateData) => {
+      .then((response: IConversionRateData | Partial<IConversionRateData>) => {
         const divideRate: number = (!response.divideRate) ? 1 : response.divideRate
         context.commit('currencyDivideRate', divideRate)
       })
@@ -66,30 +61,32 @@ export const actions: CollectionActionTree = {
         })
       })
   },
-  conversionMultiplyRate(context: CollectionActionContext, payload: IGetConversionRateParams): Promise<number> {
-    const { conversionTypeUuid, currencyFromUuid, currencyToUuid, conversionDate } = payload
-    return new Promise<number>(resolve => {
-      requestGetConversionRate({
-        conversionTypeUuid,
-        currencyFromUuid,
-        currencyToUuid,
-        conversionDate
-      })
-        .then((response: IConversionRateData) => {
-          const multiplyRate: number = (!response.multiplyRate) ? 1 : response.multiplyRate
-
-          context.commit('currencyMultiplyRate', multiplyRate)
-          resolve(multiplyRate)
-        })
-        .catch(error => {
-          console.warn(`conversionMultiplyRate: ${error.message}. Code: ${error.code}.`)
-          showMessage({
-            type: 'error',
-            message: error.message,
-            showClose: true
-          })
-        })
+  conversionMultiplyRate(context: CollectionActionContext, payload: IGetConversionRateParams) {
+    const {
+      conversionTypeUuid,
+      currencyFromUuid,
+      currencyToUuid
+      // conversionDate
+    } = payload
+    requestGetConversionRate({
+      conversionTypeUuid,
+      currencyFromUuid,
+      currencyToUuid
+      // conversionDate
     })
+      .then((response: IConversionRateData| Partial<IConversionRateData>) => {
+        const multiplyRate: number = (!response.multiplyRate) ? 1 : response.multiplyRate
+
+        context.commit('currencyMultiplyRate', multiplyRate)
+      })
+      .catch(error => {
+        console.warn(`conversionMultiplyRate: ${error.message}. Code: ${error.code}.`)
+        showMessage({
+          type: 'error',
+          message: error.message,
+          showClose: true
+        })
+      })
   },
   changeMultiplyRate(context: CollectionActionContext, multiplyRate: number) {
     context.commit('currencyMultiplyRate', multiplyRate)

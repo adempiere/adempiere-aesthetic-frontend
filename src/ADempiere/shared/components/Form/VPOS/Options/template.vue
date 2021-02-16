@@ -25,13 +25,11 @@
           <el-col :span="size">
             <el-card shadow="hover">
               <el-popover
-                v-model="isShowOrdersList"
                 placement="right"
                 width="800"
                 trigger="click"
               >
                 <orders-list
-                  v-if="isShowOrdersList"
                   :parent-metadata="metadata"
                 />
                 <p
@@ -106,7 +104,7 @@
               >
                 <i class="el-icon-printer" />
                 <br>
-                {{ $t('form.pos.optionsPoinSales.salesOrder.toPrint') }}
+                {{ $t('form.pos.optionsPoinSales.salesOrder.print') }}
               </p>
             </el-card>
           </el-col>
@@ -120,6 +118,19 @@
                 <i class="el-icon-refresh-left" />
                 <br>
                 Crear Nueva Orden de Devolución
+              </p>
+            </el-card>
+          </el-col>
+
+          <el-col :span="size">
+            <el-card shadow="hover">
+              <p
+                :style="blockOption"
+                @click="deleteOrder"
+              >
+                <i class="el-icon-close" />
+                <br>
+                {{ $t('form.pos.optionsPoinSales.salesOrder.cancelOrder') }}
               </p>
             </el-card>
           </el-col>

@@ -26,12 +26,11 @@ import {
  */
 
 export function requestLookup(data: ILookupParams): Promise<ILookupItemData> {
-  const { columnName, tableName, directQuery, value } = data
+  const { tableName, directQuery, value } = data
   let filters: any[] = []
   if (value) {
     filters = [
       {
-        column_name: columnName,
         value
       }
     ]

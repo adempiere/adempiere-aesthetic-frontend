@@ -297,9 +297,9 @@ export function requestListBusinessPartner(
  */
 export function requestGetConversionRate(
   data: IGetConversionRateParams
-): Promise<IConversionRateData> {
+): Promise<IConversionRateData | Partial<IConversionRateData>> {
   const {
-    conversionDate,
+    // conversionDate,
     conversionTypeUuid,
     currencyFromUuid,
     currencyToUuid
@@ -309,8 +309,8 @@ export function requestGetConversionRate(
     data: {
       conversion_type_uuid: conversionTypeUuid,
       currency_from_uuid: currencyFromUuid,
-      currency_to_uuid: currencyToUuid,
-      conversion_date: conversionDate
+      currency_to_uuid: currencyToUuid
+      // conversion_date: conversionDate
     }
   })
     .then(evaluateResponse)

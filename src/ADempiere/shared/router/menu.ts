@@ -2,7 +2,7 @@
 /* Layout  */
 import { requestMenu } from '@/ADempiere/modules/user/UserService/user'
 import staticRoutes from './staticRoutes'
-import { IMenuData } from '@/ADempiere/modules/user'
+import { IMenuData, IRoleData } from '@/ADempiere/modules/user'
 import { RouteConfig } from 'vue-router'
 import { convertAction } from '@/ADempiere/shared/utils/DictionaryUtils'
 
@@ -17,9 +17,11 @@ export function loadMainMenu(params: {
   sessionUuid: string
   roleUuid?: string
   organizationUuid?: string
+  role: IRoleData
 }): Promise<RouteConfig[]> {
   const {
     sessionUuid,
+    role,
     roleUuid = params.roleUuid || String(0),
     organizationUuid = params.organizationUuid || String(0)
   } = params
@@ -62,7 +64,11 @@ export function loadMainMenu(params: {
         }
         asyncRoutesMap.push(optionMenu)
       })
-      resolve(staticRoutes.concat(asyncRoutesMap))
+      const permiseStaticRoutes = hiddenStactiRoutes({
+        staticRoutes,
+        permiseRole: role
+      })
+      resolve(permiseStaticRoutes.concat(asyncRoutesMap))
     }).catch(error => {
       console.warn(`Error getting menu: ${error.message}. Code: ${error.code}.`)
     })
@@ -158,4 +164,27 @@ function getRouteFromMenuItem(params: { menu: any, roleUuid: string, organizatio
     children: []
   }
   return optionMenu
+}
+
+/**
+ * Grant visibility to static routes based on current role permissions
+ * @author elsiosanchez <elsiosanches@gmail.com>
+ * @param {object} staticRoutes static routes
+ * @param {object} permiseRole role permissions
+ */
+function hiddenStactiRoutes(params: {
+  staticRoutes: RouteConfig[]
+  permiseRole: any }) {
+  const { staticRoutes, permiseRole } = params
+  return staticRoutes.map(route => {
+    if (route.path === '/ProductInfo') {
+      return {
+        ...route,
+        hidden: !permiseRole.isAllowInfoProduct
+      }
+    }
+    return {
+      ...route
+    }
+  })
 }
