@@ -88,7 +88,7 @@ const staticRoutes: RouteConfig[] = [
   {
     path: '/PriceChecking',
     component: () => import('@/layout/index.vue'),
-    meta: { hidden: false, title: 'PriceChecking', isIndex: true },
+    meta: { hidden: true, title: 'PriceChecking', isIndex: true },
     children: [
       {
         path: '/PriceChecking',

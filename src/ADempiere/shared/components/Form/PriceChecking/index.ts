@@ -154,6 +154,9 @@ export default class PriceChecking extends Mixins(MixinForm) {
               })
           }
         }
+        if (mutation.type === 'changeFormAttribute') {
+          this.focusProductValue()
+        }
       })
     }
 

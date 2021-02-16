@@ -148,9 +148,9 @@ export default class ProcessActivity extends Vue {
         type: 'success',
         color: '#67C23A'
       }
-      if (isReport) {
-        return status
-      }
+      // if (isReport) {
+      //   return status
+      // }
       // is executing
       if (isProcessing) {
         status.text = this.$t('notifications.processing').toString()
