@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex'
-import { CollectionState } from '../../POSType'
+import { CollectionState, IPaymentsData } from '../../POSType'
 
 type CollectionMutationTree = MutationTree<CollectionState>
 
@@ -18,5 +18,11 @@ export const mutations: CollectionMutationTree = {
   },
   currencyDivideRateCollection(state: CollectionState, divideRateCollection: number) {
     state.divideRateCollection = divideRateCollection
+  },
+  setListPayments(state: CollectionState, list: IPaymentsData[]) {
+    state.listPayments = list
+  },
+  setTenderTypeDisplaye(state: CollectionState, tenderTypeDisplaye: any[]) {
+    state.tenderTypeDisplaye = tenderTypeDisplaye
   }
 }

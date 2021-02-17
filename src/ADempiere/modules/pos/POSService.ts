@@ -8,7 +8,8 @@ import {
   convertKeyLayout,
   convertOrder,
   convertOrderLine,
-  convertPointOfSales
+  convertPointOfSales,
+  paymentsMethod
 } from './POSConvert'
 import {
   ICreateOrderLineParams,
@@ -29,12 +30,14 @@ import {
   IListProductPriceResponse,
   IOrderData,
   IOrderLineData,
+  IPaymentsData,
   IPointOfSalesData,
   IPrintOrderParams,
   IUpdateOrderParams,
   UpdateOrderLineParams
 } from './POSType'
 import { AxiosPromise } from 'axios'
+import { IResponseList } from '@/ADempiere/shared/utils/types'
 
 // List Point of sales
 export function requestGetPointOfSales(
@@ -437,4 +440,114 @@ export function requestCreateNewCustomerReturnOrder(data: IPrintOrderParams) {
 export function requestCashClosing(data: IGenerateInvoiceParams) {
   const { posUuid, posId } = data
   console.info(`Cash closing with POS id ${posId}, and uuid ${posUuid}`)
+}
+
+// Create Payment
+
+export function requestCreatePayment(data: {
+  posUuid: string
+  orderUuid: string
+  invoiceUuid: string
+  bankUuid: string
+  referenceNo: string
+  description: string
+  amount: number
+  paymentDate: Date
+  tenderTypeCode: any
+  currencyUuid: string
+}) {
+  const { posUuid, orderUuid, invoiceUuid, bankUuid, referenceNo, description, amount, paymentDate, tenderTypeCode, currencyUuid } = data
+  return requestRest({
+    url: '/pos/create-payment',
+    data: {
+      pos_uuid: posUuid,
+      order_uuid: orderUuid,
+      invoice_uuid: invoiceUuid,
+      bank_uuid: bankUuid,
+      reference_no: referenceNo,
+      description: description,
+      amount: amount,
+      payment_date: paymentDate,
+      tender_type_code: tenderTypeCode,
+      currency_uuid: currencyUuid
+    }
+  })
+    .then(evaluateResponse)
+    .then(createPaymentResponse => {
+      return createPaymentResponse
+    })
+}
+
+// Update Payment
+
+export function requestUpdatePayment(data: {
+  paymentUuid: string
+  bankUuid: string
+  referenceNo: string
+  description: string
+  amount: number
+  paymentDate: Date
+  tenderTypeCode: any
+}) {
+  const { paymentDate, paymentUuid, bankUuid, referenceNo, description, amount, tenderTypeCode } = data
+  return requestRest({
+    url: '/pos/update-payment',
+    data: {
+      payment_uuid: paymentUuid,
+      bank_uuid: bankUuid,
+      reference_no: referenceNo,
+      description: description,
+      amount: amount,
+      payment_date: paymentDate,
+      tender_type_code: tenderTypeCode
+    }
+  })
+    .then(evaluateResponse)
+    .then(updatePaymentResponse => {
+      return updatePaymentResponse
+    })
+}
+
+// Delete Payment
+
+export function requestDeletePayment(data: {
+  paymentUuid: string
+}) {
+  const { paymentUuid } = data
+  return requestRest({
+    url: '/pos/delete-payment',
+    data: {
+      payment_uuid: paymentUuid
+    }
+  })
+    .then(evaluateResponse)
+    .then(deletePaymentResponse => {
+      return deletePaymentResponse
+    })
+}
+
+// List Payments
+
+export function requestListPayments(data: {
+  posUuid: string
+  orderUuid: string
+}):Promise<IResponseList<IPaymentsData>> {
+  const { posUuid, orderUuid } = data
+  return requestRest({
+    url: '/pos/list-payments',
+    data: {
+      pos_uuid: posUuid,
+      order_uuid: orderUuid
+    }
+  })
+    .then(evaluateResponse)
+    .then(listPaymentsResponse => {
+      return {
+        nextPageToken: listPaymentsResponse.next_page_token,
+        recordCount: listPaymentsResponse.record_count,
+        list: listPaymentsResponse.records.map((payments: any) => {
+          return paymentsMethod(payments)
+        })
+      }
+    })
 }

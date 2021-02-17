@@ -1,6 +1,6 @@
 import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
-import { CollectionState } from '../../POSType'
+import { CollectionState, IPaymentsData } from '../../POSType'
 
 type CollectionGetterTree = GetterTree<CollectionState, IRootState>
 
@@ -19,5 +19,12 @@ export const getters: CollectionGetterTree = {
   },
   getDivideRateCollection: (state: CollectionState): number => {
     return state.divideRateCollection
+  },
+  getListPayments: (state: CollectionState): IPaymentsData[] => {
+    console.log(state.listPayments)
+    return state.listPayments
+  },
+  getTenderTypeDisplaye: (state: CollectionState): any[] => {
+    return state.tenderTypeDisplaye
   }
 }

@@ -144,8 +144,13 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   openCollectionPanel(): void {
+    this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', true)
-    this.isShowedPOSKeyLayout = true
+    // this.isShowedPOSKeyLayout = true
+    const posUuid = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+    const orderUuid = this.$route.query.action
+    this.$store.dispatch(Namespaces.Collection + '/' + 'listPayments', { posUuid, orderUuid })
+    this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSOptions', false)
   }
 

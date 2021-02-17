@@ -6,6 +6,7 @@ export interface IFieldLocation {
     columnName?: string
     overwriteDefinition: Partial<IOverwriteDefinitionData>
     elementColumnName?: string
+    reference?: any
     // {
     //   size: number
     //   index: number

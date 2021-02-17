@@ -52,7 +52,7 @@
                 style="float: right; display: flex; line-height: 10px;"
               >
                 <el-row>
-                  <el-col v-for="(field, index) in fieldsList" :key="index" :span="8">
+                  <el-col v-for="(field, index) in fieldList" :key="index" :span="8">
                     <field-definition
                       :key="field.columnName"
                       :metadata-field="field"
@@ -81,7 +81,7 @@
         <el-main style="padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px;">
           <type-collection
             v-if="isLoaded"
-            :is-add-type-pay="paymentBox"
+            :is-add-type-pay="listPayments"
             :currency="currencyPoint"
           />
           <div

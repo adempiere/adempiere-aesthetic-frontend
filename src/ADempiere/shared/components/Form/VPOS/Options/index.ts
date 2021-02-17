@@ -129,7 +129,9 @@ export default class Options extends Vue {
         //   documentStatus: {},
         //   salesRepresentative: this.currentPOS.salesRepresentative
         //
+        this.$store.commit(Namespaces.Collection + '/' + 'setListPayments', [])
         this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
+        this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', false)
       })
     }
 

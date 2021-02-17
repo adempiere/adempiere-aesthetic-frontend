@@ -1,3 +1,4 @@
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatDate, formatPrice } from '@/ADempiere/shared/utils/valueFormat'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
@@ -9,6 +10,11 @@ import Template from './template.vue'
 export default class TypeCollection extends Vue {
     @Prop({ type: Array, default: undefined }) isAddTypePay?: any[] = undefined
     @Prop({ type: Object, default: undefined }) currency?: any = undefined
+
+    // Computed properties
+    get label(): any[] {
+      return this.$store.getters[Namespaces.Collection + '/' + 'getTenderTypeDisplaye']
+    }
 
     // Methods
     formatDate = formatDate
@@ -58,7 +64,24 @@ export default class TypeCollection extends Vue {
       return require('@/image/' + image + '.jpg')
     }
 
-    deleteCollect(key: number): void {
-      this.$store.dispatch('deleteCollectBox', key)
+    deleteCollect(key: any): void {
+      const orderUuid: string = key.orderUuid
+      const paymentUuid: string = key.uuid
+      this.$store.dispatch(Namespaces.Collection + '/' + 'deletetPayments', {
+        orderUuid,
+        paymentUuid
+      })
+    }
+
+    tenderTypeDisplay(payments: any) {
+      const display = this.label.find(item => {
+        if (item.tenderTypeCode === payments) {
+          return item.tenderTypeDisplay
+        }
+      })
+      if (display) {
+        return display.tenderTypeDisplay
+      }
+      return payments
     }
 }
