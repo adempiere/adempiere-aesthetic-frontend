@@ -18,7 +18,14 @@
                   />
                   <div style="padding-right: 10px; padding-top: 10%;">
                     <div class="top clearfix">
-                      <span>{{ tenderTypeDisplay(value.tenderTypeCode) }}</span>
+                      <span>
+                        {{
+                          tenderTypeFind({
+                            currentPayment: value.tenderTypeCode,
+                            listTypePayment: typesPayment
+                          })
+                        }}
+                      </span>
                     </div>
                     <div class="bottom clearfix" style="margin-top: 0px !important!">
                       <el-button
@@ -38,16 +45,41 @@
                         {{ formatDate(value.paymentDate) }}
                       </el-button>
 
-                      <div slot="header" class="clearfix">
-                        <p class="total" :style="value.currencyUuid === currency.id ? 'padding-top: 5%;' : ''">
-                          <b style="float: right; padding-bottom: 10px">
+                      <div
+                      v-if="currencyFind({
+                        currencyCurrent: value.currencyUuid,
+                        listCurrecy: listCurrency,
+                        defaultCurrency: currency
+                      }).currencyDisplay !== currency.iSOCode"
+                      slot="header"
+                      class="clearfix"
+                      style="padding-bottom: 20px;"
+                      >
+                      <p class="total">
+                        <b style="float: right;">
+                          {{ formatPrice(value.amount, currency.iSOCode) }}
+                        </b>
+                      </p>
+                      <br>
+                      <p class="total">
+                        <b style="float: right;">
+                          {{
+                            formatPrice(
+                              (amountConvertion(value)),
+                              currencyFind({
+                                currencyCurrent: value.currencyUuid,
+                                listCurrency: listCurrency,
+                                defaultCurrency: currency
+                                }).currencyDisplay
+                              )
+                          }}
+                        </b>
+                      </p>
+                      </div>
+                      <div v-else slot="header" class="clearfix">
+                        <p class="total">
+                          <b style="float: right; padding-top: 18px; padding-bottom: 20px;">
                             {{ formatPrice(value.amount, currency.iSOCode) }}
-                          </b>
-                        </p>
-                        <br>
-                        <p v-if="value.currencyUuid !== currency.id" class="total">
-                          <b style="float: right; padding-bottom: 10px">
-                            {{ formatPrice(value.quantityCahs) }}
                           </b>
                         </p>
                       </div>

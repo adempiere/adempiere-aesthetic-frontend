@@ -10,10 +10,19 @@ import Template from './template.vue'
 export default class TypeCollection extends Vue {
     @Prop({ type: Array, default: undefined }) isAddTypePay?: any[] = undefined
     @Prop({ type: Object, default: undefined }) currency?: any = undefined
+    public conevertion = 0
 
     // Computed properties
-    get label(): any[] {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getTenderTypeDisplaye']
+    get typesPayment() {
+      return this.$store.getters[Namespaces.Collection + '/' + 'getListsPaymentTypes']
+    }
+
+    get listCurrency() {
+      return this.$store.getters[Namespaces.Collection + '/' + 'getListCurrency']
+    }
+
+    get conevertionAmount() {
+      return this.$store.getters[Namespaces.Collection + '/' + 'getConvertionPayment']
     }
 
     // Methods
@@ -73,15 +82,7 @@ export default class TypeCollection extends Vue {
       })
     }
 
-    tenderTypeDisplay(payments: any) {
-      const display = this.label.find(item => {
-        if (item.tenderTypeCode === payments) {
-          return item.tenderTypeDisplay
-        }
-      })
-      if (display) {
-        return display.tenderTypeDisplay
-      }
-      return payments
+    amountConvertion(payment: any) {
+      return payment.aount * this.conevertionAmount.multiplyRate
     }
 }

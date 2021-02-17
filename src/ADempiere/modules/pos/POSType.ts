@@ -274,6 +274,8 @@ export interface CollectionState {
     divideRateCollection: number
     listPayments: IPaymentsData[]
     tenderTypeDisplaye: any[]
+    currency: any[]
+    convertion: any
 }
 
 // Key Layout Module

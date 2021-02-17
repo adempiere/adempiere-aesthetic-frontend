@@ -63,17 +63,8 @@
             </div>
           </el-card>
           <samp style="float: right;padding-right: 10px;">
-            <el-checkbox v-show="fullCopper" v-model="checked">
-              <el-link
-                type="danger"
-                class="stylefullPayment">
-                <b>
-                  {{ $t('form.pos.collect.fullPayment') }}
-                </b>
-              </el-link>
-            </el-checkbox>
             <el-button type="danger" icon="el-icon-close" @click="exit" />
-
+            <el-button type="info" icon="el-icon-minus" @click="undoPatment" />
             <el-button type="primary" :disabled="validPay || addPay" icon="el-icon-plus" @click="addCollectToList(paymentBox)" />
             <el-button type="success" :disabled="validateCompleteCollection" icon="el-icon-shopping-cart-full" />
           </samp>

@@ -4,7 +4,7 @@ import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { ActionContext, ActionTree } from 'vuex'
 import { CollectionState, IPaymentsData } from '../../POSType'
 import { requestCreatePayment, requestDeletePayment, requestListPayments, requestUpdatePayment } from '../../POSService'
-import { IResponseList } from '@/ADempiere/shared/utils/types'
+import { IResponseList, Namespaces } from '@/ADempiere/shared/utils/types'
 
 type CollectionActionContext = ActionContext<CollectionState, IRootState>
 type CollectionActionTree = ActionTree<CollectionState, IRootState>
@@ -197,12 +197,10 @@ export const actions: CollectionActionTree = {
     paymentUuid: string
   }) {
     const { orderUuid, paymentUuid } = params
-    console.log(paymentUuid, orderUuid)
     requestDeletePayment({
       paymentUuid
     })
       .then(response => {
-        console.log(response.listPayments)
         context.dispatch('listPayments', { orderUuid })
       })
       .catch(error => {
@@ -221,7 +219,6 @@ export const actions: CollectionActionTree = {
       orderUuid
     })
       .then((response: IResponseList<IPaymentsData>) => {
-        console.log(response.list)
         context.commit('setListPayments', response.list)
       })
       .catch(error => {
@@ -241,5 +238,71 @@ export const actions: CollectionActionTree = {
       }
     })
     context.commit('setTenderTypeDisplaye', displayTenderType)
+  },
+  // upload orders to theServer
+  uploadOrdersToServer(context: CollectionActionContext, params: {
+    listPaymentsLocal: any[]
+    posUuid: string
+    orderUuid: string
+  }) {
+    const { listPaymentsLocal, posUuid, orderUuid } = params
+    listPaymentsLocal.forEach(payment => {
+      requestCreatePayment({
+        posUuid,
+        orderUuid,
+        bankUuid: payment.bankUuid,
+        referenceNo: payment.referenceNo,
+        description: payment.description,
+        amount: payment.amount,
+        paymentDate: payment.paymentDate,
+        tenderTypeCode: payment.tenderTypeCode,
+        currencyUuid: payment.currencyUuid
+      })
+        .then(response => {
+          const orderUuid = response.order_uuid
+          context.dispatch(Namespaces.Collection + '/' + 'listPayments', { orderUuid })
+        })
+        .catch(error => {
+          console.warn(`ListPaymentsFromServer: ${error.message}. Code: ${error.code}.`)
+          showMessage({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+        })
+    })
+  },
+  currencyDisplaye(context: CollectionActionContext, currency: any[]) {
+    const displaycurrency = currency.map(item => {
+      return {
+        currencyUuid: item.uuid,
+        currencyId: item.id,
+        currencyDisplay: item.label
+      }
+    })
+    context.commit('setCurrencyDisplaye', displaycurrency)
+  },
+  convertionPayment(context: CollectionActionContext, params: {
+    conversionTypeUuid: string
+    currencyFromUuid: string
+    currencyToUuid: string
+  }) {
+    const { conversionTypeUuid, currencyFromUuid, currencyToUuid } = params
+    requestGetConversionRate({
+      conversionTypeUuid,
+      currencyFromUuid,
+      currencyToUuid
+    })
+      .then(response => {
+        context.commit('setConvertionPayment', response)
+      })
+      .catch(error => {
+        console.warn(`ConvertionPayment: ${error.message}. Code: ${error.code}.`)
+        showMessage({
+          type: 'error',
+          message: error.message,
+          showClose: true
+        })
+      })
   }
 }

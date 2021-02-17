@@ -24,5 +24,11 @@ export const mutations: CollectionMutationTree = {
   },
   setTenderTypeDisplaye(state: CollectionState, tenderTypeDisplaye: any[]) {
     state.tenderTypeDisplaye = tenderTypeDisplaye
+  },
+  setCurrencyDisplaye(state: CollectionState, currency) {
+    state.currency = currency
+  },
+  setConvertionPayment(state: CollectionState, convertion) {
+    state.convertion = convertion
   }
 }

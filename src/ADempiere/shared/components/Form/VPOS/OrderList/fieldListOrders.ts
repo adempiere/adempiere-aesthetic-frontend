@@ -5,6 +5,7 @@ const tableName = 'C_Order'
 const fieldListOrders: IFieldLocation[] = [
   {
     tableName,
+    elementColumnName: 'DocumentNo',
     columnName: 'DocumentNo',
     isFromDictionary: true,
     overwriteDefinition: {
@@ -14,6 +15,7 @@ const fieldListOrders: IFieldLocation[] = [
   },
   {
     tableName,
+    elementColumnName: 'C_BPartner_ID',
     columnName: 'C_BPartner_ID',
     isFromDictionary: true,
     overwriteDefinition: {
@@ -24,6 +26,7 @@ const fieldListOrders: IFieldLocation[] = [
   {
     tableName,
     columnName: 'GrandTotal',
+    elementColumnName: 'GrandTotal',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
@@ -50,7 +53,7 @@ const fieldListOrders: IFieldLocation[] = [
   },
   {
     tableName,
-    columnName: 'Processed',
+    elementColumnName: 'Processed',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
@@ -68,7 +71,8 @@ const fieldListOrders: IFieldLocation[] = [
   },
   {
     tableName,
-    columnName: 'IsInvoiced',
+    elementColumnName: 'IsInvoiced',
+    columnName: 'IsInvoiced ',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
@@ -77,6 +81,7 @@ const fieldListOrders: IFieldLocation[] = [
   },
   {
     tableName,
+    elementColumnName: 'DateOrdered',
     columnName: 'DateOrdered',
     isFromDictionary: true,
     overwriteDefinition: {
@@ -87,7 +92,8 @@ const fieldListOrders: IFieldLocation[] = [
   },
   {
     tableName,
-    columnName: 'DateOrdered',
+    elementColumnName: 'DateOrdered',
+    columnName: 'DateOrderedTo',
     isFromDictionary: true,
     overwriteDefinition: {
       columnName: 'DateOrderedTo',
@@ -97,6 +103,7 @@ const fieldListOrders: IFieldLocation[] = [
   },
   {
     tableName,
+    elementColumnName: 'SalesRep_ID',
     columnName: 'SalesRep_ID',
     isFromDictionary: true,
     overwriteDefinition: {

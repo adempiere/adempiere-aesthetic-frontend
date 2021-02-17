@@ -7,5 +7,12 @@ export const state: CollectionState = {
   multiplyRateCollection: 1,
   divideRateCollection: 1,
   listPayments: [],
-  tenderTypeDisplaye: []
+  tenderTypeDisplaye: [
+    {
+      tenderTypeCode: 0,
+      tenderTypeDisplay: ''
+    }
+  ],
+  currency: [],
+  convertion: {}
 }

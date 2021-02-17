@@ -447,7 +447,7 @@ export function requestCashClosing(data: IGenerateInvoiceParams) {
 export function requestCreatePayment(data: {
   posUuid: string
   orderUuid: string
-  invoiceUuid: string
+  invoiceUuid?: string
   bankUuid: string
   referenceNo: string
   description: string

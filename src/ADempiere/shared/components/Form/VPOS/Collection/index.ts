@@ -40,6 +40,8 @@ export default class Collection extends Mixins(MixinForm) {
     public labelTenderType = ''
     public defaultLabel = ''
     fieldList = fieldListCollection
+    public sendToServer = false
+    amontSend= 0
 
     // Computed properties
     get validateCompleteCollection(): boolean {
@@ -79,7 +81,12 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get listPayments(): IPaymentsData[] {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getListPayments']
+      const listLocal = this.$store.getters[Namespaces.Collection + '/' + 'getPaymentBox']
+      const listServer = this.$store.getters[Namespaces.Collection + '/' + 'getListPayments']
+      if (!this.sendToServer) {
+        return listServer.reverse()
+      }
+      return listLocal
     }
 
     get paymentBox(): any[] {
@@ -218,7 +225,15 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get fieldpending(): number {
-      return this.pending * this.multiplyRateCollection
+      return this.pending
+    }
+
+    get displayCurrency(): any[] {
+      return this.$store.getters[Namespaces.Collection + '/' + 'getListCurrency']
+    }
+
+    get convert() {
+      return this.$store.getters[Namespaces.Collection + '/' + 'getConvertionPayment']
     }
 
     get order(): IOrderData {
@@ -430,7 +445,7 @@ export default class Collection extends Mixins(MixinForm) {
         containerUuid,
         columnName: 'C_Bank_ID_UUID'
       })
-      const amount = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+      this.amontSend = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid,
         columnName: 'PayAmt'
       })
@@ -450,18 +465,47 @@ export default class Collection extends Mixins(MixinForm) {
         containerUuid,
         columnName: 'C_Currency_ID_UUID'
       })
-
-      this.$store.dispatch(Namespaces.Collection + '/' + 'createPayments', {
-        posUuid,
-        orderUuid,
-        bankUuid,
-        referenceNo,
-        amount,
-        paymentDate,
-        tenderTypeCode,
-        currencyUuid
+      const currencyId = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        containerUuid,
+        columnName: 'C_Currency_ID'
       })
+
+      const currencyToPay = (!currencyUuid) ? currencyId : currencyUuid
+      if (this.currencyDisplay(currencyToPay).currencyUuid !== this.currencyPoint.uuid) {
+        this.amontSend = this.convert.divideRate * this.amontSend
+      }
+      if (this.sendToServer) {
+        this.$store.dispatch(Namespaces.Collection + '/' + 'setPaymentBox', {
+          posUuid,
+          orderUuid,
+          bankUuid,
+          referenceNo,
+          amount: this.amontSend,
+          paymentDate,
+          tenderTypeCode,
+          currencyUuid
+        })
+      } else {
+        this.$store.dispatch(Namespaces.Collection + '/' + 'createPayments', {
+          posUuid,
+          orderUuid,
+          bankUuid,
+          referenceNo,
+          amount: this.amontSend,
+          paymentDate,
+          tenderTypeCode,
+          currencyUuid: this.currencyDisplay(currencyToPay).currencyUuid
+        })
+      }
+      this.amontSend = 0
       this.addCollect()
+    }
+
+    updateServer(listPaymentsLocal: any) {
+      // const listLocal = this.$store.getters.getPaymentBox
+      const posUuid = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+      const orderUuid = this.$route.query.action
+      this.$store.dispatch('uploadOrdersToServer', { listPaymentsLocal, posUuid, orderUuid })
     }
 
     addCollect(): void {
@@ -583,18 +627,35 @@ export default class Collection extends Mixins(MixinForm) {
       })
     }
 
-    tenderTypeDisplaye() {
-      if (this.fieldList && this.fieldList) {
-        // const tenderType = this.fieldsList[1].reference
-        const tenderType = this.fieldList[1].reference
-        this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
-          tableName: tenderType.tableName,
-          query: tenderType.query
-        })
-          .then(response => {
-            this.$store.dispatch(Namespaces.Collection + '/' + 'tenderTypeDisplaye', response)
-          })
+    currencyDisplay(currency: any) {
+      const display = this.displayCurrency.find(item => {
+        if (item.currencyUuid === currency || (item.currencyId === currency)) {
+          return item
+        }
+      })
+      if (display) {
+        return display
       }
+      return currency
+    }
+
+    convertCurrency() {
+      const convertCurrency = this.currencyDisplay(100)
+      this.$store.dispatch(Namespaces.Collection + '/' + 'convertionPayment', {
+        conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
+        currencyFromUuid: this.currencyPoint.uuid,
+        currencyToUuid: convertCurrency.currencyUuid
+      })
+    }
+
+    undoPatment() {
+      const list = this.listPayments[this.listPayments.length - 1]
+      const orderUuid = list.orderUuid
+      const paymentUuid = list.uuid
+      this.$store.dispatch(Namespaces.Collection + '/' + 'deletetPayments', {
+        orderUuid,
+        paymentUuid
+      })
     }
 
     subscribeChanges() {
@@ -615,7 +676,7 @@ export default class Collection extends Mixins(MixinForm) {
 
     mounted() {
       setTimeout(() => {
-        this.tenderTypeDisplaye()
+        this.converCurrency()
       }, 1000)
     }
 }

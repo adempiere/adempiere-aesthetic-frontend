@@ -24,7 +24,13 @@ export const getters: CollectionGetterTree = {
     console.log(state.listPayments)
     return state.listPayments
   },
-  getTenderTypeDisplaye: (state: CollectionState): any[] => {
+  getListsPaymentTypes: (state: CollectionState): any[] => {
     return state.tenderTypeDisplaye
+  },
+  getListCurrency: (state: CollectionState) => {
+    return state.currency
+  },
+  getConvertionPayment: (state: CollectionState) => {
+    return state.convertion
   }
 }
