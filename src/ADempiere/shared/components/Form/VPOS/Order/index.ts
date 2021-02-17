@@ -19,8 +19,15 @@ import Template from './template.vue'
 })
 export default class Order extends Mixins(MixinOrderLine) {
   public fieldList = fieldListOrders
+  public seeConversion = false
 
   // Computed properties
+  get shortsKey() {
+    return {
+      popoverConvet: ['ctrl', 'x']
+    }
+  }
+
   get isShowedPOSKeyLayout(): boolean {
     return this.$store.getters[Namespaces.PointOfSales + '/' + 'getShowPOSKeyLayout']
   }
@@ -92,7 +99,7 @@ export default class Order extends Mixins(MixinOrderLine) {
 
   get currencyUuid(): any {
     return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
-      containerUuid: this.containerUuid,
+      containerUuid: 'Collection-Convert-Amount',
       columnName: 'C_Currency_ID_UUID'
     })
   }
@@ -120,6 +127,7 @@ export default class Order extends Mixins(MixinOrderLine) {
   handleConverCurrency(value: any) {
     if (value) {
       this.$store.dispatch(Namespaces.Collection + '/' + 'conversionMultiplyRate', {
+        containerUuid: 'Order',
         conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
         currencyFromUuid: this.currencyPoint.uuid,
         currencyToUuid: value
@@ -136,7 +144,7 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   openCollectionPanel(): void {
-    this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', !this.$store.getters[Namespaces.PointOfSales + '/' + 'getShowCollectionPos'])
+    this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', true)
     this.isShowedPOSKeyLayout = true
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSOptions', false)
   }
@@ -179,5 +187,11 @@ export default class Order extends Mixins(MixinOrderLine) {
 
       this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
     })
+  }
+
+  open() : void {
+    if (!this.seeConversion) {
+      this.seeConversion = true
+    }
   }
 }

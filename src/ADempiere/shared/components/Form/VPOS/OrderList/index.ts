@@ -132,10 +132,12 @@ export default class OrdersList extends Mixins(MixinForm) {
       })
 
       values = this.convertValuesToSend(values)
-
-      this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
-        ...values
-      })
+      const point = this.$store.getters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
+      if (point) {
+        this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
+          ...values
+        })
+      }
     }
 
     handleChangePage(newPage: number): void {

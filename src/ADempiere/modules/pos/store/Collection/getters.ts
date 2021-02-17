@@ -13,5 +13,11 @@ export const getters: CollectionGetterTree = {
   },
   getDivideRate: (state: CollectionState): number => {
     return state.divideRate
+  },
+  getMultiplyRateCollection: (state: CollectionState): number => {
+    return state.multiplyRateCollection
+  },
+  getDivideRateCollection: (state: CollectionState): number => {
+    return state.divideRateCollection
   }
 }

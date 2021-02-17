@@ -1,5 +1,5 @@
 import { IRootState } from '@/store'
-import { parseContext } from '@/ADempiere/shared/utils/contextUtils'
+import { getPreference, parseContext } from '@/ADempiere/shared/utils/contextUtils'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
@@ -191,7 +191,7 @@ export const actions: BusinessDataActionTree = {
       let valueLink: number
       // get context value if link column exists and does not exist in row
       if (linkColumnName) {
-        valueObjectLink = context.rootGetters.getContext({
+        valueObjectLink = getPreference({
           parentUuid,
           containerUuid,
           columnName: linkColumnName
@@ -303,7 +303,7 @@ export const actions: BusinessDataActionTree = {
             }
             if (linkColumnName === columnName) {
               // get context value if link column exists and does not exist in row
-              const nameParent = context.rootGetters.getContext({
+              const nameParent = getPreference({
                 parentUuid,
                 containerUuid,
                 columnName: 'Name'

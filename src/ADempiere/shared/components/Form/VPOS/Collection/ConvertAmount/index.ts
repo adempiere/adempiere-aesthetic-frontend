@@ -31,8 +31,22 @@ export default class ConvertAmount extends Mixins(MixinForm) {
     // Computed properties
     get displayCurrency() {
       return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
-        containerUuid: this.containerUuid,
+        containerUuid: 'Collection-Convert-Amount',
         columnName: 'DisplayColumn_C_Currency_ID'
+      })
+    }
+
+    get typeCurrency() {
+      return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        containerUuid: 'Collection-Convert-Amount',
+        columnName: 'C_Currency_ID'
+      })
+    }
+
+    get currencyUuid() {
+      return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        containerUuid: 'Collection-Convert-Amount',
+        columnName: 'C_Currency_ID_UUID'
       })
     }
 

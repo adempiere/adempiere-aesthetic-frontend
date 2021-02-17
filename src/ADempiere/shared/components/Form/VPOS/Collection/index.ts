@@ -43,14 +43,17 @@ export default class Collection extends Mixins(MixinForm) {
 
     // Computed properties
     get validateCompleteCollection(): boolean {
-      if (this.order.grandTotal === this.pay) {
-        return false
-      } else if (this.isCashAmt >= this.change) {
-        return false
-      } else if (this.pay >= this.order.grandTotal && this.checked) {
-        return false
+      let collection: boolean
+      const validation = this.pay >= this.order.grandTotal && (this.isCashAmt >= this.change)
+
+      if (this.pay === this.order.grandTotal) {
+        collection = false
+      } else if (validation || this.checked) {
+        collection = false
+      } else {
+        collection = true
       }
-      return true
+      return collection
     }
 
     get fullCopper(): boolean {
@@ -211,7 +214,7 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get fieldpending(): number {
-      return this.pending * this.multiplyRate
+      return this.pending * this.multiplyRateCollection
     }
 
     get order(): IOrderData {
@@ -244,7 +247,7 @@ export default class Collection extends Mixins(MixinForm) {
 
     get currencyUuid(): string {
       return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
-        containerUuid: this.containerUuid,
+        containerUuid: 'Collection',
         columnName: 'C_Currency_ID_UUID'
       })
     }
@@ -260,9 +263,13 @@ export default class Collection extends Mixins(MixinForm) {
       return this.$store.getters[Namespaces.Collection + '/' + 'getMultiplyRate']
     }
 
+    get multiplyRateCollection() {
+      return this.$store.getters[Namespaces.Collection + '/' + 'getMultiplyRateCollection']
+    }
+
     get converCurrency() {
       return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
-        containerUuid: 'Collection-Convert-Amount',
+        containerUuid: 'Collection',
         columnName: 'C_Currency_ID_UUID'
       })
     }
@@ -316,12 +323,13 @@ export default class Collection extends Mixins(MixinForm) {
       }
       if (value) {
         this.$store.dispatch(Namespaces.Collection + '/' + 'conversionMultiplyRate', {
+          containerUuid: 'Collection',
           conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
           currencyFromUuid: this.currencyPoint.uuid,
           currencyToUuid: value
         })
       } else {
-        this.$store.commit(Namespaces.Collection + '/' + 'currencyMultiplyRate', 1)
+        this.$store.commit(Namespaces.Collection + '/' + 'currencyMultiplyRateCollection', 1)
       }
     }
 
@@ -333,10 +341,11 @@ export default class Collection extends Mixins(MixinForm) {
       this.allPayCurrency = this.pay
     }
 
-      @Watch('converCurrency')
+    @Watch('converCurrency')
     handleConverCurrencyChange(value: any) {
       if (value) {
         this.$store.dispatch(Namespaces.Collection + '/' + 'conversionMultiplyRate', {
+          containerUuid: 'Collection',
           conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
           currencyFromUuid: this.currencyPoint.uuid,
           currencyToUuid: value
@@ -347,15 +356,15 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
       @Watch('isLoaded')
-      handleIsLoadedChange(value: boolean) {
-        if (value) {
-          this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
-            containerUuid: this.containerUuid,
-            columnName: 'PayAmt',
-            value: this.pending
-          })
-        }
+    handleIsLoadedChange(value: boolean) {
+      if (value) {
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
+          containerUuid: this.containerUuid,
+          columnName: 'PayAmt',
+          value: this.pending
+        })
       }
+    }
 
       // Methods
     formatDate = formatDate
@@ -518,6 +527,10 @@ export default class Collection extends Mixins(MixinForm) {
       })
       this.defaultValueCurrency()
       this.$store.dispatch(Namespaces.Collection + '/' + 'conversionDivideRate', 1)
+    }
+
+    exit() {
+      this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', false)
     }
 
     getPriceApplyingDiscount(price?: number, discount?: number): number {

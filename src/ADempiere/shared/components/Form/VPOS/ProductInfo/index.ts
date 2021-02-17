@@ -127,7 +127,9 @@ export default class FieldProductInfo extends Mixins(MixinField) {
     }
 
     handleSelect(elementSelected: any) {
-      const valueProduct = elementSelected.product.value
+      const valueProduct = (!elementSelected.product)
+        ? elementSelected.value
+        : elementSelected.product.value
       this.$store.dispatch(Namespaces.Event + '/' + 'notifyActionKeyPerformed', {
         containerUuid: 'POS',
         columnName: 'ProductValue',

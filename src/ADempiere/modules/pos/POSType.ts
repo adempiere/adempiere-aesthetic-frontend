@@ -179,8 +179,8 @@ export interface UpdateOrderLineParams {
     orderLineUuid: string
     description?: string
     quantity: number
-    price: number
-    discountRate: number
+    price?: number
+    discountRate?: number
 }
 
 export interface IDeleteOrderLineParams {
@@ -254,6 +254,8 @@ export interface CollectionState {
     paymentBox: any[]
     multiplyRate: number
     divideRate: number
+    multiplyRateCollection: number
+    divideRateCollection: number
 }
 
 // Key Layout Module

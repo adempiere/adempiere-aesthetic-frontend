@@ -127,12 +127,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch, Vue } from 'vue-property-decorator'
+import { Component, Watch, Vue } from 'vue-property-decorator'
 import { Route } from 'vue-router'
 import { Dictionary } from 'vue-router/types/router'
 import { Form as ElForm, Input } from 'element-ui'
 import { UserModule } from '@/store/modules/user'
-import { isValidUsername } from '@/utils/validate'
 import MixinLogin from '@/ADempiere/shared/components/Login/MixinLogin'
 import SocialSign from './components/SocialSignin.vue'
 

@@ -16,7 +16,7 @@ import {
   requestUpdateOrderLine
 } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { Component, Mixins, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import {
   formatPrice,
   formatQuantity,
@@ -80,94 +80,95 @@ export default class MixinPOS extends Mixins(MixinForm) {
     public displayType = ''
     // public containerUuid?: string
     public parentUuid?: string
+  seeConversion: any
 
-    // Computed properties
-    get allOrderLines() {
-      if (!this.listOrderLine) {
-        return []
-      }
-      return this.listOrderLine
-    }
-
-    get listOrderLine(): IOrderLineDataExtended[] {
-      return this.$store.getters[
-        Namespaces.OrderLines + '/' + 'getListOrderLine'
-      ]
-    }
-
-    get ordersList(): IOrderData[] {
-      const order: IListOrderItemData = this.$store.getters[
-        Namespaces.Order + '/' + 'getListOrder'
-      ]
-      if (order && order.list) {
-        return order.list
-      }
+  // Computed properties
+  get allOrderLines() {
+    if (!this.listOrderLine) {
       return []
     }
+    return this.listOrderLine
+  }
 
-    get currentOrder(): IOrderData {
-      const action = this.$route.query.action
-      if (action) {
-        const order = this.ordersList.find(
-          (item: IOrderData) => item.uuid === action
-        )
-        if (order) {
-          return order
-        }
+  get listOrderLine(): IOrderLineDataExtended[] {
+    return this.$store.getters[
+      Namespaces.OrderLines + '/' + 'getListOrderLine'
+    ]
+  }
+
+  get ordersList(): IOrderData[] {
+    const order: IListOrderItemData = this.$store.getters[
+      Namespaces.Order + '/' + 'getListOrder'
+    ]
+    if (order && order.list) {
+      return order.list
+    }
+    return []
+  }
+
+  get currentOrder(): IOrderData {
+    const action = this.$route.query.action
+    if (action) {
+      const order = this.ordersList.find(
+        (item: IOrderData) => item.uuid === action
+      )
+      if (order) {
+        return order
       }
-
-      return this.$store.getters[Namespaces.Order + '/' + 'getFindOrder']
     }
 
-    get currentPoint(): IPointOfSalesData | undefined {
-      return this.$store.getters[
-        Namespaces.PointOfSales + '/' + 'getCurrentPOS'
-      ]
-    }
+    return this.$store.getters[Namespaces.Order + '/' + 'getFindOrder']
+  }
 
-    get priceListUuid(): string | undefined {
-      const currentPOS: IPointOfSalesData | undefined = this.currentPoint
-      if (!currentPOS) {
-        return undefined
-      }
-      return this.currentPoint!.priceList.uuid
-    }
+  get currentPoint(): IPointOfSalesData | undefined {
+    return this.$store.getters[
+      Namespaces.PointOfSales + '/' + 'getCurrentPOS'
+    ]
+  }
 
-    get getWarehouse() {
-      return this.$store.getters['user/getWarehouse']
+  get priceListUuid(): string | undefined {
+    const currentPOS: IPointOfSalesData | undefined = this.currentPoint
+    if (!currentPOS) {
+      return undefined
     }
+    return this.currentPoint!.priceList.uuid
+  }
 
-    get isSetTemplateBP(): IBusinessPartnerData | false {
-      const currentPOS = this.currentPoint
-      if (
-        currentPOS &&
+  get getWarehouse() {
+    return this.$store.getters['user/getWarehouse']
+  }
+
+  get isSetTemplateBP(): IBusinessPartnerData | false {
+    const currentPOS = this.currentPoint
+    if (
+      currentPOS &&
             currentPOS.templateBusinessPartner &&
             !this.$route.query.action
-      ) {
-        return currentPOS.templateBusinessPartner
-      }
-      return false
+    ) {
+      return currentPOS.templateBusinessPartner
     }
+    return false
+  }
 
     // Watchers
     @Watch('currentOrder')
-    handleCurrentOrderChange(value: any): void {
-      if (!value) {
-        this.orderLines = []
-        this.order = {
-          documentType: undefined,
-          documentStatus: undefined,
-          salesRepresentative: undefined
-        }
-        this.$store.dispatch('listOrderLine', [])
-        this.listOrderLines({
-          uuid: ''
-        })
-      } else {
-        this.fillOrder(value)
-        this.listOrderLines(value)
+  handleCurrentOrderChange(value: any): void {
+    if (!value) {
+      this.orderLines = []
+      this.order = {
+        documentType: undefined,
+        documentStatus: undefined,
+        salesRepresentative: undefined
       }
+      this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
+      this.listOrderLines({
+        uuid: ''
+      })
+    } else {
+      this.fillOrder(value)
+      this.listOrderLines(value)
     }
+  }
 
     /**
      * Used when loading/reloading the app without the order uuid
@@ -265,7 +266,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
     ): void {
       const { name, id, uuid } = params
       // Use update values of container (without subscription)
-      this.$store.commit('updateValuesOfContainer', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
         attributes: [
@@ -309,19 +310,19 @@ export default class MixinPOS extends Mixins(MixinForm) {
             showClose: true
           })
 
-          this.$store.commit('updateValueOfField', {
+          this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             containerUuid: 'Products-Price-List',
             columnName: 'ProductValue',
             value: `${searchProduct}`
           })
 
-          this.$store.commit('showListProductPrice', {
+          this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
             attribute: 'isShowPopoverField',
             isShowed: true
           })
         })
         .finally(() => {
-          this.$store.commit('updateValuesOfContainer', {
+          this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
             containerUuid: this.metadata.containerUuid,
             attributes: [
               {
@@ -360,7 +361,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
           salesRepresentativeUuid
         })
           .then((order: IOrderData) => {
-            this.$store.dispatch('currentOrder', order)
+            this.$store.dispatch(Namespaces.Order + '/' + 'currentOrder', order)
             this.fillOrder(order)
 
             this.$router
@@ -383,7 +384,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
               )
 
             // update orders list
-            this.$store.commit('setIsReloadListOrders')
+            this.$store.commit(Namespaces.Order + '/' + 'setIsReloadListOrders')
           })
           .catch(error => {
             console.error(error.message)
@@ -411,7 +412,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
           requestGetOrder(orderUuid)
             .then((orderResponse: IOrderData) => {
               this.fillOrder(orderResponse)
-              this.$store.dispatch('currentOrder', orderResponse)
+              this.$store.dispatch(Namespaces.Order + '/' + 'currentOrder', orderResponse)
               this.listOrderLines(orderResponse)
             })
             .catch(error => {
@@ -441,7 +442,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
         grandTotal: order.grandTotal
       }
       if (setToStore) {
-        this.$store.dispatch('setOrder', {
+        this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', {
           ...orderToPush
         })
       }
@@ -537,14 +538,14 @@ export default class MixinPOS extends Mixins(MixinForm) {
     listOrderLines(params: { uuid: string }) {
       const { uuid: orderUuid } = params
       if (orderUuid) {
-        this.$store.dispatch('listOrderLinesFromServer', orderUuid)
+        this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLinesFromServer', orderUuid)
         this.orderLines = this.listOrderLine
         this.handleCurrentLineChange(this.currentOrderLine)
       }
     }
 
     fillOrderLine(orderLine: Partial<IOrderLineDataExtended> | Partial<IOrderLineData>) {
-      this.$store.dispatch('updateOrderLines', orderLine)
+      this.$store.dispatch(Namespaces.OrderLines + '/' + 'updateOrderLines', orderLine)
     }
 
     handleCurrentLineChange(rowLine: any) {
@@ -595,6 +596,67 @@ export default class MixinPOS extends Mixins(MixinForm) {
             showClose: true
           })
         })
+    }
+
+    mas(): void {
+      this.linesTable?.setCurrentRow(this.listOrderLine[1])
+    }
+
+    menos(): void {
+      this.linesTable?.setCurrentRow(this.listOrderLine[0])
+    }
+
+    shortcutKeyMethod(event: any): void {
+      console.log(event.srcKey)
+      switch (event.srcKey) {
+        // case 'options':
+        case 'up':
+          this.arrowTop()
+          break
+        case 'popoverConvet':
+          this.seeConversion = !this.seeConversion
+          break
+        case 'down':
+          this.arrowBottom()
+          break
+        case 'plus':
+          requestUpdateOrderLine({
+            orderLineUuid: this.currentOrderLine.uuid,
+            quantity: this.listOrderLine[this.currentTable].quantity + 1
+          })
+            .then(response => {
+              this.fillOrderLine(response)
+              this.reloadOrder(true)
+            })
+            .catch(error => {
+              console.error(error.message)
+              this.$message({
+                type: 'error',
+                message: error.message,
+                showClose: true
+              })
+            })
+
+          break
+        case 'minus':
+          requestUpdateOrderLine({
+            orderLineUuid: this.currentOrderLine.uuid,
+            quantity: this.listOrderLine[this.currentTable].quantity - 1
+          })
+            .then((response: IOrderLineData) => {
+              this.fillOrderLine(response)
+              this.reloadOrder(true)
+            })
+            .catch(error => {
+              console.error(error.message)
+              this.$message({
+                type: 'error',
+                message: error.message,
+                showClose: true
+              })
+            })
+          break
+      }
     }
 
     // Hooks

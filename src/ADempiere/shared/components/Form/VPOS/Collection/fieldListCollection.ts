@@ -1,5 +1,4 @@
 import { IFieldLocation } from '../../../Field/FieldLocation/fieldList'
-import { IProductCodeData } from '../../PriceChecking/fieldList'
 
 const tableName = 'C_Payment'
 
@@ -7,6 +6,7 @@ const fieldListCollection: IFieldLocation[] = [
   // Amont
   {
     tableName,
+    elementColumnName: 'PayAmt',
     columnName: 'PayAmt',
     isFromDictionary: true,
     overwriteDefinition: {
@@ -21,6 +21,7 @@ const fieldListCollection: IFieldLocation[] = [
   {
     tableName,
     columnName: 'TenderType',
+    elementColumnName: 'TenderType',
     isFromDictionary: true,
     overwriteDefinition: {
       defaultValue: 'X',
@@ -82,6 +83,7 @@ const fieldListCollection: IFieldLocation[] = [
   // ReferenceNo
   {
     tableName: 'HR_Attribute',
+    elementColumnName: 'ReferenceNo',
     columnName: 'ReferenceNo',
     isFromDictionary: true,
     overwriteDefinition: {
@@ -97,7 +99,8 @@ const fieldListCollection: IFieldLocation[] = [
   // type credit card
   {
     tableName,
-    columnName: 'creditcardtype',
+    elementColumnName: 'CreditCardType',
+    columnName: 'CreditCardType',
     isFromDictionary: true,
     overwriteDefinition: {
       defaultValue: 'M',
@@ -113,7 +116,8 @@ const fieldListCollection: IFieldLocation[] = [
   // number credit card
   {
     tableName,
-    columnName: 'creditcardnumber',
+    elementColumnName: 'CreditCardNumber',
+    columnName: 'CreditCardNumber',
     isFromDictionary: true,
     overwriteDefinition: {
       handleActionKeyPerformed: true,
@@ -128,7 +132,8 @@ const fieldListCollection: IFieldLocation[] = [
   // accountno
   {
     tableName,
-    columnName: 'accountno',
+    elementColumnName: 'AccountNo',
+    columnName: 'AccountNo',
     isFromDictionary: true,
     overwriteDefinition: {
       handleActionKeyPerformed: true,

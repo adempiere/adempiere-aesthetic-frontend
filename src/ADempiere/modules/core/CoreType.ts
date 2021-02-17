@@ -400,6 +400,7 @@ export interface IGetConversionRateParams {
     conversionTypeUuid: string
     currencyFromUuid: string
     currencyToUuid: string
+    containerUuid?: string
     // conversionDate: any
 }
 
