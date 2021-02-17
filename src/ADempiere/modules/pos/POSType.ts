@@ -254,6 +254,8 @@ export interface CollectionState {
     paymentBox: any[]
     multiplyRate: number
     divideRate: number
+    multiplyRateCollection: number
+    divideRateCollection: number
 }
 
 // Key Layout Module

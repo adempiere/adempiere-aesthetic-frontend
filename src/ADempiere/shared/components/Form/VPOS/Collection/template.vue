@@ -72,7 +72,7 @@
                 </b>
               </el-link>
             </el-checkbox>
-            <el-button type="danger" icon="el-icon-close" @click="cancel" />
+            <el-button type="danger" icon="el-icon-close" @click="exit" />
 
             <el-button type="primary" :disabled="validPay || addPay" icon="el-icon-plus" @click="addCollectToList(paymentBox)" />
             <el-button type="success" :disabled="validateCompleteCollection" icon="el-icon-shopping-cart-full" />

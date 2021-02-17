@@ -17,12 +17,16 @@ export const actions: CollectionActionTree = {
         payAmt: number
         quantityCahs: number
     }) {
-    const payments: any = undefined
+    const payments = context.getters.getPaymentBox.find((element: any) => {
+      if (params.tenderType === 'X' && element.currency.id === params.currency.id) {
+        return element
+      }
+    })
     if (!payments) {
       context.commit('addPaymentBox', params)
     } else {
       const addPayment = context.getters.getPaymentBox.map((item: any) => {
-        if (item.tenderType === params.tenderType && item.currency.id === params.currency.id) {
+        if ((item.tenderType === params.tenderType) && item.currency.id === params.currency.id) {
           return {
             ...item,
             payAmt: item.payAmt + params.payAmt,
@@ -50,6 +54,11 @@ export const actions: CollectionActionTree = {
     })
       .then((response: IConversionRateData | Partial<IConversionRateData>) => {
         const divideRate: number = (!response.divideRate) ? 1 : response.divideRate
+        if (params.containerUuid === 'Collection') {
+          context.commit('currencyDivideRateCollection', divideRate)
+        } else {
+          context.commit('currencyDivideRate', divideRate)
+        }
         context.commit('currencyDivideRate', divideRate)
       })
       .catch(error => {
@@ -65,19 +74,24 @@ export const actions: CollectionActionTree = {
     const {
       conversionTypeUuid,
       currencyFromUuid,
-      currencyToUuid
+      currencyToUuid,
+      containerUuid
       // conversionDate
     } = payload
     requestGetConversionRate({
+      containerUuid,
       conversionTypeUuid,
       currencyFromUuid,
       currencyToUuid
       // conversionDate
     })
       .then((response: IConversionRateData| Partial<IConversionRateData>) => {
-        const multiplyRate: number = (!response.multiplyRate) ? 1 : response.multiplyRate
-
-        context.commit('currencyMultiplyRate', multiplyRate)
+        const multiplyRate: number = (!response.multiplyRate) ? 0 : response.multiplyRate
+        if (containerUuid === 'Collection') {
+          context.commit('currencyMultiplyRateCollection', multiplyRate)
+        } else {
+          context.commit('currencyMultiplyRate', multiplyRate)
+        }
       })
       .catch(error => {
         console.warn(`conversionMultiplyRate: ${error.message}. Code: ${error.code}.`)

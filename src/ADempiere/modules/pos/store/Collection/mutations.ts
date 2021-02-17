@@ -12,5 +12,11 @@ export const mutations: CollectionMutationTree = {
   },
   currencyDivideRate(state: CollectionState, divideRate: number) {
     state.divideRate = divideRate
+  },
+  currencyMultiplyRateCollection(state: CollectionState, multiplyRateCollection: number) {
+    state.multiplyRateCollection = multiplyRateCollection
+  },
+  currencyDivideRateCollection(state: CollectionState, divideRateCollection: number) {
+    state.divideRateCollection = divideRateCollection
   }
 }
