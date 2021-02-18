@@ -5,12 +5,14 @@
     },
     "adempiere": {
         "api": {
-            "url": "http://localhost:8080",
-            "service": "/adempiere-api"
+            "url": "http://localhost:8085",
+            "service": "/adempiere-api",
+            "fullPath": "http://localhost:8085/adempiere-api"
         },
         "images": {
-            "url": "http://localhost:8080",
-            "service": "/adempiere-api"
+            "url": "http://localhost:8085",
+            "service": "/adempiere-api",
+            "fullPath": "http://localhost:8085/adempiere-api/img"
         }
     }
 }
