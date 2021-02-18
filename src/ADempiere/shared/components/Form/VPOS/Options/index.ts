@@ -7,7 +7,8 @@ import { IListOrderItemData, IListProductPriceItemData, IOrderData, IPointOfSale
 import {
   requestCashClosing, requestCompletePreparedOrder, requestCreateNewCustomerReturnOrder, requestCreateWithdrawal, requestGenerateImmediateInvoice, requestPrintOrder,
   // requestReverseSalesTransaction,
-  requestDeleteOrder
+  requestDeleteOrder,
+  requestCreateOrder
 } from '@/ADempiere/modules/pos/POSService'
 import ModalDialog from '@/ADempiere/shared/components/Dialog'
 import posProcess from '@/ADempiere/shared/utils/Constants/posProcess'
@@ -171,34 +172,31 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     reverseSalesTransaction(): void {
-      const process = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](posProcess[1].uuid)
-      this.$store.dispatch(Namespaces.Process + '/' + 'startProcess', {
-        action: process,
-        isProcessTableSelection: false,
-        containerUuid: process.containerUuid,
-        parametersList: [
-          {
-            columnName: 'C_Order_ID',
-            value: this.currentPOS?.id
-          },
-          {
-            columnName: 'Bill_BPartner_ID',
-            value: this.currentPOS?.businessPartner.id
-          },
-          {
-            columnName: 'IsCancelled',
-            value: false
-          },
-          {
-            columnName: 'IsShipConfirm',
-            value: true
-          },
-          {
-            columnName: 'C_DocTypeRMA_ID',
-            value: 'VO'
-          }
-        ]
-      })
+      const process = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](posProcess[0].uuid)
+      this.showModal(process)
+      const parametersList = [
+        {
+          columnName: 'C_Order_ID',
+          value: this.$store.getters[Namespaces.Order + '/' + 'getOrder'].id
+        },
+        {
+          columnName: 'Bill_BPartner_ID',
+          value: this.$store.getters[Namespaces.Order + '/' + 'getOrder'].businessPartner.id
+        },
+        {
+          columnName: 'IsCancelled',
+          value: false
+        },
+        {
+          columnName: 'IsShipConfirm',
+          value: true
+        },
+        {
+          columnName: 'C_DocTypeRMA_ID',
+          value: 'VO'
+        }
+      ]
+      this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos')
     }
 
     createWithdrawal(): void {
@@ -227,14 +225,50 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     copyOrder() {
-      this.processPos = posProcess[5].uuid
-      const process = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](posProcess[5].uuid)
-      this.showModal(process)
+      this.processPos = posProcess[1].uuid
+      const posUuid = this.currentPoint?.uuid
+
+      const parametersList = [{
+        columnName: 'C_Order_ID',
+        value: this.$store.getters.getOrder.id
+      }]
+
+      this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos', parametersList)
+      requestCreateOrder({
+        posUuid: posUuid!,
+        customerUuid: this.currentPOS!.businessPartner.uuid,
+        salesRepresentativeUuid: this.currentPOS!.salesRepresentative.uuid
+      })
+        .then(order => {
+          this.$store.dispatch(Namespaces.Order + '/' + 'currentOrder', order)
+          this.$router.push({
+            params: {
+              ...this.$route.params
+            },
+            query: {
+              ...this.$route.query,
+              action: order.uuid
+            }
+          })
+          this.$store.commit(Namespaces.Order + '/' + 'setIsReloadListOrders')
+        })
+        .catch(error => {
+          console.error(error.message)
+          this.$message({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+        })
+        .finally(() => {
+          const process = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](posProcess[1].uuid)
+          this.showModal(process)
+        })
     }
 
     copyLineOrder() {
-      this.processPos = posProcess[5].uuid
-      const process = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](posProcess[5].uuid)
+      this.processPos = posProcess[1].uuid
+      const process = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](posProcess[1].uuid)
       this.showModal(process)
     }
 
@@ -253,6 +287,7 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     deleteOrder() {
+      this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', true)
       requestDeleteOrder({
         posUuid: <string> this.$route.query.action
       })
@@ -265,9 +300,30 @@ export default class Options extends Mixins(MixinOrderLine) {
           })
           this.$message({
             type: 'success',
-            message: 'Orden Cancelada',
+            message: this.$t('form.pos.optionsPoinSales.salesOrder.orderRemoved').toString(),
             showClose: true
           })
+          this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', false)
         })
+    }
+
+    seeOrderList() {
+      if (this.$store.getters[Namespaces.Order + '/' + 'getListOrder'].recordCount <= 0) {
+        this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {})
+      }
+    }
+
+    findProcess() {
+      const findServer = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess']('a42ad0c6-fb40-11e8-a479-7a0060f0aa01')
+      if (!findServer) {
+        posProcess.forEach(item => {
+          this.$store.dispatch(Namespaces.ProcessDefinition + '/' + 'getProcessFromServer', { containerUuid: item.uuid, processId: item.id })
+        })
+      }
+    }
+
+    // Hooks
+    created() {
+      this.findProcess()
     }
 }

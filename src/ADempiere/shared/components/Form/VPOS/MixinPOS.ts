@@ -24,7 +24,7 @@ import {
 } from '@/ADempiere/shared/utils/valueFormat'
 import { Table } from 'element-ui'
 import MixinForm from '../MixinForm'
-import posProcess from '@/ADempiere/shared/utils/Constants/posProcess'
+import { UserModule } from '@/store/modules/user'
 
 @Component({
   name: 'MixinPOS',
@@ -79,7 +79,6 @@ export default class MixinPOS extends Mixins(MixinForm) {
 
     public edit = false
     public displayType = ''
-    public process = posProcess
     // public containerUuid?: string
     public parentUuid?: string
   seeConversion: any
@@ -200,9 +199,8 @@ export default class MixinPOS extends Mixins(MixinForm) {
 
     @Watch('updateOrderProcessPos')
     handleUpdateOrderProcessPos(value: boolean) {
-      if (value) {
+      if (!value && this.$route.query) {
         this.reloadOrder(true)
-        this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos')
       }
     }
 
@@ -376,9 +374,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
         }
 
         // user session
-        const salesRepresentativeUuid = this.$store.getters[
-          'user/getUserUuid'
-        ]
+        const salesRepresentativeUuid = UserModule.userUuid
 
         requestCreateOrder({
           posUuid: posUuid!,
@@ -486,12 +482,6 @@ export default class MixinPOS extends Mixins(MixinForm) {
             this.order.grandTotal! - this.order!.totalLines!,
             currency
       )
-    }
-
-    findProcess(processPos: any[]) {
-      processPos.forEach(item => {
-        this.$store.dispatch(Namespaces.ProcessDefinition + '/' + 'getProcessFromServer', { containerUuid: item.uuid })
-      })
     }
 
     subscribeChanges() {
@@ -696,7 +686,8 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     mounted() {
-      if (!this.currentOrder) {
+      // this,findProcess()
+      if (this.$route.query) {
         const orderUuid: string | undefined = <string> this.$route.query.action
         this.reloadOrder(true, orderUuid)
       }
@@ -709,7 +700,6 @@ export default class MixinPOS extends Mixins(MixinForm) {
           this.listOrderLines(<IOrderData> this.currentOrder)
         }
       }
-      this.findProcess(this.process)
       this.unsubscribe = this.subscribeChanges()
     }
 

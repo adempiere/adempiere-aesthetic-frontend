@@ -32,6 +32,7 @@
                 placement="right"
                 width="800"
                 trigger="click"
+                @show="seeOrderList"
               >
                 <orders-list
                   :parent-metadata="metadata"
@@ -127,18 +128,7 @@
           </el-col>
 
            <el-col :span="size">
-            <el-card shadow="hover">
-              <p
-                :style="blockOption"
-                @click="copyLineOrder "
-              >
-                <i class="el-icon-document-copy" />
-                <br>
-                {{ $t('form.pos.optionsPoinSales.salesOrder.copyOrderLine') }}
-              </p>
-            </el-card>
-          </el-col>
-          <!-- <el-col :span="size">
+
             <el-card shadow="hover">
               <p
                 :style="blockOption"
@@ -149,7 +139,7 @@
                 {{ $t('form.pos.optionsPoinSales.salesOrder.copyOrder') }}
               </p>
             </el-card>
-          </el-col> -->
+          </el-col>
 
           <el-col :span="size">
             <el-card shadow="hover">
@@ -207,32 +197,6 @@
 
       <el-collapse-item :title="$t('form.pos.optionsPoinSales.generalOptions.title')" name="generalOptions">
         <el-row :gutter="12" style="padding-right: 10px;">
-          <!--
-          <el-col :span="size">
-            <el-card shadow="hover">
-              <el-popover
-                placement="right"
-                width="400"
-                trigger="click"
-              >
-                <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
-                  <field
-                    :key="typeDocumentMetadata.columnName"
-                    :metadata-field="typeDocumentMetadata"
-                    :v-model="typeDocumentMetadata.value"
-                    style="padding-left: 0px; padding-right: 0px;"
-                  />
-                </el-form>
-                <p slot="reference" :style="blockOption">
-                  <i class="el-icon-document-copy" />
-                  <br>
-                  Cambiar Tipo de Documento
-                </p>
-              </el-popover>
-            </el-card>
-          </el-col>
-          -->
-
           <el-col :span="size">
             <el-card shadow="hover">
               <el-dropdown trigger="click" style="padding-top: 8px; color: black;" @command="changePos">

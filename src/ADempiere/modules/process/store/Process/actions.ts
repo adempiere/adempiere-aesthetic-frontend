@@ -1609,8 +1609,9 @@ export const actions: ProcessActionTree = {
           type: 'info'
         })
       }
+      this.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', true)
       const timeInitialized = (new Date()).getTime()
-      let processResult: any = {
+      const processResult: any = {
         // panel attributes from where it was executed
         parentUuid,
         containerUuid,
@@ -1630,35 +1631,20 @@ export const actions: ProcessActionTree = {
           output: '',
           outputStream: '',
           reportType: ''
-        }
-      }
-      if (isActionDocument) {
-        processResult = {
-          ...processResult,
-          processUuid: action.uuid,
-          processId: action.id,
-          processName: 'Procesar Orden',
-          parameters: parametersList
-        }
-      } else {
-        // Run process on server and wait for it for notify
-        // uuid of process
-        processResult = {
-          ...processResult,
-          menuParentUuid,
-          processIdPath: (!routeToDelete) ? '' : routeToDelete.path,
-          printFormatUuid: action.printFormatUuid,
-          // process attributes
-          action: processDefinition.name,
-          name: processDefinition.name,
-          description: processDefinition.description,
-          instanceUuid: '',
-          processUuid: processDefinition.uuid,
-          processId: processDefinition.id,
-          processName: processDefinition.processName,
-          parameters: parametersList,
-          isReport: processDefinition.isReport
-        }
+        },
+        menuParentUuid,
+        processIdPath: !routeToDelete ? '' : routeToDelete.path,
+        printFormatUuid: action.printFormatUuid,
+        // Process attributes
+        action: processDefinition.name,
+        name: processDefinition.name,
+        description: processDefinition.description,
+        instanceUuid: '',
+        processUuid: processDefinition.uuid,
+        processId: processDefinition.id,
+        processName: processDefinition.processName,
+        parameters: parametersList,
+        isReport: processDefinition.isReport
       }
       context.commit('addInExecution', processResult)
       requestRunProcess({
@@ -1719,7 +1705,7 @@ export const actions: ProcessActionTree = {
           context.dispatch('setProcessSelect', {
             finish: true
           })
-          context.dispatch('updateOrderPos', true)
+          context.dispatch('updateOrderPos', false)
         })
     })
   }
