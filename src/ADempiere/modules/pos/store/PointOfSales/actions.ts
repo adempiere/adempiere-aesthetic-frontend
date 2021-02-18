@@ -20,12 +20,13 @@ export const actions: PointOfSalesActionTree = {
     context: PointOfSalesActionContext,
     posToSet = null
   ) {
-    const userUuid: string = context.getters['user/getUserUuid']
+    const userUuid: string = context.rootState.user.userUuid
 
     requestListPointOfSales({
       userUuid
     })
       .then((response: IListPointOfSalesResponse) => {
+        console.log(response)
         // TODO: Add organization
         context.commit('setPontOfSales', {
           ...response,
@@ -33,7 +34,7 @@ export const actions: PointOfSalesActionTree = {
         })
 
         const posList: IPointOfSalesData[] = response.list
-        const getterPos: string = context.getters.getPointOfSalesUuid()
+        const getterPos: string = context.getters.getPointOfSalesUuid
         let pos: IPointOfSalesData | undefined
         if (posList) {
           if (getterPos) {
