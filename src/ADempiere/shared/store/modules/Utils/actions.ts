@@ -74,5 +74,11 @@ export const actions: UtilsActionTree = {
   },
   changeWidthLeft(context: UtilsActionContext, newWidthLeft: number) {
     context.commit('setSplitWidthLeft', newWidthLeft)
+  },
+  addParametersProcessPos(context: UtilsActionContext, params: any[]) {
+    context.commit('parametersProcessPos', params)
+  },
+  updateOrderPos(context: UtilsActionContext, params: boolean) {
+    context.commit('setUpdateOrder', params)
   }
 }

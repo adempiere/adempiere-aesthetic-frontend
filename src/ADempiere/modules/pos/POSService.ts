@@ -143,18 +143,18 @@ export function requestDeleteOrder(
   data: IDeleteOrderParams
 ): AxiosPromise<any> {
   const {
-    posUuid,
-    customerUuid,
-    documentTypeUuid,
-    salesRepresentativeUuid
+    posUuid
+    // customerUuid,
+    // documentTypeUuid,
+    // salesRepresentativeUuid
   } = data
   return requestRest({
     url: '/pos/delete-order',
     data: {
-      pos_uuid: posUuid,
-      customer_uuid: customerUuid,
-      document_type_uuid: documentTypeUuid,
-      sales_representative_uuid: salesRepresentativeUuid
+      pos_uuid: posUuid
+      // customer_uuid: customerUuid,
+      // document_type_uuid: documentTypeUuid,
+      // sales_representative_uuid: salesRepresentativeUuid
     }
   }).then(evaluateResponse)
 }

@@ -4,6 +4,7 @@ export const state: PointOfSalesState = {
   showPOSOptions: false,
   showPOSKeyLayout: false,
   showPOSCollection: false,
+  currentPOS: {},
   pointOfSales: {
     isLoaded: false,
     isReload: true,

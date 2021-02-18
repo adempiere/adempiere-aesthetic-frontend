@@ -152,9 +152,9 @@ export interface IUpdateOrderParams {
 
 export interface IDeleteOrderParams {
     posUuid: string
-    customerUuid?: string
-    documentTypeUuid?: string
-    salesRepresentativeUuid?: string
+    // customerUuid?: string
+    // documentTypeUuid?: string
+    // salesRepresentativeUuid?: string
 }
 
 export interface IListOrdersParams {
@@ -263,6 +263,7 @@ export interface PointOfSalesState {
     showPOSKeyLayout: boolean
     showPOSCollection: boolean
     pointOfSales: IPOSData
+    currentPOS: Partial<IPointOfSalesData>
 }
 
 // Collection Module

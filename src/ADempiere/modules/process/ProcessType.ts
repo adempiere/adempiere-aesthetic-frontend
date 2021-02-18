@@ -36,10 +36,10 @@ export interface IProcessRequestData {
     recordUuid?: string
     processUuid?: string
     tableName?: string
-    id: number
+    id?: number
     uuid: string
     isSummary?: boolean
-    reportType: string
+    reportType?: string
     tableSelectedId?: number
     reportViewUuid?: string
     parameters: KeyValueData[]

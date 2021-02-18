@@ -46,7 +46,7 @@ export default class ModalProcess extends Vue {
 
     get windowRecordSelected(): any {
       // return this.$store.state.window.recordSelected
-      return this.$store.state.window.currentRecord
+      return this.$store.state.windowModule.currentRecord
     }
 
     get getterDataRecordsAndSelection(): IRecordSelectionData {
@@ -64,7 +64,7 @@ export default class ModalProcess extends Vue {
         ](this.modalMetadata.containerUuid)
         if (!data.isLoaded && !data.record.length) {
           this.$store
-            .dispatch('getDataListTab', {
+            .dispatch(Namespaces.Window + '/' + 'getDataListTab', {
               parentUuid: this.modalMetadata.parentUuid,
               containerUuid: this.modalMetadata.containerUuid,
               isAddRecord: true
@@ -82,7 +82,7 @@ export default class ModalProcess extends Vue {
     showNotification = showNotification
 
     closeDialog(): void {
-      this.$store.dispatch('setShowDialog', {
+      this.$store.dispatch(Namespaces.Process + '/' + 'setShowDialog', {
         type: this.modalMetadata.panelType,
         action: undefined
       })
@@ -90,7 +90,7 @@ export default class ModalProcess extends Vue {
 
     runAction(action: WindowTabAssociatedAction) {
       if (action.isSortTab) {
-        this.$store.dispatch('updateSequence', {
+        this.$store.dispatch(Namespaces.Window + '/' + 'updateSequence', {
           parentUuid: this.modalMetadata.parentUuid,
           containerUuid: this.modalMetadata.containerUuid
         })
@@ -104,54 +104,65 @@ export default class ModalProcess extends Vue {
               ...this.$route.query,
               action: this.windowRecordSelected.UUID
             }
-          },
-          undefined // () => {}
+          }
         )
         this.closeDialog()
       } else if (action !== undefined) {
-        const fieldNotReady = this.$store.getters.isNotReadyForSubmit(
-          action.uuid
-        )
-        if (!fieldNotReady) {
-          this.closeDialog()
-          const porcesTabla = this.$store.getters.getProcessSelect
-            .processTablaSelection
-          const selection = this.$store.getters.getProcessSelect
-          if (porcesTabla) {
-            // selection.forEach(element => {
-            this.$store.dispatch('selectionProcess', {
-              action: action, // process metadata
-              parentUuid: this.parentUuid,
-              containerUuid: this.containerUuid,
-              panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
-              reportFormat: this.reportExportType,
-              recordUuidSelection: selection,
-              isProcessTableSelection: true,
-              routeToDelete: this.$route
+        const fieldNotReady = this.$store.getters[Namespaces.Panel + '/' + 'isNotReadyForSubmit'](action.uuid)
+        if (this.panelType === PanelContextType.Form) {
+          this.$store.dispatch(Namespaces.Process + '/' + 'processPos', {
+            action: action,
+            parentUuid: this.parentUuid,
+            idProcess: this.$store.getters[Namespaces.Order + '/' + 'getFindOrder'].id,
+            containerUuid: this.containerUuid,
+            panelType: this.panelType, // Determinate if get table name and record id (window) or selection(browser)
+            parametersList: this.$store.getters[Namespaces.Utils + '/' + 'getPosParameters']
+          })
+            .catch(error => {
+              console.warn(error)
             })
-            // })
-          } else {
-            this.$store
-              .dispatch('startProcess', {
+          this.closeDialog()
+        } else {
+          if (!fieldNotReady) {
+            this.closeDialog()
+            const porcesTabla = this.$store.getters[Namespaces.Utils + '/' + 'getProcessSelect'].processTablaSelection
+            const selection = this.$store.getters[Namespaces.Utils + '/' + 'getProcessSelect']
+            if (porcesTabla) {
+              // selection.forEach(element => {
+              this.$store.dispatch(Namespaces.Process + '/' + 'selectionProcess', {
                 action: action, // process metadata
                 parentUuid: this.parentUuid,
-                isProcessTableSelection: false,
                 containerUuid: this.containerUuid,
                 panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
                 reportFormat: this.reportExportType,
+                recordUuidSelection: selection,
+                isProcessTableSelection: true,
                 routeToDelete: this.$route
               })
-              .catch(error => {
-                console.warn(error)
-              })
+              // })
+            } else {
+              this.$store
+                .dispatch(Namespaces.Process + '/' + 'startProcess', {
+                  action: action, // process metadata
+                  parentUuid: this.parentUuid,
+                  isProcessTableSelection: false,
+                  containerUuid: this.containerUuid,
+                  panelType: this.panelType, // determinate if get table name and record id (window) or selection (browser)
+                  reportFormat: this.reportExportType,
+                  routeToDelete: this.$route
+                })
+                .catch(error => {
+                  console.warn(error)
+                })
+            }
+          } else {
+            this.showNotification({
+              type: 'warning',
+              title: this.$t('notifications.emptyValues').toString(),
+              name: '<b>' + fieldNotReady.name + '.</b> ',
+              message: this.$t('notifications.fieldMandatory').toString()
+            })
           }
-        } else {
-          this.showNotification({
-            type: 'warning',
-            title: this.$t('notifications.emptyValues').toString(),
-            name: '<b>' + fieldNotReady.name + '.</b> ',
-            message: this.$t('notifications.fieldMandatory').toString()
-          })
         }
       }
     }

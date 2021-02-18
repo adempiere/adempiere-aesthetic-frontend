@@ -87,8 +87,8 @@ export const actions: OrderActionTree = {
   setOrder(context: OrderActionContext, order: IOrderData) {
     context.commit('setOrder', order)
   },
-  currentOrder(context: OrderActionContext, current: IOrderData) {
-    context.commit('findOrder', current)
+  currentOrder(context: OrderActionContext, findOrder: IOrderData) {
+    context.commit('findOrder', findOrder)
   },
   findOrderServer(context: OrderActionContext, orderUuid: string) {
     if (typeof orderUuid === 'string' && (orderUuid)) {

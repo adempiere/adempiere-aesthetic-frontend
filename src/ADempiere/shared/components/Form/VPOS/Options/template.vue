@@ -5,7 +5,11 @@
       <br>
       {{ $t('form.pos.optionsPoinSales.title') }}
     </div>
-
+    <modal-dialog
+      :parent-uuid="processPos"
+      :container-uuid="processPos"
+      panel-type="From"
+    />
     <el-collapse v-model="activeName" accordion>
       <el-collapse-item :title="$t('form.pos.optionsPoinSales.salesOrder.title')" name="salesOrder">
         <el-row :gutter="12" style="padding-right: 10px;">
@@ -121,6 +125,31 @@
               </p>
             </el-card>
           </el-col>
+
+           <el-col :span="size">
+            <el-card shadow="hover">
+              <p
+                :style="blockOption"
+                @click="copyLineOrder "
+              >
+                <i class="el-icon-document-copy" />
+                <br>
+                {{ $t('form.pos.optionsPoinSales.salesOrder.copyOrderLine') }}
+              </p>
+            </el-card>
+          </el-col>
+          <!-- <el-col :span="size">
+            <el-card shadow="hover">
+              <p
+                :style="blockOption"
+                @click="copyOrder "
+              >
+                <i class="el-icon-document-copy" />
+                <br>
+                {{ $t('form.pos.optionsPoinSales.salesOrder.copyOrder') }}
+              </p>
+            </el-card>
+          </el-col> -->
 
           <el-col :span="size">
             <el-card shadow="hover">

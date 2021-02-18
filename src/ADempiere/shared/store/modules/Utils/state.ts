@@ -26,5 +26,7 @@ export const state: UtilsState = {
     isLoaded: false
   },
   splitWidthRight: 3,
-  splitWidthLeft: 3
+  splitWidthLeft: 3,
+  parametersProcessPos: [],
+  updateOrder: false
 }

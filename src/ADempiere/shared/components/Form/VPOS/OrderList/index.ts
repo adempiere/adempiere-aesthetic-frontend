@@ -103,6 +103,15 @@ export default class OrdersList extends Mixins(MixinForm) {
       }
     }
 
+    mounted() {
+      const listOrder = this.$store.getters[Namespaces.OrderLines + '/' + 'getListOrderLine']
+      if (!listOrder || !listOrder.length) {
+        this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
+          posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+        })
+      }
+    }
+
     beforeDestroy() {
       this.unsubscribe()
     }
@@ -182,6 +191,14 @@ export default class OrdersList extends Mixins(MixinForm) {
           }, 2000)
         }
       })
+    }
+
+    orderProcess(row: any) {
+      const parametersList = [{
+        columnName: 'C_Order_ID',
+        value: row.id
+      }]
+      this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos', parametersList)
     }
 
     convertValuesToSend(values: any[]): IKeyValueObject {

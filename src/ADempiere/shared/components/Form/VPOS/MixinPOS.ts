@@ -24,6 +24,7 @@ import {
 } from '@/ADempiere/shared/utils/valueFormat'
 import { Table } from 'element-ui'
 import MixinForm from '../MixinForm'
+import posProcess from '@/ADempiere/shared/utils/Constants/posProcess'
 
 @Component({
   name: 'MixinPOS',
@@ -78,6 +79,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
 
     public edit = false
     public displayType = ''
+    public process = posProcess
     // public containerUuid?: string
     public parentUuid?: string
   seeConversion: any
@@ -106,7 +108,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
     return []
   }
 
-  get currentOrder(): IOrderData {
+  get currentOrder(): IOrderData | Partial<IOrderData> {
     const action = this.$route.query.action
     if (action) {
       const order = this.ordersList.find(
@@ -117,7 +119,18 @@ export default class MixinPOS extends Mixins(MixinForm) {
       }
     }
 
-    return this.$store.getters[Namespaces.Order + '/' + 'getFindOrder']
+    return {
+      documentType: undefined,
+      documentStatus: {
+        value: '',
+        description: '',
+        name: ''
+      },
+      totalLines: 0,
+      grandTotal: 0,
+      salesRepresentative: undefined,
+      businessPartner: undefined
+    }
   }
 
   get currentPoint(): IPointOfSalesData | undefined {
@@ -150,8 +163,12 @@ export default class MixinPOS extends Mixins(MixinForm) {
     return false
   }
 
-    // Watchers
-    @Watch('currentOrder')
+  get updateOrderProcessPos() : boolean {
+    return this.$store.getters[Namespaces.Utils + '/' + 'getUpdateOrderPos']
+  }
+
+  // Watchers
+  @Watch('currentOrder')
   handleCurrentOrderChange(value: any): void {
     if (!value) {
       this.orderLines = []
@@ -175,9 +192,17 @@ export default class MixinPOS extends Mixins(MixinForm) {
      * @param {oject|boolean} bPartnerToSet
      */
     @Watch('isSetTemplateBP')
-    handleIsSetTemplateBPChange(bPartnerToSet: boolean | any) {
-      if (bPartnerToSet) {
-        this.setBusinessPartner(bPartnerToSet)
+  handleIsSetTemplateBPChange(bPartnerToSet: boolean | any) {
+    if (bPartnerToSet) {
+      this.setBusinessPartner(bPartnerToSet)
+    }
+  }
+
+    @Watch('updateOrderProcessPos')
+    handleUpdateOrderProcessPos(value: boolean) {
+      if (value) {
+        this.reloadOrder(true)
+        this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos')
       }
     }
 
@@ -411,8 +436,8 @@ export default class MixinPOS extends Mixins(MixinForm) {
         if (orderUuid) {
           requestGetOrder(orderUuid)
             .then((orderResponse: IOrderData) => {
-              this.fillOrder(orderResponse)
               this.$store.dispatch(Namespaces.Order + '/' + 'currentOrder', orderResponse)
+              this.fillOrder(orderResponse)
               this.listOrderLines(orderResponse)
             })
             .catch(error => {
@@ -424,7 +449,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
             })
         }
       } else {
-        this.fillOrder(this.currentOrder, false)
+        this.fillOrder(<IOrderData> this.currentOrder, false)
       }
     }
 
@@ -461,6 +486,12 @@ export default class MixinPOS extends Mixins(MixinForm) {
             this.order.grandTotal! - this.order!.totalLines!,
             currency
       )
+    }
+
+    findProcess(processPos: any[]) {
+      processPos.forEach(item => {
+        this.$store.dispatch(Namespaces.ProcessDefinition + '/' + 'getProcessFromServer', { containerUuid: item.uuid })
+      })
     }
 
     subscribeChanges() {
@@ -664,14 +695,21 @@ export default class MixinPOS extends Mixins(MixinForm) {
       this.getPanel()
     }
 
+    mounted() {
+      if (!this.currentOrder) {
+        const orderUuid: string | undefined = <string> this.$route.query.action
+        this.reloadOrder(true, orderUuid)
+      }
+    }
+
     beforeMount() {
       if (this.currentPoint) {
         if (this.currentOrder) {
-          this.fillOrder(this.currentOrder)
-          this.listOrderLines(this.currentOrder)
+          this.fillOrder(<IOrderData> this.currentOrder)
+          this.listOrderLines(<IOrderData> this.currentOrder)
         }
       }
-
+      this.findProcess(this.process)
       this.unsubscribe = this.subscribeChanges()
     }
 

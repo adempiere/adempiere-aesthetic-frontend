@@ -45,7 +45,8 @@
       :highlight-current-row="highlightRow"
       :height="heightTable"
       @shortkey.native="keyAction"
-      @current-change="handleCurrentChange"
+      @current-change="orderProcess"
+      @row-dblclick="handleCurrentChange"
     >
       <el-table-column
         prop="documentNo"

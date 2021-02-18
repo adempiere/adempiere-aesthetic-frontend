@@ -195,10 +195,10 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   mounted() {
-    setTimeout(() => {
-      this.tenderTypeDisplaye()
-      this.currencyDisplaye()
-    }, 1500)
+    // setTimeout(() => {
+    //   this.tenderTypeDisplaye()
+    //   this.currencyDisplaye()
+    // }, 1500)
   }
 
   open() : void {

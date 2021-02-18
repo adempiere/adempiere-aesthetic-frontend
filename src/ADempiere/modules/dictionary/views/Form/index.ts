@@ -6,13 +6,15 @@ import { SettingsModule } from '@/store/modules/settings'
 import { Component, Vue } from 'vue-property-decorator'
 import { IFormDataExtended } from '../../DictionaryType'
 import Template from './template.vue'
+import ModalDialog from '@/ADempiere/shared/components/Dialog'
 
 @Component({
   name: 'FormView',
   mixins: [Template],
   components: {
     ContextMenu,
-    FormPanel
+    FormPanel,
+    ModalDialog
   }
 })
 export default class FormView extends Vue {

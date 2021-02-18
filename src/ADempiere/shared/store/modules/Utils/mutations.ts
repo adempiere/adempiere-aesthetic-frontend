@@ -89,7 +89,9 @@ export const mutations: UtilsMutationTree = {
         isLoaded: false
       },
       splitWidthRight: 3,
-      splitWidthLeft: 3
+      splitWidthLeft: 3,
+      parametersProcessPos: [],
+      updateOrder: false
     }
   },
   setSplitWidthRight(state: UtilsState, splitWidthRight: number) {
@@ -97,5 +99,11 @@ export const mutations: UtilsMutationTree = {
   },
   setSplitWidthLeft(state: UtilsState, splitWidthLeft: number) {
     state.splitWidthLeft = splitWidthLeft
+  },
+  parametersProcessPos(state: UtilsState, params: any[]) {
+    state.parametersProcessPos = params
+  },
+  setUpdateOrder(state: UtilsState, order: boolean) {
+    state.updateOrder = order
   }
 }
