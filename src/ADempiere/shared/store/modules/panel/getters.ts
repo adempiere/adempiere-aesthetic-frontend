@@ -617,7 +617,13 @@ export const getters: PanelGetterTree = {
       const isMandatory: boolean = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
       if (!isMandatory) {
         if (isEvaluateShowed) {
-          return fieldIsDisplayed(fieldItem)
+          return fieldIsDisplayed({
+            panelType: fieldItem.panelType,
+            isActive: fieldItem.isActive,
+            isDisplayed: fieldItem.isDisplayed,
+            isDisplayedFromLogic: fieldItem.isDisplayedFromLogic,
+            isQueryCriteria: fieldItem.isQueryCriteria
+          })
         }
         return !isMandatory
       }
