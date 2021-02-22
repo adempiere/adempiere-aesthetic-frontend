@@ -1,6 +1,5 @@
 import { convertAction } from '@/ADempiere/shared/utils/DictionaryUtils'
 import { IActionAttributesData } from '@/ADempiere/shared/utils/DictionaryUtils/type'
-import { UserModule } from '@/store/modules/user'
 import { Component, Mixins } from 'vue-property-decorator'
 import { getFavoritesFromServer } from '../../../DashboardService'
 import {
@@ -29,7 +28,7 @@ export default class Favorites extends Mixins(MixinDasboard) {
 
     // Methods
     getFavoritesList(): Promise<IFavoriteDataExtended[]> {
-      const userUuid: string = UserModule.userUuid // this.$store.getters['user/getUserUuid']
+      const userUuid: string = this.$store.state.user.userUuid // this.$store.getters['user/getUserUuid']
       return new Promise(resolve => {
         getFavoritesFromServer({
           userUuid

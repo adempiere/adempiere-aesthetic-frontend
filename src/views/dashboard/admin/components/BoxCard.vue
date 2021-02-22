@@ -46,7 +46,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { UserModule } from '@/store/modules/user'
 import PanThumb from '@/components/PanThumb/index.vue'
 import Mallki from '@/components/TextHoverEffect/Mallki.vue'
 
@@ -59,15 +58,15 @@ import Mallki from '@/components/TextHoverEffect/Mallki.vue'
 })
 export default class extends Vue {
   get name() {
-    return UserModule.name
+    return this.$store.state.user.name
   }
 
   get avatar() {
-    return UserModule.avatar
+    return this.$store.state.user.avatar
   }
 
   get roles() {
-    return UserModule.roles
+    return this.$store.state.user.roles
   }
 }
 </script>

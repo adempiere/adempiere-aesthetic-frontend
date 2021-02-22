@@ -45,7 +45,7 @@ export default class ProductList extends Mixins(MixinForm) {
   }
 
   get isShowProductsPriceList(): any {
-    const productPrice: IListProductPriceItemData = this.$store.state[Namespaces.ListProductPrice + '/' + 'productPrice']
+    const productPrice: IListProductPriceItemData = this.$store.state.listProductPriceModule.productPrice
     const productPriceObj: IKeyValueObject = {
       ...productPrice
     }

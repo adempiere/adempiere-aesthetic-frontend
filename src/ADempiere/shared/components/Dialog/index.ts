@@ -8,7 +8,7 @@ import { Namespaces } from '../../utils/types'
 import { IRecordSelectionData } from '@/ADempiere/modules/persistence'
 import { showNotification } from '../../utils/notifications'
 import { WindowTabAssociatedAction } from '@/ADempiere/modules/window'
-import { AppModule, DeviceType } from '@/store/modules/app'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 
 @Component({
   name: 'ModalProcess',
@@ -26,7 +26,7 @@ export default class ModalProcess extends Vue {
 
     // Computed properties
     get isMobile(): boolean {
-      return AppModule.device === DeviceType.Mobile
+      return this.$store.state.app.device === DeviceType.Mobile
     }
 
     get width(): number {
@@ -37,11 +37,11 @@ export default class ModalProcess extends Vue {
     }
 
     get isVisibleDialog(): boolean {
-      return this.$store.state[Namespaces.Process + '/' + 'isVisibleDialog']
+      return this.$store.state.processModule.isVisibleDialog
     }
 
     get modalMetadata(): Partial<IPanelDataExtended> {
-      return this.$store.state[Namespaces.Process + '/' + 'metadata']
+      return this.$store.state.processModule.metadata
     }
 
     get windowRecordSelected(): any {

@@ -1,7 +1,6 @@
 import { IProcessData } from '@/ADempiere/modules/dictionary'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
-import { AppModule } from '@/store/modules/app'
 import VueI18n from 'vue-i18n'
 import { Component, Vue } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
@@ -94,7 +93,7 @@ export default class ProcessActivity extends Vue {
     }
 
     get language(): string {
-      return AppModule.language
+      return this.$store.state.app.language
     }
 
     get permissionRoutes(): RouteConfig[] {

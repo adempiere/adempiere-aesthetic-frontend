@@ -25,7 +25,6 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import settings from '@/settings'
-import { UserModule } from '@/store/modules/user'
 import { IRoleData } from '@/ADempiere/modules/user'
 
 @Component({
@@ -39,7 +38,7 @@ export default class extends Vue {
 
   // Computed properties
   get getRole(): Partial<IRoleData> {
-    return UserModule.role
+    return this.$store.state.user.role
   }
 
   // Methods

@@ -1,6 +1,6 @@
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
-import { AppModule, DeviceType } from '@/store/modules/app'
 
 @Component({
   name: 'ContextMenu',
@@ -19,7 +19,7 @@ export default class ContextMenu extends Vue {
 
     // Computed properties
     get isMobile(): boolean {
-      return AppModule.device === DeviceType.Mobile
+      return this.$store.state.app.device === DeviceType.Mobile
     }
 
     get templateDevice() {

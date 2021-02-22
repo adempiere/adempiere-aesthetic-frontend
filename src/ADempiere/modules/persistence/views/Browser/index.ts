@@ -8,8 +8,7 @@ import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/Conte
 import { IBrowserDataExtended } from '@/ADempiere/modules/dictionary'
 import { IRecordSelectionData } from '../../PersistenceType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { SettingsModule } from '@/store/modules/settings'
-import { AppModule, DeviceType } from '@/store/modules/app'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 
 @Component({
   name: 'BrowserView',
@@ -31,7 +30,7 @@ export default class BrowserView extends Vue {
 
     // Computed properties
     get showContextMenu(): boolean | undefined {
-      return SettingsModule.showContextMenu
+      return this.$store.state.settings.showContextMenu
     }
 
     get getterBrowser(): IBrowserDataExtended | undefined {
@@ -57,7 +56,7 @@ export default class BrowserView extends Vue {
     }
 
     get isMobile(): boolean {
-      return AppModule.device === DeviceType.Mobile
+      return this.$store.state.app.device === DeviceType.Mobile
     }
 
     get cssClassTitle(): 'title-mobile' | 'title' {
@@ -160,7 +159,7 @@ export default class BrowserView extends Vue {
     // Hooks
     created() {
       this.getBrowser()
-      SettingsModule.ChangeSetting({
+      this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
         key: 'showContextMenu',
         value: true
       })

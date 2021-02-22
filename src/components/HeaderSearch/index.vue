@@ -36,11 +36,10 @@
 <script lang="ts">
 import path from 'path'
 import Fuse from 'fuse.js' // A lightweight fuzzy-search module
-import { Component, Mixins, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
-import { AppModule, DeviceType } from '@/store/modules/app'
-import { PermissionModule } from '@/store/modules/permission'
 import MixinI18n from '@/ADempiere/shared/utils/i18n'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 // import i18n from '@/ADempiere/shared/lang' // Internationalization
 
 @Component({
@@ -55,15 +54,15 @@ export default class extends Mixins(MixinI18n) {
   private fuse?: Fuse<RouteConfig>
 
   get isMobile() {
-    return AppModule.device === DeviceType.Mobile
+    return this.$store.state.app.device === DeviceType.Mobile
   }
 
   get routes() {
-    return PermissionModule.routes
+    return this.$store.state.permission.routes
   }
 
   get lang() {
-    return AppModule.language
+    return this.$store.state.app.language
   }
 
   @Watch('lang')

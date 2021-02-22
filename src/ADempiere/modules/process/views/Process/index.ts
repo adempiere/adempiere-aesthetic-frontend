@@ -3,7 +3,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import MainPanel from '@/ADempiere/shared/components/Panel'
 import ContextMenu from '../../../window/components/ContextMenu'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
-import { SettingsModule } from '@/store/modules/settings'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IPanelDataExtended } from '../../../dictionary'
 
@@ -24,7 +23,7 @@ export default class ProcessView extends Vue {
 
     // Computed Properties
     get showContextMenu(): boolean | undefined {
-      return SettingsModule.showContextMenu
+      return this.$store.state.settings.showContextMenu
     }
 
     get getterProcess(): IPanelDataExtended | undefined {
@@ -57,7 +56,7 @@ export default class ProcessView extends Vue {
     // Hooks
     created() {
       this.getProcess()
-      SettingsModule.ChangeSetting({
+      this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
         key: 'showContextMenu',
         value: true
       })

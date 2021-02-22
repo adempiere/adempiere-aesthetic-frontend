@@ -2,7 +2,6 @@ import ContextMenu from '@/ADempiere/modules/window/components/ContextMenu'
 import FormPanel from '@/ADempiere/shared/components/Form'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { SettingsModule } from '@/store/modules/settings'
 import { Component, Vue } from 'vue-property-decorator'
 import { IFormDataExtended } from '../../DictionaryType'
 import Template from './template.vue'
@@ -42,18 +41,18 @@ export default class FormView extends Vue {
     }
 
     get showContextMenu(): boolean | undefined {
-      return SettingsModule.showContextMenu // this.$store.state.settings.showContextMenu
+      return this.$store.state.settings.showContextMenu // this.$store.state.settings.showContextMenu
     }
 
     set showContextMenu(value: boolean | undefined) {
-      SettingsModule.ChangeSetting({
+      this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
         key: 'showContextMenu',
         value: value
       })
     }
 
     get showNavar() {
-      return SettingsModule.showNavar
+      return this.$store.state.settings.showNavar
     }
 
     get isShowTitleForm(): boolean {

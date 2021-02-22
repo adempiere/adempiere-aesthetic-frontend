@@ -1,7 +1,6 @@
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { IPanelDataExtended } from '@/ADempiere/modules/dictionary/DictionaryType/VuexType'
 import { IRecordSelectionData } from '@/ADempiere/modules/persistence/PersistenceType'
-import { AppModule, DeviceType } from '@/store/modules/app'
-import { TagsViewModule } from '@/store/modules/tags-view'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { fieldIsDisplayed } from '../../utils/DictionaryUtils'
 import { PanelContextType } from '../../utils/DictionaryUtils/ContextMenuType'
@@ -121,7 +120,7 @@ export default class MixinMainPanel extends Vue {
     }
 
     get isMobile(): boolean {
-      return AppModule.device === DeviceType.Mobile
+      return this.$store.state.app.device === DeviceType.Mobile
     }
 
     get getterDataStore():
@@ -646,7 +645,7 @@ export default class MixinMainPanel extends Vue {
         }
       }
       if (this.isPanelWindow) {
-        TagsViewModule.updateVisitedView({
+        this.$store.dispatch(Namespaces.TagsView + '/' + 'updateVisitedView', {
           ...this.$route,
           title: `${this.tagTitle.base} - ${this.tagTitle.action}`
         })

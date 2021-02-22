@@ -1,5 +1,5 @@
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { AppModule, DeviceType } from '@/store/modules/app'
 import { Vue, Component } from 'vue-property-decorator'
 import { IEntityLogData } from '../../../WindowType'
 import MixinInfo from '../mixinInfo'
@@ -18,7 +18,7 @@ export default class RecordLogs extends Vue {
 
     // Computed Properties
     get isMobile(): boolean {
-      return AppModule.device === DeviceType.Mobile
+      return this.$store.state.app.device === DeviceType.Mobile
     }
 
     get classIsMobileScroll(): string {

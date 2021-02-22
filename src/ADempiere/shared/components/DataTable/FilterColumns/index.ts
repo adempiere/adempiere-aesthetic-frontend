@@ -1,6 +1,6 @@
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { AppModule, DeviceType } from '@/store/modules/app'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
 
@@ -13,7 +13,7 @@ export default class FilterColumns extends Vue {
 
     // Computed properties
     get isMobile(): boolean {
-      return AppModule.device === DeviceType.Mobile
+      return this.$store.state.app.device === DeviceType.Mobile
     }
 
     get fieldsList(): IFieldDataExtendedUtils[] {

@@ -1,5 +1,5 @@
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { AppModule, DeviceType } from '@/store/modules/app'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
@@ -15,7 +15,7 @@ export default class MixinField extends Vue {
 
     // Computed properties
     get isMobile(): boolean {
-      return AppModule.device === DeviceType.Mobile
+      return this.$store.state.app.device === DeviceType.Mobile
     }
 
     get isDisabled(): boolean {

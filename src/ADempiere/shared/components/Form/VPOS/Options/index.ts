@@ -1,4 +1,4 @@
-import { Component, Mixins, Prop, Vue } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import Template from './template.vue'
 import ListProductPrice from '@/ADempiere/shared/components/Form/VPOS/ProductInfo/ProductList'
 import OrdersList from '@/ADempiere/shared/components/Form/VPOS/OrderList'
@@ -31,7 +31,7 @@ export default class Options extends Mixins(MixinOrderLine) {
 
     // Computed properties
     get isShowProductsPriceList(): boolean {
-      const productPrice: IListProductPriceItemData = this.$store.state[Namespaces.ListProductPrice + '/' + 'productPrice']
+      const productPrice: IListProductPriceItemData = this.$store.state.listProductPriceModule.productPrice
       return productPrice.isShowPopoverMenu!
     }
 

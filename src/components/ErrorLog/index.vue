@@ -75,8 +75,8 @@
 </template>
 
 <script lang="ts">
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Vue } from 'vue-property-decorator'
-import { ErrorLogModule } from '@/store/modules/error-log'
 
 @Component({
   name: 'ErrorLog'
@@ -85,12 +85,12 @@ export default class extends Vue {
   private dialogTableVisible = false
 
   get errorLogs() {
-    return ErrorLogModule.logs
+    return this.$store.state.errorLog.logs
   }
 
   private clearAll() {
     this.dialogTableVisible = false
-    ErrorLogModule.ClearErrorLog()
+    this.$store.dispatch(Namespaces.ErrorLog + '/' + 'ClearErrorLog')
   }
 }
 </script>

@@ -1,4 +1,4 @@
-import { AppModule, DeviceType } from '@/store/modules/app'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { icon } from '../icon'
 import Template from './template.vue'
@@ -12,7 +12,7 @@ export default class Item extends Vue {
 
     // Computed properties
     get isMobile(): boolean {
-      return AppModule.device === DeviceType.Mobile
+      return this.$store.state.app.device === DeviceType.Mobile
     }
 
     // methods

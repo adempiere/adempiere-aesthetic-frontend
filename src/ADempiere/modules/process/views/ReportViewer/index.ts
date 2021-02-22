@@ -3,7 +3,6 @@ import { IReportOutputData } from '@/ADempiere/modules/report'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { showNotification } from '@/ADempiere/shared/utils/notifications'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { SettingsModule } from '@/store/modules/settings'
 import { Component, Vue } from 'vue-property-decorator'
 import { INotificationProcessData } from '../../ProcessType'
 import Template from './template.vue'
@@ -25,7 +24,7 @@ export default class ReportViewer extends Vue {
     // Computed properties
     // TODO: Add get metadata from server to open report view from link
     get showContextMenu(): boolean | undefined {
-      return SettingsModule.showContextMenu
+      return this.$store.state.settings.showContextMenu
     }
 
     get getterProcess(): IProcessData | undefined {

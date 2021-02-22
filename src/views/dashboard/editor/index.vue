@@ -19,7 +19,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { UserModule } from '@/store/modules/user'
 import PanThumb from '@/components/PanThumb/index.vue'
 import GithubCorner from '@/components/GithubCorner/index.vue'
 
@@ -34,15 +33,15 @@ export default class extends Vue {
   private emptyGif = 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'
 
   get name() {
-    return UserModule.name
+    return this.$store.state.user.name
   }
 
   get avatar() {
-    return UserModule.avatar
+    return this.$store.state.user.avatar
   }
 
   get roles() {
-    return UserModule.roles
+    return this.$store.state.user.roles
   }
 
   get currentRole() {

@@ -1,4 +1,4 @@
-import { AppModule, DeviceType } from '@/store/modules/app'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
 
@@ -13,7 +13,7 @@ export default class DropdownMenu extends Vue {
 
     // Computed properties
     get device(): DeviceType {
-      return AppModule.device
+      return this.$store.state.app.device
     }
 
     get isMobile(): number {

@@ -21,7 +21,7 @@ export default class FieldProductInfo extends Mixins(MixinField) {
     // Computed properties
 
     get isShowProductsPriceList(): boolean | undefined {
-      const productPrice: IListProductPriceItemData = this.$store.state[Namespaces.ListProductPrice + '/' + 'productPrice']
+      const productPrice: IListProductPriceItemData = this.$store.state.istProductPriceModule.productPrice
       return productPrice.isShowPopoverField
     }
 

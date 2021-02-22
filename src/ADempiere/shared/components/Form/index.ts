@@ -1,7 +1,6 @@
 import Template from './template.vue'
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { SettingsModule } from '@/store/modules/settings'
-import { AppModule } from '@/store/modules/app'
+import { Namespaces } from '../../utils/types'
 
 @Component({
   name: 'FormPanel',
@@ -17,12 +16,12 @@ export default class FormPanel extends Vue {
       switch (this.metadata.fileName) {
         case 'PriceChecking':
           form = import('@/ADempiere/shared/components/Form/PriceChecking') // import('@/components/ADempiere/Form/PriceChecking')
-          SettingsModule.ChangeSetting({
+          this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
             key: 'showMenu',
             value: false
           })
-          AppModule.ToggleSideBar(false)
-          SettingsModule.ChangeSetting({
+          this.$store.dispatch(Namespaces.App + '/' + 'ToggleSideBar', false)
+          this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
             key: 'tagsView',
             value: false
           })

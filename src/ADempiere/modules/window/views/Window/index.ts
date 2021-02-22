@@ -12,12 +12,11 @@ import SplitPane from 'vue-splitpane'
 import ModalDialog from '@/ADempiere/shared/components/Dialog'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { Route } from 'vue-router'
-import { SettingsModule } from '@/store/modules/settings'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IWindowDataExtended } from '@/ADempiere/modules/dictionary'
 import { IEntityLogData, IWorkflowProcessData } from '../../WindowType'
 import { IRecordSelectionData } from '@/ADempiere/modules/persistence'
-import { AppModule, DeviceType } from '@/store/modules/app'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 
 @Component({
   name: 'WindowView',
@@ -50,7 +49,7 @@ export default class WindowView extends Vue {
 
     // Computed properties
     get showContextMenu(): boolean | undefined {
-      return SettingsModule.showContextMenu
+      return this.$store.state.settings.showContextMenu
     }
 
     get defaultPorcentSplitPane() {
@@ -70,7 +69,7 @@ export default class WindowView extends Vue {
     }
 
     get isMobile(): boolean {
-      return AppModule.device === DeviceType.Mobile
+      return this.$store.state.app.device === DeviceType.Mobile
     }
 
     // convert ternary operator into computed property
@@ -386,7 +385,7 @@ export default class WindowView extends Vue {
       if (this.isShowedRecordNavigation) {
         this.handleResize()
       }
-      SettingsModule.ChangeSetting({
+      this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
         key: 'showContextMenu',
         value: true
       })

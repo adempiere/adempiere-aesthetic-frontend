@@ -43,12 +43,12 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { UserModule } from '@/store/modules/user'
 import Account from './components/Account.vue'
 import Activity from './components/Activity.vue'
 import Timeline from './components/Timeline.vue'
 import UserCard from './components/UserCard.vue'
 import Role from '@/ADempiere/shared/components/Profile/Role'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 export interface IProfile {
   name: string
@@ -79,19 +79,19 @@ export default class extends Vue {
   private activeTab = 'activity'
 
   get name() {
-    return UserModule.name
+    return this.$store.state.user.name
   }
 
   get email() {
-    return UserModule.email
+    return this.$store.state.user.email
   }
 
   get avatar() {
-    return UserModule.avatar
+    return this.$store.state.user.avatar
   }
 
   get roles() {
-    return UserModule.roles
+    return this.$store.state.user.roles
   }
 
   created() {
