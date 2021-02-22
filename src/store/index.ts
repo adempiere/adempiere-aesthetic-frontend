@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { IAppState } from './modules/app'
-import { IUserState } from './modules/user'
-import { ITagsViewState } from './modules/tags-view'
-import { IErrorLogState } from './modules/error-log'
-import { IPermissionState } from './modules/permission'
-import { ISettingsState } from './modules/settings'
 import VueRouter, { Route } from 'vue-router'
+import { IAppState } from '@/ADempiere/modules/app/AppType'
+import { IUserState } from '@/ADempiere/modules/user'
+import { ITagsViewState } from '@/ADempiere/modules/tagsView/TagsViewType'
+import { IErrorLogState } from '@/ADempiere/modules/errorLog/ErrorLogType'
+import { IPermissionState } from '@/ADempiere/modules/permission/PermissionType'
+import { ISettingsState } from '@/ADempiere/modules/settings/SettingsType'
 
 Vue.use(Vuex)
 
