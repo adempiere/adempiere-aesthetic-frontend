@@ -1,0 +1,1 @@
+export { tagsView } from './store'
