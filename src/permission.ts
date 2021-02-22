@@ -3,11 +3,10 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { Message } from 'element-ui'
 import { Route } from 'vue-router'
-import { UserModule } from '@/store/modules/user'
-import { PermissionModule } from '@/store/modules/permission'
 import i18n from '@/ADempiere/shared/lang' // Internationalization
 import settings from './settings'
 import store from '@/ADempiere/shared/store'
+import { Namespaces } from './ADempiere/shared/utils/types'
 
 NProgress.configure({ showSpinner: false })
 
@@ -28,19 +27,19 @@ router.beforeEach(async(to: Route, _: Route, next: any) => {
   store.dispatch('setRouter', router)
 
   // Determine whether the user has logged in
-  if (UserModule.token) {
+  if (store.state.user.token) {
     if (to.path === '/login') {
       // If is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done()
     } else {
       // Check whether the user has obtained his permission roles
-      if (!UserModule.isSession) {
+      if (!store.state.user.isSession) {
         try {
           // Note: roles must be a object array! such as: ['admin'] or ['developer', 'editor']
           // await UserModule.GetUserInfo()
-          await UserModule.GetSessionInfo()
-          const accessRoutes = await PermissionModule.GenerateRoutes()
+          await store.dispatch(Namespaces.User + '/' + 'GetSessionInfo') // UserModule.GetSessionInfo()
+          const accessRoutes = await store.dispatch(Namespaces.Permission + '/' + 'GenerateRoutes')
           // const roles = UserModule.roles
           // Generate accessible routes map based on role
           // PermissionModule.GenerateRoutes()
@@ -51,7 +50,8 @@ router.beforeEach(async(to: Route, _: Route, next: any) => {
           next({ ...to, replace: true })
         } catch (err) {
           // Remove token and redirect to login page
-          await UserModule.ResetToken()
+          await store.dispatch(Namespaces.User + '/' + 'ResetToken')
+
           Message.error(err || 'Has Error')
           next(`/login?redirect=${to.path}`)
           NProgress.done()
@@ -73,11 +73,14 @@ router.beforeEach(async(to: Route, _: Route, next: any) => {
   }
 })
 
+let n = 0
+
 router.afterEach((to: Route) => {
   // Finish progress bar
   // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
   NProgress.done()
-
+  n++
+  console.log(n)
   // set page title
   document.title = getPageTitle(to.meta.title)
 })
