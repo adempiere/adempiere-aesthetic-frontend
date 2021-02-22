@@ -43,6 +43,14 @@ export interface IResponseList<T> {
 }
 
 export enum Namespaces {
+    // Root
+    App = 'app',
+    ErrorLog = 'errorLog',
+    Permission = 'permission',
+    Settings = 'settings',
+    TagsView = 'tagsView',
+    User = 'user',
+    // Adempiere
     System = 'systemModule',
     BusinessPartner = 'businessPartnerModule',
     Dashboard = 'dashboardModule',
