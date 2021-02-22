@@ -174,10 +174,10 @@ export const actions: ProcessActionTree = {
       // get info metadata process
       const processDefinition: IProcessData = isActionDocument
         ? action
-        : context.rootGetters.getProcess(action.uuid)
+        : context.rootGetters[Namespaces.ProcessDefinition + '/' + 'getProcess'](action.uuid)
       let reportType: any = reportFormat
 
-      if (!parametersList) {
+      if (!parametersList || !parametersList.length) {
         parametersList = <IPanelParameters[]>(
                     context.rootGetters[Namespaces.Panel + '/' + 'getParametersToServer']({
                       containerUuid: processDefinition.uuid
@@ -248,7 +248,7 @@ export const actions: ProcessActionTree = {
         processResult = {
           ...processLog,
           menuParentUuid,
-          processIdPath: routeToDelete!.path,
+          processIdPath: (!routeToDelete) ? '' : routeToDelete!.path,
           printFormatUuid: action.printFormatUuid,
           // process attributes
           action: <ActionContextName>processDefinition.name,
@@ -1154,7 +1154,7 @@ export const actions: ProcessActionTree = {
     // get info metadata process
     const processDefinition:
             | IProcessData
-            | undefined = context.rootGetters.getProcess(action.uuid)
+            | undefined = context.rootGetters[Namespaces.ProcessDefinition + '/' + 'getProcess'](action.uuid)
     const reportType: ReportExportContextType = ReportExportContextType.Pdf
     if (!parametersList) {
       parametersList = <IPanelParameters[]>(
@@ -1365,7 +1365,7 @@ export const actions: ProcessActionTree = {
       .then((processActivityResponse: IProcessLogListData) => {
         const responseList = processActivityResponse.processLogsList.map(
           (processLogItem: IProcessLogData) => {
-            const processMetadata: IProcessData | undefined = context.rootGetters.getProcess(
+            const processMetadata: IProcessData | undefined = context.rootGetters[Namespaces.ProcessDefinition + '/' + 'getProcess'](
               processLogItem.uuid
             )
             // if no exists metadata process in store and no request progess
@@ -1567,9 +1567,146 @@ export const actions: ProcessActionTree = {
     context.commit('addStartedProcess', processOutput)
     context.commit('setReportValues', processOutput)
   },
-  changeFormatReport(context: ProcessActionContext, reportFormat) {
+  changeFormatReport(context: ProcessActionContext, reportFormat: any) {
     if (reportFormat) {
       context.commit('changeFormatReport', reportFormat)
     }
+  },
+  /**
+   * Ejecutar Procesos del POS
+   */
+  processPos(context: ProcessActionContext, params: {
+    parentUuid: string
+    containerUuid: string
+    panelType: PanelContextType
+    action: any
+    parametersList?: any[]
+    idProcess: number
+    isActionDocument?: boolean
+    menuParentUuid: string
+    routeToDelete: any
+  }) {
+    const { parentUuid, containerUuid, panelType, action, idProcess, isActionDocument, menuParentUuid, routeToDelete } = params
+    let { parametersList } = params
+
+    return new Promise((resolve, reject) => {
+      const processDefinition = (isActionDocument) ? action : context.rootGetters[Namespaces.ProcessDefinition + '/' + 'getProcess'](action.uuid)
+      if (!parametersList) {
+        parametersList = context.rootGetters[Namespaces.Panel + '/' + 'getParametersToServer']({
+          containerUuid: processDefinition.uuid
+        })
+      }
+
+      const isSession = Boolean(getToken())
+      let procesingMessage: any = {
+        close: () => false
+      }
+      if (isSession) {
+        procesingMessage = showNotification({
+          title: language.t('notifications.processing').toString(),
+          message: processDefinition.name,
+          summary: processDefinition.description,
+          type: 'info'
+        })
+      }
+      this.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', true)
+      const timeInitialized = (new Date()).getTime()
+      const processResult: any = {
+        // panel attributes from where it was executed
+        parentUuid,
+        containerUuid,
+        panelType,
+        lastRun: timeInitialized,
+        parametersList,
+        logs: [],
+        isError: false,
+        isProcessing: true,
+        summary: '',
+        resultTableName: '',
+        output: {
+          uuid: '',
+          name: '',
+          description: '',
+          fileName: '',
+          output: '',
+          outputStream: '',
+          reportType: ''
+        },
+        menuParentUuid,
+        processIdPath: !routeToDelete ? '' : routeToDelete.path,
+        printFormatUuid: action.printFormatUuid,
+        // Process attributes
+        action: processDefinition.name,
+        name: processDefinition.name,
+        description: processDefinition.description,
+        instanceUuid: '',
+        processUuid: processDefinition.uuid,
+        processId: processDefinition.id,
+        processName: processDefinition.processName,
+        parameters: parametersList,
+        isReport: processDefinition.isReport
+      }
+      context.commit('addInExecution', processResult)
+      requestRunProcess({
+        uuid: processDefinition.uuid,
+        recordId: idProcess,
+        parameters: parametersList!
+      })
+        .then((runProcessResponse: IProcessLogData) => {
+          const { output } = runProcessResponse
+          let logList: any[] = []
+          if (runProcessResponse.logsList && runProcessResponse.logsList.length) {
+            logList = runProcessResponse.logsList
+          }
+
+          const link: Partial<HTMLAnchorElement> = {
+            href: undefined,
+            download: undefined
+          }
+          // assign new attributes
+          Object.assign(processResult, {
+            ...runProcessResponse,
+            url: link.href,
+            download: link.download,
+            logs: logList,
+            output
+          })
+          resolve(processResult)
+          if (processResult.output) {
+            context.dispatch('setReportTypeToShareLink', processResult.output.reportType)
+          }
+        })
+        .catch(error => {
+          Object.assign(processResult, {
+            isError: true,
+            message: error.message,
+            isProcessing: false
+          })
+          console.warn(`Error running the process ${error.message}. Code: ${error.code}.`)
+          reject(error)
+        })
+        .finally(() => {
+          context.commit('addNotificationProcess', processResult)
+          context.dispatch('finishProcess', {
+            processOutput: processResult,
+            procesingMessage,
+            routeToDelete
+          })
+
+          context.commit('deleteInExecution', {
+            containerUuid
+          })
+
+          context.dispatch('setProcessTable', {
+            valueRecord: 0,
+            tableName: '',
+            processTable: false
+          })
+          context.dispatch('setProcessSelect', {
+            finish: true
+          })
+          context.dispatch('updateOrderPos', false)
+        })
+    })
   }
 }

@@ -284,6 +284,47 @@ export function calculationValue(value: any, event: any): string | null | undefi
   }
 }
 
+export function currencyFind(params: {
+  currencyCurrent: any
+  listCurrency: any[]
+  defaultCurrency: any
+}) {
+  const { currencyCurrent, listCurrency, defaultCurrency } = params
+  if (listCurrency && listCurrency.length) {
+    const currency = listCurrency.find(item => {
+      if (item.currencyUuid === currencyCurrent) {
+        return item
+      }
+    })
+    if (currency) {
+      return currency
+    }
+  }
+  return defaultCurrency.iSOCode
+}
+/**
+ * Search the Payment List for the Current Payment
+ * @author Elsio Sanchez <elsiosanches@gmail.com>
+ * @param {string} currentPayment Current Payment
+ * @param {array} listTypePayment Payment Type Listings
+ */
+
+export function tenderTypeFind(params: {
+  currentPayment: any
+  listTypePayment: any[]
+}) {
+  const { currentPayment, listTypePayment } = params
+  const payment = listTypePayment.find(item => {
+    if (item.tenderTypeCode === currentPayment) {
+      return item.tenderTypeDisplay
+    }
+  })
+  if (payment) {
+    return payment.tenderTypeDisplay
+  }
+  return currentPayment
+}
+
 export function clearVariables() {
   partialValue = ''
 }

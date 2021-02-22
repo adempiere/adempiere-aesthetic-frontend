@@ -50,6 +50,7 @@
           <el-main style="padding-top: 0px; padding-right: 10px; padding-bottom: 0px; padding-left: 10px;">
             <el-table
               ref="linesTable"
+              v-loading="updateOrderProcessPos"
               v-shortkey="shortsKey"
               :data="allOrderLines"
               border
@@ -84,7 +85,7 @@
                       <i class="el-icon-arrow-down el-icon--right" />
                     </span>
                     <el-dropdown-menu slot="dropdown" style="padding-bottom: 0px;">
-                      <el-dropdown-item icon="el-icon-info" :command="scope.row">
+                      <el-dropdown-item :command="scope.row">
                         <el-popover
                           placement="right"
                           trigger="click"
@@ -126,12 +127,13 @@
                               </el-col>
                             </el-row>
                           </el-form>
-                          <el-button slot="reference" type="text">
+                          <el-button slot="reference" type="text" style="display: flex; width: 110%; padding-bottom: 5%; padding-top: 5%;">
+                            <i class="el-icon-info" />
                             {{ $t('form.productInfo.productInformation') }}
                           </el-button>
                         </el-popover>
                       </el-dropdown-item>
-                      <el-dropdown-item icon="el-icon-edit" :command="$t('form.pos.tableProduct.editQuantities')">
+                      <el-dropdown-item :command="$t('form.pos.tableProduct.editQuantities')">
                         <el-popover
                           placement="right"
                           trigger="click"
@@ -179,6 +181,7 @@
                             </el-col>
                           </el-row>
                           <el-button slot="reference" type="text">
+                            <i class="el-icon-edit" />
                             {{ $t('form.pos.tableProduct.editQuantities') }}
                           </el-button>
                         </el-popover>

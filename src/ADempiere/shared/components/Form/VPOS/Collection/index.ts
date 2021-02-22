@@ -1,5 +1,5 @@
 import { ICurrencyData } from '@/ADempiere/modules/core'
-import { IOrderData, IPointOfSalesData } from '@/ADempiere/modules/pos'
+import { IOrderData, IPaymentsData, IPointOfSalesData } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatDate, formatPrice } from '@/ADempiere/shared/utils/valueFormat'
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
@@ -39,7 +39,9 @@ export default class Collection extends Mixins(MixinForm) {
     public allPayCurrency = 0
     public labelTenderType = ''
     public defaultLabel = ''
-    fieldsList = fieldListCollection
+    fieldList = fieldListCollection
+    public sendToServer = false
+    amontSend= 0
 
     // Computed properties
     get validateCompleteCollection(): boolean {
@@ -78,6 +80,15 @@ export default class Collection extends Mixins(MixinForm) {
       return false
     }
 
+    get listPayments(): IPaymentsData[] {
+      const listLocal = this.$store.getters[Namespaces.Collection + '/' + 'getPaymentBox']
+      const listServer = this.$store.getters[Namespaces.Collection + '/' + 'getListPayments']
+      if (!this.sendToServer) {
+        return listServer.reverse()
+      }
+      return listLocal
+    }
+
     get paymentBox(): any[] {
       const payment = this.isPaymentBox.filter((pay: any) => {
         return pay.isVisible
@@ -89,8 +100,8 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get cashPayment() {
-      const cash: any[] = this.isPaymentBox.filter(pay => {
-        return pay.tenderType === 'X'
+      const cash = this.listPayments.filter(pay => {
+        return pay.tenderTypeCode === 'X'
       })
       return this.sumCash(cash)
     }
@@ -141,14 +152,14 @@ export default class Collection extends Mixins(MixinForm) {
       return false
     }
 
-    get isCashAmt(): any[] | 0 {
-      const cashAmt: any[] = this.paymentBox.map(item => {
-        if (item.tenderType === 'X') {
-          return item.payAmt
+    get isCashAmt(): number {
+      const cashAmt: number[] = this.listPayments.map(item => {
+        if (item.tenderTypeCode === 'X') {
+          return item.amount
         }
         return 0
       })
-      if (cashAmt) {
+      if (cashAmt && cashAmt.length) {
         return cashAmt.reduce((accumulator, currentValue) => accumulator + currentValue)
       }
       return 0
@@ -168,7 +179,7 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get pay(): number {
-      return this.sumCash(this.isPaymentBox)
+      return this.sumCash(this.listPayments)
     }
 
     get pending(): number {
@@ -184,7 +195,7 @@ export default class Collection extends Mixins(MixinForm) {
       const containerUuid = this.containerUuid
       const fieldsEmpty: string[] = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
         containerUuid,
-        fieldsList: this.fieldsList
+        fieldsList: this.fieldList
       })
       const amount = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid,
@@ -200,7 +211,7 @@ export default class Collection extends Mixins(MixinForm) {
       const containerUuid = this.containerUuid
       const fieldsEmpty: string[] = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
         containerUuid,
-        fieldsList: this.fieldsList
+        fieldsList: this.fieldList
       })
       return !!(fieldsEmpty.length)
     }
@@ -214,7 +225,15 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get fieldpending(): number {
-      return this.pending * this.multiplyRateCollection
+      return this.pending
+    }
+
+    get displayCurrency(): any[] {
+      return this.$store.getters[Namespaces.Collection + '/' + 'getListCurrency']
+    }
+
+    get convert() {
+      return this.$store.getters[Namespaces.Collection + '/' + 'getConvertionPayment']
     }
 
     get order(): IOrderData {
@@ -374,7 +393,7 @@ export default class Collection extends Mixins(MixinForm) {
     sumCash(cash: any[]) {
       let sum = 0
       cash.forEach((pay) => {
-        sum += pay.payAmt
+        sum += pay.amount
       })
       return sum
     }
@@ -420,15 +439,21 @@ export default class Collection extends Mixins(MixinForm) {
 
     addCollectToList(): void {
       const containerUuid = this.containerUuid
-      const amount = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+      const posUuid: string = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+      const orderUuid = this.$route.query.action
+      const bankUuid = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        containerUuid,
+        columnName: 'C_Bank_ID_UUID'
+      })
+      this.amontSend = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid,
         columnName: 'PayAmt'
       })
-      const date = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+      const paymentDate = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid,
         columnName: 'DateTrx'
       })
-      const typePay = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+      const tenderTypeCode = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid,
         columnName: 'TenderType'
       })
@@ -436,37 +461,55 @@ export default class Collection extends Mixins(MixinForm) {
         containerUuid,
         columnName: 'ReferenceNo'
       })
-      let currency = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+      const currencyUuid = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid,
-        columnName: 'DisplayColumn_C_Currency_ID'
+        columnName: 'C_Currency_ID_UUID'
       })
       const currencyId = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid,
         columnName: 'C_Currency_ID'
       })
-      if (currency === this.currencyPoint.id) {
-        currency = this.currencyPoint.iSOCode
-      }
 
-      const displayType: string = this.labelTenderType
-      this.$store.dispatch(Namespaces.Collection + '/' + 'setPaymentBox', {
-        isVisible: true,
-        quantityCahs: amount,
-        payAmt: amount * this.divideRate,
-        tenderType: typePay,
-        referenceNo: referenceNo,
-        dateTrx: date,
-        currency: {
-          currency,
-          id: currencyId
-        },
-        displayTenderType: displayType
-      })
+      const currencyToPay = (!currencyUuid) ? currencyId : currencyUuid
+      if (this.currencyDisplay(currencyToPay).currencyUuid !== this.currencyPoint.uuid) {
+        this.amontSend = this.convert.divideRate * this.amontSend
+      }
+      if (this.sendToServer) {
+        this.$store.dispatch(Namespaces.Collection + '/' + 'setPaymentBox', {
+          posUuid,
+          orderUuid,
+          bankUuid,
+          referenceNo,
+          amount: this.amontSend,
+          paymentDate,
+          tenderTypeCode,
+          currencyUuid
+        })
+      } else {
+        this.$store.dispatch(Namespaces.Collection + '/' + 'createPayments', {
+          posUuid,
+          orderUuid,
+          bankUuid,
+          referenceNo,
+          amount: this.amontSend,
+          paymentDate,
+          tenderTypeCode,
+          currencyUuid: this.currencyDisplay(currencyToPay).currencyUuid
+        })
+      }
+      this.amontSend = 0
       this.addCollect()
     }
 
+    updateServer(listPaymentsLocal: any) {
+      // const listLocal = this.$store.getters.getPaymentBox
+      const posUuid = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+      const orderUuid = this.$route.query.action
+      this.$store.dispatch('uploadOrdersToServer', { listPaymentsLocal, posUuid, orderUuid })
+    }
+
     addCollect(): void {
-      this.fieldsList.forEach((element: IFieldLocation) => {
+      this.fieldList.forEach((element: IFieldLocation) => {
         if (element.columnName !== 'PayAmt') {
           this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             containerUuid: this.containerUuid,
@@ -503,7 +546,7 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     cancel() {
-      this.fieldsList.forEach((element) => {
+      this.fieldList.forEach((element) => {
         if (element.columnName !== 'PayAmt' && element.columnName !== 'C_Currency_ID') {
           this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             containerUuid: this.containerUuid,
@@ -584,6 +627,37 @@ export default class Collection extends Mixins(MixinForm) {
       })
     }
 
+    currencyDisplay(currency: any) {
+      const display = this.displayCurrency.find(item => {
+        if (item.currencyUuid === currency || (item.currencyId === currency)) {
+          return item
+        }
+      })
+      if (display) {
+        return display
+      }
+      return currency
+    }
+
+    convertCurrency() {
+      const convertCurrency = this.currencyDisplay(100)
+      this.$store.dispatch(Namespaces.Collection + '/' + 'convertionPayment', {
+        conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
+        currencyFromUuid: this.currencyPoint.uuid,
+        currencyToUuid: convertCurrency.currencyUuid
+      })
+    }
+
+    undoPatment() {
+      const list = this.listPayments[this.listPayments.length - 1]
+      const orderUuid = list.orderUuid
+      const paymentUuid = list.uuid
+      this.$store.dispatch(Namespaces.Collection + '/' + 'deletetPayments', {
+        orderUuid,
+        paymentUuid
+      })
+    }
+
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
         if (mutation.type === 'updateValueOfField') {
@@ -598,5 +672,11 @@ export default class Collection extends Mixins(MixinForm) {
     created() {
       this.unsubscribe = this.subscribeChanges()
       this.defaultValueCurrency()
+    }
+
+    mounted() {
+      setTimeout(() => {
+        this.converCurrency()
+      }, 1000)
     }
 }

@@ -1,6 +1,6 @@
 import { KeyValueData } from '@/ADempiere/modules/persistence'
 import { AMOUNT, COSTS_PLUS_PRICES, DATE, DATE_PLUS_TIME, NUMBER, QUANTITY, TIME } from './references'
-import { IKeyValueObject } from './types'
+import { IKeyValueObject, Namespaces } from './types'
 import moment from 'moment'
 import store from '@/ADempiere/shared/store'
 import { ILanguageData } from '@/ADempiere/modules/core/CoreType'
@@ -95,7 +95,7 @@ function getDateFormat(params: {
     return format
   }
   //  Else
-  const languageDefinition = store.getters['user/getCurrentLanguageDefinition']
+  const languageDefinition = store.getters[Namespaces.System + '/' + 'getCurrentLanguageDefinition']
   if (languageDefinition) {
     return isTime ? languageDefinition.timePattern : languageDefinition.datePattern
   }
@@ -103,13 +103,13 @@ function getDateFormat(params: {
 
 //  Get country code from store
 function getCountryCode(): string {
-  const languageDefinition: ILanguageData = store.getters.getCurrentLanguageDefinition
+  const languageDefinition: ILanguageData = store.getters[Namespaces.System + '/' + 'getCurrentLanguageDefinition']
   return languageDefinition.languageISO + '-' + languageDefinition.countryCode
 }
 
 // Get Default country
 function getCurrency(): string {
-  const currencyDefinition: { standardPrecision: number, iSOCode: string } = store.getters.getCurrency
+  const currencyDefinition: { standardPrecision: number, iSOCode: string } = store.getters[Namespaces.System + '/' + 'getCurrency']
   return currencyDefinition.iSOCode
 }
 

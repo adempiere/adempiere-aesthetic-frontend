@@ -10,6 +10,7 @@ export const mutations: PointOfSalesMutationTree = {
       showPOSOptions: false,
       showPOSKeyLayout: false,
       showPOSCollection: false,
+      currentPOS: {},
       pointOfSales: {
         isLoaded: false,
         isReload: true,

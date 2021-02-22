@@ -144,8 +144,13 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   openCollectionPanel(): void {
+    this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', true)
-    this.isShowedPOSKeyLayout = true
+    // this.isShowedPOSKeyLayout = true
+    const posUuid = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+    const orderUuid = this.$route.query.action
+    this.$store.dispatch(Namespaces.Collection + '/' + 'listPayments', { posUuid, orderUuid })
+    this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSOptions', false)
   }
 
@@ -189,9 +194,42 @@ export default class Order extends Mixins(MixinOrderLine) {
     })
   }
 
+  mounted() {
+    // setTimeout(() => {
+    //   this.tenderTypeDisplaye()
+    //   this.currencyDisplaye()
+    // }, 1500)
+  }
+
   open() : void {
     if (!this.seeConversion) {
       this.seeConversion = true
+    }
+  }
+
+  tenderTypeDisplaye() {
+    if (this.fieldList && this.fieldList.length) {
+      const tenderType = this.fieldList[5].reference
+      this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
+        tableName: tenderType.tableName,
+        query: tenderType.query
+      })
+        .then(response => {
+          this.$store.dispatch(Namespaces.Collection + '/' + 'tenderTypeDisplaye', response)
+        })
+    }
+  }
+
+  currencyDisplaye() {
+    if (this.fieldList && this.fieldList.length) {
+      const currency = this.fieldList[4].reference
+      this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
+        tableName: currency.tableName,
+        query: currency.query
+      })
+        .then(response => {
+          this.$store.dispatch(Namespaces.Collection + '/' + 'currencyDisplaye', response)
+        })
     }
   }
 }

@@ -52,7 +52,7 @@
                 style="float: right; display: flex; line-height: 10px;"
               >
                 <el-row>
-                  <el-col v-for="(field, index) in fieldsList" :key="index" :span="8">
+                  <el-col v-for="(field, index) in fieldList" :key="index" :span="8">
                     <field-definition
                       :key="field.columnName"
                       :metadata-field="field"
@@ -63,17 +63,8 @@
             </div>
           </el-card>
           <samp style="float: right;padding-right: 10px;">
-            <el-checkbox v-show="fullCopper" v-model="checked">
-              <el-link
-                type="danger"
-                class="stylefullPayment">
-                <b>
-                  {{ $t('form.pos.collect.fullPayment') }}
-                </b>
-              </el-link>
-            </el-checkbox>
             <el-button type="danger" icon="el-icon-close" @click="exit" />
-
+            <el-button type="info" icon="el-icon-minus" @click="undoPatment" />
             <el-button type="primary" :disabled="validPay || addPay" icon="el-icon-plus" @click="addCollectToList(paymentBox)" />
             <el-button type="success" :disabled="validateCompleteCollection" icon="el-icon-shopping-cart-full" />
           </samp>
@@ -81,7 +72,7 @@
         <el-main style="padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px;">
           <type-collection
             v-if="isLoaded"
-            :is-add-type-pay="paymentBox"
+            :is-add-type-pay="listPayments"
             :currency="currencyPoint"
           />
           <div

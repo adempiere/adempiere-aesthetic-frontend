@@ -1,22 +1,33 @@
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
 import ListProductPrice from '@/ADempiere/shared/components/Form/VPOS/ProductInfo/ProductList'
 import OrdersList from '@/ADempiere/shared/components/Form/VPOS/OrderList'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { IListOrderItemData, IListProductPriceItemData, IPointOfSalesData } from '@/ADempiere/modules/pos/POSType'
-import { requestCashClosing, requestCompletePreparedOrder, requestCreateNewCustomerReturnOrder, requestCreateWithdrawal, requestGenerateImmediateInvoice, requestPrintOrder, requestReverseSalesTransaction, requestDeleteOrder } from '@/ADempiere/modules/pos/POSService'
+import { IListOrderItemData, IListProductPriceItemData, IOrderData, IPointOfSalesData } from '@/ADempiere/modules/pos/POSType'
+import {
+  requestCashClosing, requestCompletePreparedOrder, requestCreateNewCustomerReturnOrder, requestCreateWithdrawal, requestGenerateImmediateInvoice, requestPrintOrder,
+  // requestReverseSalesTransaction,
+  requestDeleteOrder,
+  requestCreateOrder
+} from '@/ADempiere/modules/pos/POSService'
+import ModalDialog from '@/ADempiere/shared/components/Dialog'
+import posProcess from '@/ADempiere/shared/utils/Constants/posProcess'
+import MixinOrderLine from '../Order/MixinOrderLine'
+import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 
 @Component({
   name: 'Options',
   components: {
     ListProductPrice,
-    OrdersList
+    OrdersList,
+    ModalDialog
   },
-  mixins: [Template]
+  mixins: [Template, MixinOrderLine]
 })
-export default class Options extends Vue {
+export default class Options extends Mixins(MixinOrderLine) {
     @Prop({ type: Object, default: {} }) metadata: any = {}
     activeName = ''
+    public processPos = ''
 
     // Computed properties
     get isShowProductsPriceList(): boolean {
@@ -48,7 +59,11 @@ export default class Options extends Vue {
       return this.$store.getters[Namespaces.PointOfSales + '/' + 'getSellingPointsList']
     }
 
-    get currentPOS(): IPointOfSalesData | undefined {
+    get currentPOS(): IOrderData | undefined {
+      return this.$store.getters[Namespaces.Order + '/' + 'getOrder']
+    }
+
+    get currentPoint(): IPointOfSalesData | undefined {
       return this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
     }
 
@@ -97,7 +112,7 @@ export default class Options extends Vue {
       }).catch(error => {
         console.info(`VPOS/Options component (New Order): ${error.message}`)
       }).finally(() => {
-        const { templateBusinessPartner } = this.currentPOS!
+        // const { templateBusinessPartner } = this.currentPOS!
 
         this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
           containerUuid: this.metadata.containerUuid,
@@ -111,15 +126,15 @@ export default class Options extends Vue {
           },
           {
             key: 'C_BPartner_ID',
-            value: templateBusinessPartner.id
+            value: 1000006
           },
           {
             key: 'DisplayColumn_C_BPartner_ID',
-            value: templateBusinessPartner.name
+            value: 'Cliente Unico'
           },
           {
             key: ' C_BPartner_ID_UUID',
-            value: templateBusinessPartner.uuid
+            value: '9f6cf428-9209-11e9-8046-0242ac140002'
           }]
         })
 
@@ -129,7 +144,9 @@ export default class Options extends Vue {
         //   documentStatus: {},
         //   salesRepresentative: this.currentPOS.salesRepresentative
         //
+        this.$store.commit(Namespaces.Collection + '/' + 'setListPayments', [])
         this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
+        this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', false)
       })
     }
 
@@ -155,10 +172,31 @@ export default class Options extends Vue {
     }
 
     reverseSalesTransaction(): void {
-      // TODO: Add BPartner
-      requestReverseSalesTransaction({
-        orderUuid: this.$route.query.action.toString()
-      })
+      const process = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](posProcess[0].uuid)
+      this.showModal(process)
+      const parametersList = [
+        {
+          columnName: 'C_Order_ID',
+          value: this.$store.getters[Namespaces.Order + '/' + 'getOrder'].id
+        },
+        {
+          columnName: 'Bill_BPartner_ID',
+          value: this.$store.getters[Namespaces.Order + '/' + 'getOrder'].businessPartner.id
+        },
+        {
+          columnName: 'IsCancelled',
+          value: false
+        },
+        {
+          columnName: 'IsShipConfirm',
+          value: true
+        },
+        {
+          columnName: 'C_DocTypeRMA_ID',
+          value: 'VO'
+        }
+      ]
+      this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos')
     }
 
     createWithdrawal(): void {
@@ -168,6 +206,70 @@ export default class Options extends Vue {
         posId,
         posUuid: posUuid!
       })
+    }
+
+    showModal(action: {
+      type: PanelContextType
+      panelType: PanelContextType
+      containerUuid: string
+      parentUuid: string
+      uuid: string
+    }) {
+      this.$store.dispatch(Namespaces.Process + '/' + 'setShowDialog', {
+        type: action.type,
+        action: {
+          ...action,
+          containerUuid: action.uuid
+        }
+      })
+    }
+
+    copyOrder() {
+      this.processPos = posProcess[1].uuid
+      const posUuid = this.currentPoint?.uuid
+
+      const parametersList = [{
+        columnName: 'C_Order_ID',
+        value: this.$store.getters.getOrder.id
+      }]
+
+      this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos', parametersList)
+      requestCreateOrder({
+        posUuid: posUuid!,
+        customerUuid: this.currentPOS!.businessPartner.uuid,
+        salesRepresentativeUuid: this.currentPOS!.salesRepresentative.uuid
+      })
+        .then(order => {
+          this.$store.dispatch(Namespaces.Order + '/' + 'currentOrder', order)
+          this.$router.push({
+            params: {
+              ...this.$route.params
+            },
+            query: {
+              ...this.$route.query,
+              action: order.uuid
+            }
+          })
+          this.$store.commit(Namespaces.Order + '/' + 'setIsReloadListOrders')
+        })
+        .catch(error => {
+          console.error(error.message)
+          this.$message({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+        })
+        .finally(() => {
+          const process = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](posProcess[1].uuid)
+          this.showModal(process)
+        })
+    }
+
+    copyLineOrder() {
+      this.processPos = posProcess[1].uuid
+      const process = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](posProcess[1].uuid)
+      this.showModal(process)
     }
 
     createNewCustomerReturnOrder(): void {
@@ -185,9 +287,43 @@ export default class Options extends Vue {
     }
 
     deleteOrder() {
+      this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', true)
       requestDeleteOrder({
         posUuid: <string> this.$route.query.action
       })
-      this.newOrder()
+        .then(response => {
+          this.changePos(this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'])
+        })
+        .finally(() => {
+          this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
+            posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+          })
+          this.$message({
+            type: 'success',
+            message: this.$t('form.pos.optionsPoinSales.salesOrder.orderRemoved').toString(),
+            showClose: true
+          })
+          this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', false)
+        })
+    }
+
+    seeOrderList() {
+      if (this.$store.getters[Namespaces.Order + '/' + 'getListOrder'].recordCount <= 0) {
+        this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {})
+      }
+    }
+
+    findProcess() {
+      const findServer = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess']('a42ad0c6-fb40-11e8-a479-7a0060f0aa01')
+      if (!findServer) {
+        posProcess.forEach(item => {
+          this.$store.dispatch(Namespaces.ProcessDefinition + '/' + 'getProcessFromServer', { containerUuid: item.uuid, processId: item.id })
+        })
+      }
+    }
+
+    // Hooks
+    created() {
+      this.findProcess()
     }
 }

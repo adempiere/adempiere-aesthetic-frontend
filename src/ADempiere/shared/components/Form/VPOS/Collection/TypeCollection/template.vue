@@ -3,7 +3,7 @@
     <el-main style="padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px;">
       <el-row :gutter="24">
         <template v-for="(value, key) in isAddTypePay">
-          <el-col v-if="value.isVisible" :key="key" :span="12" style="padding-left: 5px; padding-right: 5px;">
+          <el-col :key="key" :span="12" style="padding-left: 5px; padding-right: 5px;">
             <el-card :body-style="{padding: '0px'}">
               <el-row>
                 <el-col :span="6" style="padding: 10px">
@@ -14,11 +14,18 @@
                     type="text"
                     icon="el-icon-close"
                     style="float: right; margin-right: 10px; color: red; padding-top: 10px;"
-                    @click="deleteCollect(key)"
+                    @click="deleteCollect(value)"
                   />
                   <div style="padding-right: 10px; padding-top: 10%;">
                     <div class="top clearfix">
-                      <span>{{ value.displayTenderType }}</span>
+                      <span>
+                        {{
+                          tenderTypeFind({
+                            currentPayment: value.tenderTypeCode,
+                            listTypePayment: typesPayment
+                          })
+                        }}
+                      </span>
                     </div>
                     <div class="bottom clearfix" style="margin-top: 0px !important!">
                       <el-button
@@ -26,28 +33,53 @@
                         class="button"
                         style="color: rgb(50, 54, 58); font-size: 13px; text-align: left; float: unset; padding-top: 5px;"
                       >
-                        {{ value.referenceNo }}
+                        {{ value.documentNo }}
                       </el-button>
 
                       <el-button
-                        v-if="(value.dateTrx)"
+                        v-if="(value.paymentDate)"
                         type="text"
                         class="button"
                         style="color: rgb(50, 54, 58); font-size: 13px; text-align: left; float: unset; padding-top: 5px;"
                       >
-                        {{ formatDate(value.dateTrx) }}
+                        {{ formatDate(value.paymentDate) }}
                       </el-button>
 
-                      <div slot="header" class="clearfix">
-                        <p class="total" :style="value.currency.id === currency.id ? 'padding-top: 5%;' : ''">
-                          <b style="float: right; padding-bottom: 10px">
-                            {{ formatPrice(value.payAmt, currency.iSOCode) }}
-                          </b>
-                        </p>
-                        <br>
-                        <p v-if="value.currency.id !== currency.id" class="total">
-                          <b style="float: right; padding-bottom: 10px">
-                            {{ formatPrice(value.quantityCahs, value.currency.currency) }}
+                      <div
+                      v-if="currencyFind({
+                        currencyCurrent: value.currencyUuid,
+                        listCurrecy: listCurrency,
+                        defaultCurrency: currency
+                      }).currencyDisplay !== currency.iSOCode"
+                      slot="header"
+                      class="clearfix"
+                      style="padding-bottom: 20px;"
+                      >
+                      <p class="total">
+                        <b style="float: right;">
+                          {{ formatPrice(value.amount, currency.iSOCode) }}
+                        </b>
+                      </p>
+                      <br>
+                      <p class="total">
+                        <b style="float: right;">
+                          {{
+                            formatPrice(
+                              (amountConvertion(value)),
+                              currencyFind({
+                                currencyCurrent: value.currencyUuid,
+                                listCurrency: listCurrency,
+                                defaultCurrency: currency
+                                }).currencyDisplay
+                              )
+                          }}
+                        </b>
+                      </p>
+                      </div>
+                      <div v-else slot="header" class="clearfix">
+                        <p class="total">
+                          <b style="float: right; padding-top: 18px; padding-bottom: 20px;">
+                            {{ formatPrice(value.amount, currency.iSOCode) }}
                           </b>
                         </p>
                       </div>

@@ -122,7 +122,9 @@ const staticRoutes: RouteConfig[] = [
     component: () => import('@/layout/index.vue'),
     meta: {
       hidden: false,
-      title: 'ProductInfo'
+      title: 'ProductInfo',
+      noCache: true,
+      breadcrumb: false
     },
     children: [
       {

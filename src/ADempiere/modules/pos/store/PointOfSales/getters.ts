@@ -3,7 +3,6 @@ import { ActionContext, GetterTree } from 'vuex'
 import { IPointOfSalesData, IPOSData, PointOfSalesState } from '../../POSType'
 
 type PointOfSalesGetterTree = GetterTree<PointOfSalesState, IRootState>
-type PointOfSalesActionContext = ActionContext<PointOfSalesState, IRootState>
 
 export const getters: PointOfSalesGetterTree = {
   getPointOfSales: (state: PointOfSalesState): IPOSData => {
@@ -19,27 +18,39 @@ export const getters: PointOfSalesGetterTree = {
     return state.pointOfSales
   },
   // current pos info
-  getCurrentPOS: (state: PointOfSalesState): IPointOfSalesData | undefined => {
-    if (!state.pointOfSales) {
-      return undefined
+  getCurrentPOS: (state: PointOfSalesState, getters, rootState): IPointOfSalesData | undefined => {
+    const userUuid: string = rootState.user.userUuid
+    let currentPOS
+    const sellingPointList = state.pointOfSales.list?.length || 0
+    if (sellingPointList > 1) {
+      currentPOS = state.pointOfSales.list?.find(elem => elem.salesRepresentative.uuid === userUuid)
     }
-    // return state.pointOfSales.currentPOS
-    return state.pointOfSales.currentPOS
+    if (currentPOS) {
+      return currentPOS
+    }
+    if (!state.pointOfSales.currentPOS && sellingPointList) {
+      return state.pointOfSales.list![0]
+    }
+    if (state.pointOfSales.currentPOS) {
+      return state.pointOfSales.currentPOS
+    }
+    return undefined
   },
   // current pos uuid
   getPointOfSalesUuid: (
-    state: PointOfSalesState,
-    context: PointOfSalesActionContext
+    state: PointOfSalesState, getters
   ): string | undefined => {
-    const currentPOS: IPOSData| undefined = context.getters.getCurrentPOS
+    const currentPOS: IPOSData| undefined = getters.getCurrentPOS
+    console.log('currentPOS')
+    console.log(currentPOS)
     if (!currentPOS) {
       return undefined
     }
     // return currentPOS.uuid
     return currentPOS.userUuid
   },
-  getSellingPointsList: (state: PointOfSalesState, context: PointOfSalesActionContext): IPointOfSalesData[] => {
-    return context.getters.getPointOfSales().list
+  getSellingPointsList: (state: PointOfSalesState, getters): IPointOfSalesData[] => {
+    return getters.getPointOfSales().list
   },
   getIsShowPOSOptions: (state: PointOfSalesState): boolean => {
     return state.showPOSOptions

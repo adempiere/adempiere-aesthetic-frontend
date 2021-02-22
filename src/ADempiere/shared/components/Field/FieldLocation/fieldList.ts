@@ -4,8 +4,10 @@ export interface IFieldLocation {
     tableName?: string
     isFromDictionary: boolean
     columnName?: string
+    tabindex?: string
     overwriteDefinition: Partial<IOverwriteDefinitionData>
     elementColumnName?: string
+    reference?: any
     // {
     //   size: number
     //   index: number

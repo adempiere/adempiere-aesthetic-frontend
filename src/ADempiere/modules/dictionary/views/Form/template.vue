@@ -9,6 +9,11 @@
       v-if="showContextMenu"
       style="height: 39px; background: white;"
     >
+     <modal-dialog
+        :parent-uuid="$route.meta.parentUuid"
+        :container-uuid="formUuid"
+        :panel-type="panelType"
+      />
       <context-menu
         :menu-parent-uuid="$route.meta.parentUuid"
         :container-uuid="formUuid"

@@ -6,13 +6,14 @@ import { Component, Mixins } from 'vue-property-decorator'
 import MixinField from '../../Field/Mixin/MixinField'
 import ProductInfoList from './ProductList'
 import staticReportRoutes, { IZoomWindowRoute } from '@/ADempiere/shared/utils/Constants/zoomWindow'
+import Template from './template.vue'
 
 @Component({
   name: 'ProductInfo',
   components: {
     ProductInfoList
   },
-  mixins: [MixinField]
+  mixins: [MixinField, Template]
 })
 export default class ProductInfo extends Mixins(MixinField) {
     public timeOut: any = null
@@ -61,7 +62,7 @@ export default class ProductInfo extends Mixins(MixinField) {
       switch (event.srcKey) {
         case 'refreshList':
         case 'refreshList2':
-          this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo', {})
+          this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo')
           break
       }
     }
@@ -126,9 +127,12 @@ export default class ProductInfo extends Mixins(MixinField) {
       })
     }
 
-    findProcess(procces: any) {
+    findProcess(procces: IZoomWindowRoute) {
+      const proccesList = Object.keys(procces).map(key => {
+        return [procces[key]]
+      })
       // if (this.isEmptyValue(this.currentPos)) {
-      procces.forEach((report: any) => {
+      proccesList.forEach((report: any) => {
         this.$store.dispatch(Namespaces.ProcessDefinition + '/' + 'getProcessFromServer', { containerUuid: report.uuid })
       })
     }

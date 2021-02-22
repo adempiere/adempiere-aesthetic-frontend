@@ -17,6 +17,20 @@ const fieldListCollection: IFieldLocation[] = [
       isMandatory: true
     }
   },
+  // Currency
+  {
+    tableName: 'C_Order',
+    columnName: 'C_Currency_ID',
+    isFromDictionary: true,
+    overwriteDefinition: {
+      size: 24,
+      handleActionKeyPerformed: true,
+      handleActionPerformed: true,
+      validationCode: 'C_Currency.C_Currency_ID = 100',
+      isActiveLogics: true,
+      isMandatory: true
+    }
+  },
   // TenderType
   {
     tableName,
@@ -62,20 +76,6 @@ const fieldListCollection: IFieldLocation[] = [
       handleActionPerformed: true,
       size: 24,
       displayLogic: '@TenderType@==\'K\'',
-      isActiveLogics: true,
-      isMandatory: true
-    }
-  },
-  // Currency
-  {
-    tableName: 'C_Order',
-    columnName: 'C_Currency_ID',
-    isFromDictionary: true,
-    overwriteDefinition: {
-      size: 24,
-      handleActionKeyPerformed: true,
-      handleActionPerformed: true,
-      validationCode: 'C_Currency.C_Currency_ID = 100',
       isActiveLogics: true,
       isMandatory: true
     }

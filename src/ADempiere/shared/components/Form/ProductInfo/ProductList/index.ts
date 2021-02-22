@@ -7,11 +7,12 @@ import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import CustomPagination from '../../../Pagination'
 import MixinForm from '../../MixinForm'
 import fieldsListProductPrice from '../fieldsList'
+import Template from './template.vue'
 
 @Component({
   name: 'ProductList',
   components: { CustomPagination },
-  mixins: [MixinForm]
+  mixins: [MixinForm, Template]
 })
 export default class ProductList extends Mixins(MixinForm) {
   @Ref() readonly singleTable!: Table
@@ -91,7 +92,7 @@ export default class ProductList extends Mixins(MixinForm) {
   get process() {
     if (this.reportAssociated) {
       const process = this.reportAssociated.map(element => {
-        const findProcess = this.$store.getters.getProcess(element.uuid)
+        const findProcess = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](element.uuid)
         if (findProcess) {
           return {
             ...element,

@@ -103,6 +103,15 @@ export default class OrdersList extends Mixins(MixinForm) {
       }
     }
 
+    mounted() {
+      const listOrder = this.$store.getters[Namespaces.OrderLines + '/' + 'getListOrderLine']
+      if (!listOrder || !listOrder.length) {
+        this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
+          posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+        })
+      }
+    }
+
     beforeDestroy() {
       this.unsubscribe()
     }
@@ -159,9 +168,11 @@ export default class OrdersList extends Mixins(MixinForm) {
               ...this.$route.query,
               action: row.uuid
             }
-          },
-          undefined
+          }
         )
+        const posUuid = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+        const orderUuid = this.$route.query.action
+        this.$store.dispatch(Namespaces.Collection + '/' + 'listPayments', { posUuid, orderUuid })
       }
     }
 
@@ -180,6 +191,14 @@ export default class OrdersList extends Mixins(MixinForm) {
           }, 2000)
         }
       })
+    }
+
+    orderProcess(row: any) {
+      const parametersList = [{
+        columnName: 'C_Order_ID',
+        value: row.id
+      }]
+      this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos', parametersList)
     }
 
     convertValuesToSend(values: any[]): IKeyValueObject {

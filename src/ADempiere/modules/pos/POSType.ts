@@ -54,6 +54,22 @@ export interface IPointOfSalesData {
     keyLayoutUuid: string
 }
 
+export interface IPaymentsData {
+    amount: number
+    bankUuid: string
+    businessPartner: IBusinessPartnerData
+    currencyUuid: string
+    description: string
+    documentNo: string
+    documentStatus: IDocumentStatusData
+    id: number
+    orderUuid: string
+    paymentDate: Date
+    referenceNo: string
+    tenderTypeCode: any
+    uuid: string
+}
+
 export interface IOrderData {
     uuid: string
     id: number
@@ -136,9 +152,9 @@ export interface IUpdateOrderParams {
 
 export interface IDeleteOrderParams {
     posUuid: string
-    customerUuid?: string
-    documentTypeUuid?: string
-    salesRepresentativeUuid?: string
+    // customerUuid?: string
+    // documentTypeUuid?: string
+    // salesRepresentativeUuid?: string
 }
 
 export interface IListOrdersParams {
@@ -247,6 +263,7 @@ export interface PointOfSalesState {
     showPOSKeyLayout: boolean
     showPOSCollection: boolean
     pointOfSales: IPOSData
+    currentPOS: Partial<IPointOfSalesData>
 }
 
 // Collection Module
@@ -256,6 +273,10 @@ export interface CollectionState {
     divideRate: number
     multiplyRateCollection: number
     divideRateCollection: number
+    listPayments: IPaymentsData[]
+    tenderTypeDisplaye: any[]
+    currency: any[]
+    convertion: any
 }
 
 // Key Layout Module

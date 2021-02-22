@@ -4,10 +4,12 @@ const fieldListOrders: IFieldLocation[] = [
   {
     elementColumnName: 'ProductValue',
     columnName: 'ProductValue',
+    tabindex: '1',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,
       sequence: 10,
+      handleFocusGained: true,
       handleActionPerformed: true,
       handleActionKeyPerformed: true
     }
@@ -15,6 +17,7 @@ const fieldListOrders: IFieldLocation[] = [
   {
     elementColumnName: 'QtyEntered',
     columnName: 'QtyEntered',
+    tabindex: '2',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,
@@ -27,6 +30,7 @@ const fieldListOrders: IFieldLocation[] = [
   {
     elementColumnName: 'PriceEntered',
     columnName: 'PriceEntered',
+    tabindex: '3',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,
@@ -40,6 +44,7 @@ const fieldListOrders: IFieldLocation[] = [
   {
     elementColumnName: 'Discount',
     columnName: 'Discount',
+    tabindex: '4',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,
@@ -48,6 +53,35 @@ const fieldListOrders: IFieldLocation[] = [
       handleActionPerformed: true,
       handleContentSelection: true,
       handleActionKeyPerformed: true
+    }
+  },
+  {
+    tableName: 'C_Order',
+    columnName: 'C_Currency_ID',
+    isFromDictionary: true,
+    overwriteDefinition: {
+      size: 24,
+      handleActionKeyPerformed: true,
+      handleActionPerformed: true,
+      validationCode: 'C_Currency.C_Currency_ID = 100',
+      isActiveLogics: false,
+      isMandatory: true
+    }
+  },
+  // TenderType
+  {
+    tableName: 'C_Payment',
+    elementColumnName: 'TenderType',
+    columnName: 'TenderType',
+    isFromDictionary: true,
+    overwriteDefinition: {
+      defaultValue: 'X',
+      handleActionKeyPerformed: true,
+      handleContentSelection: true,
+      handleActionPerformed: true,
+      size: 24,
+      isActiveLogics: false,
+      isMandatory: true
     }
   }
 ]

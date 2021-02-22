@@ -66,5 +66,11 @@ export const getters: UtilsGetterTree = {
   },
   getWidthLeft: (state: UtilsState): number => {
     return state.splitWidthLeft
+  },
+  getPosParameters: (state: UtilsState): any[] => {
+    return state.parametersProcessPos
+  },
+  getUpdateOrderPos: (state: UtilsState): boolean => {
+    return state.updateOrder
   }
 }

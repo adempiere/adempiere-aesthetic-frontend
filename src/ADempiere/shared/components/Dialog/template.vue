@@ -10,6 +10,9 @@
     close-on-click-modal
   >
     {{ modalMetadata.description }}<br><br>
+    <div
+    v-if="panelType !== 'From'"
+    >
     <sequence-order
       v-if="modalMetadata.isSortTab"
       key="order"
@@ -20,6 +23,7 @@
       :identifiers-list="modalMetadata.identifierColumns"
       :key-column="modalMetadata.keyColumn"
     />
+
     <template v-else>
       <main-panel
         v-if="(modalMetadata.uuid)"
@@ -30,6 +34,7 @@
         :panel-type="modalMetadata.panelType"
       />
     </template>
+    </div>
     <span slot="footer" class="dialog-footer">
       <el-button
         @click="closeDialog"
