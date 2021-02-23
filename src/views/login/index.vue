@@ -240,7 +240,7 @@ export default class extends Vue {
           this.loading = true
 
           await this.$store.dispatch(Namespaces.User + '/' + 'Login', this.loginForm)
-            .then((res) => {
+            .then(() => {
               // this.$router.push({
               //   path: this.redirect || '/',
               //   query: this.otherQuery

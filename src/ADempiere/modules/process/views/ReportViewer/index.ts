@@ -78,7 +78,7 @@ export default class ReportViewer extends Vue {
           pageSize,
           pageToken
         }, { root: true })
-          .then(response => {
+          .then(() => {
             this.reportResult = this.getterCachedReport
             if (this.reportResult === undefined) {
               this.showNotification({

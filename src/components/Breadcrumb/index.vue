@@ -24,7 +24,7 @@
 <script lang="ts">
 import MixinI18n from '@/ADempiere/shared/utils/i18n'
 import { compile } from 'path-to-regexp'
-import { Component, Vue, Watch, Mixins } from 'vue-property-decorator'
+import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { RouteRecord, Route } from 'vue-router'
 
 @Component({

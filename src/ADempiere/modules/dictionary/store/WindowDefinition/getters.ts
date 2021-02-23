@@ -1,4 +1,4 @@
-import { ActionContext, GetterTree } from 'vuex'
+import { GetterTree } from 'vuex'
 import { IRootState } from '@/store'
 import { WindowDefinitionState } from '@/ADempiere/modules/dictionary'
 import { ITabData, ITabDataExtended, IWindowDataExtended } from '../../DictionaryType'

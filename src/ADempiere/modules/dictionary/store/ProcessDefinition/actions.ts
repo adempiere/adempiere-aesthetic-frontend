@@ -10,7 +10,6 @@ import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { generateProcess } from '@/ADempiere/shared/utils/DictionaryUtils'
 import language from '@/ADempiere/shared/lang'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { Route } from 'vue-router'
 
 type ProcessDefinitionActionContext = ActionContext<
     ProcessDefinitionState,
