@@ -1,6 +1,5 @@
 import {
   Actionable,
-  PanelContextType,
   PrintFormatOptions,
   ReportExportContextType
 } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'

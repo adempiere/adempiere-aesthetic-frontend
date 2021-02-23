@@ -1,0 +1,1 @@
+export { permission } from './store'

@@ -1,0 +1,1 @@
+export { errorLog } from './store'

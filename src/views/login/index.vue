@@ -131,9 +131,9 @@ import { Component, Watch, Vue } from 'vue-property-decorator'
 import { Route } from 'vue-router'
 import { Dictionary } from 'vue-router/types/router'
 import { Form as ElForm, Input } from 'element-ui'
-import { UserModule } from '@/store/modules/user'
 import MixinLogin from '@/ADempiere/shared/components/Login/MixinLogin'
 import SocialSign from './components/SocialSignin.vue'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 @Component({
   name: 'Login',
@@ -239,8 +239,8 @@ export default class extends Vue {
         if (valid) {
           this.loading = true
 
-          await UserModule.Login(this.loginForm)
-            .then((res) => {
+          await this.$store.dispatch(Namespaces.User + '/' + 'Login', this.loginForm)
+            .then(() => {
               // this.$router.push({
               //   path: this.redirect || '/',
               //   query: this.otherQuery

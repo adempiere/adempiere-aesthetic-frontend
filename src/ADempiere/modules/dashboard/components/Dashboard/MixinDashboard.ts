@@ -1,5 +1,5 @@
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
-import { PermissionModule } from '@/store/modules/permission'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
@@ -12,7 +12,7 @@ export default class MixinDasboard extends Vue {
 
     // Computed properties
     get permissionRoutes() {
-      return PermissionModule.routes
+      return this.$store.state.permission.routes
     }
 
     // Methods

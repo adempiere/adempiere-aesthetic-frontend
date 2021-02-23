@@ -1,4 +1,4 @@
-import { SettingsModule } from '@/store/modules/settings'
+
 import { addClass, removeClass } from '@/utils'
 import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
 import Template from './template.vue'
@@ -15,7 +15,7 @@ export default class RightPanel extends Vue {
 
     // Computed properties
     get theme(): string {
-      return SettingsModule.theme
+      return this.$store.state.settings.theme
     }
 
     addEventClick(): void {

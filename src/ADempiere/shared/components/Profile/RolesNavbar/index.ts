@@ -1,8 +1,7 @@
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { ILanguageData, IOrganizationData } from '@/ADempiere/modules/core'
 import { IRoleData } from '@/ADempiere/modules/user'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { AppModule, DeviceType } from '@/store/modules/app'
-import { UserModule } from '@/store/modules/user'
 import { Component, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
 
@@ -14,7 +13,7 @@ export default class RolesNavbar extends Vue {
   public getLanguageList: ILanguageData[] | undefined = this.$store.getters[Namespaces.System + '/' + 'getLanguagesList']
   // Computed properties
   get currentRoleUuid(): string {
-    return UserModule.role.uuid!
+    return this.$store.state.user.role.uuid!
   }
 
   set currentRoleUuid(roleToSet: string) {
@@ -22,11 +21,11 @@ export default class RolesNavbar extends Vue {
   }
 
   get rolesList(): IRoleData[] {
-    return UserModule.rolesList
+    return this.$store.state.user.rolesList
   }
 
   get currentOrganizationUuid(): string {
-    const organization: Partial<IOrganizationData> = UserModule.organization
+    const organization: Partial<IOrganizationData> = this.$store.state.user.organization
     if (organization) {
       return organization.uuid!
     }
@@ -38,11 +37,11 @@ export default class RolesNavbar extends Vue {
   }
 
   get organizationsList(): IOrganizationData[] {
-    return UserModule.organizationsList
+    return this.$store.state.user.organizationsList
   }
 
   get currentWarehouseUuid(): string {
-    const warehouse: any = UserModule.warehouse
+    const warehouse: any = this.$store.state.user.warehouse
     if (warehouse) {
       return warehouse.uuid
     }
@@ -54,11 +53,11 @@ export default class RolesNavbar extends Vue {
   }
 
   get warehousesList(): any[] {
-    return UserModule.warehousesList
+    return this.$store.state.user.warehousesList
   }
 
   get isFiltrable(): boolean {
-    return AppModule.device !== DeviceType.Mobile
+    return this.$store.state.app.device !== DeviceType.Mobile
   }
 
   // Hooks
@@ -72,7 +71,7 @@ export default class RolesNavbar extends Vue {
       message: this.$t('notifications.loading').toString(),
       iconClass: 'el-icon-loading'
     })
-    UserModule.ChangeRole({
+    this.$store.dispatch(Namespaces.User + '/' + 'ChangeRole', {
       roleUuid,
       organizationUuid: this.currentOrganizationUuid,
       warehouseUuid: this.currentWarehouseUuid
@@ -97,7 +96,7 @@ export default class RolesNavbar extends Vue {
       this.$router.push({
         path: '/'
       })
-      UserModule.ChangeOrganization({
+      this.$store.dispatch(Namespaces.User + '/' + 'ChangeOrganization', {
         organizationUuid,
         organizationId: currentOrganization.id
       })
@@ -107,19 +106,19 @@ export default class RolesNavbar extends Vue {
   showOrganizationsList(isShow: boolean): void {
     if (isShow && !(this.organizationsList)) {
       // this.$store.dispatch('user/getOrganizationsListFromServer', this.currentRoleUuid)
-      UserModule.GetOrganizationsListFromServer(this.currentRoleUuid)
+      this.$store.dispatch(Namespaces.User + '/' + 'GetOrganizationsListFromServer', this.currentRoleUuid)
     }
   }
 
   changeWarehouse(warehouseUuid: string): void {
-    UserModule.ChangeWarehouse({
+    this.$store.dispatch(Namespaces.User + '/' + 'ChangeWarehouse', {
       warehouseUuid
     })
   }
 
   showWarehouseList(isShow: boolean) {
     if (isShow && !(this.warehousesList)) {
-      UserModule.GetWarehousesList(this.currentOrganizationUuid)
+      this.$store.dispatch(Namespaces.User + '/' + 'GetWarehousesList', this.currentOrganizationUuid)
     }
   }
 

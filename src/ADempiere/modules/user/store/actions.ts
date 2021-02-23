@@ -1,148 +1,27 @@
-import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
-// import { login, logout, getUserInfo } from '@/api/users'
-// import { login, logout, requestUserInfoFromSession } from '@/ADempiere/modules/user/UserService/user'
-import { getToken, setToken, removeToken } from '@/utils/cookies'
-import { resetRouter } from '@/router'
-import { TagsViewModule } from './tags-view'
-// import store from '@/store'
-import store from '@/ADempiere/shared/store'
+import { IRootState } from '@/store'
+import { ActionContext, ActionTree } from 'vuex'
+import { IUserState } from '../UserType'
 import { IOrganizationData, requestOrganizationsList, IOrganizationsListResponse, requestWarehousesList, IWarehousesListResponse } from '@/ADempiere/modules/core'
 import { IRoleData, ISessionData, requestSessionInfo, IUserInfoData, requestUserInfoFromSession, login, logout } from '@/ADempiere/modules/user'
 import { requestRolesList, requestChangeRole } from '@/ADempiere/modules/user/UserService/role'
 import { setCurrentRole, getCurrentRole, removeCurrentRole, getCurrentOrganization, removeCurrentOrganization, setCurrentOrganization, getCurrentWarehouse, removeCurrentWarehouse, setCurrentWarehouse } from '@/ADempiere/shared/utils/auth'
+import { getToken, removeToken, setToken } from '@/utils/cookies'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { resetRouter } from '@/router'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import language from '@/ADempiere/shared/lang'
-import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { PermissionModule } from './permission'
 
-export interface IUserState {
-  token: string
-  name: string
-  avatar: string
-  introduction: string
-  roles: string[]
-  email: string
+type UserActionContext = ActionContext<IUserState, IRootState>
+type UserActionTree = ActionTree<IUserState, IRootState>
 
-  // ADempiere
-  userUuid: string
-  role: Partial<IRoleData>
-  rolesList: IRoleData[]
-  organizationsList: IOrganizationData[]
-  organization: Partial<IOrganizationData>
-  warehousesList: any[]
-  warehouse: any
-  isSession: boolean
-  sessionInfo: Partial<ISessionData>
-  corporateBrandingImage: string
-}
-
-@Module({ dynamic: true, store, name: 'user' })
-class User extends VuexModule implements IUserState {
-  public token: string = getToken() || ''
-  public name = ''
-  public avatar = ''
-  public corporateBrandingImage = ''
-  public introduction = ''
-  public roles: string[] = []
-  public email = ''
-  // Adempiere
-  public userUuid = ''
-  public role: Partial<IRoleData> = {} // info current role
-  public rolesList: IRoleData[] = []
-  public organizationsList: IOrganizationData[] = []
-  public organization: Partial<IOrganizationData> = {}
-  public warehousesList: any[] = []
-  public warehouse: any = {}
-  public isSession = false
-  public sessionInfo: Partial<ISessionData> = {}
-
-  @Mutation
-  private SET_TOKEN(token: string) {
-    this.token = token
-  }
-
-  @Mutation
-  private SET_NAME(name: string) {
-    this.name = name
-  }
-
-  @Mutation
-  private SET_AVATAR(avatar: string) {
-    this.avatar = avatar
-  }
-
-  @Mutation
-  private SET_INTRODUCTION(introduction: string) {
-    this.introduction = introduction
-  }
-
-  @Mutation
-  private SET_ROLES(roles: string[]) {
-    this.roles = roles
-  }
-
-  @Mutation
-  private SET_EMAIL(email: string) {
-    this.email = email
-  }
-
-  // Adempiere Mutations
-  @Mutation
-  private SET_ROLES_LIST(rolesList: IRoleData[]) {
-    this.rolesList = rolesList
-  }
-
-  @Mutation
-  private SET_ORGANIZATIONS_LIST(organizationsList: IOrganizationData[]) {
-    this.organizationsList = organizationsList
-  }
-
-  @Mutation
-  private SET_ORGANIZATION(organization: Partial<IOrganizationData>) {
-    this.organization = organization
-    if (organization) {
-      this.corporateBrandingImage = organization.corporateBrandingImage!
-    }
-  }
-
-  @Mutation
-  private SET_WAREHOUSES_LIST(warehousesList: any[]) {
-    this.warehousesList = warehousesList
-  }
-
-  @Mutation
-  private SET_WAREHOUSE(warehouse: any) {
-    this.warehouse = warehouse
-  }
-
-  @Mutation
-  private SET_ROLE(role: Partial<IRoleData>) {
-    this.role = role
-  }
-
-  @Mutation
-  private SET_USER_UUID(userUuid: string) {
-    this.userUuid = userUuid
-  }
-
-  @Mutation
-  private setIsSession(isSession: boolean) {
-    this.isSession = isSession
-  }
-
-  @Mutation
-  private setSessionInfo(sessionInfo: Partial<ISessionData>) {
-    this.sessionInfo = sessionInfo
-  }
-
-  @Action
-  public async Login(userInfo: {
-    userName: string
-    password: string
-    roleUuid: string
-    organizationUuid: string
-    token: string
-  }) {
+export const actions: UserActionTree = {
+  async Login(context: UserActionContext, userInfo: {
+      userName: string
+      password: string
+      roleUuid: string
+      organizationUuid: string
+      token: string
+    }) {
     const { userName, organizationUuid, token, password } = userInfo
     return await new Promise((resolve, reject) => {
       login({
@@ -160,7 +39,7 @@ class User extends VuexModule implements IUserState {
 
           const { result: resultedToken } = logInResponse
 
-          this.SET_TOKEN(resultedToken)
+          context.commit('SET_TOKEN', resultedToken)
           setToken(resultedToken)
           resolve(logInResponse)
         })
@@ -168,35 +47,35 @@ class User extends VuexModule implements IUserState {
           reject(error)
         })
     })
-  }
+  },
 
   /**
-   * Get session info
-   * @param {string} sessionUuid as token
-   */
-  @Action
-  public async GetSessionInfo(sessionUuid?: string) {
+     * Get session info
+     * @param {string} sessionUuid as token
+     */
+  async GetSessionInfo(context: UserActionContext, sessionUuid?: string) {
     if (!sessionUuid) {
       sessionUuid = getToken()
     }
 
     return await new Promise((resolve, reject) => {
       requestSessionInfo(sessionUuid!)
-        .then(async sessionInfo => {
+        .then(async(sessionInfo: ISessionData) => {
           const { userInfo } = sessionInfo
           const avatar = userInfo.image
 
-          this.setIsSession(true)
-          this.setSessionInfo({
+          context.commit('setIsSession', true)
+          context.commit('setSessionInfo', {
             id: userInfo.id,
             uuid: userInfo.uuid,
             name: userInfo.name,
             processed: userInfo.processed
           })
-          this.SET_NAME(sessionInfo.name)
-          this.SET_INTRODUCTION(userInfo.description)
-          this.SET_USER_UUID(userInfo.uuid)
-          this.SET_AVATAR(avatar)
+
+          context.commit('SET_NAME', sessionInfo.name)
+          context.commit('SET_INTRODUCTION', userInfo.description)
+          context.commit('SET_USER_UUID', userInfo.uuid)
+          context.commit('SET_AVATAR', avatar)
 
           // TODO: Check decimals Number as String '0.123'
           // set multiple context
@@ -204,8 +83,8 @@ class User extends VuexModule implements IUserState {
           //   values: sessionInfo.defaultContext
           // }, {
           //   root: true
-          // })
-          this.context.dispatch(Namespaces.Preference + '/' + 'setMultiplePreference', {
+          // }))
+          context.dispatch(Namespaces.Preference + '/' + 'setMultiplePreference', {
             values: sessionInfo.defaultContext
           }, {
             root: true
@@ -217,14 +96,14 @@ class User extends VuexModule implements IUserState {
           }
 
           const { role } = sessionInfo
-          this.SET_ROLE(role)
+          context.commit('SET_ROLE', role)
           setCurrentRole(role.uuid)
 
           // wait to establish the client and organization to generate the menu
-          await this.GetOrganizationsListFromServer(role.uuid)
+          await context.dispatch('GetOrganizationsListFromServer', role.uuid)
 
           resolve(sessionResponse)
-          this.context.commit(Namespaces.System + '/' + 'setSystemDefinition', {
+          context.commit(Namespaces.System + '/' + 'setSystemDefinition', {
             countryId: sessionInfo.countryId,
             costingPrecision: sessionInfo.costingPrecision,
             countryCode: sessionInfo.countryCode,
@@ -239,17 +118,15 @@ class User extends VuexModule implements IUserState {
             root: true
           })
 
-          this.GetRolesListFromServer(sessionUuid)
+          context.dispatch('GetRolesListFromServer', sessionUuid)
         })
         .catch(error => {
           console.warn(`Error ${error.code} getting context session: ${error.message}.`)
           reject(error)
         })
     })
-  }
-
-  @Action
-  public async GetRolesListFromServer(sessionUuid?: string) {
+  },
+  async GetRolesListFromServer(context: UserActionContext, sessionUuid?: string) {
     sessionUuid = sessionUuid || undefined
     if (!(sessionUuid)) {
       sessionUuid = getToken()
@@ -258,17 +135,17 @@ class User extends VuexModule implements IUserState {
     return await new Promise((resolve, reject) => {
       requestRolesList(sessionUuid!)
         .then((rolesList: IRoleData[]) => {
-        // roles must be a non-empty array
+          // roles must be a non-empty array
           if (!(rolesList)) {
             reject(new Error('getInfo: roles must be a non-null array!'))
-          // reject({
-          //   code: 0,
-          //   message: 'getInfo: roles must be a non-null array!'
-          // })
+            // reject({
+            //   code: 0,
+            //   message: 'getInfo: roles must be a non-null array!'
+            // })
           }
 
           // set current role
-          if (!this.role) {
+          if (!context.state.role) {
             let roleFounded
             const roleSession = getCurrentRole()
             if (roleSession) {
@@ -281,32 +158,30 @@ class User extends VuexModule implements IUserState {
             }
 
             if ((roleFounded)) {
-              this.SET_ROLE(roleFounded)
+              context.commit('SET_ROLE', roleFounded)
             }
           }
 
-          this.SET_ROLES_LIST(rolesList)
+          context.commit('SET_ROLES_LIST', rolesList)
 
           resolve(rolesList)
 
           const rolesName: string[] = rolesList.map(rolItem => {
             return rolItem.name
           })
-          this.SET_ROLES(rolesName)
+          context.commit('SET_ROLES', rolesName)
         }).catch((error) => {
           reject(error)
         })
     })
-  }
-
+  },
   /**
-   * Get user info
-   * @param {string} sessionUuid as token
-   */
-  @Action
-  public async GetUserInfoFromSession(sessionUuid?: string): Promise<IUserInfoData & {
-    avatar: string
-  }> {
+     * Get user info
+     * @param {string} sessionUuid as token
+     */
+  async GetUserInfoFromSession(context: UserActionContext, sessionUuid?: string): Promise<IUserInfoData & {
+      avatar: string
+    }> {
     if (!sessionUuid) {
       sessionUuid = getToken()
     }
@@ -325,10 +200,10 @@ class User extends VuexModule implements IUserState {
         //     commit('SET_ROLE', role)
         //   }
         // }
-        this.GetRolesListFromServer(sessionUuid)
+        context.dispatch('GetRolesListFromServer', sessionUuid)
 
         const avatar: string = responseGetInfo.image
-        this.SET_AVATAR(avatar)
+        context.commit('SET_AVATAR', avatar)
 
         resolve({
           ...responseGetInfo,
@@ -339,51 +214,46 @@ class User extends VuexModule implements IUserState {
         reject(error)
       })
     })
-  }
-
+  },
   // user logout
-  @Action
-  public async Logout() {
+  async Logout(context: UserActionContext) {
     return await new Promise((resolve, reject) => {
-      this.SET_TOKEN('')
-      this.SET_ROLES([])
+      context.commit('SET_TOKEN', '')
+      context.commit('SET_ROLES', [])
       removeToken()
 
-      this.setIsSession(false)
-      this.context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData', {
+      context.commit('setIsSession', false)
+      context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData', {
         root: true
       })
-      this.context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache', {
+      context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache', {
         root: true
       })
 
       // reset visited views and cached views
       // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
       // this.context.dispatch('tagsView/delAllViews', null, { root: true })
-      TagsViewModule.delAllViews()
+      context.dispatch(Namespaces.TagsView + '/' + 'delAllViews', undefined, { root: true })
+      // TagsViewModule.delAllViews()
 
       removeCurrentRole()
       resetRouter()
-      logout(this.token).catch(error => {
+      logout(context.state.token).catch(error => {
         console.warn(error)
       }).finally(() => {
         resolve({})
       })
     })
-  }
-
+  },
   // remove token
-  @Action
-  public ResetToken() {
+  ResetToken(context: UserActionContext) {
     return new Promise(resolve => {
-      this.SET_TOKEN('')
-      this.SET_ROLES([])
+      context.commit('SET_TOKEN', '')
+      context.commit('SET_ROLES', [])
       removeToken()
     })
-  }
-
-  @Action
-  public async GetOrganizationsListFromServer(roleUuid?: string) {
+  },
+  async GetOrganizationsListFromServer(context: UserActionContext, roleUuid?: string) {
     if (!(roleUuid)) {
       roleUuid = getCurrentRole()
     }
@@ -391,7 +261,7 @@ class User extends VuexModule implements IUserState {
       roleUuid: roleUuid!
     })
       .then((response: IOrganizationsListResponse) => {
-        this.SET_ORGANIZATIONS_LIST(response.organizationsList)
+        context.commit('SET_ORGANIZATIONS_LIST', response.organizationsList)
         let organization: IOrganizationData | undefined = response.organizationsList.find(item => {
           if (item.uuid === getCurrentOrganization()) {
             return item
@@ -406,31 +276,30 @@ class User extends VuexModule implements IUserState {
         } else {
           setCurrentOrganization(organization.uuid)
         }
-        this.SET_ORGANIZATION(organization!)
-        this.context.commit(Namespaces.Preference + '/' + 'setPreferenceContext', {
+        context.commit('SET_ORGANIZATION', organization)
+        context.commit(Namespaces.Preference + '/' + 'setPreferenceContext', {
           columnName: '#AD_Org_ID',
           value: organization!.id
         }, {
           root: true
         })
 
-        this.GetWarehousesList(organization!.uuid)
+        context.dispatch('GetWarehousesList', organization?.uuid)
       })
       .catch(error => {
         console.warn(`Error ${error.code} getting Organizations list: ${error.message}.`)
       })
-  }
-
-  @Action
-  public async ChangeOrganization(params: {
-    organizationUuid: string
-    organizationId: number
-    isCloseAllViews?: boolean
-  }) {
+  },
+  async ChangeOrganization(context: UserActionContext, params: {
+      organizationUuid: string
+      organizationId: number
+      isCloseAllViews?: boolean
+    }) {
     const { organizationId, organizationUuid, isCloseAllViews = params.isCloseAllViews || true } = params
     // TODO: Check if there are no tagViews in the new routes to close them, and
     // if they exist, reload with the new route using name (uuid)
-    TagsViewModule.setCustomTagView(isCloseAllViews)
+    context.dispatch(Namespaces.TagsView + '/' + 'setCustomTagView', isCloseAllViews, { root: true })
+    // TagsViewModule.setCustomTagView(isCloseAllViews)
 
     return await requestChangeRole({
       // token: getToken(),
@@ -440,7 +309,7 @@ class User extends VuexModule implements IUserState {
       .then((changeRoleResponse: ISessionData) => {
         const { uuid } = changeRoleResponse
 
-        this.SET_TOKEN((uuid))
+        context.commit('SET_TOKEN', uuid)
         setToken(uuid)
 
         setCurrentOrganization(organizationUuid)
@@ -455,16 +324,16 @@ class User extends VuexModule implements IUserState {
         // })
 
         // Update user info and context associated with session
-        this.GetSessionInfo(uuid)
+        context.dispatch('GetSessionInfo', uuid)
 
-        this.context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData', null, {
+        context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData', null, {
           root: true
         })
-        this.context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache', null, {
+        context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache', null, {
           root: true
         })
 
-        this.GetWarehousesList(organizationUuid)
+        context.dispatch('GetWarehousesList', organizationUuid)
 
         showMessage({
           message: language.t('notifications.successChangeRole').toString(),
@@ -481,12 +350,11 @@ class User extends VuexModule implements IUserState {
         console.warn(`Error change role: ${error.message}. Code: ${error.code}.`)
       })
       .finally(() => {
-        PermissionModule.sendRequestMenu()
+        context.dispatch(Namespaces.Permission + '/' + 'sendRequestMenu', undefined, { root: true })
+        // PermissionModule.sendRequestMenu()
       })
-  }
-
-  @Action
-  public async GetWarehousesList(organizationUuid?: string) {
+  },
+  async GetWarehousesList(context: UserActionContext, organizationUuid?: string) {
     if (!(organizationUuid)) {
       organizationUuid = getCurrentOrganization()
     }
@@ -495,7 +363,7 @@ class User extends VuexModule implements IUserState {
       organizationUuid: organizationUuid!
     })
       .then((response: IWarehousesListResponse) => {
-        this.SET_WAREHOUSES_LIST(response.warehousesList)
+        context.commit('SET_WAREHOUSES_LIST', response.warehousesList)
 
         let warehouse = response.warehousesList.find(item => item.uuid === getCurrentWarehouse())
         if (!(warehouse)) {
@@ -503,11 +371,11 @@ class User extends VuexModule implements IUserState {
         }
         if (!(warehouse)) {
           removeCurrentWarehouse()
-          this.SET_WAREHOUSE(undefined)
+          context.commit('SET_WAREHOUSE', undefined)
         } else {
           setCurrentWarehouse(warehouse.uuid)
-          this.SET_WAREHOUSE(warehouse)
-          this.context.commit(Namespaces.Preference + '/' + 'setPreferenceContext', {
+          context.commit('SET_WAREHOUSE', warehouse)
+          context.commit(Namespaces.Preference + '/' + 'setPreferenceContext', {
             columnName: '#M_Warehouse_ID',
             value: warehouse.id
           }, {
@@ -518,84 +386,82 @@ class User extends VuexModule implements IUserState {
       .catch(error => {
         console.warn(`Error ${error.code} getting Warehouses list: ${error.message}.`)
       })
-  }
-
-@Action
-  public ChangeWarehouse(params: {
-    warehouseUuid: string
-  }) {
+  },
+  ChangeWarehouse(context: UserActionContext, params: {
+      warehouseUuid: string
+    }) {
     const { warehouseUuid } = params
     setCurrentWarehouse(warehouseUuid)
 
-    const currentWarehouse = this.warehousesList.find(warehouse => warehouse.uuid === warehouseUuid)
-    this.SET_WAREHOUSE(currentWarehouse)
+    const currentWarehouse = context.state.warehousesList.find(warehouse => warehouse.uuid === warehouseUuid)
+    context.commit('SET_WAREHOUSE', currentWarehouse)
 
-    this.context.commit(Namespaces.Preference + '/' + 'setPreferenceContext', {
+    context.commit(Namespaces.Preference + '/' + 'setPreferenceContext', {
       columnName: '#M_Warehouse_ID',
       value: currentWarehouse.id
     }, {
       root: true
     })
-  }
-
+  },
   // dynamically modify permissions
-  @Action
-public async ChangeRole(params: {
-    roleUuid: string
-    organizationUuid: string
-    warehouseUuid: string
-    isCloseAllViews?: boolean
-  }) {
-  const { roleUuid, organizationUuid, warehouseUuid, isCloseAllViews = params.isCloseAllViews || true } = params
-  TagsViewModule.setCustomTagView(isCloseAllViews)
-  // this.context.dispatch('tagsView/setCustomTagView', {
-  //   isCloseAllViews
-  // }, {
-  //   root: true
-  // })
+  async ChangeRole(context: UserActionContext, params: {
+      roleUuid: string
+      organizationUuid: string
+      warehouseUuid: string
+      isCloseAllViews?: boolean
+    }) {
+    const { roleUuid, organizationUuid, warehouseUuid, isCloseAllViews = params.isCloseAllViews || true } = params
+    context.dispatch(Namespaces.TagsView + '/' + 'setCustomTagView', isCloseAllViews, { root: true })
+    // TagsViewModule.setCustomTagView(isCloseAllViews)
+    // this.context.dispatch('tagsView/setCustomTagView', {
+    //   isCloseAllViews
+    // }, {
+    //   root: true
+    // })
 
-  return await requestChangeRole({
-    // token: getToken(),
-    roleUuid,
-    organizationUuid,
-    warehouseUuid
-  })
-    .then((changeRoleResponse: ISessionData) => {
-      const { role, uuid } = changeRoleResponse
+    return await requestChangeRole({
+      // token: getToken(),
+      roleUuid,
+      organizationUuid,
+      warehouseUuid
+    })
+      .then((changeRoleResponse: ISessionData) => {
+        const { role, uuid } = changeRoleResponse
 
-      this.SET_ROLE(role)
-      setCurrentRole(role.uuid)
+        context.commit('SET_ROLE', role)
+        setCurrentRole(role.uuid)
 
-      this.SET_TOKEN(uuid)
-      setToken(uuid)
+        context.commit('SET_TOKEN', uuid)
+        setToken(uuid)
 
-      this.GetSessionInfo(uuid)
-      // Update user info and context associated with session
-      this.context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData')
-      this.context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache')
+        context.dispatch('GetSessionInfo', uuid)
+        // Update user info and context associated with session
+        context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData')
+        context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache')
 
-      showMessage({
-        message: language.t('notifications.successChangeRole').toString(),
-        type: 'success',
-        showClose: true
+        showMessage({
+          message: language.t('notifications.successChangeRole').toString(),
+          type: 'success',
+          showClose: true
+        })
+        return {
+          ...role,
+          sessionUuid: uuid
+        }
       })
-      return {
-        ...role,
-        sessionUuid: uuid
-      }
-    })
-    .catch(error => {
-      showMessage({
-        message: error.message,
-        type: 'error',
-        showClose: true
+      .catch(error => {
+        showMessage({
+          message: error.message,
+          type: 'error',
+          showClose: true
+        })
+        console.warn(`Error change role: ${error.message}. Code: ${error.code}.`)
       })
-      console.warn(`Error change role: ${error.message}. Code: ${error.code}.`)
-    })
-    .finally(() => {
-      PermissionModule.sendRequestMenu()
-    })
-}
+      .finally(() => {
+        context.dispatch(Namespaces.Permission + '/' + 'sendRequestMenu', undefined, { root: true })
+        // PermissionModule.sendRequestMenu()
+      })
+  },
 
   // @Action
   // public async GetUserInfo() {
@@ -617,74 +483,31 @@ public async ChangeRole(params: {
   //   this.SET_INTRODUCTION(introduction)
   //   this.SET_EMAIL(email)
   // }
-
-  @Action
-  public async ChangeRoles(role: string) {
-    const founded = this.rolesList.find((item) => {
+  async ChangeRoles(context: UserActionContext, role: string) {
+    const founded = context.state.rolesList.find((item) => {
       return item.name === role
     })
 
     if (founded) {
-      this.ChangeRole({
+      context.dispatch('ChangeRole', {
         organizationUuid: getCurrentOrganization()!,
         roleUuid: founded!.uuid,
         warehouseUuid: getCurrentWarehouse()!
       })
     }
-  }
-
-  @Action
-  public async LogOut() {
-    if (this.token === '') {
+  },
+  async LogOut(context: UserActionContext) {
+    if (context.state.token === '') {
       throw Error('LogOut: token is undefined!')
     }
-    await logout(this.token)
+    await logout(context.state.token)
     removeToken()
     resetRouter()
 
     // Reset visited views and cached views
-    TagsViewModule.delAllViews()
-    this.SET_TOKEN('')
-    this.SET_ROLES([])
-  }
-
-  // Getters
-  get getRoles(): IRoleData[] {
-    return this.rolesList
-  }
-
-  get getOrganizations(): IOrganizationData[] {
-    return this.organizationsList
-  }
-
-  get getWarehouses(): any[] {
-    return this.warehousesList
-  }
-
-  // current role info
-  get getRole() {
-    return this.role
-  }
-
-  get getOrganization(): Partial<IOrganizationData> {
-    return this.organization
-  }
-
-  get getWarehouse(): any {
-    return this.warehouse
-  }
-
-  get getIsSession(): boolean {
-    return this.isSession
-  }
-
-  get getUserUuid(): string {
-    return this.userUuid
-  }
-
-  get getIsPersonalLock(): boolean | undefined {
-    return this.role.isPersonalLock
+    context.dispatch(Namespaces.TagsView + '/' + 'delAllViews', undefined, { root: true })
+    // TagsViewModule.delAllViews()
+    context.commit('SET_TOKEN', '')
+    context.commit('SET_ROLES', [])
   }
 }
-
-export const UserModule = getModule(User)

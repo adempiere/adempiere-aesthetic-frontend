@@ -20,7 +20,6 @@
 <script lang="ts">
 import ImageCropUpload from 'vue-image-crop-upload'
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { AppModule } from '@/store/modules/app'
 
 @Component({
   name: 'AvatarUpload',
@@ -57,7 +56,7 @@ export default class extends Vue {
   }
 
   get language() {
-    return this.languageTypeList[AppModule.language]
+    return this.languageTypeList[this.$store.state.app.language]
   }
 
   private srcFileSet(fileName: string, fileType: string, fileSize: number) {

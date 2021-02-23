@@ -1,7 +1,7 @@
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { IRecordSelectionData } from '@/ADempiere/modules/persistence/PersistenceType'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { AppModule, DeviceType } from '@/store/modules/app'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
 @Component({
@@ -27,7 +27,7 @@ export default class MixinTable extends Vue {
     }
 
     get isMobile(): boolean {
-      return AppModule.device === DeviceType.Mobile
+      return this.$store.state.app.device === DeviceType.Mobile
     }
 
     get isCreateNewRoute(): boolean {

@@ -24,7 +24,6 @@ import {
 } from '@/ADempiere/shared/utils/valueFormat'
 import { Table } from 'element-ui'
 import MixinForm from '../MixinForm'
-import { UserModule } from '@/store/modules/user'
 
 @Component({
   name: 'MixinPOS',
@@ -374,7 +373,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
         }
 
         // user session
-        const salesRepresentativeUuid = UserModule.userUuid
+        const salesRepresentativeUuid = this.$store.state.user.userUuid
 
         requestCreateOrder({
           posUuid: posUuid!,

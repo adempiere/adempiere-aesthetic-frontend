@@ -1,8 +1,7 @@
-import { AppModule, DeviceType } from '@/store/modules/app'
+// import { AppModule, DeviceType } from '@/store/modules/app'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { PanelContextType } from '../../utils/DictionaryUtils/ContextMenuType'
-import MainPanelDesktop from './MainPanelDesktop'
-import MainPanelMobile from './MainPanelMobile'
 import Template from './template.vue'
 
 @Component({
@@ -29,7 +28,7 @@ export default class MainPanel extends Vue {
 
     // Computed properties
     get isMobile(): boolean {
-      return AppModule.device === DeviceType.Mobile
+      return this.$store.state.app.device === DeviceType.Mobile
     }
 
     get templateDevice() {

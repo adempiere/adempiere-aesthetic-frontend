@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts">
-import { AppModule, DeviceType } from '@/store/modules/app'
-import { Component, Ref, Vue, Watch } from 'vue-property-decorator'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 
 const tagSpacing = 4
 
@@ -24,7 +24,7 @@ export default class extends Vue {
   }
 
   get isMobile(): boolean {
-    return AppModule.device === DeviceType.Mobile
+    return this.$store.state.app.device === DeviceType.Mobile
   }
 
   @Watch('isMobile')

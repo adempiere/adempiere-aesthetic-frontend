@@ -62,10 +62,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { SettingsModule } from '@/store/modules/settings'
 import ThemePicker from '@/components/ThemePicker/index.vue'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { AppModule } from '@/store/modules/app'
 
 @Component({
   name: 'Settings',
@@ -87,77 +85,77 @@ export default class extends Vue {
   }
 
   get fixedHeader() {
-    return SettingsModule.fixedHeader
+    return this.$store.state.settings.fixedHeader
   }
 
   set fixedHeader(value) {
-    SettingsModule.ChangeSetting({ key: 'fixedHeader', value })
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', { key: 'fixedHeader', value })
   }
 
   get showNavar() {
-    return SettingsModule.showNavar
+    return this.$store.state.settings.showNavar
   }
 
   set showNavar(val: boolean | undefined) {
-    SettingsModule.ChangeSetting({
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
       key: 'showNavar',
       value: val
     })
   }
 
   get showMenu() {
-    return SettingsModule.showMenu
+    return this.$store.state.settings.showMenu
   }
 
   set showMenu(val: boolean | undefined) {
-    AppModule.ToggleSideBar(false)
-    SettingsModule.ChangeSetting({
+    this.$store.dispatch(Namespaces.App + '/' + 'ToggleSideBar', false)
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
       key: 'showMenu',
       value: val
     })
   }
 
   get showTagsView() {
-    return SettingsModule.showTagsView
+    return this.$store.state.settings.showTagsView
   }
 
   set showTagsView(value) {
-    SettingsModule.ChangeSetting({ key: 'showTagsView', value })
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', { key: 'showTagsView', value })
   }
 
   get showSidebarLogo() {
-    return SettingsModule.showSidebarLogo
+    return this.$store.state.settings.showSidebarLogo
   }
 
   set showSidebarLogo(value) {
-    SettingsModule.ChangeSetting({ key: 'showSidebarLogo', value })
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', { key: 'showSidebarLogo', value })
   }
 
   get sidebarTextTheme() {
-    return SettingsModule.sidebarTextTheme
+    return this.$store.state.settings.sidebarTextTheme
   }
 
   set sidebarTextTheme(value) {
-    SettingsModule.ChangeSetting({ key: 'sidebarTextTheme', value })
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', { key: 'sidebarTextTheme', value })
   }
 
   get showContextMenu(): boolean {
-    return SettingsModule.showContextMenu!
+    return this.$store.state.settings.showContextMenu!
   }
 
   set showContextMenu(value: boolean) {
-    SettingsModule.ChangeSetting({
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
       key: 'showContextMenu',
       value: value
     })
   }
 
   get supportPinyinSearch(): boolean {
-    return SettingsModule.supportPinyinSearch
+    return this.$store.state.settings.supportPinyinSearch
   }
 
   set supportPinyinSearch(value: boolean) {
-    SettingsModule.ChangeSetting({
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
       key: 'supportPinyinSearch',
       value: value
     })
@@ -172,7 +170,7 @@ export default class extends Vue {
   }
 
   private themeChange(value: string) {
-    SettingsModule.ChangeSetting({ key: 'theme', value })
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', { key: 'theme', value })
   }
 }
 </script>

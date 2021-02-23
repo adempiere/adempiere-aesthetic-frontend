@@ -1,7 +1,8 @@
 import Vue from 'vue'
-import { ErrorLogModule } from '@/store/modules/error-log'
+import store from '@/ADempiere/shared/store'
 import { isArray } from '@/utils/validate'
 import settings from '@/settings'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 const { errorLog: needErrorLog } = settings
 
@@ -15,7 +16,7 @@ const checkNeed = () => {
 
 if (checkNeed()) {
   Vue.config.errorHandler = function(err, vm, info) {
-    ErrorLogModule.AddErrorLog({
+    store.dispatch(Namespaces.ErrorLog + '/' + 'AddErrorLog', {
       err,
       vm,
       info,

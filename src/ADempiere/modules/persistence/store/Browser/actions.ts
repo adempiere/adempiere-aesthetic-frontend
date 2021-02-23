@@ -17,9 +17,9 @@ export const actions: BrowserActionTree = {
   browserActionPerformed(context: BrowserActionContext, params: {
         containerUuid: string
         field: IFieldDataExtendedUtils
-        value: any
+        value?: any
       }) {
-    const { containerUuid, field, value } = params
+    const { containerUuid, field } = params
     const fieldsEmpty: string[] = context.rootGetters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
       containerUuid,
       fieldsList: context.rootGetters[Namespaces.Panel + '/' + 'getFieldsListFromPanel'](containerUuid)

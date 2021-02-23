@@ -44,7 +44,7 @@ export default class ProductList extends Mixins(MixinForm) {
 
     // Computed properties
     get isShowProductsPriceList() {
-      return this.$store.state['pointOfSales/listProductPrice'].productPrice[
+      return this.$store.state.listProductPriceModule.productPrice[
         this.attribute
       ]
     }

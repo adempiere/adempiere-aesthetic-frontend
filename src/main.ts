@@ -15,7 +15,6 @@ import VMarkdown from 'v-markdown/src'
 
 import App from '@/App.vue'
 import store from '@/ADempiere/shared/store'
-import { AppModule } from '@/store/modules/app'
 import router from '@/router'
 import i18n from '@/ADempiere/shared/lang'
 import '@/icons/components'
@@ -25,6 +24,7 @@ import '@/pwa/register-service-worker'
 import * as directives from '@/directives'
 import * as filters from '@/filters'
 import { sync } from 'vuex-router-sync'
+import Cookies from 'js-cookie'
 
 Vue.use(VMarkdown)
 Vue.use(VueShortkey)
@@ -32,7 +32,7 @@ Vue.use(VueSplit)
 Vue.use(VueResize)
 // Vue.use()W
 Vue.use(ElementUI, {
-  size: AppModule.size, // Set element-ui default size
+  size: Cookies.get('size') || 'medium', // store.state.app.app.size, // AppModule.size, // Set element-ui default size
   i18n: (key: string, value: string) => i18n.t(key, value)
 })
 

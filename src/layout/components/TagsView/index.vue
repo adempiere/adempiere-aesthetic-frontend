@@ -79,15 +79,14 @@
 
 <script lang="ts">
 import path from 'path'
-import { Component, Mixins, Vue, Watch } from 'vue-property-decorator'
-import { Route, RouteConfig } from 'vue-router'
-import { PermissionModule } from '@/store/modules/permission'
-import { TagsViewModule, ITagView } from '@/store/modules/tags-view'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { RouteConfig } from 'vue-router'
 import ScrollPane from './ScrollPane.vue'
 import MixinI18n from '@/ADempiere/shared/utils/i18n'
 import draggable from 'vuedraggable'
-import { AppModule, DeviceType } from '@/store/modules/app'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { ITagView } from '@/ADempiere/modules/tagsView/TagsViewType'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 
 @Component({
   name: 'TagsView',
@@ -105,15 +104,15 @@ export default class extends Mixins(MixinI18n) {
   private affixTags: ITagView[] = []
 
   get isMobile(): boolean {
-    return AppModule.device === DeviceType.Mobile
+    return this.$store.state.app.device === DeviceType.Mobile
   }
 
   get visitedViews() {
-    return TagsViewModule.visitedViews
+    return this.$store.state.tagsView.visitedViews
   }
 
   get routes() {
-    return PermissionModule.routes
+    return this.$store.state.permission.routes
   }
 
   @Watch('$route')
@@ -178,7 +177,7 @@ export default class extends Mixins(MixinI18n) {
     for (const tag of this.affixTags) {
       // Must have tag name
       if (tag.name) {
-        TagsViewModule.addVisitedView(tag)
+        this.$store.dispatch(Namespaces.TagsView + '/' + 'addVisitedView', tag)
       }
     }
   }
@@ -186,7 +185,7 @@ export default class extends Mixins(MixinI18n) {
   private addTags() {
     const { name } = this.$route
     if (name) {
-      TagsViewModule.addView(this.$route)
+      this.$store.dispatch(Namespaces.TagsView + '/' + 'addView', this.$route)
     }
     return false
   }
@@ -207,7 +206,7 @@ export default class extends Mixins(MixinI18n) {
           (this.$refs.scrollPane as ScrollPane).moveToTarget(tag as any)
           // When query is different then update
           if ((tag.to as ITagView).fullPath !== this.$route.fullPath) {
-            TagsViewModule.updateVisitedView(this.$route)
+            this.$store.dispatch(Namespaces.TagsView + '/' + 'updateVisitedView', this.$route)
           }
           break
         }
@@ -216,7 +215,7 @@ export default class extends Mixins(MixinI18n) {
   }
 
   private refreshSelectedTag(view: ITagView) {
-    TagsViewModule.delCachedView(view)
+    this.$store.dispatch(Namespaces.TagsView + '/' + 'delCachedView', view)
     const { fullPath } = view
     this.$nextTick(() => {
       this.$router.replace({
@@ -226,9 +225,9 @@ export default class extends Mixins(MixinI18n) {
   }
 
   private closeSelectedTag(view: ITagView) {
-    TagsViewModule.delView(view)
+    this.$store.dispatch(Namespaces.TagsView + '/' + 'delView', view)
     if (this.isActive(view)) {
-      this.toLastView(TagsViewModule.visitedViews, view)
+      this.toLastView(this.$store.state.tagsView.visitedViews, view)
     }
     if (view.meta && view.meta.uuid && view.meta.type) {
       let parentUuid
@@ -258,16 +257,16 @@ export default class extends Mixins(MixinI18n) {
     if (this.selectedTag.fullPath !== this.$route.path && this.selectedTag.fullPath !== undefined) {
       this.$router.push(this.selectedTag.fullPath)
     }
-    TagsViewModule.delOthersViews(this.selectedTag)
+    this.$store.dispatch(Namespaces.TagsView + '/' + 'delOthersViews', this.selectedTag)
     this.moveToCurrentTag()
   }
 
   private closeAllTags(view: ITagView) {
-    TagsViewModule.delAllViews()
+    this.$store.dispatch(Namespaces.TagsView + '/' + 'delAllViews')
     if (this.affixTags.some(tag => tag.path === this.$route.path)) {
       return
     }
-    this.toLastView(TagsViewModule.visitedViews, view)
+    this.toLastView(this.$store.state.tagsView.visitedViews, view)
   }
 
   private toLastView(visitedViews: ITagView[], view: ITagView) {

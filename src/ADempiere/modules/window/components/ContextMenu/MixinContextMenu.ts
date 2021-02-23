@@ -36,8 +36,6 @@ import { showNotification } from '@/ADempiere/shared/utils/notifications'
 import { IReportOutputDataExtended } from '@/ADempiere/modules/report'
 import { convertFieldsListToShareLink, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import ROUTES from '@/ADempiere/shared/utils/Constants/zoomWindow'
-import { UserModule } from '@/store/modules/user'
-import { PermissionModule } from '@/store/modules/permission'
 import MixinRelations from './MixinRelations'
 
 @Component({
@@ -135,7 +133,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     // }
 
     get permissionRoutes(): RouteConfig[] {
-      return PermissionModule.routes
+      return this.$store.state.permission.routes
     }
 
     get valuesPanelToShare(): string {
@@ -251,7 +249,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     }
 
     get isPersonalLock(): boolean {
-      return UserModule.role.isPersonalLock!
+      return this.$store.state.user.role.isPersonalLock!
     }
 
     get listDocumentActions(): IDocumentActionData[] {

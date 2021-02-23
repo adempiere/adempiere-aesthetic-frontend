@@ -1,4 +1,3 @@
-import { SettingsModule } from '@/store/modules/settings'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { addClass, removeClass } from '@/utils'
 
@@ -12,7 +11,7 @@ export default class Menu extends Vue {
 
     // Computed properties
     get theme(): string {
-      return SettingsModule.theme
+      return this.$store.state.settings.theme
     }
 
     @Watch('show')

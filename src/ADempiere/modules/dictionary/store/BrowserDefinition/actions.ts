@@ -9,7 +9,6 @@ import { BrowserDefinitionState, IBrowserData, IBrowserDataExtended } from '../.
 import language from '@/ADempiere/shared/lang'
 import { WindowProcessAsociatedAction } from '@/ADempiere/modules/window'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { Route } from 'vue-router'
 
 type BrowserDefinitionActionTree = ActionTree<BrowserDefinitionState, IRootState>
 type BrowserDefinitionActionContext = ActionContext<BrowserDefinitionState, IRootState>

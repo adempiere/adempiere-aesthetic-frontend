@@ -100,8 +100,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { AppModule, DeviceType } from '@/store/modules/app'
-import { UserModule } from '@/store/modules/user'
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import ErrorLog from '@/components/ErrorLog/index.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
@@ -112,6 +110,8 @@ import SizeSelect from '@/components/SizeSelect/index.vue'
 import ProfilePreview from '@/layout/components/ProfilePreview'
 import Badge from '@/ADempiere/shared/components/Badge/component'
 import { getImagePath } from '@/ADempiere/shared/utils/resource'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 
 @Component({
   name: 'Navbar',
@@ -132,11 +132,11 @@ export default class extends Vue {
     public isMenuMobile = false
 
     get isMobile(): boolean {
-      return AppModule.device === DeviceType.Mobile
+      return this.$store.state.app.device === DeviceType.Mobile
     }
 
     get sidebar() {
-      return AppModule.sidebar
+      return this.$store.state.app.sidebar
     }
 
     get device(): string {
@@ -147,7 +147,7 @@ export default class extends Vue {
     }
 
     get avatar() {
-      return UserModule.avatar
+      return this.$store.state.user.avatar
     }
 
     get avatarResize(): string {
@@ -178,11 +178,11 @@ export default class extends Vue {
     }
 
     private toggleSideBar() {
-      AppModule.ToggleSideBar(false)
+      this.$store.dispatch(Namespaces.App + '/' + 'ToggleSideBar', false)
     }
 
     private async logout() {
-      await UserModule.LogOut()
+      await this.$store.dispatch(Namespaces.User + '/' + 'LogOut')
       this.$router.push({
         path: '/login'
       })

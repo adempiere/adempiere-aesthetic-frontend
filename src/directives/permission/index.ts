@@ -1,10 +1,11 @@
 import { DirectiveOptions } from 'vue'
-import { UserModule } from '@/store/modules/user'
+import store from '@/ADempiere/shared/store'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 export const permission: DirectiveOptions = {
   inserted(el, binding) {
     const { value } = binding
-    const roles = UserModule.roles
+    const roles: string[] = store.getters[Namespaces.User + '/' + 'getRoleNames']
     if (value && value instanceof Array && value.length > 0) {
       const permissionRoles = value
       const hasPermission = roles.some(role => {

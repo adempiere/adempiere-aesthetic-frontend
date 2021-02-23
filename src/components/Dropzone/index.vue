@@ -24,7 +24,6 @@
 import VueDropzone from 'vue2-dropzone'
 import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { SettingsModule } from '@/store/modules/settings'
 
 @Component({
   name: 'Dropzone',
@@ -64,7 +63,7 @@ export default class extends Vue {
   }
 
   get themeColor() {
-    return SettingsModule.theme
+    return this.$store.state.settings.theme
   }
 
   // You can add more Event handler, see: https://rowanwins.github.io/vue-dropzone/docs/dist/#/events

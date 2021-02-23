@@ -35,8 +35,6 @@ import {
 import { IFieldData } from '@/ADempiere/modules/field'
 import { getFieldTemplate } from '@/ADempiere/shared/utils/lookupFactory'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import fieldList from '@/ADempiere/shared/views/Test/fieldList'
-import { Route } from 'vue-router'
 
 type WindowDefinitionActionTree = ActionTree<WindowDefinitionState, IRootState>
 type WindowDefinitionActionContext = ActionContext<
