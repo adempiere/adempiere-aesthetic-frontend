@@ -722,11 +722,11 @@ export const actions: BusinessDataActionTree = {
         })
 
         if (isShowNotification) {
-          showMessage({
-            // title: language.t('notifications.error'),
-            message: error.message,
-            type: 'error'
-          })
+          // showMessage({
+          //   // title: language.t('notifications.error'),
+          //   message: error.message,
+          //   type: 'error'
+          // })
         }
         console.warn(
                     `Error Get Object List ${error.message}. Code: ${error.code}.`
