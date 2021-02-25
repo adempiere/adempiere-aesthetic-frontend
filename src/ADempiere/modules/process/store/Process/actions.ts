@@ -283,11 +283,11 @@ export const actions: ProcessActionTree = {
           //     },
           //     () => {}
           // )
-          context.dispatch('tagsView/delView', routeToDelete)
+          context.dispatch(Namespaces.TagsView + '/' + 'delView', routeToDelete, { root: true })
           // delete data associate to browser
           context.dispatch(Namespaces.Browser + '/' + 'deleteRecordContainer', {
             viewUuid: containerUuid
-          })
+          }, { root: true })
         }
       } else {
         // close view if is process, report.
@@ -298,7 +298,7 @@ export const actions: ProcessActionTree = {
         //     },
         //     () => {}
         // )
-        context.dispatch('tagsView/delView', routeToDelete)
+        context.dispatch(Namespaces.TagsView + '/' + 'delView', routeToDelete, { root: true })
 
         // reset panel and set defalt isShowedFromUser
         if (!processDefinition.isReport) {
@@ -538,7 +538,8 @@ export const actions: ProcessActionTree = {
                 if (processResult.output) {
                   context.dispatch(
                     Namespaces.Utils + '/' + 'setReportTypeToShareLink',
-                    processResult.output.reportType
+                    processResult.output.reportType,
+                    { root: true }
                   )
                 }
                 context.commit(
@@ -608,11 +609,11 @@ export const actions: ProcessActionTree = {
                   context.commit('setSuccessSelection', 0)
                   context.commit('setErrorSelection', 0)
                 }
-                context.dispatch('setProcessSelect', {
+                context.dispatch(Namespaces.Utils + '/' + 'setProcessSelect', {
                   selection: 0,
                   finish: true,
                   tableName: ''
-                })
+                }, { root: true })
                 context.commit(
                   'addNotificationProcess',
                   processResult
@@ -797,7 +798,7 @@ export const actions: ProcessActionTree = {
                       tableName: output.tableName,
                       printFormatUuid: output.printFormatUuid,
                       reportViewUuid: output.reportViewUuid
-                    })
+                    }, { root: true })
                     .then(drillTablesResponse => {
                       drillTablesList.childs = drillTablesResponse
                       if (drillTablesList.childs!.length
@@ -1469,7 +1470,7 @@ export const actions: ProcessActionTree = {
               ? action.containerUuid
               : action.uuid,
             panelType: action.panelType
-          })
+          }, { root: true })
           .then((responsePanel: any) => {
             context.commit('setMetadata', responsePanel)
             context.commit('setShowDialog', true)
@@ -1609,7 +1610,7 @@ export const actions: ProcessActionTree = {
           type: 'info'
         })
       }
-      this.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', true)
+      this.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', true, { root: true })
       const timeInitialized = (new Date()).getTime()
       const processResult: any = {
         // panel attributes from where it was executed
@@ -1673,7 +1674,7 @@ export const actions: ProcessActionTree = {
           })
           resolve(processResult)
           if (processResult.output) {
-            context.dispatch('setReportTypeToShareLink', processResult.output.reportType)
+            context.dispatch(Namespaces.Utils + '/' + 'setReportTypeToShareLink' + ', processResult.output.reportType', { root: true})
           }
         })
         .catch(error => {
@@ -1705,7 +1706,7 @@ export const actions: ProcessActionTree = {
           context.dispatch('setProcessSelect', {
             finish: true
           })
-          context.dispatch('updateOrderPos', false)
+          context.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', false, { root: true })
         })
     })
   }

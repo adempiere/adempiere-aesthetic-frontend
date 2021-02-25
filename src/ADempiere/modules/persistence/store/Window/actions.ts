@@ -87,20 +87,20 @@ export const actions: WindowActionTree = {
         }).value
       }
 
-      const conditionsList = context.getters.getParametersToServer({
+      const conditionsList = context.rootGetters[Namespaces.Panel + '/' + 'getParametersToServer']({
         containerUuid,
         isEvaluateMandatory: false
       })
 
       context
-        .dispatch('getObjectListFromCriteria', {
+        .dispatch(Namespaces.BusinessData + '/' + 'getObjectListFromCriteria', {
           parentUuid,
           containerUuid,
           tableName: tabTableName,
           query: parsedQuery,
           whereClause: parsedWhereClause,
           conditionsList
-        })
+        }, { root: true })
         .catch(error => {
           console.warn(
             'Error getting Advanced Query (notifyFieldChange):',
@@ -185,15 +185,15 @@ export const actions: WindowActionTree = {
             type: 'info'
           })
         } else {
-          const recordUuid = context.getters.getUuidOfContainer(
+          const recordUuid = context.rootGetters[Namespaces.FieldValue + '/' + 'getUuidOfContainer'](
             field.containerUuid
           )
           context
-            .dispatch('flushPersistenceQueue', {
+            .dispatch(Namespaces.Persistence + '/' + 'flushPersistenceQueue', {
               containerUuid: field.containerUuid,
               tableName: field.tableName,
               recordUuid
-            })
+            }, { root: true })
             .then(response => {
               resolve(response)
               if (!recordUuid) {
@@ -294,7 +294,7 @@ export const actions: WindowActionTree = {
     context.dispatch(Namespaces.Panel + '/' + 'notifyPanelChange', {
       containerUuid,
       newValues: oldAttributes
-    })
+    }, { root: true })
   },
   // createNewEntity({ commit, dispatch, getters, rootGetters }, {
   //   parentUuid,
@@ -507,10 +507,10 @@ export const actions: WindowActionTree = {
       })
       .finally(() => {
         if (isError) {
-          context.dispatch('addNewRow', {
+          context.dispatch(Namespaces.BusinessData + '/' + 'addNewRow', {
             containerUuid,
             row
-          })
+          }, { root: true })
         } else {
           // refresh record list
           context
@@ -1137,14 +1137,14 @@ export const actions: WindowActionTree = {
         }
 
         if (isAddRecord) {
-          context.dispatch('setPageNumber', {
+          context.dispatch(Namespaces.BusinessData + '/' + 'setPageNumber', {
             parentUuid,
             containerUuid,
             pageNumber: nextPage,
             panelType: 'window',
             isAddRecord,
             isShowNotification: false
-          })
+          }, { root: true })
         }
         if (isAdd && isAdd !== isAddRecord) {
           if (tab.isSortTab) {
@@ -1323,18 +1323,18 @@ export const actions: WindowActionTree = {
               ).toString(),
               type: 'success'
             })
-            context.dispatch('setShowDialog', {
+            context.dispatch(Namespaces.Process + '/' + 'setShowDialog', {
               type: 'window',
               action: undefined
-            })
+            }, { root: true })
             context.commit('setTotalRequest', 0)
             context.commit('setTotalResponse', 0)
 
-            context.dispatch('setRecordSelection', {
+            context.dispatch(Namespaces.Window + '/' + 'setRecordSelection', {
               parentUuid,
               containerUuid,
               isLoaded: false
-            })
+            }, { root: true })
             context.dispatch('setTabSequenceRecord', [])
 
             // refresh record list in table source

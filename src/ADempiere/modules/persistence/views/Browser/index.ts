@@ -150,7 +150,7 @@ export default class BrowserView extends Vue {
       }
 
       // set default values into data
-      this.$store.dispatch('setRecordSelection', {
+      this.$store.dispatch(Namespaces.BusinessData + '/' + 'setRecordSelection', {
         containerUuid: this.browserUuid,
         panelType: this.panelType
       })
