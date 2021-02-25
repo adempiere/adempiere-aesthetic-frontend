@@ -17,7 +17,6 @@
               </div>
               <div>
                 <el-steps
-                  :active="workflow.workflowEventsList.length"
                   align-center
                   finish-status="success"
                 >
