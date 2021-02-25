@@ -18,7 +18,8 @@
                         <div :class="styleTableNavigation">
                           <!-- close record navigation and advanced query panel -->
                           <el-button
-                            :icon="!isShowedRecordPanel"
+                            v-show="!isShowedRecordPanel"
+                            :icon="iconShowedRecordNavigation"
                             circle
                             style="margin-left: 10px;"
                             class="el-button-window"
