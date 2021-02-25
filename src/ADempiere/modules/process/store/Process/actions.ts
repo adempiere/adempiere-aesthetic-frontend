@@ -309,7 +309,7 @@ export const actions: ProcessActionTree = {
         }
       }
       if (isProcessTableSelection) {
-        const windowSelectionProcess: ISelectionProcessData = context.rootGetters[Namespaces.Utils + '/' + 'getProcessSelect']()
+        const windowSelectionProcess: ISelectionProcessData = context.rootGetters[Namespaces.Utils + '/' + 'getProcessSelect']
         windowSelectionProcess.selection.forEach((selection: any) => {
           Object.assign(processResult, {
             selection: selection.UUID,
@@ -1176,7 +1176,7 @@ export const actions: ProcessActionTree = {
     const timeInitialized: number = new Date().getTime()
     // Run process on server and wait for it for notify
     if (isProcessTableSelection) {
-      const windowSelectionProcess: Partial<ISelectionProcessData> = context.rootGetters[Namespaces.Utils + '/' + 'getProcessSelect']()
+      const windowSelectionProcess: Partial<ISelectionProcessData> = context.rootGetters[Namespaces.Utils + '/' + 'getProcessSelect']
             windowSelectionProcess.selection!.forEach(selection => {
               const processResult: INotificationProcessData = {
                 // panel attributes from where it was executed
