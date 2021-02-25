@@ -92,7 +92,7 @@ export default class BrowserView extends Vue {
       if (this.activeSearch.length) {
         showCriteria = true
       }
-      this.$store.dispatch('changeBrowserAttribute', {
+      this.$store.dispatch(Namespaces.BrowserDefinition + '/' + 'changeBrowserAttribute', {
         containerUuid: this.browserUuid,
         attributeName: 'isShowedCriteria',
         attributeValue: showCriteria

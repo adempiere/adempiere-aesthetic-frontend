@@ -1,3 +1,4 @@
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Mixins } from 'vue-property-decorator'
 import MixinMenuTable from '../MixinMenuTable'
 import Template from './template.vue'
@@ -11,7 +12,7 @@ export default class TableContextMenu extends Mixins(MixinMenuTable) {
 
     // Methods
     deleteRecord() {
-      this.$store.dispatch('deleteEntity', {
+      this.$store.dispatch(Namespaces.Window + '/' + 'deleteEntity', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
         row: this.currentRow

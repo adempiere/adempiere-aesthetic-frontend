@@ -178,7 +178,7 @@ export const actions: BrowserDefinitionActionTree = {
     const { containerUuid, attributeName, attributeNameControl, attributeValue } = payload
     let { browser } = payload
     if (!browser) {
-      browser = context.getters.getBrowser(containerUuid)
+      browser = context.getters[Namespaces.Browser + '/' + 'getBrowser'](containerUuid)
     }
     context.commit('changeBrowserAttribute', {
       browser,
