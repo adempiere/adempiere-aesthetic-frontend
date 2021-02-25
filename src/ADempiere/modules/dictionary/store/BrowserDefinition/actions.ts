@@ -159,7 +159,7 @@ export const actions: BrowserDefinitionActionTree = {
           //   router.push({
           //     path: '/dashboard'
           //   }, () => {})
-          context.dispatch('tagsView/delView', routeToDelete)
+          context.dispatch(Namespaces.TagsView + '/' + 'delView', routeToDelete, { root: true })
           showMessage({
             message: language.t('login.unexpectedError').toString(),
             type: 'error'
