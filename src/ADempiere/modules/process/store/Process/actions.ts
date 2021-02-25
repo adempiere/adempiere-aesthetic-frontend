@@ -1674,7 +1674,7 @@ export const actions: ProcessActionTree = {
           })
           resolve(processResult)
           if (processResult.output) {
-            context.dispatch(Namespaces.Utils + '/' + 'setReportTypeToShareLink' + ', processResult.output.reportType', { root: true})
+            context.dispatch(Namespaces.Utils + '/' + 'setReportTypeToShareLink' + ', processResult.output.reportType', { root: true })
           }
         })
         .catch(error => {

@@ -95,7 +95,7 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
     // Methods
     sortTab(actionSequence: ProcessDefinitionAction) {
       // TODO: Refactor and remove redundant dispatchs
-      this.$store.dispatch(Namespaces.Process + '/'+ 'setShowDialog', {
+      this.$store.dispatch(Namespaces.Process + '/' + 'setShowDialog', {
         type: PanelContextType.Window,
         action: actionSequence,
         parentRecordUuid: this.$route.query.action
@@ -144,7 +144,7 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
             console.warn(`ContextMenu: Dictionary Process (State) - Error ${error.code}: ${error.message}.`)
           })
       } else {
-        this.$store.dispatch(Namespaces.Process + '/' +'setShowDialog', {
+        this.$store.dispatch(Namespaces.Process + '/' + 'setShowDialog', {
           type: process.type,
           action: processData
         })
