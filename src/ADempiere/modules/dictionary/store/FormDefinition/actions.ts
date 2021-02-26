@@ -70,7 +70,7 @@ export const actions: FormDefinitionActionTree = {
           //     return true
           //   }
           // )
-          context.dispatch('tagsView/delView', routeToDelete, { root: true })
+          context.dispatch(Namespaces.TagsView + '/' + 'delView', routeToDelete, { root: true })
           showMessage({
             message: language.t('login.unexpectedError').toString(),
             type: 'error'

@@ -159,7 +159,7 @@ export const actions: BrowserDefinitionActionTree = {
           //   router.push({
           //     path: '/dashboard'
           //   }, () => {})
-          context.dispatch('tagsView/delView', routeToDelete)
+          context.dispatch(Namespaces.TagsView + '/' + 'delView', routeToDelete, { root: true })
           showMessage({
             message: language.t('login.unexpectedError').toString(),
             type: 'error'
@@ -178,7 +178,7 @@ export const actions: BrowserDefinitionActionTree = {
     const { containerUuid, attributeName, attributeNameControl, attributeValue } = payload
     let { browser } = payload
     if (!browser) {
-      browser = context.getters.getBrowser(containerUuid)
+      browser = context.getters[Namespaces.Browser + '/' + 'getBrowser'](containerUuid)
     }
     context.commit('changeBrowserAttribute', {
       browser,

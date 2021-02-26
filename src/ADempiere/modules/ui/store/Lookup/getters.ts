@@ -12,12 +12,10 @@ import {
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type LookupGettersTree = GetterTree<LookupState, IRootState>
-type LookupActionContext = ActionContext<LookupState, IRootState>
 
 export const getters: LookupGettersTree = {
   getLookupItem: (
-    state: LookupState,
-    context: LookupActionContext
+    state: LookupState, getters, rootGetters
   ) => (parameters: {
         parentUuid: string
         containerUuid: string
@@ -51,7 +49,7 @@ export const getters: LookupGettersTree = {
                     itemLookup.tableName === tableName &&
                     itemLookup.sessionUuid === getSession() &&
                     itemLookup.clientId ===
-                        context.rootGetters[Namespaces.Preference + '/' + 'getPreferenceClientId'] &&
+                        getters[Namespaces.Preference + '/' + 'getPreferenceClientId'] &&
                     itemLookup.value === value
                 )
               }
@@ -62,8 +60,7 @@ export const getters: LookupGettersTree = {
     return undefined
   },
   getLookupList: (
-    state: LookupState,
-    context: LookupActionContext
+    state: LookupState, getters
   ) => (parameters: {
         parentUuid: string
         containerUuid: string
@@ -88,7 +85,7 @@ export const getters: LookupGettersTree = {
                   itemLookup.parsedQuery === parsedQuery &&
                     itemLookup.tableName === tableName &&
                     itemLookup.sessionUuid === getSession() &&
-                    itemLookup.clientId === context.rootGetters[Namespaces.Preference + '/' + 'getPreferenceClientId']
+                    itemLookup.clientId === getters[Namespaces.Preference + '/' + 'getPreferenceClientId']
                 )
               }
             )

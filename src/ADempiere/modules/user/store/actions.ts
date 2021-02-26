@@ -436,8 +436,8 @@ export const actions: UserActionTree = {
 
         context.dispatch('GetSessionInfo', uuid)
         // Update user info and context associated with session
-        context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData')
-        context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache')
+        context.dispatch(Namespaces.BusinessData + '/' + 'resetStateBusinessData', undefined, { root: true })
+        context.dispatch(Namespaces.Panel + '/' + 'dictionaryResetCache', undefined, { root: true })
 
         showMessage({
           message: language.t('notifications.successChangeRole').toString(),

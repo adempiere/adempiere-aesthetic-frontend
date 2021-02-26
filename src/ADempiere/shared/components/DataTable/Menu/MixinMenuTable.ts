@@ -95,7 +95,7 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
     // Methods
     sortTab(actionSequence: ProcessDefinitionAction) {
       // TODO: Refactor and remove redundant dispatchs
-      this.$store.dispatch('setShowDialog', {
+      this.$store.dispatch(Namespaces.Process + '/' + 'setShowDialog', {
         type: PanelContextType.Window,
         action: actionSequence,
         parentRecordUuid: this.$route.query.action
@@ -110,7 +110,7 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
 
       const processData: IProcessData = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](process.uuid)
       if (!this.currentRow) {
-        this.$store.dispatch('setProcessSelect', {
+        this.$store.dispatch(Namespaces.Utils + '/' + 'setProcessSelect', {
           selection: this.getDataSelection,
           processTablaSelection: true,
           tableName: this.panelMetadata.keyColumn
@@ -123,19 +123,19 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
             valueProcess = selection[element]
           }
         }
-        this.$store.dispatch('setProcessTable', {
+        this.$store.dispatch(Namespaces.Utils + '/' + 'setProcessTable', {
           valueRecord: valueProcess,
           tableName: this.panelMetadata.keyColumn,
           processTable: true
         })
       }
       if (processData === undefined) {
-        this.$store.dispatch('getProcessFromServer', {
+        this.$store.dispatch(Namespaces.ProcessDefinition + '/' + 'getProcessFromServer', {
           containerUuid: process.uuid,
           routeToDelete: this.$route
         })
           .then(response => {
-            this.$store.dispatch('setShowDialog', {
+            this.$store.dispatch(Namespaces.Process + '/' + 'setShowDialog', {
               type: process.type,
               action: response,
               record: this.getDataSelection
@@ -144,7 +144,7 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
             console.warn(`ContextMenu: Dictionary Process (State) - Error ${error.code}: ${error.message}.`)
           })
       } else {
-        this.$store.dispatch('setShowDialog', {
+        this.$store.dispatch(Namespaces.Process + '/' + 'setShowDialog', {
           type: process.type,
           action: processData
         })
@@ -152,27 +152,27 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
     }
 
     showTotals(): void {
-      this.$store.dispatch('changePanelAttributesBoolean', {
+      this.$store.dispatch(Namespaces.Panel + '/' + 'changePanelAttributesBoolean', {
         containerUuid: this.containerUuid,
         attributeName: 'isShowedTotals'
       })
     }
 
     showOnlyMandatoryColumns(): void {
-      this.$store.dispatch('showOnlyMandatoryColumns', {
+      this.$store.dispatch(Namespaces.Panel + '/' + 'showOnlyMandatoryColumns', {
         containerUuid: this.containerUuid
       })
     }
 
     showAllAvailableColumns(): void {
-      this.$store.dispatch('showAllAvailableColumns', {
+      this.$store.dispatch(Namespaces.Panel + '/' + 'showAllAvailableColumns', {
         containerUuid: this.containerUuid
       })
     }
 
     addNewRow(): void {
       if (this.newRecordsQuantity <= 0) {
-        this.$store.dispatch('addNewRow', {
+        this.$store.dispatch(Namespaces.BusinessData + '/' + 'addNewRow', {
           parentUuid: this.parentUuid,
           containerUuid: this.containerUuid,
           fieldsList: this.fieldsList,
@@ -192,7 +192,7 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
     }
 
     showOptionalColums(): void {
-      this.$store.dispatch('changePanelAttributesBoolean', {
+      this.$store.dispatch(Namespaces.Panel + '/' + 'changePanelAttributesBoolean', {
         containerUuid: this.containerUuid,
         attributeName: 'isShowedTableOptionalColumns'
       })
@@ -247,7 +247,7 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
     }
 
     zoomRecord(): void {
-      const browserMetadata = this.$store.getters.getBrowser(this.$route.meta.uuid)
+      const browserMetadata = this.$store.getters[Namespaces.BrowserDefinition + '/' + 'getBrowser'](this.$route.meta.uuid)
       const { elementName } = browserMetadata.fieldsList.find((field: IFieldDataExtendedUtils) => field.columnName === browserMetadata.keyColumn)
       const records: any[] = []
       this.getDataSelection.forEach(recordItem => {

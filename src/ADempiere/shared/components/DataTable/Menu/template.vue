@@ -46,7 +46,7 @@
             <el-submenu
                 :disabled="!(getDataSelection)"
                 index="xlsx"
-                @click.native="exporRecordTable(defaultFromatExport)"
+                @click.native="exporRecordTable(defaultFormatExport)"
             >
                 <template slot="title">
                     {{ $t('table.dataTable.exportRecordTable') }}

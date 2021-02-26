@@ -113,21 +113,21 @@ export default class MixinTable extends Vue {
     // Methods
     closeMenu(): void {
       // TODO: Validate to dispatch one action
-      this.$store.dispatch('showMenuTable', {
+      this.$store.dispatch(Namespaces.Utils + '/' + 'showMenuTable', {
         isShowedTable: false
       })
-      this.$store.dispatch('showMenuTabChildren', {
+      this.$store.dispatch(Namespaces.Utils + '/' + 'showMenuTabChildren', {
         isShowedTabChildren: false
       })
     }
 
     deleteSelection(): void {
-      this.$store.dispatch('deleteSelectionDataList', {
+      this.$store.dispatch(Namespaces.Window + '/' + 'deleteSelectionDataList', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid
       })
         .then(() => {
-          this.$store.dispatch('setRecordSelection', {
+          this.$store.dispatch(Namespaces.BusinessData + '/' + 'setRecordSelection', {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             panelType: this.panelType

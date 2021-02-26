@@ -495,16 +495,24 @@ export default class MixinMainPanel extends Vue {
               this.isLoadRecord = true
             }
 
-            this.$router.push(
-              {
-                name: this.$route.name!,
-                params,
-                query: {
-                  ...this.$route.query,
-                  action
-                }
+            this.$route = {
+              ...this.$route,
+              params,
+              query: {
+                ...this.$route.query,
+                action
               }
-            )
+            }
+            // this.$router.push(
+            //   {
+            //     name: this.$route.name!,
+            //     params,
+            //     query: {
+            //       ...this.$route.query,
+            //       action
+            //     }
+            //   }
+            // )
 
             if (action === 'create-new') {
               this.$store.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {

@@ -1,4 +1,5 @@
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { ElTabs } from 'element-ui/types/tabs'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
@@ -21,7 +22,7 @@ export default class MixinTab extends Vue {
     // Methods
     getDataTable(): void {
       this.$store
-        .dispatch('getDataListTab', {
+        .dispatch(Namespaces.Window + '/' + 'getDataListTab', {
           parentUuid: this.windowUuid,
           containerUuid: this.tabUuid
         })

@@ -92,7 +92,7 @@ export default class BrowserView extends Vue {
       if (this.activeSearch.length) {
         showCriteria = true
       }
-      this.$store.dispatch('changeBrowserAttribute', {
+      this.$store.dispatch(Namespaces.BrowserDefinition + '/' + 'changeBrowserAttribute', {
         containerUuid: this.browserUuid,
         attributeName: 'isShowedCriteria',
         attributeValue: showCriteria
@@ -150,7 +150,7 @@ export default class BrowserView extends Vue {
       }
 
       // set default values into data
-      this.$store.dispatch('setRecordSelection', {
+      this.$store.dispatch(Namespaces.BusinessData + '/' + 'setRecordSelection', {
         containerUuid: this.browserUuid,
         panelType: this.panelType
       })

@@ -7,6 +7,7 @@ import {
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { IFieldDataExtendedUtils } from '../../utils/DictionaryUtils/type'
 import { Namespaces } from '../../utils/types'
+import { tagStatus } from '../../utils/valueUtils'
 import Template from './template.vue'
 
 @Component({
@@ -129,6 +130,8 @@ export default class WorkflowStatusBar extends Vue {
         }
       }
     }
+
+    tagStatus = tagStatus
 
     documentActionChange(value: any) {
       // this.$store.dispatch('notifyFieldChange', {

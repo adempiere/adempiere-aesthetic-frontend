@@ -93,9 +93,12 @@ export default class RolesNavbar extends Vue {
   changeOrganization(organizationUuid: string) {
     const currentOrganization = this.organizationsList.find((element: IOrganizationData) => element.uuid === organizationUuid)
     if (currentOrganization) {
-      this.$router.push({
-        path: '/'
-      })
+      console.log(this.$route.path)
+      if (this.$route.path !== '/' && this.$route.path !== '/dashboard') {
+        this.$router.push({
+          path: '/'
+        })
+      }
       this.$store.dispatch(Namespaces.User + '/' + 'ChangeOrganization', {
         organizationUuid,
         organizationId: currentOrganization.id
