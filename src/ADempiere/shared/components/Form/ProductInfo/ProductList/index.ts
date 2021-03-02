@@ -16,9 +16,9 @@ import Template from './template.vue'
 })
 export default class ProductList extends Mixins(MixinForm) {
   @Ref() readonly singleTable!: Table
-  @Prop({ type: Boolean, default: true }) isSelectable!: boolean
-  @Prop({ type: String, default: 'isShowPopoverField' }) popoverName!: string
-  @Prop({ type: Array, default: () => [] }) reportAssociated!: any[]
+  @Prop({ type: Boolean, default: true }) isSelectable?: boolean
+  @Prop({ type: String, default: 'isShowPopoverField' }) popoverName?: string
+  @Prop({ type: Array, default: () => [] }) reportAsociated!: any[]
   @Prop({
     type: Object,
     default: () => {
@@ -32,7 +32,7 @@ export default class ProductList extends Mixins(MixinForm) {
   // Data
   public defaultMaxPagination = 50
   public resource: any = {}
-  public fieldsList = fieldsListProductPrice
+  fieldsList = fieldsListProductPrice
   public isCustomForm = true
   public timeOut: any = null
   private currentRow: any
@@ -90,8 +90,8 @@ export default class ProductList extends Mixins(MixinForm) {
   }
 
   get process() {
-    if (this.reportAssociated) {
-      const process = this.reportAssociated.map(element => {
+    if (this.reportAsociated) {
+      const process = this.reportAsociated.map(element => {
         const findProcess = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](element.uuid)
         if (findProcess) {
           return {

@@ -2,7 +2,9 @@ import Cookies from 'js-cookie'
 
 const roleKey = 'roleUuid'
 export const setCurrentRole = (currentRole: string): void => {
-  Cookies.set(roleKey, currentRole)
+  Cookies.set(roleKey, currentRole, {
+    sameSite: 'Lax'
+  })
 }
 export const getCurrentRole = () => {
   return Cookies.get(roleKey)
@@ -14,7 +16,9 @@ export function removeCurrentRole() {
 
 const organizationKey = 'organizationUuid'
 export const setCurrentOrganization = (currentOrganization: string) => {
-  Cookies.set(organizationKey, currentOrganization)
+  Cookies.set(organizationKey, currentOrganization, {
+    sameSite: 'Lax'
+  })
 }
 
 export const getCurrentOrganization = () => {
@@ -27,7 +31,9 @@ export function removeCurrentOrganization() {
 
 const warehouseKey = 'warehouseUuid'
 export function setCurrentWarehouse(currentWarehouse: string) {
-  Cookies.set(warehouseKey, currentWarehouse)
+  Cookies.set(warehouseKey, currentWarehouse, {
+    sameSite: 'Lax'
+  })
 }
 
 export function getCurrentWarehouse() {
