@@ -3,7 +3,9 @@ import { IZoomWindowRouteData } from './zoomWindow'
 
 const today: Date = new Date()
 
-const zoomReport: (Partial<IZoomWindowRouteData> & { parametersList: IAttributeData[] })[] = [
+export type IZoomWindowReportRoute = Partial<IZoomWindowRouteData> & { parametersList: IAttributeData[] }
+
+const zoomReport: (IZoomWindowReportRoute)[] = [
   {
     uuid: '92b9a696-adba-4409-a200-7df0ba74cb63',
     action: 'processOption',
