@@ -32,9 +32,8 @@ export default class ProductList extends Mixins(MixinForm) {
       containerUuid: 'Products-Price-List'
     }
 
-    @Prop({ type: Boolean, default: true }) isSelectable = true
-    @Prop({ type: String, default: 'isShowPopoverField' }) popoverName =
-        'isShowPopoverField'
+    @Prop({ type: Boolean, default: true }) isSelectable!: boolean
+    @Prop({ type: String, default: 'isShowPopoverField' }) popoverName!: String
 
     public defaultMaxPagination = 50
     public fieldsList: IFieldLocation[] = fieldListProductPrice
