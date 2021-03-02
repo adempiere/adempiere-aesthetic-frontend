@@ -18,6 +18,7 @@ import {
 import { PanelContextType } from './DictionaryUtils/ContextMenuType'
 import store from '@/ADempiere/shared/store'
 import { IFieldDataExtended } from '@/ADempiere/modules/dictionary'
+import { Namespaces } from './types'
 
 export interface IOverwriteDefinitionData extends IAdditionalAttributesData {
     isShowedFromUser: boolean
@@ -368,19 +369,19 @@ export function createFieldFromDictionary(params: {
   let field: any
   let valueToMatch: string
   if (uuid) {
-    field = store.getters.getFieldFromUuid(uuid)
+    field = store.getters[Namespaces.Field + '/' + 'getFieldFromUuid'](uuid)
     valueToMatch = uuid
   } else if (columnUuid) {
-    field = store.getters.getFieldFromColumnUuid(columnUuid)
+    field = store.getters[Namespaces.Field + '/' + 'getFieldFromColumnUuid'](columnUuid)
     valueToMatch = columnUuid
   } else if (elementUuid) {
-    field = store.getters.getFieldFromElementUuid(elementUuid)
+    field = store.getters[Namespaces.Field + '/' + 'getFieldFromElementUuid'](elementUuid)
     valueToMatch = elementUuid
   } if (elementColumnName) {
-    field = store.getters.getFieldFromElementColumnName(elementColumnName)
+    field = store.getters[Namespaces.Field + '/' + 'getFieldFromElementColumnName'](elementColumnName)
     valueToMatch = elementColumnName
   } else if (tableName && columnName) {
-    field = store.getters.getFieldFromElementColumnName({
+    field = store.getters[Namespaces.Field + '/' + 'getFieldFromElementColumnName']({
       tableName,
       columnName
     })
@@ -389,14 +390,14 @@ export function createFieldFromDictionary(params: {
 
   if (!field) {
     return new Promise<IFieldTemplateData>(resolve => {
-      store.dispatch('getFieldFromServer', {
+      store.dispatch(Namespaces.Field + '/' + 'getFieldFromServer', {
         uuid,
         columnUuid,
         elementUuid,
         elementColumnName,
         tableName,
         columnName
-      })
+      }, { root: true })
         .then((response: IFieldDataExtended) => {
           const newField = getFactoryFromField({
             containerUuid,
