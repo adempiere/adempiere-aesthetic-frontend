@@ -90,7 +90,7 @@ export type IFieldReduced = Omit<IFieldDataExtendedUtils,
 
 // Default template for injected fields
 export function getFieldTemplate(
-  overwriteDefinition: IOverwriteDefinitionData
+  overwriteDefinition: any
 ): IFieldTemplateData {
   let displayType: number = CHAR.id // String reference (10)
   if (overwriteDefinition.displayType) {
@@ -121,7 +121,7 @@ export function getFieldTemplate(
   }
 
   const fieldTemplateMetadata: IFieldTemplateMetadataType = {
-    elementName: '',
+    ...overwriteDefinition,
     // isEncrypted: false,
     // isQuickEntry: false,
     // sortNo: 1,
@@ -138,67 +138,65 @@ export function getFieldTemplate(
     // identifierSequence: 0,
     // isHeading: false,
     // columnSQL: '',
-
-    ...overwriteDefinition,
-    id: 0,
-    uuid: '',
+    id: overwriteDefinition.id || 0,
+    uuid: overwriteDefinition.uuid || '',
     name: overwriteDefinition.name || '',
-    description: '',
-    help: '',
+    description: overwriteDefinition.description || '',
+    help: overwriteDefinition.help || '',
     columnName: overwriteDefinition.columnName || '',
     displayColumnName: `DisplayColumn_${overwriteDefinition.columnName}`, // key to display column
-    fieldGroup: {
+    fieldGroup: overwriteDefinition.fieldGroup || {
       name: '',
       fieldGroupType: ''
     },
-    displayType,
+    displayType: overwriteDefinition.displayType || displayType,
     componentPath:
             overwriteDefinition.componentPath ||
             componentReference.componentPath,
-    size,
-    isFieldOnly: false,
-    isRange: false,
-    isSameLine: false,
-    sequence: 0,
-    seqNoGrid: 0,
-    isIdentifier: false,
-    isKey: false,
-    isSelectionColumn: false,
-    isUpdateable: true,
+    size: overwriteDefinition.size || size,
+    isFieldOnly: overwriteDefinition.isFieldOnly || false,
+    isRange: overwriteDefinition.isRange || false,
+    isSameLine: overwriteDefinition.isSameLine || false,
+    sequence: overwriteDefinition.sequence || 0,
+    seqNoGrid: overwriteDefinition.seqNoGrid || 0,
+    isIdentifier: overwriteDefinition.isIdentifier || false,
+    isKey: overwriteDefinition.isKey || false,
+    isSelectionColumn: overwriteDefinition.isSelectionColumn || false,
+    isUpdateable: overwriteDefinition.isUpdateable || true,
     //
-    formatPattern: '',
-    vFormat: '',
-    value: undefined,
-    valueTo: undefined,
-    defaultValue: '',
-    parsedDefaultValue: undefined,
-    defaultValueTo: '',
-    parsedDefaultValueTo: undefined,
-    valueType: componentReference.valueType, // value type to convert with gGRPC
-    valueMin: '',
-    valueMax: '',
+    formatPattern: overwriteDefinition.formatPattern || '',
+    vFormat: overwriteDefinition.vFormat || '',
+    value: overwriteDefinition.value || undefined,
+    valueTo: overwriteDefinition.valueTo || undefined,
+    defaultValue: overwriteDefinition.defaultValue || '',
+    parsedDefaultValue: overwriteDefinition.parsedDefaultValue || undefined,
+    defaultValueTo: overwriteDefinition.defaultValueTo || '',
+    parsedDefaultValueTo: overwriteDefinition.parsedDefaultValueTo || undefined,
+    valueType: overwriteDefinition.valueType || componentReference.valueType, // value type to convert with gGRPC
+    valueMin: overwriteDefinition.valueMin || '',
+    valueMax: overwriteDefinition.valueMax || '',
     //
-    isDisplayed: false,
-    isActive: true,
-    isMandatory: false,
-    isReadOnly: false,
-    isDisplayedFromLogic: false,
-    isReadOnlyFromLogic: false,
-    isMandatoryFromLogic: false,
+    isDisplayed: overwriteDefinition.isDisplayed || false,
+    isActive: overwriteDefinition.isActive || true,
+    isMandatory: overwriteDefinition.isMandatory || false,
+    isReadOnly: overwriteDefinition.isReadOnly || false,
+    isDisplayedFromLogic: overwriteDefinition.isDisplayedFromLogic || false,
+    isReadOnlyFromLogic: overwriteDefinition.isReadOnlyFromLogic || false,
+    isMandatoryFromLogic: overwriteDefinition.isMandatoryFromLogic || false,
     // browser attributes
-    callout: '',
-    isQueryCriteria: false,
-    displayLogic: '',
-    mandatoryLogic: '',
-    readOnlyLogic: '',
-    handleFocusGained: false,
-    handleFocusLost: false,
-    handleKeyPressed: false,
-    handleKeyReleased: false,
-    handleActionKeyPerformed: false,
-    handleActionPerformed: false,
-    dependentFieldsList: [],
-    reference: {
+    callout: overwriteDefinition.callout || '',
+    isQueryCriteria: overwriteDefinition.isQueryCriteria || false,
+    displayLogic: overwriteDefinition.displayLogic || '',
+    mandatoryLogic: overwriteDefinition.mandatoryLogic || '',
+    readOnlyLogic: overwriteDefinition.readOnlyLogic || '',
+    handleFocusGained: overwriteDefinition.handleFocusGained || false,
+    handleFocusLost: overwriteDefinition.handleFocusLost || false,
+    handleKeyPressed: overwriteDefinition.handleKeyPressed || false,
+    handleKeyReleased: overwriteDefinition.handleKeyReleased || false,
+    handleActionKeyPerformed: overwriteDefinition.handleActionKeyPerformed || false,
+    handleActionPerformed: overwriteDefinition.handleActionPerformed || false,
+    dependentFieldsList: overwriteDefinition.dependentFieldsList || [],
+    reference: overwriteDefinition.reference || {
       tableName: '',
       keyColumnName: '',
       query: '',
@@ -206,9 +204,9 @@ export function getFieldTemplate(
       validationCode: '',
       zoomWindows: []
     },
-    contextInfo: {},
+    contextInfo: overwriteDefinition.contextInfo || {},
     isShowedFromUser: overwriteDefinition.isShowedFromUser || false,
-    isFixedTableColumn: false
+    isFixedTableColumn: overwriteDefinition.isFixedTableColumn || false
   }
 
   // get parsed parent fields list
@@ -404,7 +402,6 @@ export function createFieldFromDictionary(params: {
             field: response,
             overwriteDefinition
           })
-
           resolve(newField)
         }).catch(error => {
           console.warn(`LookupFactory: Get Field (match: ${valueToMatch}) From Server (State) - Error ${error.code}: ${error.message}.`)
