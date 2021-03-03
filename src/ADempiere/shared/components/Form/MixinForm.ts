@@ -3,7 +3,6 @@ import { PanelContextType } from '../../utils/DictionaryUtils/ContextMenuType'
 import { Namespaces } from '../../utils/types'
 import { createFieldFromDefinition, createFieldFromDictionary, IFieldTemplateData, IOverwriteDefinitionData } from '@/ADempiere/shared/utils/lookupFactory'
 import { IPanelDataExtended } from '@/ADempiere/modules/dictionary/DictionaryType/VuexType'
-import { IFieldLocation } from '../Field/FieldLocation/fieldList'
 import Field from '@/ADempiere/shared/components/Field'
 
 @Component({
@@ -19,7 +18,7 @@ export default class MixinForm extends Vue {
     // eslint-disable-next-line
     // @ts-ignore
     public containerUuid: string = this.metadata.containerUuid || this.$route.meta.uuid || this.metadata.uuid
-    public fieldList: any[] = []
+    public fieldsList: any[] = []
     public panelMetadata: any = {}
     public isLoaded = false
     public isCustomForm = false
@@ -48,27 +47,24 @@ export default class MixinForm extends Vue {
     async getPanel() {
       const panel = this.getterPanel
       if (panel) {
-        this.fieldList = panel.fieldsList
+        this.fieldsList = panel.fieldsList
         this.isLoaded = true
         this.panelMetadata = panel
       } else {
         await this.generateFieldsList()
-        console.log('getPanel MixinForm')
-        console.log(...this.metadata)
         this.$store.dispatch(Namespaces.Panel + '/' + 'addPanel', {
           ...this.metadata,
           isCustomForm: this.isCustomForm,
           uuid: this.containerUuid,
           panelType: this.panelType,
-          fieldsList: this.fieldList
+          fieldsList: this.fieldsList
         })
           .then((responsePanel: IPanelDataExtended) => {
-            this.fieldList = responsePanel.fieldsList
-
-            this.$store.dispatch('changeFormAttribute', {
+            this.fieldsList = responsePanel.fieldsList
+            this.$store.dispatch(Namespaces.FormDefinition + '/' + 'changeFormAttribute', {
               containerUuid: this.containerUuid,
               attributeName: 'fieldsList',
-              attributeValue: this.fieldList
+              attributeValue: this.fieldsList
             })
             this.panelMetadata = responsePanel
             this.runAfterLoadPanel()
@@ -101,10 +97,10 @@ export default class MixinForm extends Vue {
             panelType: this.panelType
           }
 
-          const fieldsListFromDictionary: IFieldTemplateData[] = []
+          const fieldsListFromDictionary: any = []
           const fieldsListFromMetadata: IFieldTemplateData[] = []
 
-          this.fieldList.forEach((fieldElement: IFieldLocation) => {
+          this.fieldsList?.forEach((fieldElement) => {
             if (fieldElement.isFromDictionary) {
               // set sequence
               if (fieldElement.overwriteDefinition) {
@@ -114,21 +110,16 @@ export default class MixinForm extends Vue {
                   incrementSequence(fieldElement.overwriteDefinition.sequence)
                 }
               } else {
-                fieldElement.overwriteDefinition = {
-                  index: 0,
-                  size: 0
-                }
+                fieldElement.overwriteDefinition = {}
                 fieldElement.overwriteDefinition.sequence = incrementSequence()
               }
 
-              this.createFieldFromDictionary({
-                columnName: fieldElement.columnName!,
-                containerUuid: additionalAttributes.containerUuid,
-                overwriteDefinition: <IOverwriteDefinitionData>fieldElement.overwriteDefinition,
-                tableName: fieldElement.tableName!
-              }).then((result: IFieldTemplateData) => {
-                fieldsListFromDictionary.push(result)
-              })
+              fieldsListFromDictionary.push(
+                this.createFieldFromDictionary({
+                  ...fieldElement,
+                  ...additionalAttributes
+                })
+              )
             } else {
               // set sequence
               if (fieldElement.overwriteDefinition) {
@@ -144,20 +135,20 @@ export default class MixinForm extends Vue {
 
               fieldsListFromMetadata.push(
                 this.createFieldFromDefinition({
-                  columnName: fieldElement.columnName!,
-                  containerUuid: additionalAttributes.containerUuid,
-                  panelType: additionalAttributes.panelType,
-                  definition: fieldElement.overwriteDefinition
-                //   ...fieldElement,
-                //   ...additionalAttributes
+                  // columnName: fieldElement.columnName!,
+                  // containerUuid: additionalAttributes.containerUuid,
+                  // panelType: additionalAttributes.panelType,
+                  // definition: fieldElement.overwriteDefinition
+                  ...fieldElement,
+                  ...additionalAttributes
                 })
               )
             }
           })
-          let fieldsList: IFieldTemplateData[] = fieldsListFromMetadata
+          let fieldsList: any = fieldsListFromMetadata
 
           if (!fieldsListFromDictionary) {
-            this.fieldList = fieldsList
+            this.fieldsList = fieldsList
             resolve(fieldsList)
             this.isLoaded = true
           } else {
@@ -165,7 +156,7 @@ export default class MixinForm extends Vue {
               .then(responsefields => {
                 fieldsList = fieldsList.concat(responsefields)
                 resolve(fieldsList)
-                this.fieldList = fieldsList
+                this.fieldsList = fieldsList
                 this.isLoaded = true
               })
           }

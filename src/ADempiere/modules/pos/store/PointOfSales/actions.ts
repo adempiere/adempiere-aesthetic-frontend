@@ -7,6 +7,8 @@ import {
   IPointOfSalesData,
   PointOfSalesState
 } from '../../POSType'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { Route } from 'vue-router'
 
 type PointOfSalesActionContext = ActionContext<PointOfSalesState, IRootState>
 type PointOfSalesActionTree = ActionTree<PointOfSalesState, IRootState>
@@ -60,7 +62,7 @@ export const actions: PointOfSalesActionTree = {
         if (!pos) {
           pos = undefined
         }
-        if (pos!.uuid !== getterPos) {
+        if (pos && pos.uuid !== getterPos) {
           context.dispatch('setCurrentPOS', pos)
         }
       })
@@ -81,22 +83,24 @@ export const actions: PointOfSalesActionTree = {
   ) {
     context.commit('setCurrentPOS', posToSet)
 
-    // const oldRoute = router.app._route
-    // router.push({
-    //   name: oldRoute.name,
-    //   params: {
-    //     ...oldRoute.params
-    //   },
-    //   query: {
-    //     ...oldRoute.query,
-    //     pos: posToSet.id
-    //   }
-    // }, () => {})
+    const oldRoute: Route = context.rootState.route
 
-    context.commit('setIsReloadKeyLayout')
-    context.commit('setIsReloadProductPrice')
-    context.commit('setIsReloadListOrders')
+    // const oldRoute = router.app._route
+    context.rootState.router.push({
+      name: oldRoute.name!,
+      params: {
+        ...oldRoute.params
+      },
+      query: {
+        ...oldRoute.query,
+        pos: String(posToSet.id)
+      }
+    })
+
+    context.commit(Namespaces.KeyLayout + '/' + 'setIsReloadKeyLayout', undefined, { root: true })
+    context.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice', undefined, { root: true })
+    context.commit(Namespaces.Order + '/' + 'setIsReloadListOrders', undefined, { root: true })
     context.commit('setShowPOSKeyLayout', false)
-    context.dispatch('deleteAllCollectBox')
+    context.dispatch(Namespaces.Collection + '/' + 'deleteAllCollectBox', undefined, { root: true })
   }
 }

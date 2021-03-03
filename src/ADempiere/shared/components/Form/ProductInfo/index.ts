@@ -5,7 +5,7 @@ import { formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueForma
 import { Component, Mixins } from 'vue-property-decorator'
 import MixinField from '../../Field/Mixin/MixinField'
 import ProductInfoList from './ProductList'
-import staticReportRoutes, { IZoomWindowRoute } from '@/ADempiere/shared/utils/Constants/zoomWindow'
+import staticReportRoutes, { IZoomWindowReportRoute } from '@/ADempiere/shared/utils/Constants/zoomReport'
 import Template from './template.vue'
 
 @Component({
@@ -127,12 +127,12 @@ export default class ProductInfo extends Mixins(MixinField) {
       })
     }
 
-    findProcess(procces: IZoomWindowRoute) {
-      const proccesList = Object.keys(procces).map(key => {
-        return [procces[key]]
-      })
+    findProcess(procces: (IZoomWindowReportRoute)[]) {
+      // const proccesList = Object.keys(procces).map(key => {
+      //   return [procces[key]]
+      // })
       // if (this.isEmptyValue(this.currentPos)) {
-      proccesList.forEach((report: any) => {
+        procces.forEach((report) => {
         this.$store.dispatch(Namespaces.ProcessDefinition + '/' + 'getProcessFromServer', { containerUuid: report.uuid })
       })
     }

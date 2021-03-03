@@ -98,7 +98,7 @@ export const actions: FormDefinitionActionTree = {
       attributeNameControl,
       attributeValue
     } = payload
-    if (form) {
+    if (!form) {
       form = context.getters.getForm(containerUuid)
     }
     context.commit('changeFormAttribute', {
