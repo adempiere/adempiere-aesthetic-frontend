@@ -52,16 +52,6 @@ export default class MixinForm extends Vue {
         this.panelMetadata = panel
       } else {
         await this.generateFieldsList()
-        // console.log('getPanel MixinForm')
-        // console.log(...this.metadata)
-        console.log('add panel info')
-        console.log({
-          ...this.metadata,
-          isCustomForm: this.isCustomForm,
-          uuid: this.containerUuid,
-          panelType: this.panelType,
-          fieldsList: this.fieldsList
-        })
         this.$store.dispatch(Namespaces.Panel + '/' + 'addPanel', {
           ...this.metadata,
           isCustomForm: this.isCustomForm,
@@ -100,7 +90,6 @@ export default class MixinForm extends Vue {
       }
 
       if (this.metadata) {
-        console.log('generate #1')
         return new Promise(resolve => {
           const additionalAttributes = {
             containerUuid: this.containerUuid,
@@ -125,39 +114,12 @@ export default class MixinForm extends Vue {
                 fieldElement.overwriteDefinition.sequence = incrementSequence()
               }
 
-              console.log('fieldsListFromDictionary')
-              console.log(fieldsListFromDictionary)
-              console.log('fieldsListFromMetadata')
-              console.log(fieldsListFromMetadata)
-
-              console.log('create Field From Dictionary')
-              console.log({
-                fieldElement: fieldElement,
-                additionalAttr: additionalAttributes
-              })
-
               fieldsListFromDictionary.push(
                 this.createFieldFromDictionary({
-                // columnName: fieldElement.columnName!,
-                // containerUuid: additionalAttributes.containerUuid,
-                // overwriteDefinition: <IOverwriteDefinitionData>fieldElement.overwriteDefinition,
-                // tableName: fieldElement.tableName!
                   ...fieldElement,
                   ...additionalAttributes
                 })
               )
-
-              // this.createFieldFromDictionary({
-              //   columnName: fieldElement.columnName!,
-              //   containerUuid: additionalAttributes.containerUuid,
-              //   overwriteDefinition: <IOverwriteDefinitionData>fieldElement.overwriteDefinition,
-              //   tableName: fieldElement.tableName!
-              // }).then((result: IFieldTemplateData) => {
-              //   console.log(('resultado'));
-
-              //   console.log(result)
-              //   fieldsListFromDictionary.push(result)
-              // })
             } else {
               // set sequence
               if (fieldElement.overwriteDefinition) {
@@ -185,9 +147,6 @@ export default class MixinForm extends Vue {
           })
           let fieldsList: any = fieldsListFromMetadata
 
-          console.log('fieldsListFromDictionary final')
-          console.log(fieldsListFromDictionary)
-
           if (!fieldsListFromDictionary) {
             this.fieldsList = fieldsList
             resolve(fieldsList)
@@ -195,8 +154,6 @@ export default class MixinForm extends Vue {
           } else {
             Promise.all(fieldsListFromDictionary)
               .then(responsefields => {
-                console.log('concat to fieldsList')
-                console.log(responsefields)
                 fieldsList = fieldsList.concat(responsefields)
                 resolve(fieldsList)
                 this.fieldsList = fieldsList
@@ -241,8 +198,6 @@ export default class MixinForm extends Vue {
 
     // Hooks
     created() {
-      console.log('inicial fieldsList')
-      console.log(this.fieldsList)
       this.getPanel()
     }
 }

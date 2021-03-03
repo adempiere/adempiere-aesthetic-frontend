@@ -70,8 +70,6 @@ export default class FilterFields extends Vue {
     }
 
     created() {
-      console.log('selected fields')
-      console.log(this.getFieldSelected)
       this.selectedFields = this.getFieldSelected
     }
 }
