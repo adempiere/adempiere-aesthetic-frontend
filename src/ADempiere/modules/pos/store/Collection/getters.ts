@@ -1,36 +1,36 @@
 import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
-import { CollectionState, IPaymentsData } from '../../POSType'
+import { PaymentsState, IPaymentsData } from '../../POSType'
 
-type CollectionGetterTree = GetterTree<CollectionState, IRootState>
+type PaymentsGetterTree = GetterTree<PaymentsState, IRootState>
 
-export const getters: CollectionGetterTree = {
-  getPaymentBox: (state: CollectionState): any[] => {
+export const getters: PaymentsGetterTree = {
+  getPaymentBox: (state: PaymentsState): any[] => {
     return state.paymentBox
   },
-  getMultiplyRate: (state: CollectionState): number => {
+  getMultiplyRate: (state: PaymentsState): number => {
     return state.multiplyRate
   },
-  getDivideRate: (state: CollectionState): number => {
+  getDivideRate: (state: PaymentsState): number => {
     return state.divideRate
   },
-  getMultiplyRateCollection: (state: CollectionState): number => {
+  getMultiplyRateCollection: (state: PaymentsState): number => {
     return state.multiplyRateCollection
   },
-  getDivideRateCollection: (state: CollectionState): number => {
+  getDivideRateCollection: (state: PaymentsState): number => {
     return state.divideRateCollection
   },
-  getListPayments: (state: CollectionState): IPaymentsData[] => {
+  getListPayments: (state: PaymentsState): IPaymentsData[] => {
     console.log(state.listPayments)
     return state.listPayments
   },
-  getListsPaymentTypes: (state: CollectionState): any[] => {
+  getListsPaymentTypes: (state: PaymentsState): any[] => {
     return state.tenderTypeDisplaye
   },
-  getListCurrency: (state: CollectionState) => {
+  getListCurrency: (state: PaymentsState) => {
     return state.currency
   },
-  getConvertionPayment: (state: CollectionState) => {
+  getConvertionPayment: (state: PaymentsState) => {
     return state.convertion
   }
 }

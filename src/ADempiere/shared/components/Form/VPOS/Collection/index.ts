@@ -66,7 +66,7 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get isPaymentBox(): any[] {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getPaymentBox']
+      return this.$store.getters[Namespaces.Payments + '/' + 'getPaymentBox']
     }
 
     get addPay(): boolean {
@@ -81,8 +81,8 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get listPayments(): IPaymentsData[] {
-      const listLocal = this.$store.getters[Namespaces.Collection + '/' + 'getPaymentBox']
-      const listServer = this.$store.getters[Namespaces.Collection + '/' + 'getListPayments']
+      const listLocal = this.$store.getters[Namespaces.Payments + '/' + 'getPaymentBox']
+      const listServer = this.$store.getters[Namespaces.Payments + '/' + 'getListPayments']
       if (!this.sendToServer) {
         return listServer.reverse()
       }
@@ -90,7 +90,7 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get paymentBox(): any[] {
-      const payment = this.isPaymentBox.filter((pay: any) => {
+      const payment = this.listPayments.filter((pay: any) => {
         return pay.isVisible
       })
       if (!payment) {
@@ -229,11 +229,11 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get displayCurrency(): any[] {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getListCurrency']
+      return this.$store.getters[Namespaces.Payments + '/' + 'getListCurrency']
     }
 
     get convert() {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getConvertionPayment']
+      return this.$store.getters[Namespaces.Payments + '/' + 'getConvertionPayment']
     }
 
     get order(): IOrderData {
@@ -279,11 +279,11 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get multiplyRate(): number {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getMultiplyRate']
+      return this.$store.getters[Namespaces.Payments + '/' + 'getMultiplyRate']
     }
 
     get multiplyRateCollection() {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getMultiplyRateCollection']
+      return this.$store.getters[Namespaces.Payments + '/' + 'getMultiplyRateCollection']
     }
 
     get converCurrency() {
@@ -294,7 +294,7 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get divideRate(): number {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getDivideRate']
+      return this.$store.getters[Namespaces.Payments + '/' + 'getDivideRate']
     }
 
     get fieldAmount() {
@@ -334,21 +334,21 @@ export default class Collection extends Mixins(MixinForm) {
     @Watch('currencyUuid')
     handleCurrencyUuidChange(value: string) {
       if (value) {
-        this.$store.dispatch(Namespaces.Collection + '/' + 'conversionDivideRate', {
+        this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
           conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
           currencyFromUuid: this.currencyPoint.uuid,
           currencyToUuid: value
         })
       }
       if (value) {
-        this.$store.dispatch(Namespaces.Collection + '/' + 'conversionMultiplyRate', {
+        this.$store.dispatch(Namespaces.Payments + '/' + 'conversionMultiplyRate', {
           containerUuid: 'Collection',
           conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
           currencyFromUuid: this.currencyPoint.uuid,
           currencyToUuid: value
         })
       } else {
-        this.$store.commit(Namespaces.Collection + '/' + 'currencyMultiplyRateCollection', 1)
+        this.$store.commit(Namespaces.Payments + '/' + 'currencyMultiplyRateCollection', 1)
       }
     }
 
@@ -363,14 +363,14 @@ export default class Collection extends Mixins(MixinForm) {
     @Watch('converCurrency')
     handleConverCurrencyChange(value: any) {
       if (value) {
-        this.$store.dispatch(Namespaces.Collection + '/' + 'conversionMultiplyRate', {
+        this.$store.dispatch(Namespaces.Payments + '/' + 'conversionMultiplyRate', {
           containerUuid: 'Collection',
           conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
           currencyFromUuid: this.currencyPoint.uuid,
           currencyToUuid: value
         })
       } else {
-        this.$store.commit(Namespaces.Collection + '/' + 'currencyMultiplyRate', 1)
+        this.$store.commit(Namespaces.Payments + '/' + 'currencyMultiplyRate', 1)
       }
     }
 
@@ -475,7 +475,7 @@ export default class Collection extends Mixins(MixinForm) {
         this.amontSend = this.convert.divideRate * this.amontSend
       }
       if (this.sendToServer) {
-        this.$store.dispatch(Namespaces.Collection + '/' + 'setPaymentBox', {
+        this.$store.dispatch(Namespaces.Payments + '/' + 'setPaymentBox', {
           posUuid,
           orderUuid,
           bankUuid,
@@ -486,7 +486,7 @@ export default class Collection extends Mixins(MixinForm) {
           currencyUuid
         })
       } else {
-        this.$store.dispatch(Namespaces.Collection + '/' + 'createPayments', {
+        this.$store.dispatch(Namespaces.Payments + '/' + 'createPayments', {
           posUuid,
           orderUuid,
           bankUuid,
@@ -497,7 +497,6 @@ export default class Collection extends Mixins(MixinForm) {
           currencyUuid: this.currencyDisplay(currencyToPay).currencyUuid
         })
       }
-      this.amontSend = 0
       this.addCollect()
     }
 
@@ -540,8 +539,8 @@ export default class Collection extends Mixins(MixinForm) {
         })
       })
       this.defaultValueCurrency()
-      this.$store.dispatch(Namespaces.Collection + '/' + 'conversionDivideRate', 1)
-      this.$store.dispatch(Namespaces.Collection + '/' + 'currencyMultiplyRate', 1)
+      this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', 1)
+      this.$store.dispatch(Namespaces.Payments + '/' + 'currencyMultiplyRate', 1)
       this.cancel()
     }
 
@@ -569,7 +568,7 @@ export default class Collection extends Mixins(MixinForm) {
         value: this.pending
       })
       this.defaultValueCurrency()
-      this.$store.dispatch(Namespaces.Collection + '/' + 'conversionDivideRate', 1)
+      this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', 1)
     }
 
     exit() {
@@ -641,7 +640,7 @@ export default class Collection extends Mixins(MixinForm) {
 
     convertCurrency() {
       const convertCurrency = this.currencyDisplay(100)
-      this.$store.dispatch(Namespaces.Collection + '/' + 'convertionPayment', {
+      this.$store.dispatch(Namespaces.Payments + '/' + 'convertionPayment', {
         conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
         currencyFromUuid: this.currencyPoint.uuid,
         currencyToUuid: convertCurrency.currencyUuid
@@ -652,7 +651,7 @@ export default class Collection extends Mixins(MixinForm) {
       const list = this.listPayments[this.listPayments.length - 1]
       const orderUuid = list.orderUuid
       const paymentUuid = list.uuid
-      this.$store.dispatch(Namespaces.Collection + '/' + 'deletetPayments', {
+      this.$store.dispatch(Namespaces.Payments + '/' + 'deletetPayments', {
         orderUuid,
         paymentUuid
       })
@@ -677,6 +676,6 @@ export default class Collection extends Mixins(MixinForm) {
     mounted() {
       setTimeout(() => {
         this.converCurrency()
-      }, 1000)
+      }, 2000)
     }
 }

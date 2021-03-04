@@ -72,7 +72,7 @@ export enum Namespaces {
     FieldValue = 'fieldValueModule',
     Process = 'processModule',
     PointOfSales = 'pointOfSalesModule',
-    Collection = 'collectionModule',
+    Payments = 'paymentsModule',
     KeyLayout = 'keyLayoutModule',
     Order = 'orderModule',
     OrderLines = 'orderLinesModule',

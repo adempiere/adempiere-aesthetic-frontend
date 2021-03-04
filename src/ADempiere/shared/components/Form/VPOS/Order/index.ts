@@ -44,10 +44,10 @@ export default class Order extends Mixins(MixinOrderLine) {
     return 'padding-left: 30px; padding-right: 0px; padding-top: 2.2%;'
   }
 
-  get namePointOfSales(): string | undefined {
+  get namePointOfSales(): IPointOfSalesData | undefined {
     const currentPOS: IPointOfSalesData | undefined = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
     if (currentPOS && (currentPOS.name)) {
-      return currentPOS.name
+      return currentPOS
     }
     return undefined
   }
@@ -87,7 +87,7 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   get multiplyRate(): number {
-    return this.$store.getters[Namespaces.Collection + '/' + 'getMultiplyRate']
+    return this.$store.getters[Namespaces.Payments + '/' + 'getMultiplyRate']
   }
 
   get converCurrency(): any {
@@ -115,7 +115,7 @@ export default class Order extends Mixins(MixinOrderLine) {
   @Watch('currencyUuid')
   handleCurrencyUuid(value: string) {
     if (value) {
-      this.$store.dispatch(Namespaces.Collection + '/' + 'conversionDivideRate', {
+      this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
         conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
         currencyFromUuid: this.currencyPoint.uuid,
         currencyToUuid: value
@@ -126,14 +126,25 @@ export default class Order extends Mixins(MixinOrderLine) {
   @Watch('converCurrency')
   handleConverCurrency(value: any) {
     if (value) {
-      this.$store.dispatch(Namespaces.Collection + '/' + 'conversionMultiplyRate', {
+      this.$store.dispatch(Namespaces.Payments + '/' + 'conversionMultiplyRate', {
         containerUuid: 'Order',
         conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
         currencyFromUuid: this.currencyPoint.uuid,
         currencyToUuid: value
       })
     } else {
-      this.$store.commit(Namespaces.Collection + '/' + 'currencyMultiplyRate', 1)
+      this.$store.commit(Namespaces.Payments + '/' + 'currencyMultiplyRate', 1)
+    }
+  }
+
+  @Watch('namePointOfSales')
+  handleNamePointOfSalesChange(value: IPointOfSalesData | undefined) {
+    if (value) {
+      this.$router.push({
+        query: {
+          pos: String(value.id)
+        }
+      })
     }
   }
 
@@ -147,9 +158,8 @@ export default class Order extends Mixins(MixinOrderLine) {
     this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', true)
     // this.isShowedPOSKeyLayout = true
-    const posUuid = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
     const orderUuid = this.$route.query.action
-    this.$store.dispatch(Namespaces.Collection + '/' + 'listPayments', { posUuid, orderUuid })
+    this.$store.dispatch(Namespaces.Payments + '/' + 'listPayments', { orderUuid })
     this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSOptions', false)
   }
@@ -195,10 +205,10 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   mounted() {
-    // setTimeout(() => {
-    //   this.tenderTypeDisplaye()
-    //   this.currencyDisplaye()
-    // }, 1500)
+    setTimeout(() => {
+      this.tenderTypeDisplaye()
+      this.currencyDisplaye()
+    }, 1500)
   }
 
   open() : void {
@@ -215,7 +225,7 @@ export default class Order extends Mixins(MixinOrderLine) {
         query: tenderType.query
       })
         .then(response => {
-          this.$store.dispatch(Namespaces.Collection + '/' + 'tenderTypeDisplaye', response)
+          this.$store.dispatch(Namespaces.Payments + '/' + 'tenderTypeDisplaye', response)
         })
     }
   }
@@ -228,7 +238,7 @@ export default class Order extends Mixins(MixinOrderLine) {
         query: currency.query
       })
         .then(response => {
-          this.$store.dispatch(Namespaces.Collection + '/' + 'currencyDisplaye', response)
+          this.$store.dispatch(Namespaces.Payments + '/' + 'currencyDisplaye', response)
         })
     }
   }

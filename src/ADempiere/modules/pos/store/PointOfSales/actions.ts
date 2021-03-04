@@ -101,6 +101,6 @@ export const actions: PointOfSalesActionTree = {
     context.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice', undefined, { root: true })
     context.commit(Namespaces.Order + '/' + 'setIsReloadListOrders', undefined, { root: true })
     context.commit('setShowPOSKeyLayout', false)
-    context.dispatch(Namespaces.Collection + '/' + 'deleteAllCollectBox', undefined, { root: true })
+    context.dispatch(Namespaces.Payments + '/' + 'deleteAllCollectBox', undefined, { root: true })
   }
 }

@@ -1,6 +1,6 @@
-import { CollectionState } from '../../POSType'
+import { PaymentsState } from '../../POSType'
 
-export const state: CollectionState = {
+export const state: PaymentsState = {
   paymentBox: [],
   multiplyRate: 1,
   divideRate: 1,

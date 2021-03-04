@@ -218,7 +218,7 @@
                 >
                   <p>
                     <i class="el-icon-mobile-phone" />
-                    {{ $t('form.pos.order.pointSale') }}: <b style="cursor: pointer"> {{ namePointOfSales }} </b>
+                    {{ $t('form.pos.order.pointSale') }}: <b style="cursor: pointer"> {{ namePointOfSales.name }} </b>
                   </p>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item

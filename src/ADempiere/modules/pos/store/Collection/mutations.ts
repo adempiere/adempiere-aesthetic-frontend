@@ -1,34 +1,34 @@
 import { MutationTree } from 'vuex'
-import { CollectionState, IPaymentsData } from '../../POSType'
+import { PaymentsState, IPaymentsData } from '../../POSType'
 
-type CollectionMutationTree = MutationTree<CollectionState>
+type PaymentsMutatiionTree = MutationTree<PaymentsState>
 
-export const mutations: CollectionMutationTree = {
-  addPaymentBox(state: CollectionState, paymentBox) {
+export const mutations: PaymentsMutatiionTree = {
+  addPaymentBox(state: PaymentsState, paymentBox) {
     state.paymentBox.push(paymentBox)
   },
-  currencyMultiplyRate(state: CollectionState, multiplyRate: number) {
+  currencyMultiplyRate(state: PaymentsState, multiplyRate: number) {
     state.multiplyRate = multiplyRate
   },
-  currencyDivideRate(state: CollectionState, divideRate: number) {
+  currencyDivideRate(state: PaymentsState, divideRate: number) {
     state.divideRate = divideRate
   },
-  currencyMultiplyRateCollection(state: CollectionState, multiplyRateCollection: number) {
+  currencyMultiplyRateCollection(state: PaymentsState, multiplyRateCollection: number) {
     state.multiplyRateCollection = multiplyRateCollection
   },
-  currencyDivideRateCollection(state: CollectionState, divideRateCollection: number) {
+  currencyDivideRateCollection(state: PaymentsState, divideRateCollection: number) {
     state.divideRateCollection = divideRateCollection
   },
-  setListPayments(state: CollectionState, list: IPaymentsData[]) {
+  setListPayments(state: PaymentsState, list: IPaymentsData[]) {
     state.listPayments = list
   },
-  setTenderTypeDisplaye(state: CollectionState, tenderTypeDisplaye: any[]) {
+  setTenderTypeDisplaye(state: PaymentsState, tenderTypeDisplaye: any[]) {
     state.tenderTypeDisplaye = tenderTypeDisplaye
   },
-  setCurrencyDisplaye(state: CollectionState, currency) {
+  setCurrencyDisplaye(state: PaymentsState, currency) {
     state.currency = currency
   },
-  setConvertionPayment(state: CollectionState, convertion) {
+  setConvertionPayment(state: PaymentsState, convertion) {
     state.convertion = convertion
   }
 }

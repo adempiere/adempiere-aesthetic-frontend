@@ -24,7 +24,7 @@ export default new VuexPersistence({
     // Namespaces.FieldValue,
     // Namespaces.Process,
     // Namespaces.PointOfSales,
-    // Namespaces.Collection,
+    // Namespaces.Payments,
     // Namespaces.KeyLayout,
     // Namespaces.Order,
     // Namespaces.OrderLines,

@@ -14,15 +14,15 @@ export default class TypeCollection extends Vue {
 
     // Computed properties
     get typesPayment() {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getListsPaymentTypes']
+      return this.$store.getters[Namespaces.Payments + '/' + 'getListsPaymentTypes']
     }
 
     get listCurrency() {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getListCurrency']
+      return this.$store.getters[Namespaces.Payments + '/' + 'getListCurrency']
     }
 
     get conevertionAmount() {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getConvertionPayment']
+      return this.$store.getters[Namespaces.Payments + '/' + 'getConvertionPayment']
     }
 
     // Methods
@@ -76,7 +76,7 @@ export default class TypeCollection extends Vue {
     deleteCollect(key: any): void {
       const orderUuid: string = key.orderUuid
       const paymentUuid: string = key.uuid
-      this.$store.dispatch(Namespaces.Collection + '/' + 'deletetPayments', {
+      this.$store.dispatch(Namespaces.Payments + '/' + 'deletetPayments', {
         orderUuid,
         paymentUuid
       })

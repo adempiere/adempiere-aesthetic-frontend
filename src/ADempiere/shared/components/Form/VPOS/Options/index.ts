@@ -144,7 +144,7 @@ export default class Options extends Mixins(MixinOrderLine) {
         //   documentStatus: {},
         //   salesRepresentative: this.currentPOS.salesRepresentative
         //
-        this.$store.commit(Namespaces.Collection + '/' + 'setListPayments', [])
+        this.$store.commit(Namespaces.Payments + '/' + 'setListPayments', [])
         this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
         this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', false)
       })

@@ -77,11 +77,11 @@ export const actions: OrderActionTree = {
       })
       .catch(error => {
         console.warn(`listOrdersFromServer: ${error.message}. Code: ${error.code}.`)
-        showMessage({
-          type: 'info',
-          message: error.message,
-          showClose: true
-        })
+        // showMessage({
+        //   type: 'info',
+        //   message: error.message,
+        //   showClose: true
+        // })
       })
   },
   setOrder(context: OrderActionContext, order: IOrderData) {

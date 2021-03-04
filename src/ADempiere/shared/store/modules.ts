@@ -15,7 +15,7 @@ import {
 
 import {
   pointOfSalesModule,
-  collectionModule,
+  paymentsModule,
   keyLayoutModule,
   orderModule,
   orderLinesModule,
@@ -73,7 +73,7 @@ export const modules: ModuleTree<IRootState> = {
   fieldValueModule,
   processModule,
   pointOfSalesModule,
-  collectionModule,
+  paymentsModule,
   keyLayoutModule,
   orderModule,
   orderLinesModule,

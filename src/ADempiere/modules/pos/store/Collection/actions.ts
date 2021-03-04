@@ -1,19 +1,19 @@
-import { IConversionRateData, ICurrencyData, IGetConversionRateParams, requestGetConversionRate } from '@/ADempiere/modules/core'
+import { IConversionRateData, IGetConversionRateParams, requestGetConversionRate } from '@/ADempiere/modules/core'
 import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { ActionContext, ActionTree } from 'vuex'
-import { CollectionState, IPaymentsData } from '../../POSType'
+import { PaymentsState, IPaymentsData } from '../../POSType'
 import { requestCreatePayment, requestDeletePayment, requestListPayments, requestUpdatePayment } from '../../POSService'
 import { IResponseList, Namespaces } from '@/ADempiere/shared/utils/types'
 
-type CollectionActionContext = ActionContext<CollectionState, IRootState>
-type CollectionActionTree = ActionTree<CollectionState, IRootState>
+type PaymentsActionContext = ActionContext<PaymentsState, IRootState>
+type PaymentsActionTree = ActionTree<PaymentsState, IRootState>
 
-export const actions: CollectionActionTree = {
+export const actions: PaymentsActionTree = {
   /**
      * creating boxes with the payment list
      */
-  setPaymentBox(context: CollectionActionContext, params: {
+  setPaymentBox(context: PaymentsActionContext, params: {
     quantityCahs: number
     bankUuid: string
     referenceNo: string
@@ -54,15 +54,15 @@ export const actions: CollectionActionTree = {
       context.state.paymentBox = addPayment
     }
   },
-  deleteCollectBox(context: CollectionActionContext, key: number) {
+  deleteCollectBox(context: PaymentsActionContext, key: number) {
     const payment: any[] = context.state.paymentBox
     payment.splice(key, 1)
   },
-  deleteAllCollectBox(context: CollectionActionContext) {
+  deleteAllCollectBox(context: PaymentsActionContext) {
     const payment: any[] = context.state.paymentBox
     payment.splice(0)
   },
-  conversionDivideRate(context: CollectionActionContext, params: IGetConversionRateParams) {
+  conversionDivideRate(context: PaymentsActionContext, params: IGetConversionRateParams) {
     requestGetConversionRate({
       conversionTypeUuid: params.conversionTypeUuid,
       currencyFromUuid: params.currencyFromUuid,
@@ -86,7 +86,7 @@ export const actions: CollectionActionTree = {
         })
       })
   },
-  conversionMultiplyRate(context: CollectionActionContext, payload: IGetConversionRateParams) {
+  conversionMultiplyRate(context: PaymentsActionContext, payload: IGetConversionRateParams) {
     const {
       conversionTypeUuid,
       currencyFromUuid,
@@ -118,13 +118,13 @@ export const actions: CollectionActionTree = {
         })
       })
   },
-  changeMultiplyRate(context: CollectionActionContext, multiplyRate: number) {
+  changeMultiplyRate(context: PaymentsActionContext, multiplyRate: number) {
     context.commit('currencyMultiplyRate', multiplyRate)
   },
-  changeDivideRate(context: CollectionActionContext, divideRate: number) {
+  changeDivideRate(context: PaymentsActionContext, divideRate: number) {
     context.commit('currencyDivideRate', divideRate)
   },
-  createPayments(context: CollectionActionContext, params: {
+  createPayments(context: PaymentsActionContext, params: {
     posUuid: string
     orderUuid: string
     invoiceUuid: string
@@ -192,7 +192,7 @@ export const actions: CollectionActionTree = {
         })
     }
   },
-  deletetPayments(context: CollectionActionContext, params: {
+  deletetPayments(context: PaymentsActionContext, params: {
     orderUuid: string
     paymentUuid: string
   }) {
@@ -212,7 +212,7 @@ export const actions: CollectionActionTree = {
         })
       })
   },
-  listPayments(context: CollectionActionContext, params: { posUuid: string, orderUuid: string }) {
+  listPayments(context: PaymentsActionContext, params: { posUuid: string, orderUuid: string }) {
     const { posUuid, orderUuid } = params
     requestListPayments({
       posUuid,
@@ -225,7 +225,7 @@ export const actions: CollectionActionTree = {
         console.warn(`ListPaymentsFromServer: ${error.message}. Code: ${error.code}.`)
       })
   },
-  tenderTypeDisplaye(context: CollectionActionContext, tenderType: any[]) {
+  tenderTypeDisplaye(context: PaymentsActionContext, tenderType: any[]) {
     const displayTenderType = tenderType.map(item => {
       return {
         tenderTypeCode: item.id,
@@ -235,7 +235,7 @@ export const actions: CollectionActionTree = {
     context.commit('setTenderTypeDisplaye', displayTenderType)
   },
   // upload orders to theServer
-  uploadOrdersToServer(context: CollectionActionContext, params: {
+  uploadOrdersToServer(context: PaymentsActionContext, params: {
     listPaymentsLocal: any[]
     posUuid: string
     orderUuid: string
@@ -255,7 +255,7 @@ export const actions: CollectionActionTree = {
       })
         .then(response => {
           const orderUuid = response.order_uuid
-          context.dispatch(Namespaces.Collection + '/' + 'listPayments', { orderUuid })
+          context.dispatch(Namespaces.Payments + '/' + 'listPayments', { orderUuid })
         })
         .catch(error => {
           console.warn(`ListPaymentsFromServer: ${error.message}. Code: ${error.code}.`)
@@ -267,7 +267,7 @@ export const actions: CollectionActionTree = {
         })
     })
   },
-  currencyDisplaye(context: CollectionActionContext, currency: any[]) {
+  currencyDisplaye(context: PaymentsActionContext, currency: any[]) {
     const displaycurrency = currency.map(item => {
       return {
         currencyUuid: item.uuid,
@@ -277,7 +277,7 @@ export const actions: CollectionActionTree = {
     })
     context.commit('setCurrencyDisplaye', displaycurrency)
   },
-  convertionPayment(context: CollectionActionContext, params: {
+  convertionPayment(context: PaymentsActionContext, params: {
     conversionTypeUuid: string
     currencyFromUuid: string
     currencyToUuid: string

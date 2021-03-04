@@ -105,7 +105,8 @@ export default class OrdersList extends Mixins(MixinForm) {
 
     mounted() {
       const listOrder = this.$store.getters[Namespaces.OrderLines + '/' + 'getListOrderLine']
-      if (!listOrder || !listOrder.length) {
+      const validateListOrder = !listOrder || !listOrder.length
+      if (validateListOrder && this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid) {
         this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
           posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
         })
@@ -158,7 +159,7 @@ export default class OrdersList extends Mixins(MixinForm) {
       this.$store.commit(Namespaces.Order + '/' + 'showListOrders', false)
       this.$store.dispatch(Namespaces.Order + '/' + 'currentOrder', row)
       if (row) {
-        this.$store.dispatch(Namespaces.Collection + '/' + 'deleteAllCollectBox')
+        this.$store.dispatch(Namespaces.Payments + '/' + 'deleteAllCollectBox')
         this.$router.push(
           {
             params: {
@@ -170,9 +171,8 @@ export default class OrdersList extends Mixins(MixinForm) {
             }
           }
         )
-        const posUuid = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
         const orderUuid = this.$route.query.action
-        this.$store.dispatch(Namespaces.Collection + '/' + 'listPayments', { posUuid, orderUuid })
+        this.$store.dispatch(Namespaces.Payments + '/' + 'listPayments', { orderUuid })
       }
     }
 
