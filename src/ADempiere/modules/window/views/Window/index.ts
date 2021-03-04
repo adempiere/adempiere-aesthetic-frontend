@@ -48,6 +48,14 @@ export default class WindowView extends Vue {
     public isShowedRecordPanel = false
 
     // Computed properties
+    get isNewRecord(): boolean {
+      return (
+        !this.$route.query ||
+        !this.$route.query.action ||
+        this.$route.query.action === 'create-new'
+      )
+    }
+
     get showContextMenu(): boolean | undefined {
       return this.$store.state.settings.showContextMenu
     }
@@ -296,14 +304,14 @@ export default class WindowView extends Vue {
     }
 
     // current record
-    get getRecord() {
-      const { action } = this.$route.query
-      if (action && action !== 'create-new') {
-        return this.getterDataRecords.find(record => {
+    get getRecord(): any {
+      if (!this.isNewRecord) {
+        const { action } = this.$route.query
+        return this.getterDataRecords.find((record: any) => {
           return record.UUID === action
         })
       }
-      return undefined
+      return this.currentRecord
     }
 
     get recordId() {
@@ -324,12 +332,13 @@ export default class WindowView extends Vue {
       return currentRecord
     }
 
-    get isDocument(): boolean {
+    get isDocumentTab(): boolean {
       const panel = this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](this.windowMetadata.currentTabUuid)
-      if (panel && this.$route.query.action !== 'create-new') {
-        return true
+      if (panel) {
+        return panel.isDocument
       }
-      return false
+
+      return this.windowMetadata.firstTab!.isDocument
     }
 
     get isWorkflowBarStatus(): boolean {
@@ -338,8 +347,8 @@ export default class WindowView extends Vue {
       )
       if (
         panel &&
-            this.isDocument &&
-            this.$route.query.action !== 'create-new'
+            this.isDocumentTab &&
+            !this.isNewRecord
       ) {
         return true
       }
@@ -427,17 +436,18 @@ export default class WindowView extends Vue {
           }
         )
 
-        const action = this.$route.query.action
         let recordUuid
-        if (action && action !== 'create-new') {
-          recordUuid = action
+        if (!this.isNewRecord) {
+          recordUuid = this.$route.query.action
         }
         // TODO: Verify if first tab is document
-        this.$store.dispatch(Namespaces.ContainerInfo + '/' + 'listWorkflowLogs', {
-          tableName,
-          recordUuid,
-          recordId
-        })
+        if (this.isDocumentTab) {
+          this.$store.dispatch(Namespaces.ContainerInfo + '/' + 'listWorkflowLogs', {
+            tableName,
+            recordUuid,
+            recordId
+          })
+        }
         this.$store.dispatch(Namespaces.ChatEntries + '/' + this.activeInfo, {
           tableName,
           recordId,
@@ -453,10 +463,9 @@ export default class WindowView extends Vue {
         tableName = this.getTableName
       }
 
-      const action = this.$route.query.action
       let recordUuid
-      if (action && action !== 'create-new') {
-        recordUuid = action
+      if (!this.isNewRecord) {
+        recordUuid = this.$route.query.action
       }
 
       const record = this.currentRecord
@@ -530,13 +539,13 @@ export default class WindowView extends Vue {
         if (
           (['M', 'Q'].includes(this.windowMetadata.windowType!) &&
                     this.getterRecordList >= 10 &&
-                    this.$route.query.action !== 'create-new') ||
+                    !this.isNewRecord) ||
                 this.$route.query.action === 'advancedQuery'
         ) {
           isShowRecords = true
         } else if (
           this.windowMetadata.windowType === 'T' ||
-                this.$route.query.action === 'create-new'
+                this.isNewRecord
         ) {
           isShowRecords = false
         } else if (this.$route.query.action === 'listRecords') {
@@ -547,11 +556,13 @@ export default class WindowView extends Vue {
       }
       this.isLoaded = true
       const record = this.currentRecord
-      this.$store.dispatch(Namespaces.ContextMenu + '/' + 'listDocumentStatus', {
-        tableName: this.getTableName,
-        recordUuid: this.$route.query.action,
-        recordId: record[this.getTableName + '_ID']
-      })
+      if (this.isDocumentTab) {
+        this.$store.dispatch(Namespaces.ContextMenu + '/' + 'listDocumentStatus', {
+          tableName: this.getTableName,
+          recordUuid: this.$route.query.action,
+          recordId: (record) ? record[this.getTableName + '_ID'] : undefined
+        })
+      }
     }
 
     handleChangeShowedRecordNavigation(valueToChange: any): void {
