@@ -1,6 +1,9 @@
+import { IPanelDataExtended } from '@/ADempiere/modules/dictionary/DictionaryType/VuexType'
+import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
+import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
-import { BusinessDataState, IContextInfoValuesExtends, IPrivateAccessDataExtended, IRecordSelectionData } from '../../PersistenceType'
+import { BusinessDataState, IContextInfoValuesExtends, IPrivateAccessDataExtended, IRecordSelectionData, ISelectionToServerData, KeyValueData } from '../../PersistenceType'
 
 type BusinessDataGetterTree = GetterTree<BusinessDataState, IRootState>
 
@@ -60,5 +63,89 @@ export const getters: BusinessDataGetterTree = {
       }
       return undefined
     }
+  },
+  /**
+     * Getter converter selection data record in format
+     * @param {string} containerUuid
+     * @param {array}  selection
+     * [{
+     *    selectionId: keyColumn Value,
+     *    selectionValues: [{ columnName, value }]
+     * }]
+     */
+  getSelectionToServer: (state: BusinessDataState, getters, rootState, rootGetters) => (parameters: {
+      containerUuid: string
+      selection?: IKeyValueObject[]
+  }): ISelectionToServerData[] => {
+    let { selection = parameters.selection || [] } = parameters
+    const { containerUuid } = parameters
+    const selectionToServer: ISelectionToServerData[] = []
+
+    const withOut: string[] = ['isEdit', 'isSendToServer']
+
+    if (selection.length <= 0) {
+      selection = getters.getDataRecordSelection(containerUuid)
+    }
+    if (selection.length) {
+      const { fieldsList, keyColumn } = <IPanelDataExtended>(
+                rootGetters[Namespaces.Panel + '/' + 'getPanel'](containerUuid)
+            )
+            // reduce list
+      const fieldsListSelection: IFieldDataExtendedUtils[] = fieldsList.filter(
+        (itemField: IFieldDataExtendedUtils) => {
+          return itemField.isIdentifier || itemField.isUpdateable
+        }
+      )
+
+      selection.forEach((itemRow: IKeyValueObject) => {
+        const records: KeyValueData[] = []
+
+        Object.keys(itemRow).forEach((key: string) => {
+          if (
+            !key.includes('DisplayColumn') &&
+                        !withOut.includes(key)
+          ) {
+            // evaluate metadata attributes before to convert
+            const field:
+                            | IFieldDataExtendedUtils
+                            | undefined = fieldsListSelection.find(
+                              (itemField: IFieldDataExtendedUtils) =>
+                                itemField.columnName === key
+                            )
+            if (field) {
+              records.push({
+                // columnName: key,
+                key,
+                value: itemRow[key]
+              })
+            }
+          }
+        })
+
+        selectionToServer.push({
+          selectionId: itemRow[keyColumn!],
+          selectionValues: records
+        })
+      })
+    }
+    return selectionToServer
+  },
+  getRowData: (state: BusinessDataState, getters) => (data: {
+    containerUuid: string
+    recordUuid?: string
+    index: number
+}) => {
+    const { recordUuid, containerUuid, index } = data
+    const recordsList: any[] = getters.getDataRecordsList(
+      containerUuid
+    )
+    if (index) {
+      return recordsList[index]
+    }
+    return recordsList.find((itemData: any) => {
+      if (itemData.UUID === recordUuid) {
+        return true
+      }
+    })
   }
 }
