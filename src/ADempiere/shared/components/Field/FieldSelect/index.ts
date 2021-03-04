@@ -376,8 +376,7 @@ export default class FieldSelect extends Mixins(MixinField) {
                         if (
                             !this.isPanelWindow ||
                             (this.isPanelWindow &&
-                                this.$route.query &&
-                                this.$route.query.action === 'create-new')
+                                this.$route.query)
                         ) {
                             this.getDataLookupItem()
                         }
