@@ -39,7 +39,7 @@ export default class Collection extends Mixins(MixinForm) {
     public allPayCurrency = 0
     public labelTenderType = ''
     public defaultLabel = ''
-    fieldList = fieldListCollection
+    fieldsList = fieldListCollection
     public sendToServer = false
     amontSend= 0
 
@@ -195,7 +195,7 @@ export default class Collection extends Mixins(MixinForm) {
       const containerUuid = this.containerUuid
       const fieldsEmpty: string[] = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
         containerUuid,
-        fieldsList: this.fieldList
+        fieldsList: this.fieldsList
       })
       const amount = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid,
@@ -209,9 +209,12 @@ export default class Collection extends Mixins(MixinForm) {
 
     get validPay(): boolean {
       const containerUuid = this.containerUuid
+      // filter by visible fields
+      const fieldLogic = this.fieldsList.filter(field => field.isDisplayedFromLogic === true)
       const fieldsEmpty: string[] = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
         containerUuid,
-        fieldsList: this.fieldList
+        fieldsList: fieldLogic,
+        isValidate: true
       })
       return !!(fieldsEmpty.length)
     }
@@ -467,7 +470,7 @@ export default class Collection extends Mixins(MixinForm) {
       })
 
       const currencyToPay = (!currencyUuid) ? currencyId : currencyUuid
-      if (this.currencyDisplay(currencyToPay).currencyUuid !== this.currencyPoint.uuid) {
+      if (!this.currencyDisplay(currencyToPay) && this.currencyDisplay(currencyToPay).currencyUuid !== this.currencyPoint.uuid) {
         this.amontSend = this.convert.divideRate * this.amontSend
       }
       if (this.sendToServer) {
@@ -504,7 +507,7 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     addCollect(): void {
-      this.fieldList.forEach((element: IFieldLocation) => {
+      this.fieldsList.forEach((element: IFieldLocation) => {
         if (element.columnName !== 'PayAmt') {
           this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             containerUuid: this.containerUuid,
@@ -541,7 +544,7 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     cancel() {
-      this.fieldList.forEach((element) => {
+      this.fieldsList.forEach((element) => {
         if (element.columnName !== 'PayAmt' && element.columnName !== 'C_Currency_ID') {
           this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             containerUuid: this.containerUuid,

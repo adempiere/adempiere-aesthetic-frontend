@@ -593,9 +593,11 @@ export const getters: PanelGetterTree = {
     containerUuid: string
     fieldsList?: IFieldDataExtendedUtils[]
     formatReturn?: string
+    isValidate?: boolean
   }): string[]| IFieldDataExtendedUtils[] => {
     const {
       containerUuid,
+      isValidate = parameters.isValidate || false,
       formatReturn = parameters.formatReturn || 'name'
     } = parameters
     let { fieldsList } = parameters
@@ -603,6 +605,7 @@ export const getters: PanelGetterTree = {
     if (!fieldsList) {
       fieldsList = getters.getFieldsListFromPanel(containerUuid)
     }
+    const fieldsEmpty: string[] = []
     // all optionals (not mandatory) fields
     const fieldsNameEmpty = fieldsList!.filter((fieldItem: IFieldDataExtendedUtils) => {
       const value: any = rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
@@ -610,6 +613,12 @@ export const getters: PanelGetterTree = {
         containerUuid,
         columnName: fieldItem.columnName
       })
+      if (isValidate && !value) {
+        const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
+        if (fieldIsDisplayed(fieldItem) && isMandatory) {
+          fieldsEmpty.push(fieldItem.name)
+        }
+      }
       if (!value) {
         const isMandatory: boolean = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
         if (fieldIsDisplayed(fieldItem) && isMandatory) {
@@ -617,6 +626,10 @@ export const getters: PanelGetterTree = {
         }
       }
     })
+
+    if (isValidate) {
+      return fieldsEmpty
+    }
 
     if (formatReturn) {
       return fieldsList!.map((fieldItem: IFieldDataExtendedUtils) => {

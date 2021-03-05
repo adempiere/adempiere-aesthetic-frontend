@@ -1,10 +1,8 @@
-import { requestGetProductPrice } from '@/ADempiere/modules/core/CoreService'
 import { requestImage } from '@/ADempiere/modules/persistence/PersistenceService/persistence'
 import { buildImageFromArrayBuffer } from '@/ADempiere/shared/utils/resource'
 import { formatPercent, formatPrice } from '@/ADempiere/shared/utils/valueFormat'
 import { Component, Mixins, Prop, Ref } from 'vue-property-decorator'
 import MixinForm from '../MixinForm'
-import { IProductCodeData } from '../PriceChecking/fieldList'
 import fieldsList from './fieldsListBarCode'
 import Template from './template.vue'
 
@@ -25,7 +23,8 @@ export default class BarcodeReader extends Mixins(MixinForm) {
    }
  }) metadata!: { uuid: string, containerUuid: string, fieldsList: any[] }
 
- public fieldsList: IProductCodeData[] = fieldsList
+ // public fieldsList: IProductCodeData[] = fieldsList
+ fieldsList = fieldsList
  private productPrice: any = {}
  private organizationBackground = ''
  private currentImageOfProduct = ''

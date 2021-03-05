@@ -24,7 +24,7 @@ export default class TestView extends Mixins(MixinForm) {
       name: 'Test View'
     }
 
-    fieldsList: any[] = fieldList
+    fieldsList = fieldList
     isCustomForm = true
     // eslint-disable-next-line
     unsubscribe: Function = () => {}

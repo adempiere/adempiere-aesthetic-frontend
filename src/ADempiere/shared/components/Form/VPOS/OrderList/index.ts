@@ -32,7 +32,8 @@ export default class OrdersList extends Mixins(MixinForm) {
     }
 
     public defaultMaxPagination = 50
-    public fieldsList: IFieldLocation[] = fieldListOrders
+    // public fieldsList: IFieldLocation[] = fieldListOrders
+    fieldsList = fieldListOrders
     public isCustomForm = true
     public activeAccordion = 'query-criteria'
     public timeOut: any = null
