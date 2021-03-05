@@ -235,7 +235,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     updateOrder(update: any): void {
-      if (update.value !== this.getOrder?.businessPartner?.uuid) {
+      if (update.value !== this.getOrder?.businessPartner?.uuid && this.currentPoint) {
         this.$store.dispatch(Namespaces.Order + '/' + 'updateOrder', {
           orderUuid: this.$route.query.action,
           posUuid: this.currentPoint?.uuid,
