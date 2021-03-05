@@ -36,4 +36,5 @@ export interface UtilsState {
     splitWidthLeft: number
     parametersProcessPos: any[]
     updateOrder: boolean
+    updatePayment: boolean
 }

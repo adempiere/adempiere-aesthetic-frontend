@@ -28,5 +28,6 @@ export const state: UtilsState = {
   splitWidthRight: 3,
   splitWidthLeft: 3,
   parametersProcessPos: [],
-  updateOrder: false
+  updateOrder: false,
+  updatePayment: false
 }

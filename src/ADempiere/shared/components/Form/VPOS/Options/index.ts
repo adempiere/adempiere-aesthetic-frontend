@@ -175,6 +175,7 @@ export default class Options extends Mixins(MixinOrderLine) {
     completePreparedOrder(): void {
       const posUuid: string | undefined = this.currentPoint!.uuid!
       this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', true)
+      this.$store.dispatch(Namespaces.Utils + '/' + 'updatePaymentPos', true)
       this.$message({
         type: 'info',
         message: this.$t('notifications.processing').toString(),
@@ -187,20 +188,25 @@ export default class Options extends Mixins(MixinOrderLine) {
         payments: this.$store.getters[Namespaces.Payments + '/' + 'getListPayments']
       }).then(response => {
         this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', response.uuid)
+        this.$message({
+          type: 'success',
+          message: this.$t('notifications.completed').toString(),
+          showClose: true
+        })
       })
         .catch(error => {
-          console.log(error)
+          this.$message({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
         })
         .finally(() => {
           this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
             posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
           })
-          this.$message({
-            type: 'success',
-            message: this.$t('notifications.completed').toString(),
-            showClose: true
-          })
           this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', false)
+          this.$store.dispatch(Namespaces.Utils + '/' + 'updatePaymentPos', false)
         })
     }
 

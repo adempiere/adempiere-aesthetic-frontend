@@ -1,5 +1,5 @@
 import { ICurrencyData } from '@/ADempiere/modules/core'
-import { IOrderData, IPaymentsData, IPointOfSalesData } from '@/ADempiere/modules/pos'
+import { IOrderData, IPaymentsData, IPointOfSalesData, requestProcessOrder } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatDate, formatPrice } from '@/ADempiere/shared/utils/valueFormat'
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
@@ -238,6 +238,10 @@ export default class Collection extends Mixins(MixinForm) {
 
     get convert() {
       return this.$store.getters[Namespaces.Payments + '/' + 'getConvertionPayment']
+    }
+
+    get updateOrderPaymentPos(): boolean {
+      return this.$store.getters[Namespaces.Utils + '/' + 'getUpdatePaymentPos']
     }
 
     get currencyPoint(): ICurrencyData | Partial<ICurrencyData> {
@@ -665,6 +669,47 @@ export default class Collection extends Mixins(MixinForm) {
           }
         }
       })
+    }
+
+    completePreparedOrder(payment: any) {
+      const posUuid: string = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+      const orderUuid: string = this.$route.query.action as string
+      this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', true)
+      this.$store.dispatch(Namespaces.Utils + '/' + 'updatePaymentPos', true)
+      this.$message({
+        type: 'info',
+        message: this.$t('notifications.processing').toString(),
+        showClose: true
+      })
+      requestProcessOrder({
+        posUuid,
+        orderUuid,
+        createPayments: Boolean(payment),
+        payments: payment
+      })
+        .then(response => {
+          this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', response.uuid)
+          this.$message({
+            type: 'success',
+            message: this.$t('notifications.completed').toString(),
+            showClose: true
+          })
+        })
+        .catch(error => {
+          this.$message({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+          console.log(error)
+        })
+        .finally(() => {
+          this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
+            posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+          })
+          this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', false)
+          this.$store.dispatch(Namespaces.Utils + '/' + 'updatePaymentPos', false)
+        })
     }
 
     // Hooks

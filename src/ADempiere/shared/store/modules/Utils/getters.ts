@@ -72,5 +72,8 @@ export const getters: UtilsGetterTree = {
   },
   getUpdateOrderPos: (state: UtilsState): boolean => {
     return state.updateOrder
+  },
+  getUpdatePaymentPos: (state: UtilsState): boolean => {
+    return state.updatePayment
   }
 }

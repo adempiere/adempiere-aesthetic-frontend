@@ -66,15 +66,28 @@
             <el-button type="danger" icon="el-icon-close" @click="exit" />
             <el-button type="info" icon="el-icon-minus" @click="undoPatment" />
             <el-button type="primary" :disabled="validPay || addPay" icon="el-icon-plus" @click="addCollectToList(paymentBox)" />
-            <el-button type="success" :disabled="validateCompleteCollection" icon="el-icon-shopping-cart-full" />
+            <el-button type="success" :disabled="validateCompleteCollection" icon="el-icon-shopping-cart-full"
+            @click="completePreparedOrder(listPayments)"
+            />
           </samp>
         </el-header>
         <el-main style="padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px;">
           <type-collection
+          v-if="!updateOrderPaymentPos"
             :is-add-type-pay="listPayments"
             :currency="currencyPoint"
             :list-types-payments="fieldsList[2]"
           />
+          <div
+            v-else
+            key="form-loading"
+            v-loading="updateOrderPaymentPos"
+            :element-loading-text="$t('notifications.loading')"
+            :element-loading-spinner="'el-icon-loading'"
+            element-loading-background="rgba(255, 255, 255, 0.8)"
+            class="view-loading"
+          />
+
         </el-main>
 
         <el-footer height="auto" style="padding-left: 0px; padding-right: 0px;">

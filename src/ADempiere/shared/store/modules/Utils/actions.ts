@@ -80,5 +80,8 @@ export const actions: UtilsActionTree = {
   },
   updateOrderPos(context: UtilsActionContext, params: boolean) {
     context.commit('setUpdateOrder', params)
+  },
+  updatePaymentPos(context: UtilsActionContext, params: boolean) {
+    context.commit('setUpdatePayment', params)
   }
 }

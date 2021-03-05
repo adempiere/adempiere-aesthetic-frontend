@@ -213,6 +213,7 @@ export const actions: PaymentsActionTree = {
       })
   },
   listPayments(context: PaymentsActionContext, params: { posUuid: string, orderUuid: string }) {
+    context.dispatch(Namespaces.Utils + '/' + 'updatePaymentPos', true, { root: true })
     const { posUuid, orderUuid } = params
     requestListPayments({
       posUuid,
@@ -223,6 +224,9 @@ export const actions: PaymentsActionTree = {
       })
       .catch(error => {
         console.warn(`ListPaymentsFromServer: ${error.message}. Code: ${error.code}.`)
+      })
+      .finally(() => {
+        context.dispatch(Namespaces.Utils + '/' + 'updatePaymentPos', false, { root: true })
       })
   },
   tenderTypeDisplaye(context: PaymentsActionContext, tenderType: any[]) {
