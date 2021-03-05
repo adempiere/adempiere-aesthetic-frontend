@@ -38,7 +38,7 @@
                 :type="tagStatus(getOrder.documentStatus.value)"
               >
                 <span v-if="!(getOrder.documentStatus.value)">
-                  Borrador
+                  {{ getOrder.documentStatus.name }}
                 </span>
                 {{ getOrder.documentStatus.name }}
               </el-tag>

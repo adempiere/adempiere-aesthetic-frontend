@@ -419,12 +419,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     getOrderTax(currency: any): string | undefined {
-      if (!this.getOrder) {
-        return undefined
-      }
-      return this.formatPrice(
-            this.getOrder.grandTotal! - this.getOrder!.totalLines!,
-            currency
+      return this.formatPrice(this.getOrder!.grandTotal! - this.getOrder!.totalLines!, currency
       )
     }
 
