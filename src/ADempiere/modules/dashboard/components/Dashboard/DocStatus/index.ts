@@ -18,7 +18,7 @@ export default class PendingDocuments extends Mixins(MixinDasboard) {
     // Computed properties
     get dataResult(): any[] {
       if (this.search.length) {
-        return this.filterResult(this.search)
+        return this.filterResult(this.search, this.documents)
       }
       return this.documents
     }
