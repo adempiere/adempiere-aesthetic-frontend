@@ -120,7 +120,7 @@ export default class BusinessPartnersList extends Mixins(
             format: 'object'
           })
 
-          this.searchBPartnerList({ contactName: values.Name2 })
+          this.searchBPartnerList(values)
         }
       })
     }

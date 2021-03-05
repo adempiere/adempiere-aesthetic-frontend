@@ -39,7 +39,8 @@ export default class BusinessPartnerCreate extends Mixins(
     // Computed properties
     get emptyMandatoryFields(): string[] {
       const field: string[] = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
-        containerUuid: this.containerUuid
+        containerUuid: this.containerUuid,
+        isValidate: true
       })
       return field
     }
