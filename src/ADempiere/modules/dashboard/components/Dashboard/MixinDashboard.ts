@@ -62,12 +62,8 @@ export default class MixinDasboard extends Vue {
       return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     }
 
-    filterResult(search: string): any[] {
+    filterResult(search: string, list: any[]): any[] {
       const searchFilter: string = this.ignoreAccent(search.toLowerCase())
-      return this.documents!.filter(item => {
-        return this.ignoreAccent(item.name)
-          .toLowerCase()
-          .includes(searchFilter)
-      })
+      return list.filter(data => !searchFilter || data.name.toLowerCase().includes(searchFilter.toLowerCase()))
     }
 }

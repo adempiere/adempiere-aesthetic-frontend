@@ -20,7 +20,7 @@ export default class RecentItems extends Mixins(MixinDasboard) {
     // Computed Properties
     get dataResult() {
       if (this.search.length) {
-        return this.filterResult(this.search)
+        return this.filterResult(this.search, this.recentItems)
       }
       return this.recentItems
     }

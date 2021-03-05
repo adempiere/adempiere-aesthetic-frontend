@@ -117,7 +117,7 @@ export default class Order extends Mixins(MixinOrderLine) {
   // Watchers
   @Watch('currencyUuid')
   handleCurrencyUuid(value: string) {
-    if (value) {
+    if (value && this.currentPoint) {
       this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
         conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
         currencyFromUuid: this.currencyPoint.uuid,
@@ -128,7 +128,7 @@ export default class Order extends Mixins(MixinOrderLine) {
 
   @Watch('converCurrency')
   handleConverCurrency(value: any) {
-    if (value) {
+    if (value && this.currentPoint) {
       this.$store.dispatch(Namespaces.Payments + '/' + 'conversionMultiplyRate', {
         containerUuid: 'Order',
         conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
