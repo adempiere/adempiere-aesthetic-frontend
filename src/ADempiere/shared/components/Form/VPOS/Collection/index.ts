@@ -46,9 +46,9 @@ export default class Collection extends Mixins(MixinForm) {
     // Computed properties
     get validateCompleteCollection(): boolean {
       let collection: boolean
-      const validation = this.pay >= this.order.grandTotal && (this.isCashAmt >= this.change)
+      const validation = this.pay >= this.currentOrder!.grandTotal && (this.isCashAmt >= this.change)
 
-      if (this.pay === this.order.grandTotal) {
+      if (this.pay === this.currentOrder!.grandTotal) {
         collection = false
       } else if (validation || this.checked) {
         collection = false
@@ -59,7 +59,7 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get fullCopper(): boolean {
-      if ((this.change > this.isCashAmt) && this.pay > this.order.grandTotal) {
+      if ((this.change > this.isCashAmt) && this.pay > this.currentOrder!.grandTotal) {
         return true
       }
       return false
@@ -144,7 +144,7 @@ export default class Collection extends Mixins(MixinForm) {
       })
       const allPay = this.cashPayment + amount
       if (typePay !== 'X') {
-        if (allPay <= this.order.grandTotal) {
+        if (allPay <= this.currentOrder!.grandTotal) {
           return false
         }
         return true
@@ -183,11 +183,11 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get pending(): number {
-      const missing = this.order.grandTotal - this.pay
-      if (this.pay > 0 && this.pay < this.order.grandTotal) {
+      const missing = this.currentOrder!.grandTotal - this.pay
+      if (this.pay > 0 && this.pay < this.currentOrder!.grandTotal) {
         return missing
       }
-      const pending = this.order.grandTotal <= this.pay ? 0 : this.order.grandTotal
+      const pending = this.currentOrder!.grandTotal <= this.pay ? 0 : this.currentOrder!.grandTotal
       return pending
     }
 
@@ -217,8 +217,8 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get change(): number {
-      const missing = this.pay - this.order.grandTotal
-      if (this.pay > 0 && this.pay > this.order.grandTotal) {
+      const missing = this.pay - this.currentOrder!.grandTotal
+      if (this.pay > 0 && this.pay > this.currentOrder!.grandTotal) {
         return missing
       }
       return 0
@@ -236,10 +236,6 @@ export default class Collection extends Mixins(MixinForm) {
       return this.$store.getters[Namespaces.Payments + '/' + 'getConvertionPayment']
     }
 
-    get order(): IOrderData {
-      return this.$store.getters[Namespaces.Order + '/' + 'getFindOrder']
-    }
-
     get currencyPoint(): ICurrencyData | Partial<ICurrencyData> {
       const currency: IPointOfSalesData | undefined = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
       if (currency) {
@@ -254,7 +250,7 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get currentOrder(): IOrderData | undefined {
-      return this.$store.getters[Namespaces.Order + '/' + 'getFindOrder']
+      return this.$store.getters[Namespaces.Order + '/' + 'getOrder']
     }
 
     get typeCurrency() {

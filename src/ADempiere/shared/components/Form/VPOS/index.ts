@@ -104,9 +104,6 @@ export default class VPOS extends Vue {
       }
 
       this.unsubscribePOSList = this.posListWithOrganization()
-      if (this.$route.query.action) {
-        this.$store.dispatch('findOrderServer', this.$route.query.action)
-      }
     }
 
     mounted() {

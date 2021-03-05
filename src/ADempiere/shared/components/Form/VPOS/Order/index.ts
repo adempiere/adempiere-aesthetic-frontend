@@ -49,7 +49,10 @@ export default class Order extends Mixins(MixinOrderLine) {
     if (currentPOS && (currentPOS.name)) {
       return currentPOS
     }
-    return undefined
+    return {
+      name: '',
+      uuid: ''
+    } as IPointOfSalesData
   }
 
   get sellingPointsList(): IPointOfSalesData[] {
@@ -57,14 +60,14 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   get orderDate(): string | undefined {
-    if ((!this.order) || (!this.order.dateOrdered)) {
+    if ((!this.getOrder) || (!this.getOrder.dateOrdered)) {
       return this.formatDate(new Date())
     }
-    return this.formatDate(this.order.dateOrdered)
+    return this.formatDate(this.getOrder.dateOrdered)
   }
 
   get getItemQuantity(): number {
-    if (!this.currentOrder) {
+    if (!this.getOrder) {
       return 0
     }
     const result: number[] = this.allOrderLines.map(order => {
@@ -80,7 +83,7 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   get numberOfLines(): number | undefined {
-    if (!this.currentOrder) {
+    if (!this.getOrder) {
       return
     }
     return this.allOrderLines.length
@@ -157,7 +160,6 @@ export default class Order extends Mixins(MixinOrderLine) {
   openCollectionPanel(): void {
     this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', true)
-    // this.isShowedPOSKeyLayout = true
     const orderUuid = this.$route.query.action
     this.$store.dispatch(Namespaces.Payments + '/' + 'listPayments', { orderUuid })
     this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
@@ -165,7 +167,6 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   newOrder(): void {
-    this.$store.dispatch(Namespaces.Order + '/' + 'findOrderServer', {})
     this.$router.push({
       params: {
         ...this.$route.params
@@ -202,11 +203,23 @@ export default class Order extends Mixins(MixinOrderLine) {
 
       this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
     })
+    this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', {
+      documentType: {},
+      documentStatus: {
+        value: ''
+      },
+      totalLines: 0,
+      grandTotal: 0,
+      salesRepresentative: {},
+      businessPartner: {
+        value: '',
+        uuid: ''
+      }
+    })
   }
 
   mounted() {
     setTimeout(() => {
-      this.tenderTypeDisplaye()
       this.currencyDisplaye()
     }, 1500)
   }
@@ -220,26 +233,30 @@ export default class Order extends Mixins(MixinOrderLine) {
   tenderTypeDisplaye() {
     if (this.fieldList && this.fieldList.length) {
       const tenderType = this.fieldList[5].reference
-      this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
-        tableName: tenderType.tableName,
-        query: tenderType.query
-      })
-        .then(response => {
-          this.$store.dispatch(Namespaces.Payments + '/' + 'tenderTypeDisplaye', response)
+      if (tenderType) {
+        this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
+          tableName: tenderType.tableName,
+          query: tenderType.query
         })
+          .then(response => {
+            this.$store.dispatch(Namespaces.Payments + '/' + 'tenderTypeDisplaye', response)
+          })
+      }
     }
   }
 
   currencyDisplaye() {
     if (this.fieldList && this.fieldList.length) {
       const currency = this.fieldList[4].reference
-      this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
-        tableName: currency.tableName,
-        query: currency.query
-      })
-        .then(response => {
-          this.$store.dispatch(Namespaces.Payments + '/' + 'currencyDisplaye', response)
+      if (currency) {
+        this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
+          tableName: currency.tableName,
+          query: currency.query
         })
+          .then(response => {
+            this.$store.dispatch(Namespaces.Payments + '/' + 'currencyDisplaye', response)
+          })
+      }
     }
   }
 }

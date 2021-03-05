@@ -14,11 +14,11 @@
                   >
                     <convert-amount
                       :convert="multiplyRate"
-                      :amount="order.grandTotal"
+                      :amount="currentOrder.grandTotal"
                       :currency="currencyPoint"
                     />
                     <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;">
-                      {{ formatPrice(order.grandTotal, currencyPoint.iSOCode) }}
+                      {{ formatPrice(currentOrder.grandTotal, currencyPoint.iSOCode) }}
                     </el-button>
                   </el-popover>
                 </b>
@@ -71,18 +71,9 @@
         </el-header>
         <el-main style="padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px;">
           <type-collection
-            v-if="isLoaded"
             :is-add-type-pay="listPayments"
             :currency="currencyPoint"
-          />
-          <div
-            v-else
-            key="form-loading"
-            v-loading="!isLoaded"
-            :element-loading-text="$t('notifications.loading')"
-            element-loading-spinner="el-icon-loading"
-            element-loading-background="rgba(0, 0, 0, 0.8)"
-            class="loading-panel"
+            :list-types-payments="fieldList[2]"
           />
         </el-main>
 
@@ -101,11 +92,11 @@
                     >
                       <convert-amount
                         :convert="multiplyRate"
-                        :amount="order.grandTotal"
+                        :amount="currentOrder.grandTotal"
                         :currency="currencyPoint"
                       />
                       <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;">
-                        {{ formatPrice(order.grandTotal, currencyPoint.iSOCode) }}
+                        {{ formatPrice(currentOrder.grandTotal, currencyPoint.iSOCode) }}
                       </el-button>
                     </el-popover>
                   </b>

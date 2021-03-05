@@ -70,7 +70,6 @@ export default class OrdersList extends Mixins(MixinForm) {
       if (order) {
         return order
       }
-      this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
       return null
     }
 
@@ -100,16 +99,6 @@ export default class OrdersList extends Mixins(MixinForm) {
 
       if (this.isReadyFromGetData) {
         this.loadOrdersList()
-      }
-    }
-
-    mounted() {
-      const listOrder = this.$store.getters[Namespaces.OrderLines + '/' + 'getListOrderLine']
-      const validateListOrder = !listOrder || !listOrder.length
-      if (validateListOrder && this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid) {
-        this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
-          posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
-        })
       }
     }
 

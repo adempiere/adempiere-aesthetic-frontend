@@ -35,28 +35,6 @@ export default class MixinPOS extends Mixins(MixinForm) {
     // eslint-disable-next-line
     public unsubscribe: Function = () => {}
     public product: any = {}
-    public order: Partial<IOrderData> = {
-      documentType: undefined,
-      documentStatus: {
-        value: '',
-        description: '',
-        name: ''
-      },
-      totalLines: 0,
-      grandTotal: 0,
-      salesRepresentative: undefined,
-      businessPartner: {
-        description: '',
-        duns: '',
-        id: 0,
-        lastName: '',
-        naics: '',
-        name: '',
-        taxId: '',
-        uuid: '',
-        value: ''
-      }
-    }
 
     public currentTable = 0
     public currentOrderLine: any = {
@@ -84,9 +62,6 @@ export default class MixinPOS extends Mixins(MixinForm) {
 
   // Computed properties
   get allOrderLines() {
-    if (!this.listOrderLine) {
-      return []
-    }
     return this.listOrderLine
   }
 
@@ -109,12 +84,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
   get currentOrder(): IOrderData | Partial<IOrderData> {
     const action = this.$route.query.action
     if (action) {
-      const order = this.ordersList.find(
-        (item: IOrderData) => item.uuid === action
-      )
-      if (order) {
-        return order
-      }
+      return this.$store.getters[Namespaces.Order + '/' + 'getOrder']
     }
 
     return {
@@ -146,7 +116,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
   }
 
   get getWarehouse() {
-    return this.$store.getters['user/getWarehouse']
+    return this.$store.getters[Namespaces.User + '/' + 'getWarehouse']
   }
 
   get isSetTemplateBP(): IBusinessPartnerData | false {
@@ -165,22 +135,43 @@ export default class MixinPOS extends Mixins(MixinForm) {
     return this.$store.getters[Namespaces.Utils + '/' + 'getUpdateOrderPos']
   }
 
+  get getOrder(): Partial<IOrderData> | undefined {
+    return this.$store.getters[Namespaces.Order + '/' + 'getOrder']
+  }
+
   // Watchers
+  @Watch('getOrder')
+  handleGetOrderChange(value: Partial<IOrderData> | undefined) {
+    if (value) {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
+        parentUuid: this.parentUuid,
+        containerUuid: this.containerUuid,
+        attributes: [{
+          columnName: 'C_BPartner_ID',
+          value: value.businessPartner!.id
+        },
+        {
+          columnName: 'DisplayColumn_C_BPartner_ID',
+          value: value.businessPartner!.name
+        },
+        {
+          columnName: ' C_BPartner_ID_UUID',
+          value: value.businessPartner!.uuid
+        }]
+
+      })
+    }
+  }
+
   @Watch('currentOrder')
   handleCurrentOrderChange(value: any): void {
     if (!value) {
       this.orderLines = []
-      this.order = {
-        documentType: undefined,
-        documentStatus: undefined,
-        salesRepresentative: undefined
-      }
       this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
       this.listOrderLines({
         uuid: ''
       })
     } else {
-      this.fillOrder(value)
       this.listOrderLines(value)
     }
   }
@@ -244,41 +235,13 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     updateOrder(update: any): void {
-      if (this.withoutPOSTerminal()) {
-        return
-      }
-      if (!this.$route.query || !this.$route.query.action) {
-        return
-      }
-
-      const { uuid: posUuid } = this.currentPoint!
-
-      let customerUuid
-      if (update.columnName === 'C_BPartner_ID_UUID') {
-        customerUuid = update.value
-        if (!customerUuid && this.currentPoint) {
-          customerUuid = this.currentPoint!.templateBusinessPartner.uuid
-        }
-      }
-
-      requestUpdateOrder({
-        orderUuid: this.$route.query.action.toString(),
-        posUuid: posUuid!,
-        customerUuid
-        // documentTypeUuid: value.value,
-        // description
-      })
-        .then(response => {
-          // this.reloadOrder(true)
+      if (update.value !== this.getOrder?.businessPartner?.uuid) {
+        this.$store.dispatch(Namespaces.Order + '/' + 'updateOrder', {
+          orderUuid: this.$route.query.action,
+          posUuid: this.currentPoint?.uuid,
+          customerUuid: update.value
         })
-        .catch(error => {
-          console.error(error.message)
-          this.$message({
-            type: 'error',
-            message: error.message,
-            showClose: true
-          })
-        })
+      }
     }
 
     setBusinessPartner(
@@ -368,21 +331,23 @@ export default class MixinPOS extends Mixins(MixinForm) {
           containerUuid: this.containerUuid,
           columnName: 'C_BPartner_ID_UUID'
         })
-        if (!customerUuid) {
+        const id = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+          containerUuid: this.containerUuid,
+          columnName: 'C_BPartner_ID'
+        })
+        if (!customerUuid || id === 1000006) {
           customerUuid = this.currentPoint!.templateBusinessPartner.uuid
         }
 
         // user session
-        const salesRepresentativeUuid = this.$store.state.user.userUuid
 
-        requestCreateOrder({
+        this.$store.dispatch(Namespaces.Order + '/' + 'createOrder', {
           posUuid: posUuid!,
           customerUuid,
-          salesRepresentativeUuid
+          salesRepresentativeUuid: this.currentPoint?.templateBusinessPartner.uuid
         })
-          .then((order: IOrderData) => {
-            this.$store.dispatch(Namespaces.Order + '/' + 'currentOrder', order)
-            this.fillOrder(order)
+          .then((response: Partial<IOrderData>) => {
+            this.reloadOrder(true, response.uuid)
 
             this.$router
               .push({
@@ -391,28 +356,20 @@ export default class MixinPOS extends Mixins(MixinForm) {
                 },
                 query: {
                   ...this.$route.query,
-                  action: order.uuid
+                  action: response.uuid
                 }
               })
               .then(() => {
                 if (withLine) {
-                  this.createOrderLine(order.uuid)
+                  this.createOrderLine(response.uuid!)
                 }
+                this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
+                  posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+                })
               })
-              .catch(
-                undefined
-              )
-
-            // update orders list
-            this.$store.commit(Namespaces.Order + '/' + 'setIsReloadListOrders')
-          })
-          .catch(error => {
-            console.error(error.message)
-            this.$message({
-              type: 'error',
-              message: error.message,
-              showClose: true
-            })
+              .catch((error) => {
+                console.log(error)
+              })
           })
       } else {
         this.createOrderLine(orderUuid.toString())
@@ -429,22 +386,10 @@ export default class MixinPOS extends Mixins(MixinForm) {
         }
 
         if (orderUuid) {
-          requestGetOrder(orderUuid)
-            .then((orderResponse: IOrderData) => {
-              this.$store.dispatch(Namespaces.Order + '/' + 'currentOrder', orderResponse)
-              this.fillOrder(orderResponse)
-              this.listOrderLines(orderResponse)
-            })
-            .catch(error => {
-              this.$message({
-                type: 'error',
-                message: error.message,
-                showClose: true
-              })
-            })
+          this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', {
+            orderUuid
+          })
         }
-      } else {
-        this.fillOrder(<IOrderData> this.currentOrder, false)
       }
     }
 
@@ -470,15 +415,15 @@ export default class MixinPOS extends Mixins(MixinForm) {
         const { businessPartner } = order
         this.setBusinessPartner(businessPartner)
       }
-      this.order = orderToPush
+      // this.order = orderToPush
     }
 
     getOrderTax(currency: any): string | undefined {
-      if (!this.order) {
+      if (!this.getOrder) {
         return undefined
       }
       return this.formatPrice(
-            this.order.grandTotal! - this.order!.totalLines!,
+            this.getOrder.grandTotal! - this.getOrder!.totalLines!,
             currency
       )
     }
@@ -501,16 +446,8 @@ export default class MixinPOS extends Mixins(MixinForm) {
                 this.updateOrderLine(mutation.payload)
               }
               break
-              //
-            case 'C_DocType_ID':
-              this.updateOrder(mutation.payload)
-              break
           }
         } else if (mutation.type === 'updateValueOfField') {
-          // if (this.metadata.containerUuid === mutation.payload.containerUuid &&
-          //   mutation.payload.columnName === 'ProductValue') {
-          //   this.findProduct(mutation.payload.value)
-          // }
           switch (mutation.payload.columnName) {
             case 'DisplayColumn_TenderType':
               this.displayType = mutation.payload.value
@@ -685,7 +622,6 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     mounted() {
-      // this,findProcess()
       if (this.$route.query) {
         const orderUuid: string | undefined = <string> this.$route.query.action
         this.reloadOrder(true, orderUuid)
@@ -695,7 +631,6 @@ export default class MixinPOS extends Mixins(MixinForm) {
     beforeMount() {
       if (this.currentPoint) {
         if (this.currentOrder) {
-          this.fillOrder(<IOrderData> this.currentOrder)
           this.listOrderLines(<IOrderData> this.currentOrder)
         }
       }
