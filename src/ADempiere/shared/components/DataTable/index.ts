@@ -22,6 +22,7 @@ import { FIELDS_DECIMALS, FIELDS_QUANTITY, FIELDS_READ_ONLY_FORM, IFieldFormType
 import { ElInput } from 'element-ui/types/input'
 import { IFieldConditionData, IFieldDefinitionData } from '@/ADempiere/modules/field/FieldType'
 import evaluator from '../../utils/evaluator'
+import { LOG_COLUMNS_NAME_LIST } from '@/ADempiere/shared/utils/dataUtils'
 
 @Component({
   name: 'DataTable',
@@ -416,7 +417,7 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
               return false
             }
           }
-          // if isReadOnly, isReadOnlyFromLogic
+          // if isReadOnly, isReadOnlyFromLogic or columns log
           if (this.isReadOnlyCell(record, fieldAttributes)) {
             return false
           }
@@ -450,14 +451,19 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
         return false
       }
 
-      isReadOnlyCell(row: any, field: any) {
+      isReadOnlyCell(row: any, field: any): boolean {
         // TODO: Add support to its type fields
         if (['FieldImage', 'FieldBinary'].includes(field.componentPath)) {
           return true
         }
 
+        const isLogColumns = LOG_COLUMNS_NAME_LIST.includes(field.columnName)
+
         const isUpdateableAllFields = field.isReadOnly || field.isReadOnlyFromLogic
         if (this.isPanelWindow) {
+          if (isLogColumns) {
+            return true
+          }
           const panelMetadata: IPanelDataExtended | undefined = this.panelMetadata
           if (field.columnName === panelMetadata!.linkColumnName ||
             field.columnName === panelMetadata!.fieldLinkColumnName) {
@@ -468,10 +474,10 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
           return (!field.isUpdateable && editMode) || (isUpdateableAllFields || field.isReadOnlyFromForm)
         } else if (this.panelType === 'browser') {
           // browser result
-          return field.isReadOnly
+          return field.isReadOnly || isLogColumns
         }
         // other type of panels (process/reports/forms)
-        return isUpdateableAllFields
+        return Boolean(isUpdateableAllFields)
       }
 
       callOffNewRecord() {

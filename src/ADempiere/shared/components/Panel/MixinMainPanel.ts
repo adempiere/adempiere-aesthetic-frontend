@@ -10,6 +10,7 @@ import { convertObjectToKeyValue } from '../../utils/valueFormat'
 import { parsedValueComponent } from '../../utils/valueUtils'
 import FieldDefinition from '../Field'
 import FilterFields from './FilterFields'
+import { LOG_COLUMNS_NAME_LIST } from '@/ADempiere/shared/utils/dataUtils'
 
 @Component({
   name: 'MixinMainPanel',
@@ -712,9 +713,10 @@ export default class MixinMainPanel extends Vue {
               itemField.columnName
             )
           ) {
+            const evaluation = (itemField.isReadOnly || LOG_COLUMNS_NAME_LIST.includes(itemField.columnName))
             if (
               fieldIsDisplayed(itemField) &&
-                        !itemField.isReadOnly &&
+                        !evaluation &&
                         itemField.isUpdateable &&
                         itemField.componentPath !== 'FieldSelect'
             ) {

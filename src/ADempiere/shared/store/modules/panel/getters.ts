@@ -9,6 +9,7 @@ import { IRootState } from '@/store'
 import { IPanelParameters, IRangeAttributeData, PanelState } from './type'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { parsedValueComponent } from '@/ADempiere/shared/utils/valueUtils'
+import { LOG_COLUMNS_NAME_LIST } from '@/ADempiere/shared/utils/dataUtils'
 
 type PanelGetterTree = GetterTree<PanelState, IRootState>
 type PanelActionContext = ActionContext<PanelState, IRootState>
@@ -505,6 +506,10 @@ export const getters: PanelGetterTree = {
       const isDisplayed: boolean = fieldIsDisplayed(fieldItem) && (fieldItem.isShowedFromUser || isMandatory)
 
       const { columnName } = fieldItem
+      if (fieldItem.panelType === PanelContextType.Window && LOG_COLUMNS_NAME_LIST.includes(columnName)) {
+        return false
+      }
+
       if (isDisplayed && isMandatory) {
         let value
         // used when evaluate data in table
@@ -577,20 +582,29 @@ export const getters: PanelGetterTree = {
 
     return attributesListLink.slice(0, -1)
   },
-  // Obtain empty obligatory fields
+  /**
+   * Obtain empty obligatory fields
+   * @param {string} containerUuid
+   * @param {array} fieldsList
+   * @param {string} formatReturn
+   */
+
   getFieldsListEmptyMandatory: (state: PanelState, getters, rootState, rootGetters) => (parameters: {
     containerUuid: string
     fieldsList?: IFieldDataExtendedUtils[]
-  }): string[] => {
-    const { containerUuid } = parameters
+    formatReturn?: string
+  }): string[]| IFieldDataExtendedUtils[] => {
+    const {
+      containerUuid,
+      formatReturn = parameters.formatReturn || 'name'
+    } = parameters
     let { fieldsList } = parameters
 
     if (!fieldsList) {
       fieldsList = getters.getFieldsListFromPanel(containerUuid)
     }
-    const fieldsEmpty: string[] = []
     // all optionals (not mandatory) fields
-    fieldsList!.forEach((fieldItem: IFieldDataExtendedUtils) => {
+    const fieldsNameEmpty = fieldsList!.filter((fieldItem: IFieldDataExtendedUtils) => {
       const value: any = rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         parentUuid: fieldItem.parentUuid,
         containerUuid,
@@ -599,11 +613,18 @@ export const getters: PanelGetterTree = {
       if (!value) {
         const isMandatory: boolean = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
         if (fieldIsDisplayed(fieldItem) && isMandatory) {
-          fieldsEmpty.push(fieldItem.name)
+          return true
         }
       }
     })
-    return fieldsEmpty
+
+    if (formatReturn) {
+      return fieldsList!.map((fieldItem: IFieldDataExtendedUtils) => {
+        const objFieldItem: IKeyValueObject = fieldItem as IKeyValueObject
+        return objFieldItem[formatReturn]
+      })
+    }
+    return fieldsNameEmpty
   },
   /**
    * Show all available fields not mandatory to show, used in components panel/filterFields.vue
