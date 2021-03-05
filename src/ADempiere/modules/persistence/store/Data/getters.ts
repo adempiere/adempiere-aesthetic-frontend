@@ -83,51 +83,50 @@ export const getters: BusinessDataGetterTree = {
 
     const withOut: string[] = ['isEdit', 'isSendToServer']
 
-    if (selection.length <= 0) {
+    if (!selection || selection.length <= 0) {
       selection = getters.getDataRecordSelection(containerUuid)
     }
-    if (selection.length) {
-      const { fieldsList, keyColumn } = <IPanelDataExtended>(
-                rootGetters[Namespaces.Panel + '/' + 'getPanel'](containerUuid)
-            )
-            // reduce list
-      const fieldsListSelection: IFieldDataExtendedUtils[] = fieldsList.filter(
-        (itemField: IFieldDataExtendedUtils) => {
-          return itemField.isIdentifier || itemField.isUpdateable
-        }
-      )
 
-      selection.forEach((itemRow: IKeyValueObject) => {
-        const records: KeyValueData[] = []
-
-        Object.keys(itemRow).forEach((key: string) => {
-          if (
-            !key.includes('DisplayColumn') &&
-                        !withOut.includes(key)
-          ) {
-            // evaluate metadata attributes before to convert
-            const field:
-                            | IFieldDataExtendedUtils
-                            | undefined = fieldsListSelection.find(
-                              (itemField: IFieldDataExtendedUtils) =>
-                                itemField.columnName === key
-                            )
-            if (field) {
-              records.push({
-                // columnName: key,
-                key,
-                value: itemRow[key]
-              })
-            }
-          }
-        })
-
-        selectionToServer.push({
-          selectionId: itemRow[keyColumn!],
-          selectionValues: records
-        })
-      })
+    if (!selection || selection.length <= 0) {
+      return selectionToServer
     }
+
+    const { fieldsList, keyColumn } = <IPanelDataExtended>(
+        rootGetters[Namespaces.Panel + '/' + 'getPanel'](containerUuid)
+        )
+    // reduce list
+    const fieldsListSelection: string[] = fieldsList.filter(
+      (itemField: IFieldDataExtendedUtils) => {
+        return itemField.isIdentifier || itemField.isUpdateable
+      })
+      .map(itemField => {
+        return itemField.columnName
+      })
+
+    selection.forEach((itemRow: IKeyValueObject) => {
+      const records: KeyValueData[] = []
+
+      Object.keys(itemRow).forEach((key: string) => {
+        if (
+          !key.includes('DisplayColumn') && !withOut.includes(key)
+        ) {
+          if (fieldsListSelection.includes(key)) {
+            // evaluate metadata attributes before to convert
+            records.push({
+              // columnName: key,
+              key,
+              value: itemRow[key]
+            })
+          }
+        }
+      })
+
+      selectionToServer.push({
+        selectionId: itemRow[keyColumn!],
+        selectionValues: records
+      })
+    })
+
     return selectionToServer
   },
   getRowData: (state: BusinessDataState, getters) => (data: {

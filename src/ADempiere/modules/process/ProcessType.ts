@@ -43,7 +43,7 @@ export interface IProcessRequestData {
     tableSelectedId?: number
     reportViewUuid?: string
     parameters: KeyValueData[]
-    selections?: any[]
+    selectionsList?: any[]
     printFormatUuid?: string
 }
 
