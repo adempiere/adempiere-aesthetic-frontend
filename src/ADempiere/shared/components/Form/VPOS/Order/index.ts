@@ -219,6 +219,9 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   mounted() {
+    if (this.$route.query.action) {
+      this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', { orderUuid: this.$route.query.action })
+    }
     setTimeout(() => {
       this.currencyDisplaye()
     }, 1500)

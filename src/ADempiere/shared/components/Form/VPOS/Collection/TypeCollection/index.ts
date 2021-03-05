@@ -16,7 +16,6 @@ export default class TypeCollection extends Vue {
 
     // Computed properties
     get typesPayment() {
-      console.log(this.$store.getters[Namespaces.Payments + '/' + 'getListsPaymentTypes'])
       return this.$store.getters[Namespaces.Payments + '/' + 'getListsPaymentTypes']
     }
 

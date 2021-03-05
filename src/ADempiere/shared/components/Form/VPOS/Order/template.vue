@@ -34,6 +34,7 @@
             </el-col>
             <el-col :span="2" :style="styleTab">
               <el-tag
+              v-if="Boolean(getOrder.documentStatus.value)"
                 :type="tagStatus(getOrder.documentStatus.value)"
               >
                 <span v-if="!(getOrder.documentStatus.value)">

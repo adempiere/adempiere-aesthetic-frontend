@@ -8,7 +8,8 @@ import {
   requestCashClosing, requestCompletePreparedOrder, requestCreateNewCustomerReturnOrder, requestCreateWithdrawal, requestGenerateImmediateInvoice, requestPrintOrder,
   // requestReverseSalesTransaction,
   requestDeleteOrder,
-  requestCreateOrder
+  requestCreateOrder,
+  requestProcessOrder
 } from '@/ADempiere/modules/pos/POSService'
 import ModalDialog from '@/ADempiere/shared/components/Dialog'
 import posProcess from '@/ADempiere/shared/utils/Constants/posProcess'
@@ -172,9 +173,35 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     completePreparedOrder(): void {
-      requestCompletePreparedOrder({
-        orderUuid: this.$route.query.action.toString()
+      const posUuid: string | undefined = this.currentPoint!.uuid!
+      this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', true)
+      this.$message({
+        type: 'info',
+        message: this.$t('notifications.processing').toString(),
+        showClose: true
       })
+      requestProcessOrder({
+        posUuid,
+        orderUuid: this.$route.query.action as string,
+        createPayments: Boolean(this.$store.getters[Namespaces.Payments + '/' + 'getListPayments']),
+        payments: this.$store.getters[Namespaces.Payments + '/' + 'getListPayments']
+      }).then(response => {
+        this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', response.uuid)
+      })
+        .catch(error => {
+          console.log(error)
+        })
+        .finally(() => {
+          this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
+            posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+          })
+          this.$message({
+            type: 'success',
+            message: this.$t('notifications.completed').toString(),
+            showClose: true
+          })
+          this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', false)
+        })
     }
 
     reverseSalesTransaction(): void {

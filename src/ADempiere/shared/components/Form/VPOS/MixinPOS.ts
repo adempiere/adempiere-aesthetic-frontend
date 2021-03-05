@@ -380,9 +380,9 @@ export default class MixinPOS extends Mixins(MixinForm) {
       if (requery) {
         if (!orderUuid) {
           orderUuid = this.$route.query.action.toString()
-          if (!orderUuid) {
-            orderUuid = this.$store.getters[Namespaces.Order + '/' + 'getOrder'].uuid // this.currentOrder.uuid
-          }
+          // if (!orderUuid) {
+          //   orderUuid = this.$store.getters[Namespaces.Order + '/' + 'getOrder'].uuid // this.currentOrder.uuid
+          // }
         }
 
         if (orderUuid) {
