@@ -4,11 +4,11 @@ import { getters } from './getters'
 import { mutations } from './mutations'
 import { actions } from './actions'
 import { IRootState } from '@/store'
-import { CollectionState } from '../../POSType'
+import { PaymentsState } from '../../POSType'
 
 const namespaced = true
 
-export const collectionModule: Module<CollectionState, IRootState> = {
+export const paymentsModule: Module<PaymentsState, IRootState> = {
   namespaced,
   state,
   getters,

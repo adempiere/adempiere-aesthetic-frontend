@@ -22,7 +22,8 @@ import { IPointOfSalesData } from '@/ADempiere/modules/pos'
   mixins: [MixinForm, Template]
 })
 export default class PriceChecking extends Mixins(MixinForm) {
-    public fieldsList: IProductCodeData[] = fieldList
+    // public fieldsList: IProductCodeData[] = fieldList
+    fieldsList = fieldList
     @Ref() readonly ProductValue?: HTMLElement[]
     public productPrice: any = {}
     public messageError = true

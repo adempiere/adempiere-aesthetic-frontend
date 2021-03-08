@@ -91,7 +91,8 @@ export const mutations: UtilsMutationTree = {
       splitWidthRight: 3,
       splitWidthLeft: 3,
       parametersProcessPos: [],
-      updateOrder: false
+      updateOrder: false,
+      updatePayment: false
     }
   },
   setSplitWidthRight(state: UtilsState, splitWidthRight: number) {
@@ -105,5 +106,8 @@ export const mutations: UtilsMutationTree = {
   },
   setUpdateOrder(state: UtilsState, order: boolean) {
     state.updateOrder = order
+  },
+  setUpdatePayment(state: UtilsState, payment: boolean) {
+    state.updatePayment = payment
   }
 }

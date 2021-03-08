@@ -8,7 +8,8 @@ import {
   requestCashClosing, requestCompletePreparedOrder, requestCreateNewCustomerReturnOrder, requestCreateWithdrawal, requestGenerateImmediateInvoice, requestPrintOrder,
   // requestReverseSalesTransaction,
   requestDeleteOrder,
-  requestCreateOrder
+  requestCreateOrder,
+  requestProcessOrder
 } from '@/ADempiere/modules/pos/POSService'
 import ModalDialog from '@/ADempiere/shared/components/Dialog'
 import posProcess from '@/ADempiere/shared/utils/Constants/posProcess'
@@ -99,8 +100,6 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     newOrder(): void {
-      this.$store.dispatch(Namespaces.Order + '/' + 'findOrderServer', {})
-
       const pos: string = String(this.pointOfSalesId) || this.$route.query.pos.toString()
       this.$router.push({
         params: {
@@ -112,7 +111,25 @@ export default class Options extends Mixins(MixinOrderLine) {
       }).catch(error => {
         console.info(`VPOS/Options component (New Order): ${error.message}`)
       }).finally(() => {
-        // const { templateBusinessPartner } = this.currentPOS!
+        const { templateBusinessPartner } = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+
+        // TODO: Set order with POS Terminal default values
+        this.$store.commit(Namespaces.Payments + '/' + 'setListPayments', [])
+        this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', {
+          documentType: {},
+          documentStatus: {
+            value: ''
+          },
+          totalLines: 0,
+          grandTotal: 0,
+          salesRepresentative: {},
+          businessPartner: {
+            value: '',
+            uuid: ''
+          }
+        })
+        this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
+        this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', false)
 
         this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
           containerUuid: this.metadata.containerUuid,
@@ -126,27 +143,17 @@ export default class Options extends Mixins(MixinOrderLine) {
           },
           {
             key: 'C_BPartner_ID',
-            value: 1000006
+            value: templateBusinessPartner.id
           },
           {
             key: 'DisplayColumn_C_BPartner_ID',
-            value: 'Cliente Unico'
+            value: templateBusinessPartner.name
           },
           {
             key: ' C_BPartner_ID_UUID',
-            value: '9f6cf428-9209-11e9-8046-0242ac140002'
+            value: this.$store.getters[Namespaces.User + '/' + 'getUserUuid']
           }]
         })
-
-        // TODO: Set order with POS Terminal default values
-        // this.order = {
-        //   documentType: {},
-        //   documentStatus: {},
-        //   salesRepresentative: this.currentPOS.salesRepresentative
-        //
-        this.$store.commit(Namespaces.Collection + '/' + 'setListPayments', [])
-        this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
-        this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', false)
       })
     }
 
@@ -166,9 +173,41 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     completePreparedOrder(): void {
-      requestCompletePreparedOrder({
-        orderUuid: this.$route.query.action.toString()
+      const posUuid: string | undefined = this.currentPoint!.uuid!
+      this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', true)
+      this.$store.dispatch(Namespaces.Utils + '/' + 'updatePaymentPos', true)
+      this.$message({
+        type: 'info',
+        message: this.$t('notifications.processing').toString(),
+        showClose: true
       })
+      requestProcessOrder({
+        posUuid,
+        orderUuid: this.$route.query.action as string,
+        createPayments: Boolean(this.$store.getters[Namespaces.Payments + '/' + 'getListPayments']),
+        payments: this.$store.getters[Namespaces.Payments + '/' + 'getListPayments']
+      }).then(response => {
+        this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', response.uuid)
+        this.$message({
+          type: 'success',
+          message: this.$t('notifications.completed').toString(),
+          showClose: true
+        })
+      })
+        .catch(error => {
+          this.$message({
+            type: 'error',
+            message: error.message,
+            showClose: true
+          })
+        })
+        .finally(() => {
+          this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
+            posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+          })
+          this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', false)
+          this.$store.dispatch(Namespaces.Utils + '/' + 'updatePaymentPos', false)
+        })
     }
 
     reverseSalesTransaction(): void {

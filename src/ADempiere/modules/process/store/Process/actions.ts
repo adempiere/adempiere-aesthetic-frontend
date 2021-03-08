@@ -113,7 +113,7 @@ export const actions: ProcessActionTree = {
       // }
 
       // additional attributes to send server, selection to browser, or table name and record id to window
-      let selection = []
+      let selectionsList = []
       let allData: IRecordSelectionData | undefined
       let tab: ITabDataExtended, tableName: string, recordId: string
       if (panelType) {
@@ -121,11 +121,11 @@ export const actions: ProcessActionTree = {
           allData = <IRecordSelectionData>(
                         context.rootGetters[Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'](containerUuid)
                     )
-          selection = context.rootGetters[Namespaces.BusinessData + '/' + 'getSelectionToServer']({
+          selectionsList = context.rootGetters[Namespaces.BusinessData + '/' + 'getSelectionToServer']({
             containerUuid,
             selection: allData.selection
           })
-          if (selection.length < 1) {
+          if (!selectionsList || selectionsList.length < 1) {
             showNotification({
               title: language
                 .t('data.selectionRequired')
@@ -310,14 +310,15 @@ export const actions: ProcessActionTree = {
       }
       if (isProcessTableSelection) {
         const windowSelectionProcess: ISelectionProcessData = context.rootGetters[Namespaces.Utils + '/' + 'getProcessSelect']
-        windowSelectionProcess.selection.forEach((selection: any) => {
+        windowSelectionProcess.selection.forEach((selectionWindow: any) => {
           Object.assign(processResult, {
-            selection: selection.UUID,
-            record: selection[windowSelectionProcess.tableName]
+            selection: selectionWindow.UUID,
+            record: selectionWindow[windowSelectionProcess.tableName]
           })
           const countRequest: number = context.state.totalRequest + 1
-          context.commit('setTotalRequest', countRequest)
+          context.commit(Namespaces.Persistence + '/' + 'setTotalRequest', countRequest)
           if (!windowSelectionProcess.finish) {
+            // TODO: Add Backend support to selectionsList records in window
             requestRunProcess({
               uuid: processDefinition.uuid,
               id: processDefinition.id,
@@ -332,11 +333,8 @@ export const actions: ProcessActionTree = {
                 }
               ),
               // selectionsList: selection,
-              selections: selection,
               tableName: windowSelectionProcess.tableName,
-              recordId: <number>(
-                                selection[windowSelectionProcess.tableName]
-                            )
+              recordId: <number>(selectionWindow[windowSelectionProcess.tableName])
             })
               .then((runProcessResponse: IProcessLogData) => {
                 const {
@@ -361,13 +359,11 @@ export const actions: ProcessActionTree = {
                   link.href = window.URL.createObjectURL(blob)
                   link.download = output.fileName
                   if (
-                    reportType !==
-                                            ReportExportContextType.Pdf &&
-                                        reportType !==
-                                            ReportExportContextType.Html
+                    reportType !== ReportExportContextType.Pdf &&
+                    reportType !== ReportExportContextType.Html
                   ) {
                     if (link) {
-                                            link.click!()
+                      link.click!()
                     }
                   }
 
@@ -407,8 +403,7 @@ export const actions: ProcessActionTree = {
                         ) => {
                           reportViewList.childs = responseReportView
                           if (
-                            reportViewList.childs
-                              .length
+                            reportViewList.childs.length
                           ) {
                             // Get contextMenu metadata and concat print report views with contextMenu actions
                             const contextMenuMetadata: IContextMenuData = context.rootGetters[Namespaces.ContextMenu + '/' + 'getContextMenu'](
@@ -642,7 +637,7 @@ export const actions: ProcessActionTree = {
               }
             }
           ),
-          selections: selection,
+          selectionsList,
           tableName: tableName!,
           recordId: Number(recordId!)
         })
@@ -1222,7 +1217,7 @@ export const actions: ProcessActionTree = {
                   id: processDefinition!.id,
                   reportType,
                   parameters: parametersList,
-                  selections: selection,
+                  selectionsList: selection,
                   tableName: windowSelectionProcess.tableName!,
                   recordId: selection[windowSelectionProcess.tableName!]
                 })

@@ -38,6 +38,7 @@ import {
 import { IValueData } from '@/ADempiere/modules/core'
 import { convertObjectToKeyValue } from '@/ADempiere/shared/utils/valueFormat'
 import { Route } from 'vue-router'
+import { LOG_COLUMNS_NAME_LIST } from '@/ADempiere/shared/utils/dataUtils'
 
 type WindowActionTree = ActionTree<WindowState, IRootState>
 type WindowActionContext = ActionContext<WindowState, IRootState>
@@ -174,9 +175,15 @@ export const actions: WindowActionTree = {
         }, { root: true })
         const emptyFields = context.rootGetters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory'](
           {
-            containerUuid: field.containerUuid
+            containerUuid: field.containerUuid,
+            formatReturn: false
           }
-        )
+        ).filter((itemField: any) => {
+          return !LOG_COLUMNS_NAME_LIST.includes(itemField.columnName)
+        }).map((itemField: any) => {
+          return itemField.name
+        })
+
         if (emptyFields) {
           showMessage({
             message:

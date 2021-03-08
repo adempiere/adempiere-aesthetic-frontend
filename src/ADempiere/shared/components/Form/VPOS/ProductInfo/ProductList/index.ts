@@ -36,7 +36,8 @@ export default class ProductList extends Mixins(MixinForm) {
     @Prop({ type: String, default: 'isShowPopoverField' }) popoverName!: String
 
     public defaultMaxPagination = 50
-    public fieldsList: IFieldLocation[] = fieldListProductPrice
+    // public fieldsList: IFieldLocation[] = fieldListProductPrice
+    fieldsList = fieldListProductPrice
     public isCustomForm = true
     public timeOut: any = null
     public attribute = ''

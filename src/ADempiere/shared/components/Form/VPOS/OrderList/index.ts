@@ -32,7 +32,8 @@ export default class OrdersList extends Mixins(MixinForm) {
     }
 
     public defaultMaxPagination = 50
-    public fieldsList: IFieldLocation[] = fieldListOrders
+    // public fieldsList: IFieldLocation[] = fieldListOrders
+    fieldsList = fieldListOrders
     public isCustomForm = true
     public activeAccordion = 'query-criteria'
     public timeOut: any = null
@@ -70,7 +71,6 @@ export default class OrdersList extends Mixins(MixinForm) {
       if (order) {
         return order
       }
-      this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
       return null
     }
 
@@ -100,15 +100,6 @@ export default class OrdersList extends Mixins(MixinForm) {
 
       if (this.isReadyFromGetData) {
         this.loadOrdersList()
-      }
-    }
-
-    mounted() {
-      const listOrder = this.$store.getters[Namespaces.OrderLines + '/' + 'getListOrderLine']
-      if (!listOrder || !listOrder.length) {
-        this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
-          posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
-        })
       }
     }
 
@@ -158,7 +149,7 @@ export default class OrdersList extends Mixins(MixinForm) {
       this.$store.commit(Namespaces.Order + '/' + 'showListOrders', false)
       this.$store.dispatch(Namespaces.Order + '/' + 'currentOrder', row)
       if (row) {
-        this.$store.dispatch(Namespaces.Collection + '/' + 'deleteAllCollectBox')
+        this.$store.dispatch(Namespaces.Payments + '/' + 'deleteAllCollectBox')
         this.$router.push(
           {
             params: {
@@ -170,9 +161,8 @@ export default class OrdersList extends Mixins(MixinForm) {
             }
           }
         )
-        const posUuid = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
         const orderUuid = this.$route.query.action
-        this.$store.dispatch(Namespaces.Collection + '/' + 'listPayments', { posUuid, orderUuid })
+        this.$store.dispatch(Namespaces.Payments + '/' + 'listPayments', { orderUuid })
       }
     }
 

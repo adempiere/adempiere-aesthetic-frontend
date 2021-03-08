@@ -16,6 +16,7 @@ import {
   ISizeData
 } from '../../utils/references'
 import { Namespaces } from '../../utils/types'
+import { LOG_COLUMNS_NAME_LIST } from '@/ADempiere/shared/utils/dataUtils'
 
 @Component({
   name: 'FieldDefinition',
@@ -143,10 +144,15 @@ export default class FieldDefinition extends Vue {
         return true
       }
 
+      const isLogColumns = LOG_COLUMNS_NAME_LIST.includes(this.field.columnName)
+
       const isUpdateableAllFields: boolean =
             this.field.isReadOnly || this.field.isReadOnlyFromLogic
 
       if (this.field.panelType === PanelContextType.Window) {
+        if (isLogColumns) {
+          return true
+        }
         if (this.field.isAlwaysUpdateable) {
           return false
         }
@@ -171,7 +177,7 @@ export default class FieldDefinition extends Vue {
       } else if (this.field.panelType === PanelContextType.Browser) {
         if (this.inTable) {
           // browser result
-          return this.field.isReadOnly
+          return this.field.isReadOnly || isLogColumns
         }
         // query criteria
         return this.field.isReadOnlyFromLogic

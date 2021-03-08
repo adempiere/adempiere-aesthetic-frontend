@@ -147,6 +147,17 @@ export function convertCountry(countryToConvert: any): ICountryData {
 }
 
 export function convertCurrency(currencyToConvert: any): ICurrencyData {
+  if (!currencyToConvert) {
+    return {
+      id: 0,
+      uuid: '',
+      iSOCode: '',
+      curSymbol: '',
+      description: '',
+      standardPrecision: 0,
+      costingPrecision: 0
+    }
+  }
   return {
     id: currencyToConvert.id,
     uuid: currencyToConvert.uuid,

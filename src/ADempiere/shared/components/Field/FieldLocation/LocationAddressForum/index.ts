@@ -165,7 +165,8 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
 
     sendValuesToServer(): void {
       const fieldsNotReady = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
-        containerUuid: this.containerUuid
+        containerUuid: this.containerUuid,
+        isValidate: true
       })
       if (fieldsNotReady) {
         showNotification({

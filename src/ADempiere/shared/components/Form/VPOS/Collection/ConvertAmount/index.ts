@@ -26,7 +26,8 @@ export default class ConvertAmount extends Mixins(MixinForm) {
       containerUuid: 'Collection-Convert-Amount'
     }
 
-    public fieldList: IFieldLocation[] = fieldListConvertAmountCollection
+    // public fieldsList: IFieldLocation[] = fieldListConvertAmountCollection
+    fieldsList = fieldListConvertAmountCollection
 
     // Computed properties
     get displayCurrency() {

@@ -3,6 +3,7 @@ import { IOverwriteDefinitionData } from '@/ADempiere/shared/utils/lookupFactory
 export interface IFieldLocation {
     tableName?: string
     isFromDictionary: boolean
+    isDisplayedFromLogic?: boolean
     columnName?: string
     tabindex?: string
     overwriteDefinition: Partial<IOverwriteDefinitionData>

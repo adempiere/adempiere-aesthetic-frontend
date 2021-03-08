@@ -21,7 +21,7 @@ export default class Favorites extends Mixins(MixinDasboard) {
     // Computed Properties
     get dataResult(): any[] {
       if (this.search.length) {
-        return this.filterResult(this.search)
+        return this.filterResult(this.search, this.favorites)
       }
       return this.favorites
     }

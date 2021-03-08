@@ -8,6 +8,9 @@ import {
   PersistenceState
 } from '@/ADempiere/modules/persistence'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { LOG_COLUMNS_NAME_LIST } from '@/ADempiere/shared/utils/dataUtils'
+import language from '@/ADempiere/shared/lang'
+import { showMessage } from '@/ADempiere/shared/utils/notifications'
 
 type PersistenceActionTree = ActionTree<PersistenceState, IRootState>
 type PersistenceActionContext = ActionContext<PersistenceState, IRootState>
@@ -23,11 +26,10 @@ export const actions: PersistenceActionTree = {
   ) {
     const { containerUuid, tableName, recordUuid } = payload
     return new Promise((resolve, reject) => {
-      let attributes:
-                | KeyValueData<IValueData>[]
-                | undefined = context.getters.getPersistenceAttributes(
-                  containerUuid
-                )
+      let attributes: KeyValueData<IValueData>[] | undefined =
+      context.getters.getPersistenceAttributes(containerUuid).filter((itemField: any) => {
+        return !LOG_COLUMNS_NAME_LIST.includes(itemField.columnName)
+      })
       if (attributes) {
         if (recordUuid) {
           // Update existing entity
@@ -56,7 +58,14 @@ export const actions: PersistenceActionTree = {
             tableName,
             attributesList: attributes
           })
-            .then(response => resolve(response))
+            .then(response => {
+              showMessage({
+                message: language.t('data.createRecordSuccessful').toString(),
+                type: 'success'
+              })
+
+              resolve(response)
+            })
             .catch(error => reject(error))
         }
       }

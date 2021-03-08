@@ -44,12 +44,15 @@ export default class Order extends Mixins(MixinOrderLine) {
     return 'padding-left: 30px; padding-right: 0px; padding-top: 2.2%;'
   }
 
-  get namePointOfSales(): string | undefined {
+  get namePointOfSales(): IPointOfSalesData | undefined {
     const currentPOS: IPointOfSalesData | undefined = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
     if (currentPOS && (currentPOS.name)) {
-      return currentPOS.name
+      return currentPOS
     }
-    return undefined
+    return {
+      name: '',
+      uuid: ''
+    } as IPointOfSalesData
   }
 
   get sellingPointsList(): IPointOfSalesData[] {
@@ -57,14 +60,14 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   get orderDate(): string | undefined {
-    if ((!this.order) || (!this.order.dateOrdered)) {
+    if ((!this.getOrder) || (!this.getOrder.dateOrdered)) {
       return this.formatDate(new Date())
     }
-    return this.formatDate(this.order.dateOrdered)
+    return this.formatDate(this.getOrder.dateOrdered)
   }
 
   get getItemQuantity(): number {
-    if (!this.currentOrder) {
+    if (!this.getOrder) {
       return 0
     }
     const result: number[] = this.allOrderLines.map(order => {
@@ -80,14 +83,14 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   get numberOfLines(): number | undefined {
-    if (!this.currentOrder) {
+    if (!this.getOrder) {
       return
     }
     return this.allOrderLines.length
   }
 
   get multiplyRate(): number {
-    return this.$store.getters[Namespaces.Collection + '/' + 'getMultiplyRate']
+    return this.$store.getters[Namespaces.Payments + '/' + 'getMultiplyRate']
   }
 
   get converCurrency(): any {
@@ -114,8 +117,8 @@ export default class Order extends Mixins(MixinOrderLine) {
   // Watchers
   @Watch('currencyUuid')
   handleCurrencyUuid(value: string) {
-    if (value) {
-      this.$store.dispatch(Namespaces.Collection + '/' + 'conversionDivideRate', {
+    if (value && this.currentPoint) {
+      this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
         conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
         currencyFromUuid: this.currencyPoint.uuid,
         currencyToUuid: value
@@ -125,15 +128,26 @@ export default class Order extends Mixins(MixinOrderLine) {
 
   @Watch('converCurrency')
   handleConverCurrency(value: any) {
-    if (value) {
-      this.$store.dispatch(Namespaces.Collection + '/' + 'conversionMultiplyRate', {
+    if (value && this.currentPoint) {
+      this.$store.dispatch(Namespaces.Payments + '/' + 'conversionMultiplyRate', {
         containerUuid: 'Order',
         conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
         currencyFromUuid: this.currencyPoint.uuid,
         currencyToUuid: value
       })
     } else {
-      this.$store.commit(Namespaces.Collection + '/' + 'currencyMultiplyRate', 1)
+      this.$store.commit(Namespaces.Payments + '/' + 'currencyMultiplyRate', 1)
+    }
+  }
+
+  @Watch('namePointOfSales')
+  handleNamePointOfSalesChange(value: IPointOfSalesData | undefined) {
+    if (value) {
+      this.$router.push({
+        query: {
+          pos: String(value.id)
+        }
+      })
     }
   }
 
@@ -146,16 +160,13 @@ export default class Order extends Mixins(MixinOrderLine) {
   openCollectionPanel(): void {
     this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', true)
-    // this.isShowedPOSKeyLayout = true
-    const posUuid = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
     const orderUuid = this.$route.query.action
-    this.$store.dispatch(Namespaces.Collection + '/' + 'listPayments', { posUuid, orderUuid })
+    this.$store.dispatch(Namespaces.Payments + '/' + 'listPayments', { orderUuid })
     this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSOptions', false)
   }
 
   newOrder(): void {
-    this.$store.dispatch(Namespaces.Order + '/' + 'findOrderServer', {})
     this.$router.push({
       params: {
         ...this.$route.params
@@ -192,13 +203,28 @@ export default class Order extends Mixins(MixinOrderLine) {
 
       this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
     })
+    this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', {
+      documentType: {},
+      documentStatus: {
+        value: ''
+      },
+      totalLines: 0,
+      grandTotal: 0,
+      salesRepresentative: {},
+      businessPartner: {
+        value: '',
+        uuid: ''
+      }
+    })
   }
 
   mounted() {
-    // setTimeout(() => {
-    //   this.tenderTypeDisplaye()
-    //   this.currencyDisplaye()
-    // }, 1500)
+    if (this.$route.query.action) {
+      this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', { orderUuid: this.$route.query.action })
+    }
+    setTimeout(() => {
+      this.currencyDisplaye()
+    }, 1500)
   }
 
   open() : void {
@@ -210,26 +236,30 @@ export default class Order extends Mixins(MixinOrderLine) {
   tenderTypeDisplaye() {
     if (this.fieldList && this.fieldList.length) {
       const tenderType = this.fieldList[5].reference
-      this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
-        tableName: tenderType.tableName,
-        query: tenderType.query
-      })
-        .then(response => {
-          this.$store.dispatch(Namespaces.Collection + '/' + 'tenderTypeDisplaye', response)
+      if (tenderType) {
+        this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
+          tableName: tenderType.tableName,
+          query: tenderType.query
         })
+          .then(response => {
+            this.$store.dispatch(Namespaces.Payments + '/' + 'tenderTypeDisplaye', response)
+          })
+      }
     }
   }
 
   currencyDisplaye() {
     if (this.fieldList && this.fieldList.length) {
       const currency = this.fieldList[4].reference
-      this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
-        tableName: currency.tableName,
-        query: currency.query
-      })
-        .then(response => {
-          this.$store.dispatch(Namespaces.Collection + '/' + 'currencyDisplaye', response)
+      if (currency) {
+        this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
+          tableName: currency.tableName,
+          query: currency.query
         })
+          .then(response => {
+            this.$store.dispatch(Namespaces.Payments + '/' + 'currencyDisplaye', response)
+          })
+      }
     }
   }
 }

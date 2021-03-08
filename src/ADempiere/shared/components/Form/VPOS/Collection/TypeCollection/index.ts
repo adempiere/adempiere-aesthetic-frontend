@@ -1,6 +1,7 @@
+import { IFieldData, IReferenceData } from '@/ADempiere/modules/field'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatDate, formatPrice } from '@/ADempiere/shared/utils/valueFormat'
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import Template from './template.vue'
 
 @Component({
@@ -8,27 +9,51 @@ import Template from './template.vue'
   mixins: [Template]
 })
 export default class TypeCollection extends Vue {
-    @Prop({ type: Array, default: undefined }) isAddTypePay?: any[] = undefined
-    @Prop({ type: Object, default: undefined }) currency?: any = undefined
+    @Prop({ type: Array, default: undefined }) isAddTypePay?: any[]
+    @Prop({ type: Object, default: undefined }) listTypesPayment: any
+    @Prop({ type: Object, default: undefined }) currency?: any
     public conevertion = 0
 
     // Computed properties
     get typesPayment() {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getListsPaymentTypes']
+      return this.$store.getters[Namespaces.Payments + '/' + 'getListsPaymentTypes']
     }
 
     get listCurrency() {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getListCurrency']
+      return this.$store.getters[Namespaces.Payments + '/' + 'getListCurrency']
     }
 
     get conevertionAmount() {
-      return this.$store.getters[Namespaces.Collection + '/' + 'getConvertionPayment']
+      return this.$store.getters[Namespaces.Payments + '/' + 'getConvertionPayment']
+    }
+
+    @Watch('listTypesPayment')
+    handleListTypesPayment(value: any) {
+      if (value && this.typesPayment.length <= 1) {
+        this.tenderTypeDisplaye(value)
+      }
     }
 
     // Methods
     formatDate = formatDate
 
     formatPrice = formatPrice
+
+    tenderTypeDisplaye(value: Partial<IFieldData>) {
+      if (value.reference) {
+        const tenderType = value.reference
+        if (tenderType) {
+          this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
+            tableName: tenderType.tableName,
+            query: tenderType.query,
+            filters: []
+          })
+            .then(response => {
+              this.$store.dispatch(Namespaces.Payments + '/' + 'tenderTypeDisplaye', response)
+            })
+        }
+      }
+    }
 
     getImageFromTenderType(typePay: string): any {
       // A: Direct Deposit: ACH Automatic Clearing House
@@ -76,7 +101,7 @@ export default class TypeCollection extends Vue {
     deleteCollect(key: any): void {
       const orderUuid: string = key.orderUuid
       const paymentUuid: string = key.uuid
-      this.$store.dispatch(Namespaces.Collection + '/' + 'deletetPayments', {
+      this.$store.dispatch(Namespaces.Payments + '/' + 'deletetPayments', {
         orderUuid,
         paymentUuid
       })
