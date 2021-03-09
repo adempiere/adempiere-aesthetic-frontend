@@ -21,14 +21,14 @@ export const getters: PointOfSalesGetterTree = {
   getCurrentPOS: (state: PointOfSalesState, getters, rootState): IPointOfSalesData | undefined => {
     const userUuid: string = rootState.user.userUuid
     let currentPOS
-    const sellingPointList = state.pointOfSales.list?.length || 0
-    if (sellingPointList > 1) {
+    const sellingPointList = state.pointOfSales.list
+    if (sellingPointList && sellingPointList.length > 1) {
       currentPOS = state.pointOfSales.list?.find(elem => elem.salesRepresentative.uuid === userUuid)
     }
     if (currentPOS) {
       return currentPOS
     }
-    if (!state.pointOfSales.currentPOS && sellingPointList) {
+    if (!state.pointOfSales.currentPOS && sellingPointList && sellingPointList.length > 0) {
       return state.pointOfSales.list![0]
     }
     if (state.pointOfSales.currentPOS) {
@@ -41,13 +41,11 @@ export const getters: PointOfSalesGetterTree = {
     state: PointOfSalesState, getters
   ): string | undefined => {
     const currentPOS: IPOSData| undefined = getters.getCurrentPOS
-    console.log('currentPOS')
-    console.log(currentPOS)
     if (!currentPOS) {
       return undefined
     }
     // return currentPOS.uuid
-    return currentPOS.userUuid
+    return currentPOS.uuid
   },
   getSellingPointsList: (state: PointOfSalesState, getters): IPointOfSalesData[] => {
     return getters.getPointOfSales().list
