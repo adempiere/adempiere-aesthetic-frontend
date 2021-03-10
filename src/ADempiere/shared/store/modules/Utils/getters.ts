@@ -12,8 +12,9 @@ export const getters: UtilsGetterTree = {
   getProcessSelect: (state: UtilsState): Partial<ISelectionProcessData> => {
     return state.selectionProcess
   },
-  getWidthLayout: (state: UtilsState, rootGetters): number => {
-    if (rootGetters.toggleSideBar) {
+  getWidthLayout: (state: UtilsState, getters, rootState, rootGetters): number => {
+    const toggleSidebar = rootGetters.toggleSideBar
+    if (toggleSidebar) {
       return state.width - 250
     }
     return state.width - 54

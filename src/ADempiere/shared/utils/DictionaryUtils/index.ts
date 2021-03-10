@@ -647,10 +647,10 @@ export function assignedGroup(params: {
 
   fieldsList.forEach(fieldElement => {
     if (fieldElement.panelType !== PanelContextType.Window) {
-      // fieldElement.groupAssigned = ''
-      // fieldElement.typeGroupAssigned = ''
-      fieldElement.fieldGroup.groupName = ''
-      fieldElement.fieldGroup.groupType = ''
+      fieldElement.groupAssigned = ''
+      fieldElement.typeGroupAssigned = ''
+      // fieldElement.fieldGroup.groupName = ''
+      // fieldElement.fieldGroup.groupType = ''
       return
     }
 
@@ -675,14 +675,14 @@ export function assignedGroup(params: {
       }
     }
 
-    // fieldElement.groupAssigned = currentGroup
-    // fieldElement.typeGroupAssigned = typeGroup
-    fieldElement.fieldGroup.groupName = currentGroup
-    fieldElement.fieldGroup.groupType = typeGroup
+    fieldElement.groupAssigned = currentGroup
+    fieldElement.typeGroupAssigned = typeGroup
+    // fieldElement.fieldGroup.groupName = currentGroup
+    // fieldElement.fieldGroup.groupType = typeGroup
 
     if (groupToAssigned !== undefined) {
-      // fieldElement.groupAssigned = groupToAssigned
-      fieldElement.fieldGroup.groupName = groupToAssigned
+      fieldElement.groupAssigned = groupToAssigned
+      // fieldElement.fieldGroup.groupName = groupToAssigned
     }
   })
 

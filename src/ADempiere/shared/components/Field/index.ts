@@ -219,7 +219,7 @@ export default class FieldDefinition extends Vue {
         return DEFAULT_SIZE
       }
 
-      let sizeField: Partial<ISizeData> = {}
+      let sizeField: ISizeData | undefined
       if (this.field.size) {
         // set field size property
         sizeField = this.field.size
@@ -229,23 +229,27 @@ export default class FieldDefinition extends Vue {
         sizeField = DEFAULT_SIZE
       }
 
-      const newSizes: Partial<ISizeData> = {}
+      let newSizes: Partial<ISizeData> | undefined
 
       // in table set max width, used by browser result and tab children of window
       if (this.inTable) {
-        newSizes.xs = 24
-        newSizes.sm = 24
-        newSizes.md = 24
-        newSizes.lg = 24
-        newSizes.xl = 24
+        newSizes = {
+          xs: 24,
+          sm: 24,
+          md: 24,
+          lg: 24,
+          xl: 24
+        }
         return <ISizeData>newSizes
       }
       if (this.isAdvancedQuery) {
-        newSizes.xs = 24
-        newSizes.sm = 24
-        newSizes.md = 12
-        newSizes.lg = 12
-        newSizes.xl = 12
+        newSizes = {
+          xs: 24,
+          sm: 24,
+          md: 12,
+          lg: 12,
+          xl: 12
+        }
         return <ISizeData>newSizes
       }
 
@@ -259,15 +263,19 @@ export default class FieldDefinition extends Vue {
           this.getWidth <= 768 ||
                 (this.getWidth >= 768 && this.field.isShowedRecordNavigation)
         ) {
-          newSizes.xs = 12
-          newSizes.sm = 12
-          newSizes.md = 12
-          newSizes.lg = 12
-          newSizes.xl = 12
+          newSizes = {
+            xs: 12,
+            sm: 12,
+            md: 12,
+            lg: 12,
+            xl: 12
+          }
           return <ISizeData>newSizes
         } else if (this.inGroup && this.getWidth >= 992) {
-          newSizes.xs = sizeField.xs
-          newSizes.sm = sizeField.sm! * 2
+          newSizes = {
+            xs: sizeField.xs,
+            sm: sizeField.sm * 2
+          }
           if (this.getWidth <= 1199) {
             newSizes.md = sizeField.md
           } else {
