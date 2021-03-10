@@ -76,7 +76,8 @@ export type IFieldDataExtendedUtils = IFieldData &
         handleRequestFocus?: any
         // Panel
         isActiveLogics?: boolean
-        groupAssigned?: any
+        groupAssigned?: string
+        typeGroupAssigned?: string
     }
 
 export interface IActionAttributesData {

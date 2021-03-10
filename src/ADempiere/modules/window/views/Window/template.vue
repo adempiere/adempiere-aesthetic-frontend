@@ -98,8 +98,8 @@
                                   {{ $t('window.containerInfo.notes') }}
                                 </span>
                                 <chat-entries
-                                  :table-name="getTableName"
-                                  :record-id="recordId"
+                                  :table-name="this.getTableName"
+                                  :record-id="this.recordId"
                                 />
                               </el-tab-pane>
 

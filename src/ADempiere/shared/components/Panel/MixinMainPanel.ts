@@ -534,8 +534,7 @@ export default class MixinMainPanel extends Vue {
             }
           })
           .catch(error => {
-            console.warn(
-                        `Error getting data list tab. Message: ${error.message}, code ${error.code}.`
+            console.warn(`Error getting data list tab. Message: ${error.message}, code ${error.code}.`
             )
           })
       }
@@ -586,7 +585,7 @@ export default class MixinMainPanel extends Vue {
 
       // count and add the field numbers according to your group
       groupsList.forEach(groupFields => {
-        const typeG = groupFields.metadataFields![0].typeGroupAssigned
+        const typeG = groupFields.metadataFields![0].typeGroupAssigned || ''
         groupFields.typeGroup = typeG
 
         const fieldsDisplayed = groupFields.metadataFields!.filter(

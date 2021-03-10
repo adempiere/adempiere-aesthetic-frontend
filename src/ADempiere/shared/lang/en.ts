@@ -277,7 +277,7 @@ export default {
     undoNew: 'Undo New Record',
     containerInfo: {
       notes: 'Notes',
-      changeLog: 'ACtivity',
+      changeLog: 'Activity',
       workflowLog: 'Workflow Log',
       changeDetail: 'Change detail',
       logWorkflow: {
