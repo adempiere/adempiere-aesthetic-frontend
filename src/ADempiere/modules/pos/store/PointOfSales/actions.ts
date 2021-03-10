@@ -86,8 +86,9 @@ export const actions: PointOfSalesActionTree = {
     const oldRoute: Route = context.rootState.route
 
     // const oldRoute = router.app._route
-    context.rootState.router.push({
-      name: oldRoute.name!,
+    context.rootState.router.currentRoute = {
+      ...context.rootState.router.currentRoute,
+      name: oldRoute.name,
       params: {
         ...oldRoute.params
       },
@@ -95,7 +96,17 @@ export const actions: PointOfSalesActionTree = {
         ...oldRoute.query,
         pos: String(posToSet.id)
       }
-    })
+    }
+    // context.rootState.router.push({
+    //   name: oldRoute.name!,
+    //   params: {
+    //     ...oldRoute.params
+    //   },
+    //   query: {
+    //     ...oldRoute.query,
+    //     pos: String(posToSet.id)
+    //   }
+    // })
 
     context.commit(Namespaces.KeyLayout + '/' + 'setIsReloadKeyLayout', undefined, { root: true })
     context.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice', undefined, { root: true })

@@ -9,6 +9,7 @@ import componentsRouter from './modules/components'
 import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
 import nestedRouter from './modules/nested'
+import enrollmentRoute from '@/ADempiere/shared/router/enrollment'
 
 Vue.use(VueRouter)
 
@@ -41,6 +42,7 @@ Vue.use(VueRouter)
   all roles can be accessed
 */
 export const constantRoutes: RouteConfig[] = [
+  ...enrollmentRoute,
   {
     path: '/redirect',
     component: Layout,
@@ -70,28 +72,6 @@ export const constantRoutes: RouteConfig[] = [
   {
     path: '/401',
     component: () => import(/* webpackChunkName: "401" */ '@/views/error-page/401.vue'),
-    meta: { hidden: true }
-  },
-  {
-    path: '/userEnrollment',
-    component: () => import('@/ADempiere/shared/components/Login/UserEnrollment'),
-    meta: { hidden: true }
-  },
-  {
-    path: '/forgotPassword',
-    component: () => import('@/ADempiere/shared/components/Login/ForgotPassword'),
-    meta: { hidden: true }
-  },
-  {
-    path: '/passwordReset',
-    name: 'passwordReset',
-    component: () => import('@/ADempiere/shared/components/Login/ChangePassword'),
-    meta: { hidden: true }
-  },
-  {
-    path: '/createPassword',
-    name: 'createPassword',
-    component: () => import('@/ADempiere/shared/components/Login/ChangePassword'),
     meta: { hidden: true }
   },
   {

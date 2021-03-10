@@ -251,6 +251,7 @@ export interface IGenerateInvoiceParams {
 // PointOfSales Module
 export interface IPOSData {
     userUuid?: string
+    uuid?: string
     isLoaded: boolean
     isReload: boolean
     recordCount: number

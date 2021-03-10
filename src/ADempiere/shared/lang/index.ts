@@ -27,8 +27,8 @@ Vue.use(VueI18n)
 const messages = {
   en: {
     ...enLocale,
-    ...elementEnLocale,
-    ...enAdempiere
+    ...enAdempiere,
+    ...elementEnLocale
   },
   zh: {
     ...zhLocale,
@@ -36,8 +36,8 @@ const messages = {
   },
   es: {
     ...esLocale,
-    ...elementEsLocale,
-    ...esAdempiere
+    ...esAdempiere,
+    ...elementEsLocale
   },
   ja: {
     ...jaLocale,
