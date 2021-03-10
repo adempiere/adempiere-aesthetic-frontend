@@ -36,13 +36,14 @@ export default class ChatEntries extends Vue {
 
   get tableNameToSend(): string | undefined {
     if (!this.tableName) {
-      return this.tableName
+      this.$route.params.tableName as string
     }
+    return this.tableName
   }
 
-  get recordIdToSend(): number | undefined {
+  get recordIdToSend() {
     if (!this.recordId) {
-      return Number(this.$route.params.recordId)
+      return this.$route.params.recordId
     }
     return this.recordId
   }
@@ -58,9 +59,14 @@ export default class ChatEntries extends Vue {
   sendComment() {
     // const comment = this.$store.getters[Namespaces.ChatEntries]
     const comment: string = this.$store.getters[Namespaces.ChatEntries + '/' + 'getChatTextLong']
+    console.log('sendComment active')
+    console.log('comment')
+    console.log(comment)
+    console.log('tableName')
+    console.log(this.tableName)
 
-    if (!comment) {
-      this.$store.dispatch('createChatEntry', {
+    if (comment) {
+      this.$store.dispatch(Namespaces.ChatEntries + '/' + 'createChatEntry', {
         tableName: this.tableNameToSend,
         recordId: this.recordIdToSend,
         comment
