@@ -74,7 +74,7 @@ export default class Order extends Mixins(MixinOrderLine) {
       return order.quantityOrdered
     })
 
-    if (result) {
+    if (result && result.length) {
       return result.reduce((accumulator, currentValue) => {
         return accumulator + currentValue
       })
