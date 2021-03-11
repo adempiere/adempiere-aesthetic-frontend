@@ -13,15 +13,18 @@ import Template from './template.vue'
   mixins: [MixinLocationField, MixinForm, Template]
 })
 export default class LocationAddressForm extends Mixins(MixinLocationField, MixinForm) {
-    @Prop({ type: Object }) parentMetadata: any = () => undefined
-    @Prop({ type: Object }) values: any = () => undefined
-    @Prop({ type: Object }) metadata: any = () => {
-      return {
+    @Prop({ type: Object }) parentMetadata: any
+    @Prop({ type: Object }) values: any
+    @Prop({
+      type: Object,
+      default: () => {
+        return {
         // TODO: Add container uuid parent
-        uuid: 'Location-Address-Create',
-        containerUuid: 'Location-Address-Create'
+          uuid: 'Location-Address-Create',
+          containerUuid: 'Location-Address-Create'
+        }
       }
-    }
+    }) metadata: any
 
     public iscustomForm = true
     public request = 0
@@ -81,7 +84,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
                       isDisplayed: false
                     }
                   })
-                  this.$store.dispatch('changeSequence', newFieldsList.sort(this.sortSequence))
+                  this.$store.dispatch(Namespaces.Field + '/' + 'changeSequence', newFieldsList.sort(this.sortSequence))
                 })
                 .catch(error => {
                   this.$message({
@@ -120,14 +123,14 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
         displayColumnName
       } = this.parentMetadata
 
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid,
         containerUuid,
         columnName,
         value: values[columnName]
       })
 
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid,
         containerUuid,
         // DisplayColumn_'ColumnName'
@@ -135,21 +138,21 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
         value: this.getDisplayedValue(values)
       })
 
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid,
         containerUuid,
         columnName: 'Postal',
         value: values.Postal
       })
 
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid,
         containerUuid,
         columnName: 'C_Country_ID',
         value: values.C_Country_ID
       })
 
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid,
         containerUuid,
         columnName: 'C_City_ID',
@@ -246,7 +249,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
           })
           console.warn(`Error update Location Address: ${error.message}. Code: ${error.code}.`)
         })
-      this.$store.dispatch('changeSequence', this.fieldList)
+      this.$store.dispatch(Namespaces.Field + '/' + 'changeSequence', this.fieldList)
     }
 
     getLocation(): void {
