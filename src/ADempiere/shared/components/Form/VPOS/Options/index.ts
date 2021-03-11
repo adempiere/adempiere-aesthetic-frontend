@@ -269,7 +269,7 @@ export default class Options extends Mixins(MixinOrderLine) {
 
       const parametersList = [{
         columnName: 'C_Order_ID',
-        value: this.$store.getters.getOrder.id
+        value: this.$store.getters[Namespaces.Order + '/' + 'getOrder'].id
       }]
 
       this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos', parametersList)

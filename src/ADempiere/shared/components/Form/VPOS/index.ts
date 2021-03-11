@@ -31,7 +31,7 @@ export default class VPOS extends Vue {
     }
 
     set isShowedPOSOptions(value: boolean) {
-      this.$store.commit('setShowPOSOptions', value)
+      this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSOptions', value)
     }
 
     get isShowedPOSKeyLaout(): boolean {
@@ -61,10 +61,10 @@ export default class VPOS extends Vue {
     handleIsShowedPOSOptionsChange(value: boolean) {
       if (value) {
         if (this.isShowedPOSKeyLaout) {
-          this.$store.dispatch('changeWidthRight', 3)
+          this.$store.dispatch(Namespaces.Utils + '/' + 'changeWidthRight', 3)
         }
       } else {
-        this.$store.dispatch('changeWidthRight', 3)
+        this.$store.dispatch(Namespaces.Utils + '/' + 'changeWidthRight', 3)
       }
     }
 
@@ -72,19 +72,19 @@ export default class VPOS extends Vue {
     posListWithOrganization() {
       return this.$store.subscribe((mutation, state) => {
         if (mutation.type === 'user/SET_ORGANIZATION') {
-          this.$store.dispatch('listPointOfSalesFromServer')
+          this.$store.dispatch(Namespaces.PointOfSales + '/' + 'listPointOfSalesFromServer')
         }
       })
     }
 
     onDragKeyLayout(size: number[]) {
       const sizeWidthRight: number = size[1] / 10
-      this.$store.dispatch('changeWidthRight', Math.trunc(sizeWidthRight))
+      this.$store.dispatch(Namespaces.Utils + '/' + 'changeWidthRight', Math.trunc(sizeWidthRight))
     }
 
     onDragOption(size: number[]) {
       const sizeWidthLeft: number = size[0] / 10
-      this.$store.dispatch('changeWidthLeft', Math.trunc(sizeWidthLeft))
+      this.$store.dispatch(Namespaces.Utils + '/' + 'changeWidthLeft', Math.trunc(sizeWidthLeft))
     }
 
     // Hooks
@@ -100,7 +100,7 @@ export default class VPOS extends Vue {
         if (this.$route.query && this.$route.query.pos) {
           posToSet = Number(this.$route.query.pos)
         }
-        this.$store.dispatch('listPointOfSalesFromServer', posToSet)
+        this.$store.dispatch(Namespaces.PointOfSales + '/' + 'listPointOfSalesFromServer', posToSet)
       }
 
       this.unsubscribePOSList = this.posListWithOrganization()
@@ -117,8 +117,7 @@ export default class VPOS extends Vue {
               ...this.$route.query,
               pos: this.pointOfSalesId!.toString()
             }
-          },
-          undefined // () => {}
+          }
         )
       }
     }

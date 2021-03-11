@@ -36,7 +36,7 @@ export const actions: PointOfSalesActionTree = {
         })
 
         const posList: IPointOfSalesData[] = response.list
-        const getterPos: string = context.getters.getPointOfSalesUuid
+        const getterPos: string = context.getters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
         let pos: IPointOfSalesData | undefined
         if (posList) {
           if (getterPos) {
