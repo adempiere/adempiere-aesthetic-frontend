@@ -5,7 +5,7 @@ import OrdersList from '@/ADempiere/shared/components/Form/VPOS/OrderList'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IListOrderItemData, IListProductPriceItemData, IOrderData, IPointOfSalesData } from '@/ADempiere/modules/pos/POSType'
 import {
-  requestCashClosing, requestCompletePreparedOrder, requestCreateNewCustomerReturnOrder, requestCreateWithdrawal, requestGenerateImmediateInvoice, requestPrintOrder,
+  requestCashClosing, requestCreateNewCustomerReturnOrder, requestCreateWithdrawal, requestGenerateImmediateInvoice, requestPrintOrder,
   // requestReverseSalesTransaction,
   requestDeleteOrder,
   requestCreateOrder,
@@ -26,7 +26,7 @@ import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/Conte
   mixins: [Template, MixinOrderLine]
 })
 export default class Options extends Mixins(MixinOrderLine) {
-    @Prop({ type: Object, default: {} }) metadata: any = {}
+    @Prop({ type: Object, default: {} }) metadata: any
     activeName = ''
     public processPos = ''
 

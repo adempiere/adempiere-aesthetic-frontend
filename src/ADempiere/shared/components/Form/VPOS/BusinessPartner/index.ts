@@ -1,19 +1,20 @@
 import { IBusinessPartnerData, requestGetBusinessPartner } from '@/ADempiere/modules/core'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { trimPercentage } from '@/ADempiere/shared/utils/valueFormat'
-import { ElMessage, ElMessageOptions } from 'element-ui/types/message'
+import { ElMessageOptions } from 'element-ui/types/message'
 import { Component, Mixins, Prop, Vue } from 'vue-property-decorator'
 import BusinessPartnerCreate from './BusinessPartnerCreate'
 import BusinessPartnersList from './BusinessPartnersList'
 import MixinSearchBPartnerList from './MixinSearchBPartnerList'
 import MixinSetBusinessPartner from './MixinSetBusinessPartner'
+import Template from './template.vue'
 
 // const setBusinessPartner =  new MixinBusinessPartner().setBusinessPartner
 // const searchBPartnerList = new BusinessPartnersList().searchBPartnerList
 
 @Component({
   name: 'FieldBusinessPartner',
-  mixins: [MixinSetBusinessPartner, MixinSearchBPartnerList],
+  mixins: [MixinSetBusinessPartner, MixinSearchBPartnerList, Template],
   components: {
     BusinessPartnerCreate,
     BusinessPartnersList
@@ -23,9 +24,11 @@ export default class FieldBusinessPartner extends Mixins(MixinSetBusinessPartner
     @Prop({ type: Object, default: {} }) parentMetadata: any
     @Prop({
       type: Object,
-      default: {
-        isShowCreate: false,
-        isShowList: false
+      default: () => {
+        return {
+          isShowCreate: false,
+          isShowList: false
+        }
       }
     }) showsPopovers: any
 
