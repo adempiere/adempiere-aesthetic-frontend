@@ -48,7 +48,7 @@ export const getters: PointOfSalesGetterTree = {
     return currentPOS.uuid
   },
   getSellingPointsList: (state: PointOfSalesState, getters): IPointOfSalesData[] => {
-    return getters.getPointOfSales().list
+    return getters.getPointOfSales.list
   },
   getIsShowPOSOptions: (state: PointOfSalesState): boolean => {
     return state.showPOSOptions
