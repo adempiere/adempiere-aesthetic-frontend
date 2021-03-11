@@ -1,20 +1,17 @@
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Vue } from 'vue-property-decorator'
+import MixinSetBusinessPartner from '../BusinessPartner/MixinSetBusinessPartner'
 
 @Component({
-  name: 'MixinBusinessPartner'
+  name: 'MixinBusinessPartner',
+  mixins: [MixinSetBusinessPartner]
 })
-export default class MixinBusinessPartner extends Vue {
-    @Prop({ type: Object, default: {} }) parentMetadata?: any = {}
-    @Prop({ type: Object, default: { panelType: 'form', isShowCreate: false, isShowList: false } }) showsPopovers: {
+export default class MixinBusinessPartner extends Mixins(MixinSetBusinessPartner) {
+    @Prop({ type: Object, default: { panelType: 'form', isShowCreate: false, isShowList: false } }) showsPopovers!: {
         panelType: PanelContextType
         isShowCreate: boolean
         isShowList: boolean
-    } = {
-      panelType: PanelContextType.Form,
-      isShowCreate: false,
-      isShowList: false
     }
 
     // Computed properties
@@ -108,38 +105,5 @@ export default class MixinBusinessPartner extends Vue {
 
       valuesToSend.posUuid = <string> this.$store.getters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
       return valuesToSend
-    }
-
-    setBusinessPartner(params: { id?: number, name?: string, uuid?: string }, isCloseForm = true): void {
-      const { id, name, uuid } = params
-      const { parentUuid, containerUuid } = this.parentMetadata
-      // set ID value
-      this.$store.commit('updateValueOfField', {
-        parentUuid,
-        containerUuid,
-        columnName: 'C_BPartner_ID', // this.parentMetadata.columnName,
-        value: id
-      })
-
-      // set display column (name) value
-      this.$store.commit('updateValueOfField', {
-        parentUuid,
-        containerUuid,
-        // DisplayColumn_'ColumnName'
-        columnName: 'DisplayColumn_C_BPartner_ID', // this.parentMetadata.displayColumnName,
-        value: name
-      })
-
-      // set UUID value
-      this.$store.commit('updateValueOfField', {
-        parentUuid,
-        containerUuid,
-        columnName: 'C_BPartner_ID_UUID', // this.parentMetadata.columnName + '_UUID',
-        value: uuid
-      })
-
-      if (isCloseForm) {
-        this.closeForm()
-      }
     }
 }

@@ -9,17 +9,19 @@ import {
   BusinessPartnerState,
   IBusinessPartnerData
 } from '@/ADempiere/modules/core'
+import MixinSearchBPartnerList from '../MixinSearchBPartnerList'
 
 @Component({
   name: 'BusinessPartnersList',
   components: {
     CustomPagination
   },
-  mixins: [Template, MixinForm, MixinBusinessPartner, CustomPagination]
+  mixins: [Template, MixinForm, MixinBusinessPartner, MixinSearchBPartnerList]
 })
 export default class BusinessPartnersList extends Mixins(
   MixinForm,
-  MixinBusinessPartner
+  MixinBusinessPartner,
+  MixinSearchBPartnerList
 ) {
     @Prop({
       type: Object,
@@ -45,7 +47,7 @@ export default class BusinessPartnersList extends Mixins(
       isShowList: false
     }
 
-    public isLoadedRecords = false
+    isLoadedRecords = false
     public activeAccordion = 'query-criteria'
     public fieldList = fieldList
     // eslint-disable-next-line
@@ -123,23 +125,6 @@ export default class BusinessPartnersList extends Mixins(
           this.searchBPartnerList(values)
         }
       })
-    }
-
-    searchBPartnerList(
-      values: any,
-      isConvert = true
-    ): Promise<IBusinessPartnerData[]> {
-      if (isConvert && values) {
-        values = this.convertValuesToSend(values)
-      }
-      return this.$store
-        .dispatch('listBPartnerFromServer', values)
-        .then((response: IBusinessPartnerData[]) => {
-          return response
-        })
-        .finally(() => {
-          this.isLoadedRecords = true
-        })
     }
 
     // Hooks
