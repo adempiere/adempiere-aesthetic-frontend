@@ -237,7 +237,7 @@
               <p class="total">{{ $t('form.pos.order.seller') }}:<b style="float: right;">
                 {{ getOrder.salesRepresentative.name }}
               </b></p>
-              <p class="total"> {{ $t('form.pos.order.subTotal') }}:<b class="order-info">{{ formatPrice(getorder.totalLines, currencyPoint.iSOCode) }}</b></p>
+              <p class="total"> {{ $t('form.pos.order.subTotal') }}:<b class="order-info">{{ formatPrice(getOrder.totalLines, currencyPoint.iSOCode) }}</b></p>
               <p class="total"> {{ $t('form.pos.order.discount') }}:<b class="order-info">{{ formatPrice(0, currencyPoint.iSOCode) }}</b> </p>
               <p class="total"> {{ $t('form.pos.order.tax') }}:<b style="float: right;">{{ getOrderTax(currencyPoint.iSOCode) }}</b> </p>
                <p class="total">
@@ -269,14 +269,14 @@
               </p>
             </span>
             <span style="float: right;padding-right: 40px;">
-              <p class="total">{{ $t('form.pos.order.order') }}: <b class="order-info">{{ getorder.documentNo }}</b></p>
+              <p class="total">{{ $t('form.pos.order.order') }}: <b class="order-info">{{ getOrder.documentNo }}</b></p>
               <p class="total">
                 {{ $t('form.pos.order.date') }}:
                 <b class="order-info">
                   {{ orderDate }}
                 </b>
               </p>
-              <p class="total">{{ $t('form.pos.order.type') }}:<b class="order-info">{{ getorder.documentType.name }}</b></p>
+              <p class="total">{{ $t('form.pos.order.type') }}:<b class="order-info">{{ getOrder.documentType.name }}</b></p>
               <p class="total">
                 {{ $t('form.pos.order.itemQuantity') }}
                 <b class="order-info">
