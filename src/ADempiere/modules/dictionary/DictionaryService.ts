@@ -120,7 +120,7 @@ export function requestFieldMetadata(
       uuid: data.uuid,
       column_uuid: data.columnUuid,
       element_uuid: data.elementUuid,
-      field_uuid: data.fieldUuid,
+      // field_uuid: data.fieldUuid,
       // TableName + ColumnName
       table_name: data.tableName,
       column_name: data.columnName,
