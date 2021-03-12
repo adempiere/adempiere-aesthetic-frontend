@@ -9,9 +9,6 @@ import MixinSearchBPartnerList from './MixinSearchBPartnerList'
 import MixinSetBusinessPartner from './MixinSetBusinessPartner'
 import Template from './template.vue'
 
-// const setBusinessPartner =  new MixinBusinessPartner().setBusinessPartner
-// const searchBPartnerList = new BusinessPartnersList().searchBPartnerList
-
 @Component({
   name: 'FieldBusinessPartner',
   mixins: [MixinSetBusinessPartner, MixinSearchBPartnerList, Template],

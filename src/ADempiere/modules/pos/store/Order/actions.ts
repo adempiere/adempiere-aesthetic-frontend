@@ -187,7 +187,7 @@ export const actions: OrderActionTree = {
     const { documentNo, businessPartnerUuid, grandTotal, openAmount, isPaid, isProcessed, isAisleSeller, isInvoiced, dateOrderedFrom, dateOrderedTo, salesRepresentativeUuid } = payload
     let { posUuid } = payload
     if (!posUuid) {
-      posUuid = context.getters.getPointOfSalesUuid()
+      posUuid = context.getters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
     }
 
     let { pageNumber, nextPageToken } = context.state.listOrder
