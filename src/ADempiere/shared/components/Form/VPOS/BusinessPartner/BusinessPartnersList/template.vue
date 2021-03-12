@@ -43,7 +43,7 @@
         width="100"
       />
       <el-table-column
-        :label="$('form.productInfo.id')"
+        :label="$t('form.productInfo.id')"
         prop="id"
         width="90"
       />
