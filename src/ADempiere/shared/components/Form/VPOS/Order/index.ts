@@ -7,6 +7,7 @@ import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IPointOfSalesData } from '@/ADempiere/modules/pos'
 import convertAmount from '@/ADempiere/shared/components/Form/VPOS/Collection/ConvertAmount/index'
 import Template from './template.vue'
+import fieldList from '../../../Field/FieldLocation/fieldList'
 
 @Component({
   name: 'Order',
@@ -18,7 +19,9 @@ import Template from './template.vue'
   }
 })
 export default class Order extends Mixins(MixinOrderLine) {
-  public fieldList = fieldListOrders
+  // fieldsList = fieldListOrders
+  fieldsList = fieldListOrders
+
   public seeConversion = false
 
   // Computed properties
@@ -226,7 +229,7 @@ export default class Order extends Mixins(MixinOrderLine) {
       this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', { orderUuid: this.$route.query.action })
     }
     setTimeout(() => {
-      this.currencyDisplaye()
+      // this.currencyDisplaye()
     }, 1500)
   }
 
@@ -237,8 +240,8 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   tenderTypeDisplaye() {
-    if (this.fieldList && this.fieldList.length) {
-      const tenderType = this.fieldList[5].reference
+    if (this.fieldsList && this.fieldsList.length) {
+      const tenderType = this.fieldsList[5].reference
       if (tenderType) {
         this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
           tableName: tenderType.tableName,
@@ -251,18 +254,18 @@ export default class Order extends Mixins(MixinOrderLine) {
     }
   }
 
-  currencyDisplaye() {
-    if (this.fieldList && this.fieldList.length) {
-      const currency = this.fieldList[4].reference
-      if (currency) {
-        this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
-          tableName: currency.tableName,
-          query: currency.query
-        })
-          .then(response => {
-            this.$store.dispatch(Namespaces.Payments + '/' + 'currencyDisplaye', response)
-          })
-      }
-    }
-  }
+  // currencyDisplaye() {
+  //   if (this.fieldsList && this.fieldsList.length) {
+  //     const currency = this.fieldsList[4].reference
+  //     if (currency) {
+  //       this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
+  //         tableName: currency.tableName,
+  //         query: currency.query
+  //       })
+  //         .then(response => {
+  //           this.$store.dispatch(Namespaces.Payments + '/' + 'currencyDisplaye', response)
+  //         })
+  //     }
+  //   }
+  // }
 }

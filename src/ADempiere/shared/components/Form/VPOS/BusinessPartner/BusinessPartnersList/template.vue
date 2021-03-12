@@ -18,7 +18,7 @@
         >
           <el-row>
             <field-definition
-              v-for="(field) in fieldList"
+              v-for="(field) in fieldsList"
               :key="field.columnName"
               :metadata-field="{...field, definition: field.overwriteDefinition}"
             />

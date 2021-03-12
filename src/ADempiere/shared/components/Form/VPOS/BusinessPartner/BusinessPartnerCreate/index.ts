@@ -4,7 +4,7 @@ import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import MixinForm from '../../../MixinForm'
 import MixinBusinessPartner from '../MixinBusinessPartner'
-import fieldList from './../fieldListCreate'
+import fieldsList from './../fieldListCreate'
 import Template from './template.vue'
 
 @Component({
@@ -20,18 +20,14 @@ export default class BusinessPartnerCreate extends Mixins(
       default: {
         uuid: 'Business-Partner-Create',
         containerUuid: 'Business-Partner-Create',
-        fieldList
+        fieldsList
       }
     })
-    metadata: any = {
-      uuid: 'Business-Partner-Create',
-      containerUuid: 'Business-Partner-Create',
-      fieldsList: fieldList
-    }
+    metadata: any
 
     public businessPartnerRecord: any = {}
     public isLoadingRecord = false
-    public fieldsList = fieldList
+    fieldsList = fieldsList
     public isCustomForm = true
     // eslint-disable-next-line
     public unsubscribe: Function = () => {}

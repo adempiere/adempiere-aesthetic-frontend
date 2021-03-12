@@ -28,14 +28,14 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
 
     public iscustomForm = true
     public request = 0
-    public fieldList: any[] = []
+    fieldsList: any[] = []
 
     // Computed properties
     get fieldsListLocation(): any[] {
       if (this.$store.getters[Namespaces.Field + '/' + 'getFieldLocation'].getFieldLocation) {
         return this.$store.getters[Namespaces.Field + '/' + 'getFieldLocation']
       }
-      return this.fieldList
+      return this.fieldsList
     }
 
     get locationId(): any {
@@ -71,7 +71,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
               })
                 .then(responseCountry => {
                   const newSequence: string[] = getSequenceAsList(responseCountry.captureSequence)!
-                  const newFieldsList: any[] = this.fieldList.map(item => {
+                  const newFieldsList: any[] = this.fieldsList.map(item => {
                     if (newSequence.includes(item.sequenceFields)) {
                       return {
                         ...item,
@@ -97,7 +97,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
                 })
             }
 
-            this.fieldList.forEach(item => {
+            this.fieldsList.forEach(item => {
               if (!withOutColumnNames.includes(item.columnName)) {
                 values.push({
                   key: item.columnName,
@@ -249,7 +249,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
           })
           console.warn(`Error update Location Address: ${error.message}. Code: ${error.code}.`)
         })
-      this.$store.dispatch(Namespaces.Field + '/' + 'changeSequence', this.fieldList)
+      this.$store.dispatch(Namespaces.Field + '/' + 'changeSequence', this.fieldsList)
     }
 
     getLocation(): void {

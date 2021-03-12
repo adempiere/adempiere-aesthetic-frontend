@@ -47,7 +47,7 @@ export default class BusinessPartnersList extends Mixins(
 
     isLoadedRecords = false
     public activeAccordion = 'query-criteria'
-    public fieldList = fieldList
+    fieldsList = fieldList
     // eslint-disable-next-line
     public unsubscribe: Function = () => {}
 
