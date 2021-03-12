@@ -28,7 +28,6 @@ export const actions: PointOfSalesActionTree = {
       userUuid
     })
       .then((response: IListPointOfSalesResponse) => {
-        console.log(response)
         // TODO: Add organization
         context.commit('setPontOfSales', {
           ...response,
@@ -85,10 +84,8 @@ export const actions: PointOfSalesActionTree = {
 
     const oldRoute: Route = context.rootState.route
 
-    // const oldRoute = router.app._route
-    context.rootState.router.currentRoute = {
-      ...context.rootState.router.currentRoute,
-      name: oldRoute.name,
+    context.rootState.router.push({
+      name: oldRoute.name!,
       params: {
         ...oldRoute.params
       },
@@ -96,17 +93,9 @@ export const actions: PointOfSalesActionTree = {
         ...oldRoute.query,
         pos: String(posToSet.id)
       }
-    }
-    // context.rootState.router.push({
-    //   name: oldRoute.name!,
-    //   params: {
-    //     ...oldRoute.params
-    //   },
-    //   query: {
-    //     ...oldRoute.query,
-    //     pos: String(posToSet.id)
-    //   }
-    // })
+    }).catch(
+      /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+      () => {})
 
     context.commit(Namespaces.KeyLayout + '/' + 'setIsReloadKeyLayout', undefined, { root: true })
     context.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice', undefined, { root: true })
