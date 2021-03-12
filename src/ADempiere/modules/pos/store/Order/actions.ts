@@ -201,7 +201,7 @@ export const actions: OrderActionTree = {
 
     requestListOrders({
       posUuid,
-      documentNo: documentNo.toString(),
+      documentNo: String(documentNo),
       businessPartnerUuid,
       grandTotal,
       openAmount,
