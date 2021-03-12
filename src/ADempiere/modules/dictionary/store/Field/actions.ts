@@ -41,19 +41,32 @@ export const actions: FieldActionTree = {
       elementColumnName
     })
       .then((fieldResponse: IFieldData) => {
-        const field: IFieldDataExtended = {
-          ...fieldResponse,
-          columnUuid: columnUuid,
-          elementUuid: elementUuid,
-          elementColumnName: elementColumnName,
-          columnName:
-                        columnName && tableName
-                          ? columnName
-                          : fieldResponse.columnName,
-          tableName: columnName && tableName ? tableName : undefined
+        const field: Partial<IFieldDataExtended> = {
+          ...fieldResponse
         }
+        if (columnUuid) {
+          field.columnUuid = columnUuid
+        } else if (elementUuid) {
+          field.elementUuid = elementUuid
+        } else if (elementColumnName) {
+          field.elementColumnName = elementColumnName
+        } else if (tableName && columnName) {
+          field.tableName = tableName
+          field.columnName = columnName
+        }
+        // const field: IFieldDataExtended = {
+        //   ...fieldResponse,
+        //   columnUuid: columnUuid,
+        //   elementUuid: elementUuid,
+        //   elementColumnName: elementColumnName,
+        //   columnName:
+        //                 columnName && tableName
+        //                   ? columnName
+        //                   : fieldResponse.columnName,
+        //   tableName: columnName && tableName ? tableName : undefined
+        // }
 
-        context.commit('addField', fieldResponse)
+        context.commit('addField', field)
 
         return field
       })
