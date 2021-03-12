@@ -25,27 +25,25 @@ export default class BusinessPartnersList extends Mixins(
 ) {
     @Prop({
       type: Object,
-      default: {
-        uuid: 'Business-Partner-List',
-        containerUuid: 'Business-Partner-List'
+      default: () => {
+        return {
+          uuid: 'Business-Partner-List',
+          containerUuid: 'Business-Partner-List'
+        }
       }
     })
-    metadata: any = {
-      uuid: 'Business-Partner-List',
-      containerUuid: 'Business-Partner-List'
-    }
+    metadata: any
 
     @Prop({
       type: Object,
-      default: {
-        isShowCreate: false,
-        isShowList: false
+      default: () => {
+        return {
+          isShowCreate: false,
+          isShowList: false
+        }
       }
     })
-    showsPopovers: any = {
-      isShowCreate: false,
-      isShowList: false
-    }
+    showsPopovers: any
 
     isLoadedRecords = false
     public activeAccordion = 'query-criteria'
@@ -55,12 +53,12 @@ export default class BusinessPartnersList extends Mixins(
 
     // Computed properties
     get businessParners(): BusinessPartnerState {
-      return this.$store.getters[Namespaces.System + 'getBusinessPartner']
+      return this.$store.getters[Namespaces.BusinessPartner + '/' + 'getBusinessPartner']
     }
 
     get businessPartnersList(): IBusinessPartnerData[] {
       return this.$store.getters[
-        Namespaces.System + 'getBusinessPartnersList'
+        Namespaces.BusinessPartner + '/' + 'getBusinessPartnersList'
       ]
     }
 

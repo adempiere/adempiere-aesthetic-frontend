@@ -119,7 +119,7 @@ export default class Order extends Mixins(MixinOrderLine) {
   handleCurrencyUuid(value: string) {
     if (value && this.currentPoint) {
       this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
-        conversionTypeUuid: this.$store.getters.getCurrentPOS.conversionTypeUuid,
+        conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
         currencyFromUuid: this.currencyPoint.uuid,
         currencyToUuid: value
       })
@@ -148,6 +148,9 @@ export default class Order extends Mixins(MixinOrderLine) {
           pos: String(value.id)
         }
       })
+        .catch(
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+          () => {})
     }
   }
 
