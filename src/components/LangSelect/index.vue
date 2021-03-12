@@ -54,7 +54,6 @@
 <script lang="ts">
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Vue } from 'vue-property-decorator'
-
 @Component({
   name: 'Login'
 })
@@ -70,7 +69,7 @@ export default class extends Vue {
       location.reload()
     }
     this.$message({
-      message: 'Switch Language Success',
+      message: this.$t('components.changeLanguageTips').toString(),
       type: 'success'
     })
   }
