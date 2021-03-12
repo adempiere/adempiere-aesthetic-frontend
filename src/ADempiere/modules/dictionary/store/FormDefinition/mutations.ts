@@ -20,7 +20,7 @@ export const mutations : FormDefinitionMutationTree = {
     if (payload.attributeNameControl) {
       value = payload.form[payload.attributeNameControl]
     }
-    if (payload.attributeName) {
+    if (!payload.attributeName) {
       payload.form[payload.attributeName] = value
     }
   },

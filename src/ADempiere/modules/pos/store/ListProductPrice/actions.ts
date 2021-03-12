@@ -25,7 +25,7 @@ export const actions: ListProductPriceActionTree = {
       }): Promise<IListProductPriceResponse> | undefined {
     const { containerUuid = payload.containerUuid || 'Products-Price-List' } = payload
     let { pageNumber, searchValue } = payload
-    const posUuid: string | undefined = context.rootGetters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']()
+    const posUuid: string | undefined = context.rootGetters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
     if (!posUuid) {
       const message = language.t('notifications.errorPointOfSale').toString()
       showMessage({

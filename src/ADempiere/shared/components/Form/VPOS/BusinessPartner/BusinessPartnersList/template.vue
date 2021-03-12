@@ -18,7 +18,7 @@
         >
           <el-row>
             <field-definition
-              v-for="(field) in fieldList"
+              v-for="(field) in fieldsList"
               :key="field.columnName"
               :metadata-field="{...field, definition: field.overwriteDefinition}"
             />
@@ -43,7 +43,7 @@
         width="100"
       />
       <el-table-column
-        :label="$('form.productInfo.id')"
+        :label="$t('form.productInfo.id')"
         prop="id"
         width="90"
       />

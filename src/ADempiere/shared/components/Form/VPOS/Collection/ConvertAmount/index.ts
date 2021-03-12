@@ -11,64 +11,70 @@ import Template from './template.vue'
   mixins: [MixinForm, Template]
 })
 export default class ConvertAmount extends Mixins(MixinForm) {
-    @Prop({ type: Array, default: undefined }) isAddTypePay?: any[] = undefined
-    @Prop({ type: Object, default: undefined }) currency: any = undefined
-    @Prop({ type: Number, default: undefined }) amount?: number = undefined
-    @Prop({ type: Number, default: undefined }) convert?: number = undefined
-    @Prop({
-      type: Object,
-      default: {
+  @Prop({ type: Array, default: undefined }) isAddTypePay?: any[]
+  @Prop({ type: Object, default: undefined }) currency?: any
+  @Prop({ type: Number, default: undefined }) amount?: number
+  @Prop({ type: Number, default: undefined }) convert?: number
+  @Prop({
+    type: Object,
+    default: () => {
+      return {
         uuid: 'Collection-Convert-Amount',
         containerUuid: 'Collection-Convert-Amount'
       }
-    }) metadata: any = {
-      uuid: 'Collection-Convert-Amount',
-      containerUuid: 'Collection-Convert-Amount'
     }
+  })
+  metadata: any
 
-    // public fieldsList: IFieldLocation[] = fieldListConvertAmountCollection
-    fieldsList = fieldListConvertAmountCollection
+  // public fieldsList: IFieldLocation[] = fieldListConvertAmountCollection
+  fieldsList = fieldListConvertAmountCollection
 
-    // Computed properties
-    get displayCurrency() {
-      return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+  // Computed properties
+  get displayCurrency() {
+    return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField'](
+      {
         containerUuid: 'Collection-Convert-Amount',
         columnName: 'DisplayColumn_C_Currency_ID'
-      })
-    }
+      }
+    )
+  }
 
-    get typeCurrency() {
-      return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+  get typeCurrency() {
+    return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField'](
+      {
         containerUuid: 'Collection-Convert-Amount',
         columnName: 'C_Currency_ID'
-      })
-    }
+      }
+    )
+  }
 
-    get currencyUuid() {
-      return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+  get currencyUuid() {
+    return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField'](
+      {
         containerUuid: 'Collection-Convert-Amount',
         columnName: 'C_Currency_ID_UUID'
-      })
-    }
+      }
+    )
+  }
 
-    // Methods
-    formatPrice = formatPrice
+  // Methods
+  formatPrice = formatPrice
 
-    defaultValueCurrency(): void {
-      this.$store.commit('updateValueOfField', {
-        containerUuid: this.containerUuid,
-        columnName: 'DisplayColumn_C_Currency_ID',
-        value: this.currency.iSOCode
-      })
-      this.$store.commit('updateValueOfField', {
-        containerUuid: this.containerUuid,
-        columnName: 'C_Currency_ID',
-        value: this.currency.id
-      })
-    }
+  defaultValueCurrency(): void {
+    this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
+      containerUuid: this.containerUuid,
+      columnName: 'DisplayColumn_C_Currency_ID',
+      value: this.currency.iSOCode
+    })
+    this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
+      containerUuid: this.containerUuid,
+      columnName: 'C_Currency_ID',
+      value: this.currency.id
+    })
+  }
 
-    // Hooks
-    created() {
-      this.defaultValueCurrency()
-    }
+  // Hooks
+  created() {
+    this.defaultValueCurrency()
+  }
 }

@@ -6,7 +6,7 @@ type OrderGetterTree = GetterTree<OrderState, IRootState>
 
 export const getters: OrderGetterTree = {
   getOrder: (state: OrderState): IOrderData | undefined => {
-    return state.order
+    return state.order as IOrderData
   },
   getListOrder: (state: OrderState): IListOrderItemData | Partial<IListOrderItemData> => {
     if (!(state.listOrder)) {

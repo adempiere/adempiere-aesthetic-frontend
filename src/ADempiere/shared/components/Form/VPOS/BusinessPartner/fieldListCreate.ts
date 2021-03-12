@@ -6,7 +6,8 @@ const fieldListCreate: Partial<IFieldLocation>[] = [
   {
     elementColumnName: 'Value',
     columnName: 'Value',
-    // displayType: CHAR.id,
+    isFromDictionary: true,
+    tabindex: '0',
     overwriteDefinition: {
       isCustomField: true,
       size: 24
@@ -15,8 +16,8 @@ const fieldListCreate: Partial<IFieldLocation>[] = [
   {
     elementColumnName: 'Name',
     columnName: 'Name',
-    // displayType: CHAR.id,
     tableName,
+    tabindex: '1',
     isFromDictionary: true,
     overwriteDefinition: {
       isCustomField: true,
@@ -26,8 +27,8 @@ const fieldListCreate: Partial<IFieldLocation>[] = [
   {
     elementColumnName: 'Name2',
     columnName: 'Name2',
-    // displayType: CHAR.id,
     tableName,
+    tabindex: '2',
     isFromDictionary: true,
     overwriteDefinition: {
       isCustomField: true,
@@ -37,8 +38,8 @@ const fieldListCreate: Partial<IFieldLocation>[] = [
   {
     elementColumnName: 'EMail',
     columnName: 'EMail',
-    // displayType: CHAR.id,
     tableName: 'AD_user',
+    tabindex: '3',
     isFromDictionary: true,
     overwriteDefinition: {
       isCustomField: true,
@@ -49,8 +50,8 @@ const fieldListCreate: Partial<IFieldLocation>[] = [
     elementColumnName: 'Phone',
     columnName: 'Phone',
     tableName: 'AD_user',
+    tabindex: '4',
     isFromDictionary: true,
-    // displayType: CHAR.id,
     overwriteDefinition: {
       isCustomField: true,
       size: 24
@@ -60,6 +61,7 @@ const fieldListCreate: Partial<IFieldLocation>[] = [
     elementColumnName: 'C_Location_ID',
     columnName: 'C_Location_ID',
     tableName: 'C_BPartner_Location',
+    tabindex: '5',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,

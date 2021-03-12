@@ -312,7 +312,7 @@ export interface IListOrderItemData {
 
 // Order Module
 export interface OrderState {
-    order?: IOrderData
+    order?: Partial<IOrderData>
     findOrder?: IOrderData
     listOrder: IListOrderItemData
     currentOrder?: IOrderData

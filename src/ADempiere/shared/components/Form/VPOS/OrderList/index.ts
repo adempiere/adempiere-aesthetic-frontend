@@ -1,8 +1,7 @@
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import MixinForm from '../../MixinForm'
 import CustomPagination from '@/ADempiere/shared/components/Pagination'
 import fieldListOrders from './fieldListOrders'
-import { IFieldLocation } from '../../../Field/FieldLocation/fieldList'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { IListOrderItemData, IOrderData } from '@/ADempiere/modules/pos'
 import Template from './template.vue'
@@ -21,15 +20,14 @@ import {
 export default class OrdersList extends Mixins(MixinForm) {
     @Prop({
       type: Object,
-      default: {
-        uuid: 'Orders-List',
-        containerUuid: 'Orders-List'
+      default: () => {
+        return {
+          uuid: 'Orders-List',
+          containerUuid: 'Orders-List'
+        }
       }
     })
-    metadata: any = {
-      uuid: 'Orders-List',
-      containerUuid: 'Orders-List'
-    }
+    metadata: any
 
     public defaultMaxPagination = 50
     // public fieldsList: IFieldLocation[] = fieldListOrders

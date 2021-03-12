@@ -1,34 +1,33 @@
 import { IBusinessPartnerData, requestGetBusinessPartner } from '@/ADempiere/modules/core'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { trimPercentage } from '@/ADempiere/shared/utils/valueFormat'
-import { ElMessage, ElMessageOptions } from 'element-ui/types/message'
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { ElMessageOptions } from 'element-ui/types/message'
+import { Component, Mixins, Prop, Vue } from 'vue-property-decorator'
 import BusinessPartnerCreate from './BusinessPartnerCreate'
 import BusinessPartnersList from './BusinessPartnersList'
-import MixinBusinessPartner from './MixinBusinessPartner'
-
-const setBusinessPartner = new MixinBusinessPartner().setBusinessPartner
-const searchBPartnerList = new BusinessPartnersList().searchBPartnerList
+import MixinSearchBPartnerList from './MixinSearchBPartnerList'
+import MixinSetBusinessPartner from './MixinSetBusinessPartner'
+import Template from './template.vue'
 
 @Component({
   name: 'FieldBusinessPartner',
+  mixins: [MixinSetBusinessPartner, MixinSearchBPartnerList, Template],
   components: {
     BusinessPartnerCreate,
     BusinessPartnersList
   }
 })
-export default class FieldBusinessPartner extends Vue {
-    @Prop({ type: Object, default: {} }) parentMetadata: any = {}
+export default class FieldBusinessPartner extends Mixins(MixinSetBusinessPartner, MixinSearchBPartnerList) {
+    @Prop({ type: Object, default: {} }) parentMetadata: any
     @Prop({
       type: Object,
-      default: {
-        isShowCreate: false,
-        isShowList: false
+      default: () => {
+        return {
+          isShowCreate: false,
+          isShowList: false
+        }
       }
-    }) showsPopovers: any = {
-      isShowCreate: false,
-      isShowList: false
-    }
+    }) showsPopovers: any
 
     public controlDisplayed = this.displayedValue
     public timeOut: any = null
@@ -42,7 +41,7 @@ export default class FieldBusinessPartner extends Vue {
     }
 
     set value(value: any) {
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         containerUuid: this.parentMetadata.containerUuid,
         columnName: 'C_BPartner_ID', // this.parentMetadata.columnName,
         value
@@ -58,7 +57,7 @@ export default class FieldBusinessPartner extends Vue {
     }
 
     set displayedValue(value: any) {
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         containerUuid: this.parentMetadata.containerUuid,
         // DisplayColumn_'ColumnName'
         columnName: 'DisplayColumn_C_BPartner_ID', // this.parentMetadata.displayColumnName,
@@ -79,9 +78,9 @@ export default class FieldBusinessPartner extends Vue {
     }
 
     // Methods
-    setBusinessPartner = setBusinessPartner
+    // setBusinessPartner = setBusinessPartner
 
-    searchBPartnerList = searchBPartnerList
+    // searchBPartnerList = searchBPartnerList
 
     setNewDisplayedValue(): void {
       const displayValue = this.displayedValue
@@ -146,7 +145,7 @@ export default class FieldBusinessPartner extends Vue {
           showClose: true
         }
 
-        this.$store.dispatch('listBPartnerFromServer', {
+        this.$store.dispatch(Namespaces.BusinessPartner + '/' + 'listBPartnerFromServer', {
           pageNumber: 1,
           searchValue
         })
@@ -189,12 +188,12 @@ export default class FieldBusinessPartner extends Vue {
       // this.getBPartner(value)
 
       const createBP = () => {
-        this.$store.commit('updateValueOfField', {
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
           containerUuid: 'Business-Partner-Create',
           columnName: 'Name',
           value
         })
-        this.$store.commit('updateValueOfField', {
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
           containerUuid: 'Business-Partner-Create',
           columnName: 'Value',
           value
@@ -224,7 +223,7 @@ export default class FieldBusinessPartner extends Vue {
             // if (Number.isNaN(Number(value))) {
             //   columnName = 'Name'
             // }
-            this.$store.commit('updateValuesOfContainer', {
+            this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
               containerUuid: 'Business-Partner-List',
               attributes: [{
                 key: columnName,
@@ -276,12 +275,12 @@ export default class FieldBusinessPartner extends Vue {
             name: value
           })
 
-          this.$store.commit('updateValueOfField', {
+          this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             containerUuid: 'Business-Partner-Create',
             columnName: 'Name',
             value
           })
-          this.$store.commit('updateValueOfField', {
+          this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             containerUuid: 'Business-Partner-Create',
             columnName: 'Value',
             value

@@ -28,7 +28,7 @@ export const actions: BPartnerActionTree = {
         }
   ) {
     let pageToken: string, token: string
-    if (payload.pageNumber) {
+    if (!payload.pageNumber) {
       if (context.state.pageNumber) {
         payload.pageNumber = context.state.pageNumber
       } else {
@@ -50,7 +50,7 @@ export const actions: BPartnerActionTree = {
       pageSize: payload.criteria!
     })
       .then((responseBPartnerList: IListBusinessPartnerResponse) => {
-        if (token || pageToken) {
+        if (!token || !pageToken) {
           token = extractPagingToken(
             responseBPartnerList.nextPageToken
           )

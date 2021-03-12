@@ -18,10 +18,11 @@ export const getters: PanelGetterTree = {
   getPanel: (state: PanelState) => (
     containerUuid: string
   ): IPanelDataExtended | undefined => {
-    return state.panel.find((item: IPanelDataExtended) => {
+    const panel = state.panel.find((item: IPanelDataExtended) => {
       // uuid as containerUuid alias
       return item.containerUuid === containerUuid
     })
+    return panel
   },
   getFieldsListFromPanel: (state: PanelState, getters) => (
     containerUuid: string

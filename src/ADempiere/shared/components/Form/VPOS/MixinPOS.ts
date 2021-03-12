@@ -136,7 +136,8 @@ export default class MixinPOS extends Mixins(MixinForm) {
   }
 
   get getOrder(): Partial<IOrderData> | undefined {
-    return this.$store.getters[Namespaces.Order + '/' + 'getOrder']
+    const order: Partial<IOrderData> | undefined = this.$store.getters[Namespaces.Order + '/' + 'getOrder']
+    return order
   }
 
   // Watchers
@@ -617,8 +618,8 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     mounted() {
-      if (this.$route.query) {
-        const orderUuid: string | undefined = <string> this.$route.query.action
+      if (this.$route.query && this.$route.query.action) {
+        const orderUuid: string | undefined = this.$route.query.action as string
         this.reloadOrder(true, orderUuid)
       }
     }

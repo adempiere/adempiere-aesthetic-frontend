@@ -9,56 +9,56 @@ import {
   BusinessPartnerState,
   IBusinessPartnerData
 } from '@/ADempiere/modules/core'
+import MixinSearchBPartnerList from '../MixinSearchBPartnerList'
 
 @Component({
   name: 'BusinessPartnersList',
   components: {
     CustomPagination
   },
-  mixins: [Template, MixinForm, MixinBusinessPartner, CustomPagination]
+  mixins: [Template, MixinForm, MixinBusinessPartner, MixinSearchBPartnerList]
 })
 export default class BusinessPartnersList extends Mixins(
   MixinForm,
-  MixinBusinessPartner
+  MixinBusinessPartner,
+  MixinSearchBPartnerList
 ) {
     @Prop({
       type: Object,
-      default: {
-        uuid: 'Business-Partner-List',
-        containerUuid: 'Business-Partner-List'
+      default: () => {
+        return {
+          uuid: 'Business-Partner-List',
+          containerUuid: 'Business-Partner-List'
+        }
       }
     })
-    metadata: any = {
-      uuid: 'Business-Partner-List',
-      containerUuid: 'Business-Partner-List'
-    }
+    metadata: any
 
     @Prop({
       type: Object,
-      default: {
-        isShowCreate: false,
-        isShowList: false
+      default: () => {
+        return {
+          isShowCreate: false,
+          isShowList: false
+        }
       }
     })
-    showsPopovers: any = {
-      isShowCreate: false,
-      isShowList: false
-    }
+    showsPopovers: any
 
-    public isLoadedRecords = false
+    isLoadedRecords = false
     public activeAccordion = 'query-criteria'
-    public fieldList = fieldList
+    fieldsList = fieldList
     // eslint-disable-next-line
     public unsubscribe: Function = () => {}
 
     // Computed properties
     get businessParners(): BusinessPartnerState {
-      return this.$store.getters[Namespaces.System + 'getBusinessPartner']
+      return this.$store.getters[Namespaces.BusinessPartner + '/' + 'getBusinessPartner']
     }
 
     get businessPartnersList(): IBusinessPartnerData[] {
       return this.$store.getters[
-        Namespaces.System + 'getBusinessPartnersList'
+        Namespaces.BusinessPartner + '/' + 'getBusinessPartnersList'
       ]
     }
 
@@ -123,23 +123,6 @@ export default class BusinessPartnersList extends Mixins(
           this.searchBPartnerList(values)
         }
       })
-    }
-
-    searchBPartnerList(
-      values: any,
-      isConvert = true
-    ): Promise<IBusinessPartnerData[]> {
-      if (isConvert && values) {
-        values = this.convertValuesToSend(values)
-      }
-      return this.$store
-        .dispatch('listBPartnerFromServer', values)
-        .then((response: IBusinessPartnerData[]) => {
-          return response
-        })
-        .finally(() => {
-          this.isLoadedRecords = true
-        })
     }
 
     // Hooks

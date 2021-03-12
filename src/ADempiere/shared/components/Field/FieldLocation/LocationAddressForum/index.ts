@@ -13,26 +13,29 @@ import Template from './template.vue'
   mixins: [MixinLocationField, MixinForm, Template]
 })
 export default class LocationAddressForm extends Mixins(MixinLocationField, MixinForm) {
-    @Prop({ type: Object }) parentMetadata: any = () => undefined
-    @Prop({ type: Object }) values: any = () => undefined
-    @Prop({ type: Object }) metadata: any = () => {
-      return {
+    @Prop({ type: Object }) parentMetadata: any
+    @Prop({ type: Object }) values: any
+    @Prop({
+      type: Object,
+      default: () => {
+        return {
         // TODO: Add container uuid parent
-        uuid: 'Location-Address-Create',
-        containerUuid: 'Location-Address-Create'
+          uuid: 'Location-Address-Create',
+          containerUuid: 'Location-Address-Create'
+        }
       }
-    }
+    }) metadata: any
 
     public iscustomForm = true
     public request = 0
-    public fieldList: any[] = []
+    fieldsList: any[] = []
 
     // Computed properties
     get fieldsListLocation(): any[] {
       if (this.$store.getters[Namespaces.Field + '/' + 'getFieldLocation'].getFieldLocation) {
         return this.$store.getters[Namespaces.Field + '/' + 'getFieldLocation']
       }
-      return this.fieldList
+      return this.fieldsList
     }
 
     get locationId(): any {
@@ -68,7 +71,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
               })
                 .then(responseCountry => {
                   const newSequence: string[] = getSequenceAsList(responseCountry.captureSequence)!
-                  const newFieldsList: any[] = this.fieldList.map(item => {
+                  const newFieldsList: any[] = this.fieldsList.map(item => {
                     if (newSequence.includes(item.sequenceFields)) {
                       return {
                         ...item,
@@ -81,7 +84,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
                       isDisplayed: false
                     }
                   })
-                  this.$store.dispatch('changeSequence', newFieldsList.sort(this.sortSequence))
+                  this.$store.dispatch(Namespaces.Field + '/' + 'changeSequence', newFieldsList.sort(this.sortSequence))
                 })
                 .catch(error => {
                   this.$message({
@@ -94,7 +97,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
                 })
             }
 
-            this.fieldList.forEach(item => {
+            this.fieldsList.forEach(item => {
               if (!withOutColumnNames.includes(item.columnName)) {
                 values.push({
                   key: item.columnName,
@@ -120,14 +123,14 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
         displayColumnName
       } = this.parentMetadata
 
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid,
         containerUuid,
         columnName,
         value: values[columnName]
       })
 
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid,
         containerUuid,
         // DisplayColumn_'ColumnName'
@@ -135,21 +138,21 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
         value: this.getDisplayedValue(values)
       })
 
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid,
         containerUuid,
         columnName: 'Postal',
         value: values.Postal
       })
 
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid,
         containerUuid,
         columnName: 'C_Country_ID',
         value: values.C_Country_ID
       })
 
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid,
         containerUuid,
         columnName: 'C_City_ID',
@@ -246,7 +249,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
           })
           console.warn(`Error update Location Address: ${error.message}. Code: ${error.code}.`)
         })
-      this.$store.dispatch('changeSequence', this.fieldList)
+      this.$store.dispatch(Namespaces.Field + '/' + 'changeSequence', this.fieldsList)
     }
 
     getLocation(): void {
