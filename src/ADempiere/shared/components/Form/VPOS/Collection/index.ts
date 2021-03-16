@@ -498,7 +498,7 @@ export default class Collection extends Mixins(MixinForm) {
           amount: this.amontSend,
           paymentDate,
           tenderTypeCode,
-          currencyUuid: this.currencyDisplay(currencyToPay).currencyUuid
+          currencyUuid: this.currencyDisplay(currencyToPay)
         })
       }
       this.addCollect()
@@ -639,6 +639,10 @@ export default class Collection extends Mixins(MixinForm) {
       if (display) {
         return display
       }
+      if (currency === this.currencyPoint.id) {
+        return this.currencyPoint.uuid
+      }
+
       return currency
     }
 
