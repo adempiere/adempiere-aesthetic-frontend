@@ -115,7 +115,7 @@ export default class VPOS extends Vue {
             },
             query: {
               ...this.$route.query,
-              pos: this.pointOfSalesId!.toString()
+              pos: String(this.pointOfSalesId)
             }
           }
         )
