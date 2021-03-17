@@ -596,7 +596,7 @@ export const actions: PanelActionTree = {
 
       let value
       if (!newValue) {
-        value = context.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        value = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
           parentUuid: field!.parentUuid,
           containerUuid: field!.containerUuid,
           columnName: field!.columnName

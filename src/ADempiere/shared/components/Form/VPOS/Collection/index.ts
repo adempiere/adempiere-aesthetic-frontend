@@ -195,8 +195,7 @@ export default class Collection extends Mixins(MixinForm) {
       const containerUuid = this.containerUuid
       const fieldsEmpty: string[] = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
         containerUuid,
-        fieldsList: this.fieldsList,
-        isValidate: true
+        fieldsList: this.fieldsList
       })
       const amount = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid,
