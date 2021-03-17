@@ -22,14 +22,21 @@ export const actions: UserActionTree = {
       organizationUuid: string
       token: string
     }) {
-    const { userName, organizationUuid, token, password } = userInfo
+    const { userName, organizationUuid, token, password, roleUuid } = userInfo
     return await new Promise((resolve, reject) => {
+      console.log({
+        userName,
+        password,
+        token,
+        organizationUuid,
+        roleUuid
+      })
       login({
         userName,
         password,
-        token
-        // organizationUuid,
-        // roleUuid,
+        token,
+        organizationUuid,
+        roleUuid
       })
         .then((logInResponse: any) => {
           if ([13, 500].includes(logInResponse.code)) {
