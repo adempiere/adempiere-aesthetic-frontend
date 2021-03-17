@@ -24,13 +24,6 @@ export const actions: UserActionTree = {
     }) {
     const { userName, organizationUuid, token, password, roleUuid } = userInfo
     return await new Promise((resolve, reject) => {
-      console.log({
-        userName,
-        password,
-        token,
-        organizationUuid,
-        roleUuid
-      })
       login({
         userName,
         password,
