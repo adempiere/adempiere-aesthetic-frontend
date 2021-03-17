@@ -1,8 +1,9 @@
 import { ID, INTEGER } from '@/ADempiere/shared/utils/references'
-import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
-import { calculationValue } from '@/ADempiere/shared/utils/valueUtils'
+import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
+import { calculationValue, clearVariables } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
-import calculatorRows, { ICalculatorObject } from './calculatorRows'
+import { ICalculatorObject } from './calculatorRows'
+
 import buttons from './buttons'
 import Template from './template.vue'
 
@@ -16,7 +17,7 @@ export default class FieldCalc extends Vue {
     @Prop({ type: Number, default: undefined }) fieldValue?: number
     // eslint-disable-next-line
     // @ts-ignore
-    public calcValue?: any = this.fieldValue
+    public calcValue?: any = this.fieldValue | ''
     public valueToDisplay = ''
 
     // Computed properties
@@ -59,33 +60,33 @@ export default class FieldCalc extends Vue {
     }
 
     changeValue(): void {
-      // const newValue = Number(this.valueToDisplay)
-      // let isSendCallout = true
-      // const isSendToServer = true
-      // const isChangedOldValue = false
-      // if (this.fieldAttributes.isAdvancedQuery) {
-      //   isSendCallout = false
-      // }
-      //
-      // const sendParameters = {
-      //   parentUuid: this.fieldAttributes.parentUuid,
-      //   containerUuid: this.fieldAttributes.containerUuid,
-      //   field: this.fieldAttributes,
-      //   panelType: this.fieldAttributes.panelType,
-      //   columnName: this.fieldAttributes.columnName,
-      //   newValue,
-      //   isAdvancedQuery: this.fieldAttributes.isAdvancedQuery,
-      //   isSendToServer,
-      //   isSendCallout,
-      //   isChangedOldValue
-      // }
-      // this.$store.dispatch('notifyFieldChange', {
-      //   ...sendParameters
-      // })
-      //   .finally(() => {
-      //     this.clearVariables()
-      //     this.$children[0].visible = false
-      //   })
+      const newValue = Number(this.valueToDisplay)
+      let isSendCallout = true
+      const isSendToServer = true
+      const isChangedOldValue = false
+      if (this.fieldAttributes.isAdvancedQuery) {
+        isSendCallout = false
+      }
+
+      const sendParameters = {
+        parentUuid: this.fieldAttributes.parentUuid,
+        containerUuid: this.fieldAttributes.containerUuid,
+        field: this.fieldAttributes,
+        panelType: this.fieldAttributes.panelType,
+        columnName: this.fieldAttributes.columnName,
+        newValue,
+        isAdvancedQuery: this.fieldAttributes.isAdvancedQuery,
+        isSendToServer,
+        isSendCallout,
+        isChangedOldValue
+      }
+      this.$store.dispatch(Namespaces.Panel + '/' + 'notifyFieldChange', {
+        ...sendParameters
+      })
+        .finally(() => {
+          clearVariables()
+          this.$children[0].$props.visible = true
+        })
     }
 
     spanMethod(params: { row: IKeyValueObject, column: any }): {
