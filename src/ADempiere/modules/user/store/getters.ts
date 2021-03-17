@@ -41,5 +41,8 @@ export const getters: UserGetterTree = {
   },
   getRoleNames(state: IUserState) {
     return state.roles
+  },
+  getCurrentOrg(state: IUserState): number {
+    return state.currentOrganization
   }
 }

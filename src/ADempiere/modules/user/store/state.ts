@@ -18,5 +18,6 @@ export const state: IUserState = {
   warehousesList: [],
   warehouse: {},
   isSession: false,
-  sessionInfo: {}
+  sessionInfo: {},
+  currentOrganization: 0
 }

@@ -98,6 +98,13 @@ export const actions: UserActionTree = {
           const { role } = sessionInfo
           context.commit('SET_ROLE', role)
           setCurrentRole(role.uuid)
+          const currentOrganizationSession = sessionInfo.defaultContext.find((element: any) => {
+            if (element.key === '#AD_Org_ID') {
+              return element
+            }
+          })
+
+          context.commit('SET_CURRENT_ORGANIZATIONS', currentOrganizationSession.value)
 
           // wait to establish the client and organization to generate the menu
           await context.dispatch('GetOrganizationsListFromServer', role.uuid)
@@ -267,14 +274,22 @@ export const actions: UserActionTree = {
             return item
           }
         })
-        if (!(organization)) {
+        if (!organization) {
           organization = response.organizationsList[0]
         }
-        if (!(organization)) {
+        if (!organization) {
           removeCurrentOrganization()
           organization = undefined
         } else {
           setCurrentOrganization(organization.uuid)
+        }
+        const currentOrganization: number = context.getters.getCurrentOrg
+        if (currentOrganization) {
+          organization = response.organizationsList.find(item => {
+            if (item.id === currentOrganization) {
+              return item
+            }
+          })
         }
         context.commit('SET_ORGANIZATION', organization)
         context.commit(Namespaces.Preference + '/' + 'setPreferenceContext', {

@@ -108,4 +108,5 @@ export interface IUserState {
   isSession: boolean
   sessionInfo: Partial<ISessionData>
   corporateBrandingImage: string
+  currentOrganization: number
 }

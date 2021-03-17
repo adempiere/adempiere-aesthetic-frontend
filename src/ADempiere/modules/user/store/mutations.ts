@@ -35,6 +35,9 @@ export const mutations: UserMutationTree = {
   ) {
     state.organizationsList = organizationsList
   },
+  SET_CURRENT_ORGANIZATIONS(state: IUserState, payload: number) {
+    state.currentOrganization = payload
+  },
   SET_ORGANIZATION(
     state: IUserState,
     organization: Partial<IOrganizationData>
