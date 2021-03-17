@@ -352,7 +352,7 @@ export interface ICreateBusinessPartnerParams {
     duns: string
     naics: string
     name: string
-    lastName: string
+    name2: string
     description: string
     contactName: string
     eMail: string
