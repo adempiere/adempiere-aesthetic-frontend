@@ -277,6 +277,26 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       }
     }
 
+    get getCurrentRecord(): any {
+      const record: any = this.getAllDataRecords.record.find(fieldItem => {
+        if (this.recordUuid === fieldItem.UUID) {
+          return fieldItem
+        }
+      })
+      if (!record) {
+        return record
+      }
+      return {}
+    }
+
+    get tableNameCurrentTab(): string {
+      const current = this.$store.getters[Namespaces.Window + '/' + 'getWindow']((this.getterContextMenu?.actions[0] as any).uuidParent).tabs[0]
+      if (current) {
+        return current.tableName
+      }
+      return ''
+    }
+
     // Watchers
     @Watch('$route.query.action')
     handleRouteQueryAction(actionValue: string) {
@@ -455,7 +475,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
 
     validatePrivateAccess(params: { isLocked: boolean, tableName: string, recordId: number }): void {
       const { isLocked, tableName, recordId } = params
-      if (this.isPersonalLock) {
+      if (!this.isPersonalLock) {
         let isHiddenLock = false
         if (isLocked) {
           isHiddenLock = true
@@ -495,21 +515,17 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       let isChangePrivateAccess = true
       if (this.isReferencesContent) {
         isChangePrivateAccess = false
-        if (this.$route.params.tableName) {
+        const validationPrev: boolean = (this.getCurrentRecord) && (this.tableNameCurrentTab)
+        if (this.$route.params.tableName || validationPrev) {
           this.$store
             .dispatch(Namespaces.BusinessData + '/' + 'getPrivateAccessFromServer', {
               tableName: this.$route.params.tableName,
-              recordId: this.$route.params.recordId
+              recordId: this.getCurrentRecord[this.tableNameCurrentTab + '_ID'],
+              recordUuid: this.$route.query.action
             })
             .then(
               (privateAccessResponse: IPrivateAccessDataExtended) => {
-                if (privateAccessResponse) {
-                  this.$nextTick(() => {
-                    this.validatePrivateAccess(
-                      privateAccessResponse
-                    )
-                  })
-                }
+                this.validatePrivateAccess(privateAccessResponse)
               }
             )
         }
@@ -745,13 +761,25 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
             recordUuid: this.recordUuid,
             panelType: this.panelType,
             isNewRecord: defaultAction.action === ActionContextName.SetDefaultValues,
-            tableName: defaultAction.tableName,
-            recordId: defaultAction.recordId
+            tableName: this.$route.params.tableName,
+            recordId: this.getCurrentRecord[this.tableNameCurrentTab + '_ID']
           }, { root: true })
             .then(response => {
+              this.$message({
+                type: 'success',
+                message: this.$t('data.lockRecord').toString(),
+                showClose: true
+              })
               if (response && response.isPrivateAccess) {
                 this.validatePrivateAccess(response)
               }
+            })
+            .catch(error => {
+              this.$message({
+                type: 'error',
+                message: this.$t('notifications.error') + error.message,
+                showClose: true
+              })
             })
         }
       } else if (action && action.type && action.type === 'updateReport') {

@@ -35,8 +35,7 @@ export default class BusinessPartnerCreate extends Mixins(
     // Computed properties
     get emptyMandatoryFields(): string[] {
       const field: string[] = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
-        containerUuid: this.containerUuid,
-        isValidate: true
+        containerUuid: this.containerUuid
       })
       return field
     }
@@ -53,7 +52,12 @@ export default class BusinessPartnerCreate extends Mixins(
       if (!values) {
         return
       }
+      const name2 = this.$store.getters[Namespaces.FieldValue + 'getValueOfField']({
+        containerUuid: this.containerUuid,
+        columnName: 'Name2'
+      })
       values = this.convertValuesToSend(values)
+      values.name2 = name2
       if (!this.emptyMandatoryFields) {
         this.isLoadingRecord = true
         requestCreateBusinessPartner(values)

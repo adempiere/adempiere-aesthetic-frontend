@@ -195,8 +195,7 @@ export default class Collection extends Mixins(MixinForm) {
       const containerUuid = this.containerUuid
       const fieldsEmpty: string[] = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
         containerUuid,
-        fieldsList: this.fieldsList,
-        isValidate: true
+        fieldsList: this.fieldsList
       })
       const amount = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid,
@@ -498,7 +497,7 @@ export default class Collection extends Mixins(MixinForm) {
           amount: this.amontSend,
           paymentDate,
           tenderTypeCode,
-          currencyUuid: this.currencyDisplay(currencyToPay).currencyUuid
+          currencyUuid: this.currencyDisplay(currencyToPay)
         })
       }
       this.addCollect()
@@ -639,6 +638,10 @@ export default class Collection extends Mixins(MixinForm) {
       if (display) {
         return display
       }
+      if (currency === this.currencyPoint.id) {
+        return this.currencyPoint.uuid
+      }
+
       return currency
     }
 

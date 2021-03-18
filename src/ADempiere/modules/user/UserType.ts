@@ -84,6 +84,8 @@ export interface IMenuParams {
 export interface ILoginParams {
   userName: string
   password: string
+  roleUuid: string
+  organizationUuid: string
   token: string
 }
 
@@ -106,4 +108,5 @@ export interface IUserState {
   isSession: boolean
   sessionInfo: Partial<ISessionData>
   corporateBrandingImage: string
+  currentOrganization: number
 }

@@ -582,8 +582,9 @@ export const actions: PanelActionTree = {
   containerUuid: string
   columnName: string
   field?: IFieldDataExtendedUtils
+  newValue: any
 }) {
-    const { columnName, containerUuid } = params
+    const { newValue, columnName, containerUuid } = params
     let { field } = params
     return new Promise(resolve => {
     // get field
@@ -593,11 +594,23 @@ export const actions: PanelActionTree = {
         field = fieldsList.find(fieldItem => fieldItem.columnName === columnName)
       }
 
-      const value = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
-        parentUuid: field!.parentUuid,
-        containerUuid: field!.containerUuid,
-        columnName: field!.columnName
-      })
+      let value
+      if (!newValue) {
+        value = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+          parentUuid: field!.parentUuid,
+          containerUuid: field!.containerUuid,
+          columnName: field!.columnName
+        })
+      } else {
+        value = newValue
+      }
+
+      // const value = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+      //   parentUuid: field!.parentUuid,
+      //   containerUuid: field!.containerUuid,
+      //   columnName: field!.columnName
+      // })
+
       // if (!(panelType === 'table' || isAdvancedQuery)) {
       //   if (!['IN', 'NOT_IN'].includes(field.operator)) {
       //     value = parsedValueComponent({

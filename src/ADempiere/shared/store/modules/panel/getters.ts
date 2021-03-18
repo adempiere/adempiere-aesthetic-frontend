@@ -503,13 +503,13 @@ export const getters: PanelGetterTree = {
     const fieldsList: IFieldDataExtendedUtils[] = getters.getFieldsListFromPanel(containerUuid)
 
     const fieldNotReadyToSend: IFieldDataExtendedUtils | undefined = fieldsList.find((fieldItem: IFieldDataExtendedUtils) => {
-      const isMandatory: boolean = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
-      const isDisplayed: boolean = fieldIsDisplayed(fieldItem) && (fieldItem.isShowedFromUser || isMandatory)
-
       const { columnName } = fieldItem
       if (fieldItem.panelType === PanelContextType.Window && LOG_COLUMNS_NAME_LIST.includes(columnName)) {
         return false
       }
+
+      const isMandatory: boolean = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
+      const isDisplayed: boolean = fieldIsDisplayed(fieldItem) && (fieldItem.isShowedFromUser || isMandatory)
 
       if (isDisplayed && isMandatory) {
         let value
@@ -594,11 +594,10 @@ export const getters: PanelGetterTree = {
     containerUuid: string
     fieldsList?: IFieldDataExtendedUtils[]
     formatReturn?: string
-    isValidate?: boolean
   }): string[]| IFieldDataExtendedUtils[] => {
     const {
       containerUuid,
-      isValidate = parameters.isValidate || false,
+      // isValidate = parameters.isValidate || false,
       formatReturn = parameters.formatReturn || 'name'
     } = parameters
     let { fieldsList } = parameters
@@ -606,20 +605,13 @@ export const getters: PanelGetterTree = {
     if (!fieldsList) {
       fieldsList = getters.getFieldsListFromPanel(containerUuid)
     }
-    const fieldsEmpty: string[] = []
-    // all optionals (not mandatory) fields
+    // all mandatory and empty fields value
     const fieldsNameEmpty = fieldsList!.filter((fieldItem: IFieldDataExtendedUtils) => {
       const value: any = rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         parentUuid: fieldItem.parentUuid,
         containerUuid,
         columnName: fieldItem.columnName
       })
-      if (isValidate && !value) {
-        const isMandatory = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
-        if (fieldIsDisplayed(fieldItem) && isMandatory) {
-          fieldsEmpty.push(fieldItem.name)
-        }
-      }
       if (!value) {
         const isMandatory: boolean = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
         if (fieldIsDisplayed(fieldItem) && isMandatory) {
@@ -628,12 +620,8 @@ export const getters: PanelGetterTree = {
       }
     })
 
-    if (isValidate) {
-      return fieldsEmpty
-    }
-
     if (formatReturn) {
-      return fieldsList!.map((fieldItem: IFieldDataExtendedUtils) => {
+      return fieldsNameEmpty.map((fieldItem: IFieldDataExtendedUtils) => {
         const objFieldItem: IKeyValueObject = fieldItem as IKeyValueObject
         return objFieldItem[formatReturn]
       })

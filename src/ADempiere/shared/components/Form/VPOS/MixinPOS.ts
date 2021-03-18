@@ -9,10 +9,7 @@ import {
   IOrderLineData,
   IOrderLineDataExtended,
   IPointOfSalesData,
-  requestCreateOrder,
   requestCreateOrderLine,
-  requestGetOrder,
-  requestUpdateOrder,
   requestUpdateOrderLine
 } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
@@ -195,6 +192,13 @@ export default class MixinPOS extends Mixins(MixinForm) {
       }
     }
 
+    @Watch('currentPoint')
+    hanldeCurrentPoint(value: IPointOfSalesData | undefined) {
+      if (value) {
+        this.$store.dispatch(Namespaces.PointOfSales + '/' + 'setCurrentPOS', value)
+      }
+    }
+
     // Methods
     formatDate = formatDate
 
@@ -365,7 +369,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
                   this.createOrderLine(response.uuid!)
                 }
                 this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
-                  posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+                  posUuid: this.currentPoint?.uuid // this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
                 })
               })
               .catch((error) => {
@@ -621,6 +625,17 @@ export default class MixinPOS extends Mixins(MixinForm) {
       if (this.$route.query && this.$route.query.action) {
         const orderUuid: string | undefined = this.$route.query.action as string
         this.reloadOrder(true, orderUuid)
+        if (this.$route.query.pos && this.allOrderLines && !this.$route.query.action) {
+          this.$router.push({
+            params: {
+              ...this.$route.params
+            },
+            query: {
+              ...this.$route.query,
+              action: this.getOrder?.uuid
+            }
+          })
+        }
       }
     }
 

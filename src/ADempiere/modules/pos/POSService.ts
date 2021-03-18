@@ -596,7 +596,7 @@ export function requestProcessOrder(data: {
         amount: parameter.amount,
         tender_type_code: parameter.tenderTypeCode,
         payment_ate: parameter.paymentDate,
-        currency_uid: parameter.currency_uuid
+        currency_uid: parameter.currencyUuid
       }
     })
   }

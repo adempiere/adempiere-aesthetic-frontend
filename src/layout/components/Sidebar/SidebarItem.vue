@@ -10,7 +10,9 @@
       >
         <el-menu-item
           :index="resolvePath(theOnlyOneChild.path)"
+          :route="item"
           :class="{'submenu-title-noDropdown': isFirstLevel}"
+          @click="openItemMenu"
         >
           <svg-icon
             v-if="theOnlyOneChild.meta.icon"
@@ -59,6 +61,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
 import { isExternal } from '@/utils/validate'
 import SidebarItemLink from './SidebarItemLink.vue'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 
 @Component({
   // Set 'name' here to prevent uglifyjs from causing recursive component not work
@@ -126,6 +130,34 @@ export default class extends Vue {
     // If there is no children, return itself with path removed,
     // because this.basePath already conatins item's path information
     return { ...this.item, path: '' }
+  }
+
+  /**
+     * Clear field values, and set default values with open
+     * @param menuItem router item with meta attributes
+     */
+  openItemMenu(menuItem: any): void {
+    const view: RouteConfig = menuItem._props.route
+    if (view.meta && view.meta.uuid && view.meta.type) {
+      const {
+        parentUuid,
+        uuid: containerUuid,
+        type: panelType
+      } = view.meta
+      if (panelType !== PanelContextType.Window) {
+        this.$store.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {
+          parentUuid,
+          containerUuid,
+          panelType,
+          isNewRecord: false
+        })
+        if ([PanelContextType.Browser].includes(panelType)) {
+          this.$store.dispatch(Namespaces.BusinessData + '/' + 'deleteRecordContainer', {
+            viewUuid: containerUuid
+          })
+        }
+      }
+    }
   }
 
   private resolvePath(routePath: string) {

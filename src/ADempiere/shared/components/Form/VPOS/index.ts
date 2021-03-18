@@ -97,9 +97,6 @@ export default class VPOS extends Vue {
       ) {
         let posToSet
         // set pos id with query path
-        if (this.$route.query && this.$route.query.pos) {
-          posToSet = Number(this.$route.query.pos)
-        }
         this.$store.dispatch(Namespaces.PointOfSales + '/' + 'listPointOfSalesFromServer', posToSet)
       }
 
@@ -115,7 +112,7 @@ export default class VPOS extends Vue {
             },
             query: {
               ...this.$route.query,
-              pos: this.pointOfSalesId!.toString()
+              pos: String(this.pointOfSalesId)
             }
           }
         )
