@@ -515,7 +515,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       let isChangePrivateAccess = true
       if (this.isReferencesContent) {
         isChangePrivateAccess = false
-        const validationPrev: boolean = (this.getCurrentRecord) && (this.tableNameCurrentTab)
+        const validationPrev: boolean = Boolean(this.getCurrentRecord) && Boolean(this.tableNameCurrentTab)
         if (this.$route.params.tableName || validationPrev) {
           this.$store
             .dispatch(Namespaces.BusinessData + '/' + 'getPrivateAccessFromServer', {
