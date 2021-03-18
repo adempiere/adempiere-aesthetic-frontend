@@ -1014,10 +1014,7 @@ export const actions: BusinessDataActionTree = {
     })
       .then((privateAccessResponse: IPrivateAccessData) => {
         // TODO: Evaluate uuid record
-        if (
-          !privateAccessResponse.recordId ||
-                    privateAccessResponse.recordId !== recordId
-        ) {
+        if (privateAccessResponse.tableName) {
           return {
             isLocked: false,
             tableName,
@@ -1064,7 +1061,7 @@ export const actions: BusinessDataActionTree = {
       .catch(error => {
         showMessage({
           // title: language.t('notifications.error'),
-          message: language.t('login.unexpectedError').toString(),
+          message: language.t('login.unexpectedError').toString() + error.message,
           type: 'error'
         })
         console.warn(
@@ -1100,7 +1097,7 @@ export const actions: BusinessDataActionTree = {
       .catch(error => {
         showMessage({
           // title: language.t('notifications.error'),
-          message: language.t('login.unexpectedError').toString(),
+          message: language.t('login.unexpectedError').toString() + error.message,
           type: 'error'
         })
         console.warn(
