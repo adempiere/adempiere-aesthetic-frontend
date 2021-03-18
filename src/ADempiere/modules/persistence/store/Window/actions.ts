@@ -1273,36 +1273,47 @@ export const actions: WindowActionTree = {
       const dataSequence = listSequenceToSet.find(
         item => item.UUID === itemData.UUID
       )
-      if (
-        itemData[sortOrderColumnName] ===
-                dataSequence[sortOrderColumnName]
-      ) {
+      const currentSequence = itemData[sortOrderColumnName]
+      const newSequence = dataSequence[sortOrderColumnName]
+      const validateCurrentSequence = !currentSequence && newSequence <= 0
+      const validateNewSequence = !newSequence && currentSequence <= 0
+      if (currentSequence === newSequence || validateCurrentSequence || validateNewSequence) {
         return
       }
       const valuesToSend: KeyValueData[] = [
         {
           // columnName: sortOrderColumnName,
           key: sortOrderColumnName,
-          value: dataSequence[sortOrderColumnName]
+          value: newSequence
         }
       ]
 
+      const currentYesNo = itemData[sortYesNoColumnName]
+      const newYesNo = dataSequence[sortYesNoColumnName]
+      const validateCurrentYesNo = !currentYesNo || currentYesNo === false
+      const validateNewYesNo = !newSequence || newSequence <= 0
+
+      if (validateCurrentYesNo && validateCurrentSequence) {
+        return
+      }
+
       if (
-        itemData[sortYesNoColumnName] !==
-                dataSequence[sortYesNoColumnName]
+        currentYesNo !== newYesNo
       ) {
         valuesToSend.push({
           // columnName: sortYesNoColumnName,
           key: sortOrderColumnName,
-          value: dataSequence[sortYesNoColumnName]
+          value: newYesNo
         })
       }
 
       const countRequest: number = context.state.totalRequest + 1
       context.commit('setTotalRequest', countRequest)
 
+      const recordId = itemData[tableName + '_ID']
       requestUpdateEntity({
         tableName,
+        id: recordId,
         uuid: itemData.UUID,
         attributes: valuesToSend
         // attributesList: valuesToSend
