@@ -22,12 +22,13 @@
     >
       <el-option
         v-for="element in options"
-        :key="element.path"
+        :key="element.item.path"
         :value="element.item"
         :label="element.item.meta.title.join(' > ')"
+
       >
-      {{ element.item.title.join(' > ') }}
-      <svg-icon :icon-class="element.item.meta.icon" />
+      <svg-icon :name="element.item.meta.icon" style="margin-right: 5px;"/>
+      {{ element.item.meta.title.join(' > ') }}
       </el-option>
     </el-select>
   </div>
@@ -49,7 +50,7 @@ import { DeviceType } from '@/ADempiere/modules/app/AppType'
 export default class extends Mixins(MixinI18n) {
   private search = ''
   private show = false
-  private options: RouteConfig[] = []
+  private options: any[] = []
   private searchPool: RouteConfig[] = []
   private fuse?: Fuse<RouteConfig>
 
@@ -63,6 +64,10 @@ export default class extends Mixins(MixinI18n) {
 
   get lang() {
     return this.$store.state.app.language
+  }
+
+  get supportPinyinSearch() {
+    return this.$store.state.settings.supportPinyinSearch
   }
 
   @Watch('lang')
@@ -106,7 +111,8 @@ export default class extends Mixins(MixinI18n) {
     this.show = false
   }
 
-  private change(route: RouteConfig) {
+  change(route: RouteConfig) {
+    console.log('searching')
     if (route.name) {
       const query: any = {}
       if (route.meta && route.meta.type === 'window') {
@@ -193,10 +199,15 @@ export default class extends Mixins(MixinI18n) {
     return res
   }
 
-  private querySearch(query: string) {
-    if (query !== '') {
+  private querySearch(query?: string) {
+    console.log('querySearch')
+    console.log(query)
+    if (query && query !== '') {
       if (this.fuse) {
-        this.options = this.fuse.search(query).map((result) => result.item)
+        console.log('busqueda')
+        console.log(query)
+        console.log(this.fuse.search(query))
+        this.options = this.fuse.search(query)
       }
     } else {
       this.options = []
