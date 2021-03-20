@@ -9,6 +9,58 @@ export function extractPagingToken(token: string): string {
   return onlyToken
 }
 
+/**
+ * Get date and time from client in a object value
+ * @param {string} type Type value of return
+ * @returns {object|string}
+ */
+export function clientDateTime(date: string | null = null, type = '') {
+  let dateTime: Date
+  if (date == null || date === undefined || (typeof date === 'string' && date.trim() === '')) {
+    // instance the objet Data with current date from client
+    dateTime = new Date()
+  } else {
+    // instance the objet Data with date or time send
+    dateTime = new Date(date)
+  }
+
+  const currentDate = dateTime.getFullYear() +
+    '-' + zeroPad(dateTime.getMonth() + 1) +
+    '-' + zeroPad(dateTime.getDate())
+
+  const currentTime = dateTime.getHours() +
+    ':' + dateTime.getMinutes() +
+    ':' + dateTime.getSeconds()
+
+  const currentDateTime = {
+    date: currentDate,
+    time: currentTime
+  }
+
+  if (type.toLowerCase() === 't') {
+    // time format HH:II:SS
+    return currentDateTime.time
+  } else if (type.toLowerCase() === 'd') {
+    // date format YYYY-MM-DD
+    return currentDateTime.date
+  } else if (type.toLocaleLowerCase() === 'o') {
+    // object format
+    return currentDateTime
+  }
+  return currentDateTime.date + ' ' + currentDateTime.time
+}
+
+/**
+ * zero pad
+ * @param {number|string} number
+ * @param {number} pad
+ * @returns {string}
+ */
+export function zeroPad(number: number, pad = 2): string {
+  const zero = Number(pad) - number.toString().length + 1
+  return Array(+(zero > 0 && zero)).join('0') + number
+}
+
 export function typeValue(value: any): string {
   const typeOfValue = Object!.prototype.toString
     .call(value)

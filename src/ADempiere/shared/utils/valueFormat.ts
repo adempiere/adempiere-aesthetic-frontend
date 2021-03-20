@@ -5,6 +5,7 @@ import moment from 'moment'
 import store from '@/ADempiere/shared/store'
 import { ILanguageData } from '@/ADempiere/modules/core/CoreType'
 import { IRangeAttributeData } from '../store/modules/panel/type'
+import language from '@/ADempiere/shared/lang'
 
 export function convertArrayKeyValueToObject({
   array = [],
@@ -228,4 +229,16 @@ export function trimPercentage(stringToParsed: string): string {
     return parsedValue
   }
   return stringToParsed
+}
+
+/**
+ * Convert boolean value to current translation language
+ * @param {boolean} booleanValue
+ * @returns {string} true => 'Yes' or 'Si', false => 'Not' or 'No'
+ */
+export const convertBooleanToTranslationLang = (booleanValue: boolean | string): string => {
+  if (booleanValue || booleanValue === 'true') {
+    return language.t('components.switchActiveText').toString()
+  }
+  return language.t('components.switchInactiveText').toString()
 }
