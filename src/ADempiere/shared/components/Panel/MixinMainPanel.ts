@@ -48,6 +48,7 @@ export default class MixinMainPanel extends Vue {
     public fieldGroups: any[] = []
     public firstGroup: any = {}
     public groupsView = 0
+    public clientId: number = this.getContainerClientId
     public tagTitle = {
       base: this.$route.meta.title,
       action: ''
@@ -81,7 +82,7 @@ export default class MixinMainPanel extends Vue {
 
     get getContainerProcessing(): boolean {
       if (
-        this.panelType === PanelContextType.Window && !this.isAdvancedQuery
+        this.isPanelWindow && !this.isAdvancedQuery
       ) {
         return this.$store.getters[
           Namespaces.FieldValue + '/' + 'getContainerProcessing'
@@ -92,7 +93,7 @@ export default class MixinMainPanel extends Vue {
 
     get getContainerProcessed(): boolean {
       if (
-        this.panelType === PanelContextType.Window &&
+        this.isPanelWindow &&
             !this.isAdvancedQuery
       ) {
         return this.$store.getters[
@@ -100,6 +101,22 @@ export default class MixinMainPanel extends Vue {
         ](this.parentUuid)
       }
       return false
+    }
+
+    get getContainerClientId(): number {
+      let clientId: any = null
+      if (this.isPanelWindow && !this.isAdvancedQuery) {
+        // client id from current record
+        clientId = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+          parentUuid: this.parentUuid,
+          containerUuid: this.containerUuid,
+          columnName: 'AD_Client_ID'
+        })
+        if (clientId) {
+          return parseInt(clientId, 10)
+        }
+      }
+      return clientId
     }
 
     get getterPanel(): IPanelDataExtended | undefined {
