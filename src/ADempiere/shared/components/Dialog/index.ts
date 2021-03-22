@@ -107,7 +107,7 @@ export default class ModalProcess extends Vue {
           }
         )
         this.closeDialog()
-      } else if (action !== undefined) {
+      } else if (action) {
         const fieldNotReady = this.$store.getters[Namespaces.Panel + '/' + 'isNotReadyForSubmit'](action.uuid)
         if (this.panelType === PanelContextType.Form) {
           this.$store.dispatch(Namespaces.Process + '/' + 'processPos', {
@@ -128,7 +128,7 @@ export default class ModalProcess extends Vue {
             const porcesTabla = this.$store.getters[Namespaces.Utils + '/' + 'getProcessSelect'].processTablaSelection
             const selection = this.$store.getters[Namespaces.Utils + '/' + 'getProcessSelect']
             if (porcesTabla) {
-              // selection.forEach(element => {
+              // manage excecute process with records selection
               this.$store.dispatch(Namespaces.Process + '/' + 'selectionProcess', {
                 action: action, // process metadata
                 parentUuid: this.parentUuid,

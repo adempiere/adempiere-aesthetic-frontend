@@ -4,7 +4,7 @@ import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtil
 import { exportFileFromJson, exportFileZip, supportedTypes } from '@/ADempiere/shared/utils/exportUtil'
 import { FIELDS_QUANTITY } from '@/ADempiere/shared/utils/references'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
+import { clientDateTime, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
 import { BookType } from 'xlsx/types'
@@ -212,28 +212,45 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
         list = this.getDataSelection
       }
 
+      let title = this.panelMetadata.name
+      if (!title) {
+        title = this.$route.meta.title
+      }
+
       const data = this.formatJson(filterVal, list)
       exportFileFromJson({
         header,
         data,
-        // filename: '',
+        fileName: `${title} ${clientDateTime()}`,
         exportType: <BookType>formatToExport
       })
       this.closeMenu()
     }
 
-    exporZipRecordTable(): void {
+    /**
+     * Export record as .txt into compressed .zip file
+     */
+    exporZipRecordTable(recordContextMenu?: boolean): void {
+      recordContextMenu = recordContextMenu || false
       const header = this.getterFieldsListHeader
       const filterVal = this.getterFieldsListValue
       let list = this.getDataSelection
       if (this.getDataSelection.length <= 0) {
         list = this.recordsData
       }
+      if (recordContextMenu) {
+        list = [this.currentRow]
+      }
       const data = this.formatJson(filterVal, list)
+      let title = this.panelMetadata.name
+      if (!title) {
+        title = this.$route.meta.title
+      }
       exportFileZip({
         header,
         data,
-        title: this.$route.meta.title
+        txtName: this.$route.meta.title,
+        zipName: `${title} ${clientDateTime()}`
         // exportType: 'zip'
       })
     }

@@ -1,7 +1,7 @@
 <template>
   <el-cascader
     :ref="metadata.columnName"
-    v-model="value"
+    :v-model="[value]"
     :placeholder="metadata.help"
     :options="options"
     :readonly="Boolean(metadata.readonly)"

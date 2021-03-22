@@ -34,7 +34,7 @@ import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtil
 import { INotificationProcessData } from '@/ADempiere/modules/process/ProcessType'
 import { showNotification } from '@/ADempiere/shared/utils/notifications'
 import { IReportOutputDataExtended } from '@/ADempiere/modules/report'
-import { convertFieldsListToShareLink, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
+import { convertFieldsListToShareLink, recursiveTreeSearch, clientDateTime } from '@/ADempiere/shared/utils/valueUtils'
 import ROUTES from '@/ADempiere/shared/utils/Constants/zoomWindow'
 import MixinRelations from './MixinRelations'
 
@@ -465,10 +465,15 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
         // TODO: Check usage as the selection is exported with the table menu
         list = this.getDataSelection
       }
+      let title: string | undefined = (this.metadataMenu as any).name
+      if (!title || title === '') {
+        title = this.$route.meta.title
+      }
       const data = this.formatJson(filterVal, list)
       exportFileFromJson({
         header: tHeader,
         data,
+        fileName: `${title} ${clientDateTime()}`,
         exportType: fotmatToExport
       })
     }
@@ -515,7 +520,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       let isChangePrivateAccess = true
       if (this.isReferencesContent) {
         isChangePrivateAccess = false
-        const validationPrev: boolean = (this.getCurrentRecord) && (this.tableNameCurrentTab)
+        const validationPrev: boolean = Boolean(this.getCurrentRecord) && Boolean(this.tableNameCurrentTab)
         if (this.$route.params.tableName || validationPrev) {
           this.$store
             .dispatch(Namespaces.BusinessData + '/' + 'getPrivateAccessFromServer', {
