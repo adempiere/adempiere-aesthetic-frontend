@@ -4,6 +4,7 @@
     action="https://jsonplaceholder.typicode.com/posts/"
     :show-file-list="false"
     :on-success="handleAvatarSuccess"
+    :on-change="handleChange"
     :before-upload="beforeAvatarUpload"
     :disabled="isDisabled"
     :class="cssClassStyle"
