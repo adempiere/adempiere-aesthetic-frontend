@@ -7,13 +7,18 @@ import { ILanguageData } from '@/ADempiere/modules/core/CoreType'
 import { IRangeAttributeData } from '../store/modules/panel/type'
 import language from '@/ADempiere/shared/lang'
 
-export function convertArrayKeyValueToObject({
-  array = [],
-  keyName = 'columnName',
-  valueName = 'value'
-}): Object {
-  const result: object = {}
-  array.forEach(element => {
+export function convertArrayKeyValueToObject(data: {
+    array?: any[]
+    keyName?: string
+    valueName?: string
+}): IKeyValueObject {
+  const {
+    array = data.array || [],
+    keyName = data.keyName || 'columnName',
+    valueName = data.valueName || 'value'
+  } = data
+  const result: IKeyValueObject = {}
+  array.forEach((element: any) => {
     result[element[keyName]] = element[valueName]
   })
 
