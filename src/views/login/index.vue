@@ -187,6 +187,7 @@ export default class extends Vue {
     private capsTooltip = false
     private redirect?: string
     private otherQuery: Dictionary<string> = {}
+    private default = 'dashboard'
 
     @Watch('$route', { immediate: true })
     private onRouteChange(route: Route) {
@@ -231,7 +232,7 @@ export default class extends Vue {
         if (query) {
           this.loginForm = {
             ...this.loginForm,
-            roleUuid: this.clientIdRedirect(query, expr),
+            roleUuid: this.clientIdRedirect(query, expr) || '',
             organizationUuid: this.organizationIdRedirect(query, expr)
           }
         }
@@ -291,8 +292,11 @@ export default class extends Vue {
     //         })
     // }
 
-    private clientIdRedirect(query: string, expr: string): string {
+    private clientIdRedirect(query: string, expr: string): string | undefined {
       const redirect = query.split(expr)
+      if (redirect[1] === this.default) {
+        return
+      }
       return redirect[1]
     }
 

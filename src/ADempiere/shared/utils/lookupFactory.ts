@@ -49,6 +49,7 @@ export interface IOverwriteDefinitionData extends IAdditionalAttributesData {
     handleFocusLost?: boolean
     handleKeyPressed?: boolean
     handleKeyReleased?: boolean
+    value?: boolean
 }
 
 export type IFieldTemplateMetadataType = Partial<IFieldDataExtendedUtils> & {
@@ -359,7 +360,7 @@ export function createFieldFromDictionary(params: {
   columnUuid?: string
   elementUuid?: string
   elementColumnName?: string
-  tableName: string
+  tableName?: string
   columnName: string
   overwriteDefinition: IOverwriteDefinitionData
 }): Promise<IFieldTemplateData> {

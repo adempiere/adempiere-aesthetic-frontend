@@ -16,7 +16,7 @@ import {
   ISizeData
 } from '../../utils/references'
 import { Namespaces } from '../../utils/types'
-import { LOG_COLUMNS_NAME_LIST } from '@/ADempiere/shared/utils/dataUtils'
+import Preference from '@/ADempiere/shared/components/Field/Popover/Preference/index'
 
 @Component({
   name: 'FieldDefinition',
@@ -25,7 +25,8 @@ import { LOG_COLUMNS_NAME_LIST } from '@/ADempiere/shared/utils/dataUtils'
     DocumentStatus,
     OperatorComparison,
     Translated,
-    Calculator
+    Calculator,
+    Preference
   },
   mixins: [Template]
 })
@@ -155,16 +156,11 @@ export default class FieldDefinition extends Vue {
         return true
       }
 
-      const isLogColumns = LOG_COLUMNS_NAME_LIST.includes(this.field.columnName)
-
       const isUpdateableAllFields: boolean =
             this.field.isReadOnly || this.field.isReadOnlyFromLogic
 
       if (this.isPanelWindow) {
         let isWithRecord: boolean = this.field.recordUuid !== 'create-new'
-        if (isLogColumns) {
-          return true
-        }
         if (this.field.isAlwaysUpdateable) {
           return false
         }
@@ -188,7 +184,7 @@ export default class FieldDefinition extends Vue {
       } else if (this.field.panelType === PanelContextType.Browser) {
         if (this.inTable) {
           // browser result
-          return this.field.isReadOnly || isLogColumns
+          return this.field.isReadOnly
         }
         // query criteria
         return this.field.isReadOnlyFromLogic

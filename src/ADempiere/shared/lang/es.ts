@@ -148,7 +148,16 @@ export default {
     resetAllFilters: 'Reiniciar todos los filtros',
     switchActiveText: 'Si',
     switchInactiveText: 'No',
-    contextFieldTitle: 'Información de Contexto'
+    contextFieldTitle: 'Información de Contexto',
+    preference: {
+      title: 'Valor de Preferencia',
+      attribute: 'Atributo',
+      code: 'Codigo',
+      yes: 'Si',
+      no: 'No',
+      defaulMessage: 'Aplica para Esta ',
+      defaulMessageUser: 'Aplica para Este '
+    }
   },
   views: {
     browser: 'Consulta Inteligente',
@@ -320,7 +329,7 @@ export default {
           completePreparedOrder: 'Completar Orden Preparada',
           cancelSaleTransaction: 'Anular Transacción de Venta',
           createPos: 'Crear Retiro de Punto de Venta',
-          print: 'Imprimir',
+          print: 'Imprimir Documento',
           cancelOrder: 'Cancelar Orden',
           orderRemoved: 'Orden Borrada',
           copyOrder: 'Copiar Orden'
@@ -393,7 +402,7 @@ export default {
     productInfo: {
       product: 'Producto',
       codeProduct: 'Código de Producto',
-      productInformation: 'Informacion de Producto',
+      productInformation: 'Información de Producto',
       code: 'Código',
       name: 'Nombre',
       id: 'ID',
