@@ -1,9 +1,7 @@
-import { IValueData } from '@/ADempiere/modules/core'
-import { requestLocatorList } from '@/ADempiere/modules/field/FieldService/locator'
-import { IEntityData, IEntityListData } from '@/ADempiere/modules/persistence'
-import { IWorkflowNodeData } from '@/ADempiere/modules/window'
+import { getLocatorList } from '@/ADempiere/modules/field/FieldService/locator'
+import { ILocatorData } from '@/ADempiere/modules/persistence'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import MixinField from '../Mixin/MixinField'
 import Template from './template.vue'
 
@@ -12,8 +10,11 @@ import Template from './template.vue'
   mixins: [MixinField, Template]
 })
 export default class FieldLocator extends Mixins(MixinField) {
-    @Prop() lazy = true
-    @Prop() lazyLoad = this.searchLocatorByWarehouse
+    public props: {lazy: boolean, lazyLoad: any} = {
+      lazy: true,
+      lazyLoad: this.searchLocatorByWarehouse
+    }
+
     public level = 0
     public options: any[] = []
 
@@ -46,44 +47,29 @@ export default class FieldLocator extends Mixins(MixinField) {
     }
 
     searchLocatorByWarehouse(node: any, resolve: Function) {
-      requestLocatorList({
+      getLocatorList({
         warehouseId: node.value
       })
-        .then((responseData: IEntityListData) => {
-          const data: IEntityData = responseData.recordsList[this.level]
-          const locatorList = [{
-            value: data.id,
-            label: data.attributes[0].value,
-            warehouse: data.id,
-            leaf: true
-          }, {
-            value: data.id,
-            label: data.attributes.find(val => val.key === 'X')!.value,
-            warehouse: data.id,
-            leaf: true
-          }, {
-            value: data.id,
-            label: data.attributes.find(val => val.key === 'Y')!.value,
-            warehouse: data.id,
-            leaf: true
-          }, {
-            value: data.id,
-            label: data.attributes.find(val => val.key === 'Z')!.value,
-            warehouse: data.id,
-            leaf: true
-          }]
-          // const locatorList = responseData.recordsList.map((item: IEntityData) => {
-          //   const { attributes: values } = item
-          //   return {
-          //     label: values[0].value,
-          //     value: values[0].value, // M_Locator_ID,
-          //     warehouse: values[0].valueTo, // M_Warehouse_ID, // node.value
-          //     leaf: true
-          //   }
-          // })
+        .then((locators: ILocatorData[]) => {
+          const locatorList: {
+            value: any
+            label: string
+            warehouse: number
+            leaf: boolean
+          }[] = []
+          locators.map((locator: ILocatorData) => {
+            locatorList.push({
+              value: locator.id,
+              label: locator.value,
+              warehouse: locator.warehouseId,
+              leaf: true
+            })
+          })
+
+          // Resolve this
           resolve(locatorList)
         })
-        .catch(error => {
+        .catch((error: any) => {
           console.warn(`Error getting Locator List By Warehouse from server. Code: ${error.code}. Message: ${error.message}.`)
           resolve()
         })

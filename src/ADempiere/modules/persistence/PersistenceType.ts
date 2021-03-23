@@ -9,6 +9,15 @@ import {
 } from '@/ADempiere/modules/ui'
 import { IReferenceData } from '../field'
 
+export interface ILocatorData {
+    id?: number
+    value: any
+    warehouseId: number
+    rack: string
+    column: string
+    level: string
+}
+
 export type KeyValueData<T = any> = {
     key: string
     value: T
