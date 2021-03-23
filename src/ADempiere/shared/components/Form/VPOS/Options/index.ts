@@ -5,11 +5,11 @@ import OrdersList from '@/ADempiere/shared/components/Form/VPOS/OrderList'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IListOrderItemData, IListProductPriceItemData, IOrderData, IPointOfSalesData } from '@/ADempiere/modules/pos/POSType'
 import {
-  requestCashClosing, requestCreateNewCustomerReturnOrder, requestCreateWithdrawal, requestGenerateImmediateInvoice, requestPrintOrder,
+  cashClosing, createNewReturnOrder, withdrawal, generateImmediateInvoice, printOrder,
   // requestReverseSalesTransaction,
   requestDeleteOrder,
   requestCreateOrder,
-  requestProcessOrder
+  processOrder
 } from '@/ADempiere/modules/pos/POSService'
 import ModalDialog from '@/ADempiere/shared/components/Dialog'
 import posProcess from '@/ADempiere/shared/utils/Constants/posProcess'
@@ -158,7 +158,7 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     printOrder(): void {
-      requestPrintOrder({
+      printOrder({
         orderUuid: this.$route.query.action.toString()
       })
     }
@@ -166,7 +166,7 @@ export default class Options extends Mixins(MixinOrderLine) {
     generateImmediateInvoice(): void {
       // TODO: Add BPartner
       const { uuid: posUuid, id: posId } = this.currentPOS!
-      requestGenerateImmediateInvoice({
+      generateImmediateInvoice({
         posId,
         posUuid: posUuid!
       })
@@ -181,7 +181,8 @@ export default class Options extends Mixins(MixinOrderLine) {
         message: this.$t('notifications.processing').toString(),
         showClose: true
       })
-      requestProcessOrder({
+
+      processOrder({
         posUuid,
         orderUuid: this.$route.query.action as string,
         createPayments: Boolean(this.$store.getters[Namespaces.Payments + '/' + 'getListPayments']),
@@ -238,10 +239,10 @@ export default class Options extends Mixins(MixinOrderLine) {
       this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos')
     }
 
-    createWithdrawal(): void {
+    withdrawal(): void {
       const { uuid: posUuid, id: posId } = this.currentPOS!
       // TODO: Add BParner, C_BankAccount_ID (caja), CashTransferBankAccount_ID, PAY_C_BankAccount_ID
-      requestCreateWithdrawal({
+      withdrawal({
         posId,
         posUuid: posUuid!
       })
@@ -312,14 +313,14 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     createNewCustomerReturnOrder(): void {
-      requestCreateNewCustomerReturnOrder({
+      createNewReturnOrder({
         orderUuid: this.$route.query.action.toString()
       })
     }
 
     cashClosing(): void {
       const { uuid: posUuid, id: posId } = this.currentPOS!
-      requestCashClosing({
+      cashClosing({
         posId,
         posUuid: posUuid!
       })

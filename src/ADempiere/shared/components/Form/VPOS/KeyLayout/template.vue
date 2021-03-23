@@ -45,8 +45,8 @@
                 </span>
                 <div @click="setKeyActionToOrderLine(keyValue)">
                   <el-image
-                    v-if="ifImage(keyValue)"
-                    :src="srcImage(keyValue)"
+                    v-if="getDefaultImage(keyValue)"
+                    :src="getImageFromSource(keyValue)"
                     class="key-layout"
                     fit="contain"
                   />

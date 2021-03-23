@@ -1,5 +1,5 @@
 import { ICurrencyData } from '@/ADempiere/modules/core'
-import { IOrderData, IPaymentsData, IPointOfSalesData, requestProcessOrder } from '@/ADempiere/modules/pos'
+import { IOrderData, IPaymentsData, IPointOfSalesData, processOrder } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatDate, formatPrice } from '@/ADempiere/shared/utils/valueFormat'
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
@@ -684,7 +684,7 @@ export default class Collection extends Mixins(MixinForm) {
         message: this.$t('notifications.processing').toString(),
         showClose: true
       })
-      requestProcessOrder({
+      processOrder({
         posUuid,
         orderUuid,
         createPayments: Boolean(payment),

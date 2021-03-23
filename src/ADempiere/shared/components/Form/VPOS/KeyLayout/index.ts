@@ -191,7 +191,7 @@ export default class KeyLayout extends Vue {
       this.loadKeyLayout(keyLayoutUuid)
     }
 
-    ifImage(keyValue: any) {
+    getDefaultImage(keyValue: any) {
       const { fileName } = keyValue.resourceReference
 
       if (!fileName) {
@@ -207,7 +207,7 @@ export default class KeyLayout extends Vue {
       return image.isLoaded
     }
 
-    srcImage(keyValue: any) {
+    getImageFromSource(keyValue: any) {
       const { fileName } = keyValue.resourceReference
 
       if (!fileName) {

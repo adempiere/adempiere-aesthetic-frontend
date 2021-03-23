@@ -2,7 +2,7 @@ import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { extractPagingToken } from '@/ADempiere/shared/utils/valueUtils'
 import { ActionContext, ActionTree } from 'vuex'
-import { requestListProductPrice } from '../../POSService'
+import { getProductPriceList } from '../../POSService'
 import { IListProductPriceResponse, IPointOfSalesData, ListProductPriceState } from '../../POSType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import language from '@/lang'
@@ -59,7 +59,7 @@ export const actions: ListProductPriceActionTree = {
     }
 
     return new Promise<IListProductPriceResponse>(resolve => {
-      requestListProductPrice({
+      getProductPriceList({
         searchValue,
         priceListUuid,
         businessPartnerUuid,
@@ -137,7 +137,7 @@ export const actions: ListProductPriceActionTree = {
       })
     }
     return new Promise<IListProductPriceResponse>(resolve => {
-      requestListProductPrice({
+      getProductPriceList({
         searchValue: searchValue!,
         priceListUuid,
         businessPartnerUuid,

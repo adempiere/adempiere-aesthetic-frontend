@@ -92,7 +92,7 @@
             <el-card shadow="hover">
               <p
                 :style="blockOption"
-                @click="createWithdrawal"
+                @click="withdrawal"
               >
                 <i class="el-icon-document-remove" />
                 <br>

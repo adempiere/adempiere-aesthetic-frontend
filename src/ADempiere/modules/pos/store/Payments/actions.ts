@@ -3,7 +3,7 @@ import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { ActionContext, ActionTree } from 'vuex'
 import { PaymentsState, IPaymentsData } from '../../POSType'
-import { requestCreatePayment, requestDeletePayment, requestListPayments, requestUpdatePayment } from '../../POSService'
+import { createPayment, deletePayment, getPaymentsList, updatePayment } from '../../POSService'
 import { IResponseList, Namespaces } from '@/ADempiere/shared/utils/types'
 
 type PaymentsActionContext = ActionContext<PaymentsState, IRootState>
@@ -144,7 +144,7 @@ export const actions: PaymentsActionTree = {
       return undefined
     })
     if (!listPayments) {
-      requestCreatePayment({
+      createPayment({
         posUuid,
         orderUuid,
         invoiceUuid,
@@ -169,7 +169,7 @@ export const actions: PaymentsActionTree = {
           })
         })
     } else {
-      requestUpdatePayment({
+      updatePayment({
         paymentUuid: listPayments.uuid,
         bankUuid,
         referenceNo,
@@ -197,7 +197,7 @@ export const actions: PaymentsActionTree = {
     paymentUuid: string
   }) {
     const { orderUuid, paymentUuid } = params
-    requestDeletePayment({
+    deletePayment({
       paymentUuid
     })
       .then(response => {
@@ -215,7 +215,7 @@ export const actions: PaymentsActionTree = {
   listPayments(context: PaymentsActionContext, params: { posUuid: string, orderUuid: string }) {
     context.dispatch(Namespaces.Utils + '/' + 'updatePaymentPos', true, { root: true })
     const { posUuid, orderUuid } = params
-    requestListPayments({
+    getPaymentsList({
       posUuid,
       orderUuid
     })
@@ -246,7 +246,7 @@ export const actions: PaymentsActionTree = {
   }) {
     const { listPaymentsLocal, posUuid, orderUuid } = params
     listPaymentsLocal.forEach(payment => {
-      requestCreatePayment({
+      createPayment({
         posUuid,
         orderUuid,
         bankUuid: payment.bankUuid,
