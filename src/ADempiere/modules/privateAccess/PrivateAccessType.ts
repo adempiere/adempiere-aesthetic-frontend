@@ -3,3 +3,14 @@ export interface IPrivateAccessData {
     recordId: number
     recordUuid: string
 }
+
+export interface IAccessRecordAttribute {
+    recordId: number
+    recordUuid: string
+    tableName: string
+}
+
+export interface AccessRecordState {
+    listRecordAcces: any[]
+    attribute: IAccessRecordAttribute | undefined
+}
