@@ -101,6 +101,17 @@ export default class FieldDefinition extends Vue {
       // return () => import(`@/components/ADempiere/Field/${this.field.componentPath}`)
     }
 
+    get isPanelWindow() {
+      return this.field.panelType === PanelContextType.Window
+    }
+
+    get preferenceClientId() {
+      if (this.isPanelWindow) {
+        return this.$store.getters[Namespaces.Preference + '/' + 'getPreferenceClientId']
+      }
+      return undefined
+    }
+
     get fieldAttributes() {
       return {
         ...this.field,
@@ -149,7 +160,8 @@ export default class FieldDefinition extends Vue {
       const isUpdateableAllFields: boolean =
             this.field.isReadOnly || this.field.isReadOnlyFromLogic
 
-      if (this.field.panelType === PanelContextType.Window) {
+      if (this.isPanelWindow) {
+        let isWithRecord: boolean = this.field.recordUuid !== 'create-new'
         if (isLogColumns) {
           return true
         }
@@ -165,7 +177,6 @@ export default class FieldDefinition extends Vue {
 
         // TODO: Evaluate record uuid without route.action
         // edit mode is diferent to create new
-        let isWithRecord: boolean = this.field.recordUuid !== 'create-new'
         if (this.inTable) {
           isWithRecord = this.field.recordUuid
         }
@@ -253,7 +264,7 @@ export default class FieldDefinition extends Vue {
         return <ISizeData>newSizes
       }
 
-      if (this.field.panelType === PanelContextType.Window) {
+      if (this.isPanelWindow) {
         // TODO: Add FieldYesNo and name.length > 12 || 14
         if (this.field.componentPath === 'FieldTextLong') {
           return <ISizeData>sizeField
@@ -301,7 +312,7 @@ export default class FieldDefinition extends Vue {
 
     get isDocuemntStatus(): boolean {
       if (
-        this.field.panelType === PanelContextType.Window &&
+        this.isPanelWindow &&
             !this.isAdvancedQuery
       ) {
         if (
@@ -315,7 +326,7 @@ export default class FieldDefinition extends Vue {
     }
 
     get isContextInfo(): boolean {
-      if (this.field.panelType !== PanelContextType.Window) {
+      if (!this.isPanelWindow) {
         return false
       }
       return (

@@ -50,7 +50,7 @@ import { DeviceType } from '@/ADempiere/modules/app/AppType'
 export default class extends Mixins(MixinI18n) {
   private search = ''
   private show = false
-  private options: any[] = []
+  private options: Fuse.FuseResult<RouteConfig>[] = []
   private searchPool: RouteConfig[] = []
   private fuse?: Fuse<RouteConfig>
 
@@ -81,7 +81,7 @@ export default class extends Mixins(MixinI18n) {
   }
 
   @Watch('searchPool')
-  private onSearchPoolChange(value: RouteConfig[]) {
+  private onSearchPoolChange(value: any[]) {
     this.initFuse(value)
   }
 
@@ -112,7 +112,6 @@ export default class extends Mixins(MixinI18n) {
   }
 
   change(route: RouteConfig) {
-    console.log('searching')
     if (route.name) {
       const query: any = {}
       if (route.meta && route.meta.type === 'window') {
@@ -148,8 +147,11 @@ export default class extends Mixins(MixinI18n) {
       distance: 100,
       minMatchCharLength: 1,
       keys: [{
-        name: 'title',
+        name: 'meta.title',
         weight: 0.7
+      }, {
+        name: 'pinyinTitle',
+        weight: 0.3
       }, {
         name: 'path',
         weight: 0.3
@@ -159,7 +161,7 @@ export default class extends Mixins(MixinI18n) {
 
   // Filter out the routes that can be displayed in the sidebar
   // And generate the internationalized title
-  private generateRoutes(routes: RouteConfig[], basePath = '/', prefixTitle: string[] = []) {
+  private generateRoutes(routes: RouteConfig[], basePath = '/', prefixTitle: string[] = []): RouteConfig[] {
     let res: RouteConfig[] = []
 
     for (const router of routes) {
@@ -172,9 +174,9 @@ export default class extends Mixins(MixinI18n) {
         path: path.resolve(basePath, router.path),
         meta: {
           ...router.meta,
-          title: [...prefixTitle],
-          name: router.name
-        }
+          title: [...prefixTitle]
+        },
+        name: router.name
       }
 
       if (router.meta && router.meta.title) {
@@ -200,13 +202,8 @@ export default class extends Mixins(MixinI18n) {
   }
 
   private querySearch(query?: string) {
-    console.log('querySearch')
-    console.log(query)
     if (query && query !== '') {
       if (this.fuse) {
-        console.log('busqueda')
-        console.log(query)
-        console.log(this.fuse.search(query))
         this.options = this.fuse.search(query)
       }
     } else {
