@@ -46,7 +46,7 @@ export const actions: ListProductPriceActionTree = {
       }
     }
 
-    const { priceList, templateBusinessPartner } = <IPointOfSalesData>context.rootGetters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']()
+    const { priceList, templateBusinessPartner } = <IPointOfSalesData>context.rootGetters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
     const { uuid: businessPartnerUuid } = templateBusinessPartner
     const { uuid: priceListUuid } = priceList
     const { uuid: warehouseUuid } = context.rootGetters['user/getWarehouse']

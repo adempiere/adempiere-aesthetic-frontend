@@ -10,7 +10,7 @@ type KeyLayoutActionTree = ActionTree<KeyLayoutState, IRootState>
 export const actions: KeyLayoutActionTree = {
   getKeyLayoutFromServer(context: KeyLayoutActionContext, keyLayoutUuid: string) {
     if (!keyLayoutUuid) {
-      keyLayoutUuid = context.getters.getKeyLayoutUuidWithPOS()
+      keyLayoutUuid = context.getters.getKeyLayoutUuidWithPOS
     }
 
     if (!keyLayoutUuid) {
