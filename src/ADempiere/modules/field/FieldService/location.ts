@@ -12,7 +12,7 @@ import {
 
 const tableName = 'C_Location'
 
-export function requestCreateLocationAddress(
+export function createLocationAddress(
   data: ICreateLocationAddressParams
 ): Promise<IEntityData> {
   const { attributesList } = data
@@ -22,7 +22,7 @@ export function requestCreateLocationAddress(
   })
 }
 
-export function requestGetLocationAddress(
+export function getLocationAddress(
   data: IGetLocationAddressParams
 ): Promise<IEntityData> {
   const { id, uuid } = data
@@ -34,7 +34,7 @@ export function requestGetLocationAddress(
   })
 }
 
-export function requestUpdateLocationAddress(
+export function updateLocationAddress(
   data: IUpdateLocationAddressParams
 ): Promise<IEntityData> {
   const { id, uuid, attributesList } = data

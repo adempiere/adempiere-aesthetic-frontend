@@ -36,7 +36,7 @@ export default class FieldLocation extends Mixins(MixinField, MixinLocationField
     }
 
     set displayedValue(value: any) {
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid: this.metadata.parentUuid,
         containerUuid: this.metadata.containerUuid,
         // DisplayColumn_'ColumnName'
@@ -60,7 +60,7 @@ export default class FieldLocation extends Mixins(MixinField, MixinLocationField
         return
       }
 
-      this.requestGetLocationAddress({
+      this.getLocationAddress({
         id: value
       })
         .then((responseLocation: IEntityData) => {
