@@ -176,11 +176,15 @@ function hiddenStactiRoutes(params: {
   staticRoutes: RouteConfig[]
   permiseRole: any }) {
   const { staticRoutes, permiseRole } = params
+  const { isAllowInfoProduct } = permiseRole
+  if (!isAllowInfoProduct) {
+    return staticRoutes
+  }
   return staticRoutes.map(route => {
     if (route.path === '/ProductInfo') {
       return {
         ...route,
-        hidden: !permiseRole.isAllowInfoProduct
+        hidden: !isAllowInfoProduct
       }
     }
     return {

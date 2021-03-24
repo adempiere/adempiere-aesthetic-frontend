@@ -1,4 +1,5 @@
 import { IBusinessPartnerData } from '@/ADempiere/modules/core'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component({
@@ -19,7 +20,7 @@ export default class MixinSearchBPartnerList extends Vue {
         values = this.convertValuesToSend(values)
       }
       return this.$store
-        .dispatch('listBPartnerFromServer', values)
+        .dispatch(Namespaces.BusinessPartner + '/' + 'listBPartnerFromServer', values)
         .then((response: IBusinessPartnerData[]) => {
           return response
         })

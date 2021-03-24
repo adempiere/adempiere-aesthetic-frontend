@@ -105,7 +105,7 @@ export default class KeyLayout extends Vue {
         return
       }
 
-      this.$store.dispatch('getKeyLayoutFromServer', uuid).then(() => {
+      this.$store.dispatch(Namespaces.KeyLayout + '/' + 'getKeyLayoutFromServer', uuid).then(() => {
         this.isLoadedKeyLayout = true
       })
     }
@@ -166,26 +166,13 @@ export default class KeyLayout extends Vue {
       if (keyValue.subKeyLayoutUuid) {
         this.loadKeyLayout(keyValue.subKeyLayoutUuid)
       } else {
-        const products = this.listOrderLine.find(
-          item => item.lineDescription === keyValue.name
-        )
-        // TODO: Change this dispatch
-        if (products && keyValue.quantity > 1) {
-          this.$store.dispatch('notifyActionKeyPerformed', {
-            value: {
-              QtyEntered: keyValue.quantity,
-              value: keyValue.name
-            }
-          })
-        } else {
-          this.$store.dispatch('notifyActionKeyPerformed', {
-            columnName: 'ProductValue',
-            value: {
-              QtyEntered: keyValue.quantity,
-              value: keyValue.name
-            }
-          })
-        }
+        this.$store.dispatch(Namespaces.Event + '/' + 'notifyActionKeyPerformed', {
+          columnName: 'ProductValue',
+          value: {
+            QtyEntered: keyValue.quantity,
+            value: keyValue.productValue
+          }
+        })
       }
     }
 
@@ -204,7 +191,7 @@ export default class KeyLayout extends Vue {
       this.loadKeyLayout(keyLayoutUuid)
     }
 
-    ifImage(keyValue: any) {
+    getDefaultImage(keyValue: any) {
       const { fileName } = keyValue.resourceReference
 
       if (!fileName) {
@@ -220,7 +207,7 @@ export default class KeyLayout extends Vue {
       return image.isLoaded
     }
 
-    srcImage(keyValue: any) {
+    getImageFromSource(keyValue: any) {
       const { fileName } = keyValue.resourceReference
 
       if (!fileName) {

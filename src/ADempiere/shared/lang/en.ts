@@ -148,7 +148,16 @@ export default {
     resetAllFilters: 'Reset all filters',
     switchActiveText: 'Yes',
     switchInactiveText: 'Not',
-    contextFieldTitle: 'Context Information'
+    contextFieldTitle: 'Context Information',
+    preference: {
+      title: 'Preference Value',
+      attribute: 'Attribute',
+      code: 'Code',
+      yes: 'Yes',
+      no: 'No',
+      defaulMessage: 'Applies for this ',
+      defaulMessageUser: 'Applies for this '
+    }
   },
   views: {
     browser: 'Smart Browser',
@@ -277,7 +286,7 @@ export default {
     undoNew: 'Undo New Record',
     containerInfo: {
       notes: 'Notes',
-      changeLog: 'Activity',
+      changeLog: 'ACtivity',
       workflowLog: 'Workflow Log',
       changeDetail: 'Change detail',
       logWorkflow: {
@@ -345,7 +354,7 @@ export default {
           completePreparedOrder: 'Complete Prepared Order',
           cancelSaleTransaction: 'Cancel Sale Transaction',
           createPos: 'Create Point of Sale Withdrawal',
-          print: 'To Print',
+          print: 'Print Document',
           cancelOrder: 'Cancel Order',
           orderRemoved: 'Order Deleted',
           copyOrder: 'Copy Order'
@@ -384,7 +393,7 @@ export default {
         collect: 'Collect',
         BusinessPartnerCreate: {
           businessPartner: 'Business Partner',
-          successfullyCreated: 'Successful Business Partner',
+          successfullyCreated: 'Socio de Negocio Creado Exitosamente',
           taxId: 'Tax Identification'
         }
       },

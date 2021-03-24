@@ -92,7 +92,7 @@
             <el-card shadow="hover">
               <p
                 :style="blockOption"
-                @click="createWithdrawal"
+                @click="withdrawal"
               >
                 <i class="el-icon-document-remove" />
                 <br>
@@ -223,13 +223,11 @@
           <el-col :span="8">
             <el-card shadow="hover">
               <el-popover
-                v-model="isShowProductsPriceList"
                 placement="right"
                 width="800"
-                trigger="manual"
+                trigger="click"
               >
                 <list-product-price
-                  v-if="isShowProductsPriceList"
                   :is-selectable="false"
                   popover-name="isShowPopoverMenu"
                 />

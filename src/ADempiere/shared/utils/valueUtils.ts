@@ -1,3 +1,5 @@
+import { KeyValueData } from '@/ADempiere/modules/persistence'
+import { PanelContextType } from './DictionaryUtils/ContextMenuType'
 import { TABLE_DIRECT, TABLE } from './references'
 import { convertStringToBoolean, convertBooleanToString } from './valueFormat'
 
@@ -426,4 +428,41 @@ export function tagStatus(tag: string): string {
       break
   }
   return type
+}
+
+/**
+ * Search the Payment List for the Current Payment
+ * @param {string} parentUuid Uuid the Parent
+ * @param {string} containerUuid Uuid the Container
+ * @param {string} panelType Panel Type
+ * @param {string} attribute ColumName Field
+ * @param {boolean| string | number} value Value
+ * @param {array} level list value the preference
+ */
+export function attributePreference(data: {
+  parentUuid: string
+  containerUuid: string
+  panelType: PanelContextType
+  attribute: string
+  value: boolean | string | number
+  level: any[]
+}) {
+  const { parentUuid, containerUuid, panelType, attribute, value, level } = data
+  let levelPanel: KeyValueData[] = []
+  if (level && level.length) {
+    levelPanel = level.map(parameter => {
+      return {
+        key: parameter.columnName,
+        value: parameter.value
+      }
+    })
+  }
+  return {
+    parentUuid,
+    containerUuid,
+    panelType,
+    attribute,
+    value,
+    level: levelPanel
+  }
 }

@@ -101,7 +101,7 @@ export interface IKeyData {
     sequence: number
     spanX: number
     spanY: number
-    productUuid: string
+    productValue: string
     quantity: number
     resourceReference?: IResourceReferenceData
 }

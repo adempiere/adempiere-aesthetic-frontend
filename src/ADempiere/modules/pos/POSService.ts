@@ -365,7 +365,7 @@ export function getKeyLayout(
     })
 }
 
-export function requestListProductPrice(
+export function getProductPriceList(
   data: IListProductPriceParams
 ): Promise<IListProductPriceResponse> {
   const {
@@ -405,46 +405,46 @@ export function requestListProductPrice(
     })
 }
 
-export function requestPrintOrder(data: IPrintOrderParams) {
+export function printOrder(data: IPrintOrderParams) {
   const { orderUuid } = data
   console.info(`Print order ${orderUuid}`)
 }
 
-export function requestGenerateImmediateInvoice(data: IGenerateInvoiceParams) {
+export function generateImmediateInvoice(data: IGenerateInvoiceParams) {
   const { posUuid, posId } = data
   console.info(
         `Generate imediate invoice with POS id ${posId}, and uuid ${posUuid}`
   )
 }
 
-export function requestCompletePreparedOrder(data: IPrintOrderParams) {
+export function completeOrder(data: IPrintOrderParams) {
   const { orderUuid } = data
   console.info(`Complete prepared order ${orderUuid}`)
 }
 
-export function requestReverseSalesTransaction(data: IPrintOrderParams) {
+export function reverseSalesTransaction(data: IPrintOrderParams) {
   const { orderUuid } = data
   console.info(`Reverse sales transaction ${orderUuid}`)
 }
 
-export function requestCreateWithdrawal(data: IGenerateInvoiceParams) {
+export function withdrawal(data: IGenerateInvoiceParams) {
   const { posUuid, posId } = data
   console.info(`Withdrall cash with POS id ${posId}, and uuid ${posUuid}`)
 }
 
-export function requestCreateNewCustomerReturnOrder(data: IPrintOrderParams) {
+export function createNewReturnOrder(data: IPrintOrderParams) {
   const { orderUuid } = data
   console.info(`New Customer Return Order ${orderUuid}`)
 }
 
-export function requestCashClosing(data: IGenerateInvoiceParams) {
+export function cashClosing(data: IGenerateInvoiceParams) {
   const { posUuid, posId } = data
   console.info(`Cash closing with POS id ${posId}, and uuid ${posUuid}`)
 }
 
 // Create Payment
 
-export function requestCreatePayment(data: {
+export function createPayment(data: {
   posUuid: string
   orderUuid: string
   invoiceUuid?: string
@@ -480,7 +480,7 @@ export function requestCreatePayment(data: {
 
 // Update Payment
 
-export function requestUpdatePayment(data: {
+export function updatePayment(data: {
   paymentUuid: string
   bankUuid: string
   referenceNo: string
@@ -510,7 +510,7 @@ export function requestUpdatePayment(data: {
 
 // Delete Payment
 
-export function requestDeletePayment(data: {
+export function deletePayment(data: {
   paymentUuid: string
 }) {
   const { paymentUuid } = data
@@ -528,7 +528,7 @@ export function requestDeletePayment(data: {
 
 // List Payments
 
-export function requestListPayments(data: {
+export function getPaymentsList(data: {
   posUuid: string
   orderUuid: string
 }):Promise<IResponseList<IPaymentsData>> {
@@ -573,7 +573,7 @@ export function requestListPayments(data: {
  * currency_uuid - Currency UUID reference
  * ]
  */
-export function requestProcessOrder(data: {
+export function processOrder(data: {
   posUuid: string
   orderUuid: string
   createPayments: any

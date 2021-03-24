@@ -22,15 +22,14 @@ import { formatPrice } from '@/ADempiere/shared/utils/valueFormat'
 export default class ProductList extends Mixins(MixinForm) {
     @Prop({
       type: Object,
-      default: {
-        uuid: 'Products-Price-List',
-        containerUuid: 'Products-Price-List'
+      default: () => {
+        return {
+          uuid: 'Products-Price-List',
+          containerUuid: 'Products-Price-List'
+        }
       }
     })
-    metadata: any = {
-      uuid: 'Products-Price-List',
-      containerUuid: 'Products-Price-List'
-    }
+    metadata: any
 
     @Prop({ type: Boolean, default: true }) isSelectable!: boolean
     @Prop({ type: String, default: 'isShowPopoverField' }) popoverName!: String
@@ -103,7 +102,7 @@ export default class ProductList extends Mixins(MixinForm) {
           break
 
         case 'closeProductList':
-          this.$store.commit('showListProductPrice', {
+          this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
             attribute: this.popoverName,
             isShowed: false
           })
@@ -112,14 +111,14 @@ export default class ProductList extends Mixins(MixinForm) {
     }
 
     loadProductsPricesList(): void {
-      this.$store.dispatch('listProductPriceFromServer', {})
+      this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {})
     }
 
     /**
      * @param {number} newPage
      */
     handleChangePage(newPage: number): void {
-      this.$store.dispatch('setProductPicePageNumber', newPage)
+      this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'setProductPicePageNumber', newPage)
     }
 
     findlistProductWithRow(row: any): void {
@@ -127,7 +126,7 @@ export default class ProductList extends Mixins(MixinForm) {
         return
       }
       // TODO: Change this dispatch for set values with local methods, to delete subscripton
-      this.$store.dispatch('notifyActionKeyPerformed', {
+      this.$store.dispatch(Namespaces.Event + '/' + 'notifyActionKeyPerformed', {
         containerUuid: 'POS',
         columnName: 'ProductValue',
         // TODO: Verify with 'value' or 'searchValue' attribute
@@ -135,7 +134,7 @@ export default class ProductList extends Mixins(MixinForm) {
       })
 
       // close popover of list product price
-      this.$store.commit('showListProductPrice', {
+      this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
         attribute: this.popoverName,
         isShowed: false
       })
@@ -150,7 +149,7 @@ export default class ProductList extends Mixins(MixinForm) {
         ) {
           clearTimeout(this.timeOut)
           this.timeOut = setTimeout(() => {
-            this.$store.commit('setIsReloadProductPrice')
+            this.$store.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice')
           }, 1000)
         }
       })
