@@ -68,3 +68,55 @@ export function requestUnlockPrivateAccess(data: {
       return convertPrivateAccess(responsePrivateAccess)
     })
 }
+
+/**
+ * List Rol Access Record
+ * @param {string}  tableName
+ * @param {number}  recordId
+ * @param {string}  recordUuid
+ * @param {string}  sessionUuid
+ */
+export function getAccessList(data: {
+  tableName: string
+  recordId: number
+  recordUuid: string
+  sessionUuid: string
+}): Promise<any> {
+  const { tableName, recordId, recordUuid, sessionUuid } = data
+  return requestRest({
+    url: '/ui/update-access-record',
+    params: {
+      table_name: tableName,
+      id: recordId,
+      uuid: recordUuid,
+      token: sessionUuid
+    }
+  })
+    .then(evaluateResponse)
+}
+
+/**
+ * Update Access Record
+ * @param {string}  tableName
+ * @param {number}  recordId
+ * @param {string}  recordUuid
+ * @param {array}  listRol
+ */
+export function updateAccessRecord(data: {
+  tableName: string
+  recordId: number
+  recordUuid: string
+  listRecord: any[]
+}): Promise<any> {
+  const { tableName, recordUuid, recordId, listRecord } = data
+  return requestRest({
+    url: '/ui/update-access-record',
+    params: {
+      table_name: tableName,
+      id: recordId,
+      uuid: recordUuid,
+      list_rol: listRecord
+    }
+  })
+    .then(evaluateResponse)
+}
