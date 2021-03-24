@@ -105,7 +105,7 @@ export default class KeyLayout extends Vue {
         return
       }
 
-      this.$store.dispatch('getKeyLayoutFromServer', uuid).then(() => {
+      this.$store.dispatch(Namespaces.KeyLayout + '/' + 'getKeyLayoutFromServer', uuid).then(() => {
         this.isLoadedKeyLayout = true
       })
     }
