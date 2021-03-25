@@ -77,4 +77,8 @@ export default class ChatEntries extends Vue {
   translateDate(value: string | number | Date) {
     return this.$d(new Date(value), 'long', this.language)
   }
+
+  clear() {
+    this.$store.commit(Namespaces.ChatEntries + '/' + 'setChatText', '')
+  }
 }
