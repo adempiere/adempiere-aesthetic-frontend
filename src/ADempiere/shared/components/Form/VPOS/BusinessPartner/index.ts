@@ -2,7 +2,7 @@ import { IBusinessPartnerData, requestGetBusinessPartner } from '@/ADempiere/mod
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { trimPercentage } from '@/ADempiere/shared/utils/valueFormat'
 import { ElMessageOptions } from 'element-ui/types/message'
-import { Component, Mixins, Prop, Vue } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import BusinessPartnerCreate from './BusinessPartnerCreate'
 import BusinessPartnersList from './BusinessPartnersList'
 import MixinSearchBPartnerList from './MixinSearchBPartnerList'
@@ -29,8 +29,16 @@ export default class FieldBusinessPartner extends Mixins(MixinSetBusinessPartner
       }
     }) showsPopovers: any
 
+    @Prop({
+      type: Boolean,
+      default: false
+    }) isDisabled!: boolean
+
     public controlDisplayed = this.displayedValue
     public timeOut: any = null
+    public showFieldCreate = false
+    public showFieldList = false
+    public showCreate = false
 
     // Computer properties
     get value() {
@@ -75,6 +83,16 @@ export default class FieldBusinessPartner extends Mixins(MixinSetBusinessPartner
         id: undefined,
         name: undefined
       }
+    }
+
+    get popoverCreateBusinessParnet(): boolean {
+      return this.$store.getters[Namespaces.Utils + '/' + 'getPopoverCreateBusinessParnet']
+    }
+
+    // Watchers
+    @Watch('popoverCreateBusinessParnet')
+    handlePopoverCreateBusinessParnetChange(value: boolean) {
+      this.showCreate = value
     }
 
     // Methods
@@ -287,5 +305,9 @@ export default class FieldBusinessPartner extends Mixins(MixinSetBusinessPartner
           })
           console.info(`Error get Business Partner. Message: ${error.message}, code ${error.code}.`)
         })
+    }
+
+    popoverOpen(value: any) {
+      this.$store.dispatch(Namespaces.Utils + '/' + 'changePopover', true)
     }
 }

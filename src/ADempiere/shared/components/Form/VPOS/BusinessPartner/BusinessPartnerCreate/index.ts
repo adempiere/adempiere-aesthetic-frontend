@@ -1,7 +1,7 @@
 import { IBusinessPartnerData } from '@/ADempiere/modules/core'
 import { requestCreateBusinessPartner } from '@/ADempiere/modules/core/CoreService'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import MixinForm from '../../../MixinForm'
 import MixinBusinessPartner from '../MixinBusinessPartner'
 import fieldsList from './../fieldListCreate'
@@ -17,13 +17,20 @@ export default class BusinessPartnerCreate extends Mixins(
 ) {
     @Prop({
       type: Object,
-      default: {
-        uuid: 'Business-Partner-Create',
-        containerUuid: 'Business-Partner-Create',
-        fieldsList
+      default: () => {
+        return {
+          uuid: 'Business-Partner-Create',
+          containerUuid: 'Business-Partner-Create',
+          fieldsList
+        }
       }
     })
     metadata: any
+
+    @Prop({
+      type: Boolean,
+      default: false
+    }) showField!: boolean
 
     public businessPartnerRecord: any = {}
     public isLoadingRecord = false
@@ -40,7 +47,21 @@ export default class BusinessPartnerCreate extends Mixins(
       return field
     }
 
+    // Watch
+    @Watch('showField')
+    handleShowFieldChange(value: boolean) {
+      if (value) {
+        setTimeout(() => {
+          this.focusValue()
+        }, 1500)
+      }
+    }
+
     // Methods
+    focusValue() {
+      ((this.$refs.Value as Vue[])[0].$children[0].$children[0].$children[1].$children[0] as any).focus()
+    }
+
     // TODO: Get locations values.
     createBusinessParter(): void {
       let values = this.$store.getters[
@@ -98,6 +119,7 @@ export default class BusinessPartnerCreate extends Mixins(
     }
 
     clearValues(): void {
+      this.$store.dispatch(Namespaces.Utils + '/' + 'changePopover', false)
       this.showsPopovers.isShowCreate = false
 
       this.$store.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {

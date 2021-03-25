@@ -83,5 +83,8 @@ export const actions: UtilsActionTree = {
   },
   updatePaymentPos(context: UtilsActionContext, params: boolean) {
     context.commit('setUpdatePayment', params)
+  },
+  changePopover(context: UtilsActionContext, params: boolean) {
+    context.commit('popoverCreateBusinessPartner', params)
   }
 }

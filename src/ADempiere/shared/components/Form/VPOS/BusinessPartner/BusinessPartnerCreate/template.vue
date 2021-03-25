@@ -11,6 +11,7 @@
       <el-row :gutter="24">
         <field-definition
           v-for="(field) in fieldsList"
+          :ref="field.columnName"
           :key="field.columnName"
           :metadata-field="field"
         />

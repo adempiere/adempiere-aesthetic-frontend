@@ -30,6 +30,7 @@
                   uuid: panelMetadata.uuid,
                   panelType: panelMetadata.panelType
                 }"
+                :is-disabled="isDisabled"
               />
             </el-col>
             <el-col :span="2" :style="styleTab">
@@ -187,7 +188,7 @@
                           </el-button>
                         </el-popover>
                       </el-dropdown-item>
-                      <el-button type="danger" icon="el-icon-delete" class="delete-buttom" plain @click="deleteOrderLine(scope.row)">
+                      <el-button type="danger" icon="el-icon-delete" class="delete-buttom" :disabled="isDisabled" plain @click="deleteOrderLine(scope.row)">
                         {{ $t('form.pos.tableProduct.remove') }}
                       </el-button>
                     </el-dropdown-menu>
@@ -199,16 +200,16 @@
 
           <el-footer class="footer-table">
             <div class="keypad">
-              <el-button type="primary" icon="el-icon-top" @click="arrowTop" />
-              <el-button type="primary" icon="el-icon-bottom" @click="arrowBottom" />
-              <el-button v-show="isValidForDeleteLine(allOrderLines)" type="danger" icon="el-icon-delete" @click="deleteOrderLine(currentOrderLine)" />
+              <el-button type="primary" icon="el-icon-top" :disabled="isDisabled" @click="arrowTop" />
+              <el-button type="primary" icon="el-icon-bottom" :disabled="isDisabled" @click="arrowBottom" />
+              <el-button v-show="isValidForDeleteLine(allOrderLines)" type="danger" icon="el-icon-delete" :disabled="isDisabled" @click="deleteOrderLine(currentOrderLine)" />
               <el-button
                 v-show="isValidForDeleteLine(allOrderLines)"
                 type="success"
                 icon="el-icon-bank-card"
                 @click="openCollectionPanel"
               >
-                {{ $t('form.pos.order.collect') }}
+                {{ labelButtonCollections }}
               </el-button>
               <br>
               <p>

@@ -7,7 +7,6 @@ import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IPointOfSalesData } from '@/ADempiere/modules/pos'
 import convertAmount from '@/ADempiere/shared/components/Form/VPOS/Collection/ConvertAmount/index'
 import Template from './template.vue'
-import fieldList from '../../../Field/FieldLocation/fieldList'
 
 @Component({
   name: 'Order',
@@ -25,6 +24,14 @@ export default class Order extends Mixins(MixinOrderLine) {
   public seeConversion = false
 
   // Computed properties
+  get isDisabled(): boolean {
+    return this.$store.getters[Namespaces.Order + '/' + 'getIsProcessed']
+  }
+
+  get labelButtonCollections() {
+    return this.isDisabled ? this.$t('form.pos.order.collections') : this.$t('form.pos.order.collect')
+  }
+
   get shortsKey() {
     return {
       popoverConvet: ['ctrl', 'x']

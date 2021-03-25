@@ -29,5 +29,6 @@ export const state: UtilsState = {
   splitWidthLeft: 3,
   parametersProcessPos: [],
   updateOrder: false,
-  updatePayment: false
+  updatePayment: false,
+  createBusinessPartner: false
 }

@@ -46,7 +46,7 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     get isShowOrdersList(): boolean {
-      const listOrder: IListOrderItemData = this.$store.getters[Namespaces.Order + '/' + 'getListOrder']
+      const listOrder: IListOrderItemData = this.$store.getters[Namespaces.Order + '/' + 'getOrder'].listOrder.isShowPopover
       return listOrder.isShowPopover
     }
 
@@ -61,7 +61,7 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     get currentPOS(): IOrderData | undefined {
-      return this.$store.getters[Namespaces.Order + '/' + 'getOrder']
+      return this.$store.getters[Namespaces.Order + '/' + 'getPos'].currentOrder
     }
 
     get currentPoint(): IPointOfSalesData | undefined {
@@ -185,8 +185,8 @@ export default class Options extends Mixins(MixinOrderLine) {
       processOrder({
         posUuid,
         orderUuid: this.$route.query.action as string,
-        createPayments: Boolean(this.$store.getters[Namespaces.Payments + '/' + 'getListPayments']),
-        payments: this.$store.getters[Namespaces.Payments + '/' + 'getListPayments']
+        createPayments: Boolean(this.$store.getters[Namespaces.Order + '/' + 'getPos'].listPayments),
+        payments: this.$store.getters[Namespaces.Order + '/' + 'getPos'].listPayments
       }).then(response => {
         this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', response.uuid)
         this.$message({
@@ -217,11 +217,11 @@ export default class Options extends Mixins(MixinOrderLine) {
       const parametersList = [
         {
           columnName: 'C_Order_ID',
-          value: this.$store.getters[Namespaces.Order + '/' + 'getOrder'].id
+          value: this.$store.getters[Namespaces.Order + '/' + 'getPos'].currentOrder.id
         },
         {
           columnName: 'Bill_BPartner_ID',
-          value: this.$store.getters[Namespaces.Order + '/' + 'getOrder'].businessPartner.id
+          value: this.$store.getters[Namespaces.Order + '/' + 'getPos'].currentOrder.businessPartner.id
         },
         {
           columnName: 'IsCancelled',
@@ -236,7 +236,7 @@ export default class Options extends Mixins(MixinOrderLine) {
           value: 'VO'
         }
       ]
-      this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos')
+      this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos', parametersList)
     }
 
     withdrawal(): void {
@@ -348,7 +348,7 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     seeOrderList() {
-      if (this.$store.getters[Namespaces.Order + '/' + 'getListOrder'].recordCount <= 0) {
+      if (this.$store.getters[Namespaces.Order + '/' + 'getPos'].listOrder.recordCount <= 0) {
         this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {})
       }
     }
