@@ -1,4 +1,4 @@
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
 import MixinMainPanel from '../MixinMainPanel'
 import Draggable from 'vuedraggable'
@@ -10,7 +10,7 @@ import Draggable from 'vuedraggable'
     Draggable
   }
 })
-export default class MainPanelDesktop extends Mixins(MixinMainPanel) {
+export default class MainPanelDesktop extends Vue {
   // Methods
   setData(dataTransfer: any): void {
     // to avoid Firefox bug

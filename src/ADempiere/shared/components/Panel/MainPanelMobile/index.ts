@@ -1,4 +1,4 @@
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import MixinMainPanel from '../MixinMainPanel'
 import Template from './template.vue'
 
@@ -6,6 +6,6 @@ import Template from './template.vue'
   name: 'MainPanelMobile',
   mixins: [MixinMainPanel, Template]
 })
-export default class MainPanelMobile extends Mixins(MixinMainPanel) {
+export default class MainPanelMobile extends Vue {
 
 }
