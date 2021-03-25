@@ -9,7 +9,7 @@ import {
   exportFileFromJson,
   supportedTypes
 } from '@/ADempiere/shared/utils/exportUtil'
-import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Prop, Watch, Ref, Mixins } from 'vue-property-decorator'
 import {
   IContextActionData,
@@ -94,12 +94,6 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     }
 
     get isReferencesContent(): boolean {
-      console.log({
-        panel: this.panelType,
-        recordUuid: this.recordUuid,
-        recordUUidCurrent: this.$route.query,
-        ruta: this.$router.currentRoute
-      })
       if (
         this.panelType === PanelContextType.Window &&
             this.recordUuid &&
@@ -285,14 +279,16 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
           return fieldItem
         }
       })
-      if (!record) {
+      if (record) {
         return record
       }
-      return {}
+      return {} as IKeyValueObject
     }
 
     get tableNameCurrentTab(): string {
-      const current = this.$store.getters[Namespaces.Window + '/' + 'getWindow']((this.getterContextMenu?.actions[0] as any).uuidParent).tabs[0]
+      const windowUuid: string = (this.getterContextMenu?.actions[0] as any).parentUuid
+      const getWindow = this.$store.getters[Namespaces.WindowDefinition + '/' + 'getWindow'](windowUuid)
+      const current = getWindow.tabs[0]
       if (current) {
         return current.tableName
       }
@@ -319,7 +315,6 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     // Watchers
     @Watch('$route.query.action')
     handleRouteQueryAction(actionValue: string) {
-      console.log('cambio de accion')
       this.recordUuid = actionValue
       // only requires updating the context menu if it is Window
       if (this.panelType === PanelContextType.Window) {
@@ -436,12 +431,10 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
 
     getReferences(): void {
       if (this.isReferencesContent) {
-        console.log('op definitiva')
         this.references = this.getterReferences
         if (this.references && this.references.length) {
           this.isLoadedReferences = true
         } else {
-          console.log('segunda op')
           this.isLoadedReferences = false
           this.$store
             .dispatch(Namespaces.Window + '/' + 'getReferencesListFromServer', {
@@ -458,12 +451,9 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
             })
         }
       } else {
-        console.log('op final')
         this.references = []
         this.isLoadedReferences = false
       }
-      console.log('references')
-      console.log(this.references)
     }
 
     formatJson(filterVal: string[], jsonData: string[]): any[][] {
