@@ -23,7 +23,7 @@ export const getters: SystemGetter = {
   },
   getBusinessPartnersList: (state: BusinessPartnerState): IBusinessPartnerData[] => {
     const list = state.businessPartnersList
-    if (!list || !list.length) {
+    if (!list) {
       return []
     }
     return list

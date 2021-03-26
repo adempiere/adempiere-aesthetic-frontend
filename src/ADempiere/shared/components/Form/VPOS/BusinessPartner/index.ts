@@ -74,7 +74,8 @@ export default class FieldBusinessPartner extends Mixins(MixinSetBusinessPartner
     }
 
     get recordsBusinessPartners(): IBusinessPartnerData[] {
-      return this.$store.getters[Namespaces.System + '/' + 'getBusinessPartnersList']
+      const list: IBusinessPartnerData[] = this.$store.getters[Namespaces.BusinessPartner + '/' + 'getBusinessPartnersList']
+      return list
     }
 
     get blankBPartner() {
@@ -124,7 +125,6 @@ export default class FieldBusinessPartner extends Mixins(MixinSetBusinessPartner
       let results: IBusinessPartnerData[] = recordsList
       if (stringToMatch) {
         const parsedValue: string = trimPercentage(stringToMatch.toLowerCase().trim())
-
         results = recordsList.filter((businessPartner: IBusinessPartnerData) => {
           const rowBPartner = <IKeyValueObject>businessPartner
           for (const columnBPartner in rowBPartner) {
@@ -138,7 +138,8 @@ export default class FieldBusinessPartner extends Mixins(MixinSetBusinessPartner
         })
 
         // Remote search
-        if (!(results) && String(stringToMatch.length > 3)) {
+        const checkEmptyResults = !results || !results.length
+        if (checkEmptyResults && String(stringToMatch.length > 3)) {
           clearTimeout(this.timeOut)
 
           this.timeOut = setTimeout(() => {
@@ -170,7 +171,7 @@ export default class FieldBusinessPartner extends Mixins(MixinSetBusinessPartner
           .then(() => {
             const recordsList = this.recordsBusinessPartners
 
-            if (!recordsList) {
+            if (!recordsList || !recordsList.length) {
               this.$message(message)
             }
 

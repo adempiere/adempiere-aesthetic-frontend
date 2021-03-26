@@ -24,7 +24,7 @@ export const getters: SystemGetter = {
   },
   getCurrentLanguageDefinition: (state: SystemState) => {
     let { language } = state.systemDefinition!
-    if (language) {
+    if (!language) {
       language = 'en_US'
     }
     return state.languagesList!.find(definition => {

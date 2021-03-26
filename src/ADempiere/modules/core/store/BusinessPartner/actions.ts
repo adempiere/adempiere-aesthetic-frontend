@@ -29,24 +29,20 @@ export const actions: BPartnerActionTree = {
   ) {
     let pageToken: string, token: string
     if (!payload.pageNumber) {
-      if (context.state.pageNumber) {
-        payload.pageNumber = context.state.pageNumber
-      } else {
+      payload.pageNumber = context.state.pageNumber!
+      if (!payload.pageNumber) {
         payload.pageNumber = 1
       }
-    }
 
-    if (context.state.token) {
-      token = context.state.token
-      pageToken = token + '-' + payload.pageNumber
-    } else {
-      token = ''
-      pageToken = ''
+      token = context.state.token!
+      if (token) {
+        pageToken = token + '-' + payload.pageNumber
+      }
     }
-
     return requestListBusinessPartner({
       ...payload,
-      pageToken: pageToken,
+      criteria: payload.criteria!,
+      pageToken: pageToken!,
       pageSize: payload.criteria!
     })
       .then((responseBPartnerList: IListBusinessPartnerResponse) => {
@@ -56,8 +52,15 @@ export const actions: BPartnerActionTree = {
           )
         }
 
+        const setBPList: Partial<BusinessPartnerState> = {
+          businessPartnersList: responseBPartnerList.list,
+          isLoaded: true,
+          isReload: false,
+          token,
+          pageNumber: payload.pageNumber
+        }
         context.commit('setBusinessPartnersList', {
-          ...responseBPartnerList,
+          ...setBPList,
           isLoaded: true,
           isReload: false,
           token,
