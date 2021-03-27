@@ -9,6 +9,7 @@ export const state: PointOfSalesState = {
     isLoaded: false,
     isReload: true,
     recordCount: 0,
+    currentPOS: {},
     nextPageToken: undefined
   }
 }
