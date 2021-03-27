@@ -59,7 +59,11 @@ export default class FieldProductInfo extends Mixins(MixinField) {
       switch (event.srcKey) {
         case 'refreshList':
         case 'refreshList2':
-          this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {})
+          this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {
+            containerUuid: undefined,
+            pageNumber: undefined,
+            searchValue: undefined
+          })
           break
         case 'closeProductList':
           this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
