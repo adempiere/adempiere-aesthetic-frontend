@@ -88,9 +88,6 @@ export default class FieldTranslated extends Vue {
 
     // Hooks
     created() {
-      console.log(this.languageList)
-      console.log(getLocale())
-      this.$store.dispatch(Namespaces.System + '/' + 'getLanguagesFromServer')
       const langMatch: ILanguageData | undefined = this.languageList.find((itemLanguage: ILanguageData) => {
         return itemLanguage.languageISO === getLocale()
       })
