@@ -615,25 +615,37 @@ export interface IFieldFormType {
     isChangedAllForm: boolean // change the entire form to read only including this field
 }
 
-export const FIELDS_READ_ONLY_FORM: IFieldFormType[] = [
-  {
-    columnName: 'IsActive', // column name of field
-    defaultValue: true, // default value when loading
-    valueIsReadOnlyForm: false, // value that activates read-only form
-    isChangedAllForm: false // change the entire form to read only including this field
-  },
-  {
-    columnName: 'Processed',
-    defaultValue: false,
-    valueIsReadOnlyForm: true,
-    isChangedAllForm: true
-  },
-  {
-    columnName: 'Processing',
-    defaultValue: true,
-    valueIsReadOnlyForm: false,
-    isChangedAllForm: true
-  }
+export const COLUMN_IS_ACTIVE: IFieldFormType = {
+  columnName: 'IsActive', // column name of field
+  defaultValue: true, // default value when loading
+  valueIsReadOnlyForm: false, // value that activates read-only form
+  isChangedAllForm: false // change the entire form to read only including this field
+}
+
+export const COLUMN_PROCESSED: IFieldFormType = {
+  columnName: 'Processed',
+  defaultValue: false,
+  valueIsReadOnlyForm: true,
+  isChangedAllForm: true
+}
+
+export const COLUMN_PROCESSING: IFieldFormType = {
+  columnName: 'Processing',
+  defaultValue: true,
+  valueIsReadOnlyForm: false,
+  isChangedAllForm: true
+}
+
+export const COLUMNS_NAME_READ_ONLY: String[] = [
+  COLUMN_IS_ACTIVE.columnName,
+  COLUMN_PROCESSED.columnName,
+  COLUMN_PROCESSING.columnName
+]
+
+export const COLUMNS_READ_ONLY_FORM: IFieldFormType[] = [
+  COLUMN_IS_ACTIVE,
+  COLUMN_PROCESSED,
+  COLUMN_PROCESSING
 ]
 
 export const FIELDS_DECIMALS: number[] = [
