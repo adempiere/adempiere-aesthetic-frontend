@@ -126,7 +126,7 @@ export default class RolesNavbar extends Vue {
   }
 
   getLanguages() {
-    if (!(this.getLanguageList)) {
+    if ((!this.getLanguageList) || !this.getLanguageList.length) {
       this.$store.dispatch(Namespaces.System + '/' + 'getLanguagesFromServer')
     }
   }

@@ -39,11 +39,15 @@ export const actions: ListProductPriceActionTree = {
     context.commit('setIsReloadProductPrice')
     let pageToken: string, token: string | undefined
     if (!pageNumber) {
-      pageNumber = context.state.productPrice.pageNumber || 1
-      token = context.state.productPrice.token
-      if (token) {
-        pageToken = token + '-' + pageNumber
+      pageNumber = context.state.productPrice.pageNumber
+      if (!pageNumber) {
+        pageNumber = 1
       }
+    }
+
+    token = context.state.productPrice.token
+    if (token) {
+      pageToken = token + '-' + pageNumber
     }
 
     const { priceList, templateBusinessPartner } = <IPointOfSalesData>context.rootGetters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']

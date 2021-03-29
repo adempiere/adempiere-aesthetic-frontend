@@ -62,7 +62,7 @@ export default class ProductList extends Mixins(MixinForm) {
 
     get listWithPrice(): IProductPriceData[] {
       const { list: productPricesList } = this.productPrice
-      if (productPricesList) {
+      if (productPricesList && productPricesList.length) {
         return productPricesList
       }
       return []
@@ -111,7 +111,11 @@ export default class ProductList extends Mixins(MixinForm) {
     }
 
     loadProductsPricesList(): void {
-      this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {})
+      this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {
+        containerUuid: undefined,
+        pageNumber: undefined,
+        searchValue: undefined
+      })
     }
 
     /**
@@ -161,6 +165,13 @@ export default class ProductList extends Mixins(MixinForm) {
 
       if (this.isReadyFromGetData) {
         this.loadProductsPricesList()
+      }
+      if (!this.listWithPrice || !this.listWithPrice.length) {
+        this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {
+          containerUuid: 'Products-Price-List',
+          pageNumber: 1,
+          searchValue: ''
+        })
       }
     }
 

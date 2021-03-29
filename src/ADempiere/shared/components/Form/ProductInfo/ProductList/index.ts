@@ -189,7 +189,11 @@ export default class ProductList extends Mixins(MixinForm) {
   }
 
   loadProductsPricesList() {
-    this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo', {})
+    this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo', {
+      containerUuid: undefined,
+      pageNumber: undefined,
+      searchValue: undefined
+    })
   }
 
   /**

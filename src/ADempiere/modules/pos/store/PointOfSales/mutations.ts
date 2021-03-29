@@ -14,6 +14,7 @@ export const mutations: PointOfSalesMutationTree = {
       pointOfSales: {
         isLoaded: false,
         isReload: true,
+        currentPOS: {},
         recordCount: 0,
         nextPageToken: undefined
       }
@@ -24,7 +25,6 @@ export const mutations: PointOfSalesMutationTree = {
   },
   setCurrentPOS(state: PointOfSalesState, pos: IPointOfSalesData) {
     Vue.set(state.pointOfSales, 'currentPOS', pos)
-    state.pointOfSales.currentPOS = pos
   },
   setShowPOSOptions(state: PointOfSalesState, isShowedOptions: boolean) {
     state.showPOSOptions = isShowedOptions

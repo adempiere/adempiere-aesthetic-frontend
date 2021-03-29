@@ -32,7 +32,7 @@ export const getters: PointOfSalesGetterTree = {
       return state.pointOfSales.list![0]
     }
     if (state.pointOfSales.currentPOS) {
-      return state.pointOfSales.currentPOS
+      return state.pointOfSales.currentPOS as IPointOfSalesData
     }
     return undefined
   },

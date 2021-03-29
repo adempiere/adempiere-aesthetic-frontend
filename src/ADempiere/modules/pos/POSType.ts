@@ -257,7 +257,7 @@ export interface IPOSData {
     recordCount: number
     nextPageToken?: string
     list?: IPointOfSalesData[]
-    currentPOS?: IPointOfSalesData
+    currentPOS?: Partial<IPointOfSalesData>
 }
 export interface PointOfSalesState {
     showPOSOptions: boolean
