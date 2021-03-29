@@ -76,5 +76,8 @@ export const getters: UtilsGetterTree = {
   },
   getUpdatePaymentPos: (state: UtilsState): boolean => {
     return state.updatePayment
+  },
+  getPopoverCreateBusinessParnet: (state: UtilsState): boolean => {
+    return state.createBusinessPartner
   }
 }

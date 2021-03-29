@@ -37,4 +37,5 @@ export interface UtilsState {
     parametersProcessPos: any[]
     updateOrder: boolean
     updatePayment: boolean
+    createBusinessPartner: boolean
 }

@@ -1,4 +1,5 @@
 import {
+  Actionable,
   ActionContextName,
   ActionContextType,
   PanelContextType,
@@ -8,13 +9,14 @@ import {
   exportFileFromJson,
   supportedTypes
 } from '@/ADempiere/shared/utils/exportUtil'
-import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Prop, Watch, Ref, Mixins } from 'vue-property-decorator'
 import {
   IContextActionData,
   IContextMenuData,
   IDocumentActionData,
   IListDocumentAction,
+  RecordAccessAction,
   ReportableActions,
   WindowDefinitionAction,
   WindowProcessAsociatedAction
@@ -92,12 +94,6 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     }
 
     get isReferencesContent(): boolean {
-      console.log({
-        panel: this.panelType,
-        recordUuid: this.recordUuid,
-        recordUUidCurrent: this.$route.query,
-        ruta: this.$router.currentRoute
-      })
       if (
         this.panelType === PanelContextType.Window &&
             this.recordUuid &&
@@ -283,24 +279,42 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
           return fieldItem
         }
       })
-      if (!record) {
+      if (record) {
         return record
       }
-      return {}
+      return {} as IKeyValueObject
     }
 
     get tableNameCurrentTab(): string {
-      const current = this.$store.getters[Namespaces.Window + '/' + 'getWindow']((this.getterContextMenu?.actions[0] as any).uuidParent).tabs[0]
+      const windowUuid: string = (this.getterContextMenu?.actions[0] as any).parentUuid
+      const getWindow = this.$store.getters[Namespaces.WindowDefinition + '/' + 'getWindow'](windowUuid)
+      const current = getWindow.tabs[0]
       if (current) {
         return current.tableName
       }
       return ''
     }
 
+    get isLockRecord(): boolean {
+      return this.$store.getters[Namespaces.User + '/' + 'getRole'].isPersonalLock
+    }
+
+    get recordAccess(): RecordAccessAction {
+      const recordAccessAction: RecordAccessAction = {
+        action: ActionContextName.RecordAccess,
+        disabled: false,
+        hidden: false,
+        isSortTab: true,
+        name: this.$t('data.recordAccess.actions').toString(),
+        type: ActionContextType.DataAction,
+        tableName: this.tableNameCurrentTab
+      }
+      return recordAccessAction
+    }
+
     // Watchers
     @Watch('$route.query.action')
     handleRouteQueryAction(actionValue: string) {
-      console.log('cambio de accion')
       this.recordUuid = actionValue
       // only requires updating the context menu if it is Window
       if (this.panelType === PanelContextType.Window) {
@@ -417,12 +431,10 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
 
     getReferences(): void {
       if (this.isReferencesContent) {
-        console.log('op definitiva')
         this.references = this.getterReferences
         if (this.references && this.references.length) {
           this.isLoadedReferences = true
         } else {
-          console.log('segunda op')
           this.isLoadedReferences = false
           this.$store
             .dispatch(Namespaces.Window + '/' + 'getReferencesListFromServer', {
@@ -439,12 +451,9 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
             })
         }
       } else {
-        console.log('op final')
         this.references = []
         this.isLoadedReferences = false
       }
-      console.log('references')
-      console.log(this.references)
     }
 
     formatJson(filterVal: string[], jsonData: string[]): any[][] {
@@ -519,17 +528,16 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       // TODO: Add store attribute to avoid making repeated requests
       let isChangePrivateAccess = true
       if (this.isReferencesContent) {
-        isChangePrivateAccess = false
-        const validationPrev: boolean = Boolean(this.getCurrentRecord) && Boolean(this.tableNameCurrentTab)
-        if (this.$route.params.tableName || validationPrev) {
+        if (this.getCurrentRecord && this.tableNameCurrentTab) {
           this.$store
             .dispatch(Namespaces.BusinessData + '/' + 'getPrivateAccessFromServer', {
-              tableName: this.$route.params.tableName,
+              tableName: this.tableNameCurrentTab,
               recordId: this.getCurrentRecord[this.tableNameCurrentTab + '_ID'],
               recordUuid: this.$route.query.action
             })
             .then(
               (privateAccessResponse: IPrivateAccessDataExtended) => {
+                isChangePrivateAccess = false
                 this.validatePrivateAccess(privateAccessResponse)
               }
             )
@@ -548,6 +556,15 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
                   }
                 })
         this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', processAction)
+      }
+
+      if (this.panelType === PanelContextType.Window && !(this.actions.find((element: Actionable) => element.action === ActionContextName.RecordAccess))) {
+        this.$store.dispatch(Namespaces.AccessRecord + '/' + 'addAttribute', {
+          tableName: this.tableNameCurrentTab,
+          recordId: this.getCurrentRecord[this.tableNameCurrentTab + '_ID'],
+          recordUuid: this.$route.query.action
+        })
+        this.actions.push(this.recordAccess)
       }
 
       if (this.actions && this.actions.length) {
@@ -573,11 +590,11 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
           }
 
           if (this.$route.meta.type === 'window') {
-            if (isChangePrivateAccess) {
+            if (this.isLockRecord) {
               if (action === 'lockRecord') {
-                itemAction.hidden = false
+                itemAction.hidden = isChangePrivateAccess
               } else if (action === 'unlockRecord') {
-                itemAction.hidden = true
+                itemAction.hidden = !isChangePrivateAccess
               }
             }
 
@@ -753,7 +770,12 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
               ...this.getOldRouteOfWindow.query
             }
           })
-        } else {
+        } else if (action.action === ActionContextName.RecordAccess) {
+          this.$store.dispatch(Namespaces.Process + '/' + 'setShowDialog', {
+            type: this.panelType,
+            action: action
+          })
+        } else if (action.action !== ActionContextName.UndoModifyData) {
           if (action.action === ActionContextName.SetDefaultValues && this.$route.query.action === 'create-new') {
             return
           }

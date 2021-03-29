@@ -57,7 +57,20 @@ export const actions: CallOutControlActionTree = {
       oldValue,
       tableName
     } = payload
-    if (!value || !callout) {
+    if (!callout) {
+      const notifyChange = inTable ? Namespaces.BusinessData + '/' + 'notifyRowTableChange' : Namespaces.Panel + '/' + 'notifyPanelChange'
+      this.dispatch(notifyChange, {
+        parentUuid,
+        containerUuid,
+        row: value,
+        isEdit: true,
+        panelType: PanelContextType.Window,
+        newValues: value,
+        isSendToServer: false,
+        withOutColumnNames,
+        isSendCallout: false,
+        isChangeFromCallout: true
+      })
       return undefined
     }
     //  Else

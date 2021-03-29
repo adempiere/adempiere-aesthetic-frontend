@@ -41,8 +41,8 @@ export default class KeyLayout extends Vue {
 
     get listOrderLine(): IOrderLineDataExtended[] {
       return this.$store.getters[
-        Namespaces.OrderLines + '/' + 'getListOrderLine'
-      ]
+        Namespaces.Order + '/' + 'getPos'
+      ].lineOrder
     }
 
     get getKeyLayout() {

@@ -43,6 +43,7 @@ import { eventModule } from '@/ADempiere/shared/store/modules/Event'
 import { windowModule } from '@/ADempiere/modules/persistence/store/Window'
 import { preferenceModule } from '@/ADempiere/shared/store/modules/preference'
 import { dashboardModule } from '@/ADempiere/modules/dashboard'
+import { accessRecordModule } from '@/ADempiere/modules/privateAccess/store/AccessRecord'
 
 export const modules: ModuleTree<IRootState> = {
   app,
@@ -82,5 +83,6 @@ export const modules: ModuleTree<IRootState> = {
   panelModule,
   businessDataModule,
   browserDefinitionModule,
-  browserModule
+  browserModule,
+  accessRecordModule
 }

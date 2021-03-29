@@ -52,7 +52,7 @@ export default class OrdersList extends Mixins(MixinForm) {
     }
 
     get tableOrder(): IListOrderItemData | Partial<IListOrderItemData> {
-      return this.$store.getters[Namespaces.Order + '/' + 'getListOrder']
+      return this.$store.getters[Namespaces.Order + '/' + 'getPos'].listOrder
     }
 
     get ordersList(): IOrderData[] {

@@ -8,7 +8,12 @@ import MixinSetBusinessPartner from '../BusinessPartner/MixinSetBusinessPartner'
   mixins: [MixinSetBusinessPartner]
 })
 export default class MixinBusinessPartner extends Mixins(MixinSetBusinessPartner) {
-    @Prop({ type: Object, default: { panelType: 'form', isShowCreate: false, isShowList: false } }) showsPopovers!: {
+    @Prop({
+      type: Object,
+      default: () => {
+        return { panelType: 'form', isShowCreate: false, isShowList: false }
+      }
+    }) showsPopovers!: {
         panelType: PanelContextType
         isShowCreate: boolean
         isShowList: boolean

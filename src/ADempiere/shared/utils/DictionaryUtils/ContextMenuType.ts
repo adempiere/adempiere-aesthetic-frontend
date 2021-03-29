@@ -21,7 +21,8 @@ export enum ActionContextName {
     UndoModifyData = 'undoModifyData',
     LockRecord = 'lockRecord',
     UnlockRecord = 'unlockRecord',
-    OrderSequence = 'orderSequence'
+    OrderSequence = 'orderSequence',
+    RecordAccess = 'recordAccess'
 }
 
 export enum PanelContextType {

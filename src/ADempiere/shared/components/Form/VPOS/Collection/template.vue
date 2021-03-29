@@ -55,7 +55,10 @@
                   <el-col v-for="(field, index) in fieldsList" :key="index" :span="8">
                     <field-definition
                       :key="field.columnName"
-                      :metadata-field="field"
+                      :metadata-field="{
+                        ...field,
+                        isReadOnly: isDisabled
+                      }"
                     />
                   </el-col>
                 </el-row>
@@ -64,9 +67,9 @@
           </el-card>
           <samp style="float: right;padding-right: 10px;">
             <el-button type="danger" icon="el-icon-close" @click="exit" />
-            <el-button type="info" icon="el-icon-minus" @click="undoPatment" />
-            <el-button type="primary" :disabled="validPay || addPay" icon="el-icon-plus" @click="addCollectToList(paymentBox)" />
-            <el-button type="success" :disabled="validateCompleteCollection" icon="el-icon-shopping-cart-full"
+            <el-button type="info" icon="el-icon-minus" :disabled="isDisabled" @click="undoPatment" />
+            <el-button type="primary" :disabled="validPay || addPay || isDisabled" icon="el-icon-plus" @click="addCollectToList(paymentBox)" />
+            <el-button type="success" :disabled="validateCompleteCollection || isDisabled" icon="el-icon-shopping-cart-full"
             @click="completePreparedOrder(listPayments)"
             />
           </samp>

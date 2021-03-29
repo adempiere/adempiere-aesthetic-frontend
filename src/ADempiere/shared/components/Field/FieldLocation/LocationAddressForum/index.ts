@@ -1,4 +1,4 @@
-import { requestCreateLocationAddress, requestUpdateLocationAddress } from '@/ADempiere/modules/field/FieldService/location'
+import { createLocationAddress, updateLocationAddress } from '@/ADempiere/modules/field/FieldService/location'
 import { IEntityData, KeyValueData } from '@/ADempiere/modules/persistence/PersistenceType'
 import { getSequenceAsList } from '@/ADempiere/shared/utils/location'
 import { showNotification } from '@/ADempiere/shared/utils/notifications'
@@ -219,7 +219,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
       }
 
       if (!locationId || locationId === 0) {
-        requestCreateLocationAddress({
+        createLocationAddress({
           attributesList: attributesToServer
         })
           .then(updateLocation)
@@ -235,7 +235,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
           // break to only create
         return
       }
-      requestUpdateLocationAddress({
+      updateLocationAddress({
         id: locationId,
         attributesList: attributesToServer
       })
@@ -269,7 +269,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
         return
       }
 
-      this.requestGetLocationAddress({
+      this.getLocationAddress({
         id
       })
         .then((responseLocation: IEntityData) => {

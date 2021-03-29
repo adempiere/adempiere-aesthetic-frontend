@@ -81,5 +81,6 @@ export enum Namespaces {
     Panel = 'panelModule',
     BusinessData = 'businessDataModule',
     BrowserDefinition = 'browserDefinitionModule',
-    Browser = 'browserModule'
+    Browser = 'browserModule',
+    AccessRecord = 'accessRecordModule'
 }

@@ -1,6 +1,6 @@
 import { requestGetCountryDefinition } from '@/ADempiere/modules/core/CoreService'
 import { ICountryData } from '@/ADempiere/modules/core/CoreType'
-import { requestGetLocationAddress } from '@/ADempiere/modules/field/FieldService/location'
+import { getLocationAddress } from '@/ADempiere/modules/field/FieldService/location'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Vue } from 'vue-property-decorator'
 
@@ -24,7 +24,7 @@ export default class MixinLocationField extends Vue {
   }
 
     // Methods
-    requestGetLocationAddress = requestGetLocationAddress
+    getLocationAddress = getLocationAddress
     requestGetCountryDefinition = requestGetCountryDefinition
 
     toggleShowedLocationForm() {

@@ -2,15 +2,50 @@
   <div>
     <el-form-item>
       <template slot="label">
-         {{ $t('form.pos.order.BusinessPartnerCreate.businessPartner') }}
-        <i
-          v-popover:businessPartnerCreate
-          class="el-icon-circle-plus"
-        />
-        <i
-          v-popover:businessPartnersList
-          class="el-icon-search"
-        />
+        {{ $t('form.pos.order.BusinessPartnerCreate.businessPartner') }}
+        <el-popover
+          v-model="showCreate"
+          placement="right"
+          width="400"
+          trigger="click"
+        >
+          <business-partner-create
+            :parent-metadata="parentMetadata"
+            :show-field="showCreate"
+          />
+          <el-button
+            slot="reference"
+            type="text"
+            :disabled="isDisabled"
+            @click="popoverOpen"
+          >
+            <i
+              class="el-icon-circle-plus"
+            />
+          </el-button>
+        </el-popover>
+        <el-popover
+          placement="right"
+          width="800"
+          trigger="click"
+          :disabled="isDisabled"
+          @hide="showFieldList = !showFieldList"
+        >
+          <business-partners-list
+            :parent-metadata="parentMetadata"
+            :shows-popovers="showsPopovers"
+            :show-field="showFieldList"
+          />
+          <el-button
+            slot="reference"
+            type="text"
+            @click="showFieldList = !showFieldList"
+          >
+            <i
+              class="el-icon-search"
+            />
+          </el-button>
+        </el-popover>
       </template>
 
       <el-autocomplete
@@ -21,6 +56,7 @@
         value-key="name"
         style="width: 100%;"
         popper-class="custom-field-bpartner-info"
+        :disabled="isDisabled"
         @clear="setBusinessPartner(blankBPartner, false)"
         @keyup.enter.native="getBPartnerWithEnter"
         @select="handleSelect"
@@ -45,34 +81,6 @@
         </template>
       </el-autocomplete>
     </el-form-item>
-
-    <el-popover
-      ref="businessPartnerCreate"
-      v-model="showsPopovers.isShowCreate"
-      placement="right"
-      width="400"
-      trigger="click"
-    >
-      <business-partner-create
-        v-if="showsPopovers.isShowCreate"
-        :parent-metadata="parentMetadata"
-        :shows-popovers="showsPopovers"
-      />
-    </el-popover>
-
-    <el-popover
-      ref="businessPartnersList"
-      v-model="showsPopovers.isShowList"
-      placement="right"
-      width="800"
-      trigger="click"
-    >
-      <!-- v-if="showsPopovers.isShowList" -->
-      <business-partners-list
-        :parent-metadata="parentMetadata"
-        :shows-popovers="showsPopovers"
-      />
-    </el-popover>
 
   </div>
 </template>

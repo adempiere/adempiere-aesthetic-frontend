@@ -131,7 +131,8 @@ export default class MixinField extends Vue {
       }
       this.$store.dispatch(Namespaces.Panel + '/' + 'notifyFieldChange', {
         containerUuid: this.metadata.containerUuid,
-        field: this.metadata
+        field: this.metadata,
+        columnName: this.metadata.columnName
       })
     }
 

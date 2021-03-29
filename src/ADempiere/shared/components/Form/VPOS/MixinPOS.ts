@@ -133,7 +133,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
   }
 
   get getOrder(): Partial<IOrderData> | undefined {
-    const order: Partial<IOrderData> | undefined = this.$store.getters[Namespaces.Order + '/' + 'getOrder']
+    const order: Partial<IOrderData> | undefined = this.$store.getters[Namespaces.Order + '/' + 'getPos'].currentOrder
     return order
   }
 

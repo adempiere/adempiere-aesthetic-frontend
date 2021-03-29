@@ -9,7 +9,8 @@ import { IResponseList } from '@/ADempiere/shared/utils/types'
 import {
   WindowTabAssociatedAction,
   WindowProcessAsociatedAction,
-  WindowDefinitionAction
+  WindowDefinitionAction,
+  RecordAccessAction
 } from './ContextMenuType'
 import {
   IChatEntryData,
@@ -29,6 +30,7 @@ export type IContextActionData =
     | WindowTabAssociatedAction
     | WindowProcessAsociatedAction
     | WindowDefinitionAction
+    | RecordAccessAction
     | ReportableActions
 
 export const cod: IContextActionData[] = []

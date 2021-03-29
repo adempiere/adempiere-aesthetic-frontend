@@ -284,6 +284,13 @@ export default {
     deleteRecordError: 'Error al eliminar el regitro',
     exportRecord: 'Exportar Registro',
     lockRecord: 'Bloquear Registro',
+    recordAccess: {
+      actions: 'Acceso a registros',
+      hideRecord: 'Ocultar Registro',
+      recordDisplay: 'Permitir Visualización del Registro',
+      isReadonly: 'Solo  Lectura',
+      isDependentEntities: 'Entidades Dependientes'
+    },
     selectionRequired: 'Debe seleccionar un registro',
     undo: 'Deshacer',
     unlockRecord: 'Desbloquear Registro'
@@ -366,6 +373,7 @@ export default {
         numberLines: 'Cantidad de Lineas',
         pointSale: 'Punto de Venta',
         collect: 'Cobrar',
+        collections: 'Cobros',
         BusinessPartnerCreate: {
           businessPartner: 'Socio de Negocios',
           successfullyCreated: 'Socio de Negocio Creado Exitosamente',

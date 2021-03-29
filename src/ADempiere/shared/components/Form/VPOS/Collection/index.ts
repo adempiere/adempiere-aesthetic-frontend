@@ -27,10 +27,7 @@ export default class Collection extends Mixins(MixinForm) {
         uuid: 'Collection',
         containerUuid: 'Collection'
       }
-    }) metadata: any = {
-      uuid: 'Collection',
-      containerUuid: 'Collection'
-    }
+    }) metadata: any
 
     public isCustomForm = true
     public checked = false
@@ -82,7 +79,7 @@ export default class Collection extends Mixins(MixinForm) {
 
     get listPayments(): IPaymentsData[] {
       const listLocal = this.$store.getters[Namespaces.Payments + '/' + 'getPaymentBox']
-      const listServer = this.$store.getters[Namespaces.Payments + '/' + 'getListPayments']
+      const listServer = this.$store.getters[Namespaces.Order + '/' + 'getPos'].listPayments
       if (!this.sendToServer) {
         return listServer.reverse()
       }
@@ -257,7 +254,7 @@ export default class Collection extends Mixins(MixinForm) {
     }
 
     get currentOrder(): IOrderData | undefined {
-      return this.$store.getters[Namespaces.Order + '/' + 'getOrder']
+      return this.$store.getters[Namespaces.Order + '/' + 'getPos'].currentOrder
     }
 
     get typeCurrency() {
@@ -313,6 +310,10 @@ export default class Collection extends Mixins(MixinForm) {
         return false
       }
       return true
+    }
+
+    get isDisabled(): boolean {
+      return this.$store.getters[Namespaces.Order + '/' + 'getPos'].isProcessed
     }
 
     // Watchers

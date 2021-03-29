@@ -388,6 +388,7 @@ export interface IListBusinessPartnerParams {
     // criteria,
     pageSize: number
     pageToken: string
+    criteria: any
 }
 
 export interface IListBusinessPartnerResponse {

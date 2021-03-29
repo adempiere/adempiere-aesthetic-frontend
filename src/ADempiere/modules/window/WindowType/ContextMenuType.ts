@@ -43,3 +43,10 @@ export interface WindowTabAssociatedAction extends Actionable {
     processName: string
     associatedTab: AssociatedTab
 }
+
+export interface RecordAccessAction extends Actionable {
+    disabled: boolean
+    hidden: boolean
+    isSortTab: boolean
+    tableName: string
+}
