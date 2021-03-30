@@ -18,7 +18,7 @@ import { fieldIsDisplayed, sortFields } from '../../utils/DictionaryUtils'
 import { IFieldDataExtendedUtils } from '../../utils/DictionaryUtils/type'
 import { typeValue } from '../../utils/valueUtils'
 import { formatField } from '../../utils/valueFormat'
-import { FIELDS_DECIMALS, FIELDS_QUANTITY, FIELDS_READ_ONLY_FORM, IFieldFormType } from '../../utils/references'
+import { FIELDS_DECIMALS, FIELDS_QUANTITY, COLUMNS_READ_ONLY_FORM, IFieldFormType } from '../../utils/references'
 import { ElInput } from 'element-ui/types/input'
 import { IFieldConditionData, IFieldDefinitionData } from '@/ADempiere/modules/field/FieldType'
 import evaluator from '../../utils/evaluator'
@@ -435,7 +435,7 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
         }
         if (fieldIsDisplayed(field)) {
           // columnName: IsActive
-          const fieldReadOnlyForm = FIELDS_READ_ONLY_FORM.find((item: IFieldFormType) => {
+          const fieldReadOnlyForm = COLUMNS_READ_ONLY_FORM.find((item: IFieldFormType) => {
             return !item.isChangedAllForm &&
               // columnName: IsActive, Processed, Processing
               Object.prototype.hasOwnProperty.call(row, item.columnName)
