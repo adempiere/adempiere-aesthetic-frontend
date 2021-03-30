@@ -9,6 +9,7 @@ import { BrowserDefinitionState, IBrowserData, IBrowserDataExtended } from '../.
 import language from '@/ADempiere/shared/lang'
 import { WindowProcessAsociatedAction } from '@/ADempiere/modules/window'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import router from '@/router'
 
 type BrowserDefinitionActionTree = ActionTree<BrowserDefinitionState, IRootState>
 type BrowserDefinitionActionContext = ActionContext<BrowserDefinitionState, IRootState>
@@ -156,9 +157,9 @@ export const actions: BrowserDefinitionActionTree = {
           }, { root: true })
         })
         .catch(error => {
-          //   router.push({
-          //     path: '/dashboard'
-          //   }, () => {})
+          router.push({
+            path: '/dashboard'
+          })
           context.dispatch(Namespaces.TagsView + '/' + 'delView', routeToDelete, { root: true })
           showMessage({
             message: language.t('login.unexpectedError').toString(),

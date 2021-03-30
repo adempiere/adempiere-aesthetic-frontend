@@ -14,6 +14,7 @@ import { convertIRangeAttributeDataToKeyValueData, convertObjectToKeyValue } fro
 import { typeValue } from '@/ADempiere/shared/utils/valueUtils'
 import evaluator from '@/ADempiere/shared/utils/evaluator'
 import { getContext, parseContext } from '@/ADempiere/shared/utils/contextUtils'
+import router from '@/router'
 
 type PanelActionContext = ActionContext<PanelState, IRootState>
 type PanelActionTree = ActionTree<PanelState, IRootState>
@@ -335,7 +336,7 @@ export const actions: PanelActionTree = {
         // redirect to create new record
         const oldRoute = context.rootState.route
         if (!(oldRoute.query && oldRoute.query.action === 'create-new')) {
-          context.rootState.router.push({
+          router.push({
             name: oldRoute.name!,
             params: {
               ...oldRoute.params

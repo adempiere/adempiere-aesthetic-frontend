@@ -10,6 +10,7 @@ import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { generateProcess } from '@/ADempiere/shared/utils/DictionaryUtils'
 import language from '@/ADempiere/shared/lang'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import router from '@/router'
 
 type ProcessDefinitionActionContext = ActionContext<
     ProcessDefinitionState,
@@ -72,12 +73,11 @@ export const actions: ProcessDefinitionActionTree = {
           }, { root: true })
         })
         .catch(error => {
-          // router.push(
-          //     {
-          //         path: '/dashboard'
-          //     },
-          //     () => {}
-          // )
+          router.push(
+            {
+              path: '/dashboard'
+            }
+          )
           context.dispatch(Namespaces.TagsView + '/' + 'delView', routeToDelete, { root: true })
           showMessage({
             message: language.t('login.unexpectedError').toString(),

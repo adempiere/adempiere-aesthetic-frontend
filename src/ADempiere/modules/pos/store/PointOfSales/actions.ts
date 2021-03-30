@@ -9,6 +9,7 @@ import {
 } from '../../POSType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Route } from 'vue-router'
+import router from '@/router'
 
 type PointOfSalesActionContext = ActionContext<PointOfSalesState, IRootState>
 type PointOfSalesActionTree = ActionTree<PointOfSalesState, IRootState>
@@ -84,7 +85,7 @@ export const actions: PointOfSalesActionTree = {
 
     const oldRoute: Route = context.rootState.route
 
-    context.rootState.router.push({
+    router.push({
       name: oldRoute.name!,
       params: {
         ...oldRoute.params

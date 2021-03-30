@@ -39,6 +39,7 @@ import { IValueData } from '@/ADempiere/modules/core'
 import { convertObjectToKeyValue } from '@/ADempiere/shared/utils/valueFormat'
 import { Route } from 'vue-router'
 import { LOG_COLUMNS_NAME_LIST } from '@/ADempiere/shared/utils/dataUtils'
+import router from '@/router'
 
 type WindowActionTree = ActionTree<WindowState, IRootState>
 type WindowActionContext = ActionContext<WindowState, IRootState>
@@ -54,9 +55,9 @@ export const actions: WindowActionTree = {
     if (fieldIsDisplayed(field) && field.isShowedFromUser) {
       // change action to advanced query on field value is changed in this panel
       if (context.rootState.route.query.action !== 'advancedQuery') {
-        context.rootState.router.push({
+        router.push({
           query: {
-            ...context.rootState.router.currentRoute.query,
+            ...router.currentRoute.query,
             action: 'advancedQuery'
           }
         })
@@ -204,9 +205,9 @@ export const actions: WindowActionTree = {
             .then(response => {
               resolve(response)
               if (!recordUuid) {
-                const oldRoute: Route = context.rootState.router.currentRoute
+                const oldRoute: Route = router.currentRoute
                 // const oldRoute: Route = router.app.$route // ._route
-                context.rootState.router.push(
+                router.push(
                   {
                     name: oldRoute.name!,
                     params: {
@@ -484,7 +485,7 @@ export const actions: WindowActionTree = {
         if (isParentTab) {
           // redirect to create new record
           const oldRoute: Route = context.rootState.route
-          context.rootState.router.push(
+          router.push(
             {
               name: oldRoute.name!,
               params: {
@@ -771,7 +772,7 @@ export const actions: WindowActionTree = {
                 } else {
                   const oldRoute: Route = context.rootState.route
                   // else display first record of table in panel
-                  context.rootState.router.push(
+                  router.push(
                     {
                       name: oldRoute.name!,
                       params: {
@@ -891,7 +892,7 @@ export const actions: WindowActionTree = {
           // redirect to create new record
           const oldRoute: Route = context.rootState.route
           if (record.UUID === oldRoute.query.action) {
-            context.rootState.router.push(
+            router.push(
               {
                 name: oldRoute.name!,
                 params: {
