@@ -72,6 +72,62 @@ export function typeValue(value: any): string {
   return typeOfValue
 }
 
+export const isEmptyValue = (value: any): boolean => {
+  // Custom empty value ADempiere to lookup
+  if (String(value).trim() === '-1') {
+    return true
+  }
+
+  let isEmpty = false
+  const typeOfValue = typeValue(value)
+
+  switch (typeOfValue) {
+    case 'UNDEFINED':
+    case 'ERRORR':
+    case 'NULL':
+      isEmpty = true
+      break
+    case 'BOOLEAN':
+    case 'DATE':
+    case 'FUNCTION': // Or class
+    case 'PROMISE':
+    case 'REGEXP':
+      isEmpty = false
+      break
+    case 'STRING':
+      isEmpty = Boolean(!value.trim().length)
+      break
+    case 'MATH':
+    case 'NUMBER':
+      if (Number.isNaN(value)) {
+        isEmpty = true
+        break
+      }
+      isEmpty = false
+      break
+    case 'JSON':
+      if (value.trim().length) {
+        isEmpty = Boolean(value.trim() === '{}')
+        break
+      }
+      isEmpty = true
+      break
+    case 'OBJECT':
+      isEmpty = Boolean(!Object.keys(value).length)
+      break
+    case 'ARGUMENTS':
+    case 'ARRAY':
+      isEmpty = Boolean(!value.length)
+      break
+    case 'MAP':
+    case 'SET':
+      isEmpty = Boolean(!value.size)
+      break
+  }
+
+  return isEmpty
+}
+
 /**
  * Parsed value to component type
  * @param {mixed} value, value to parsed
@@ -89,7 +145,9 @@ export function parsedValueComponent(data: {
 }) {
   data.isMandatory = data.isMandatory !== undefined
   let { componentPath, value, columnName, displayType, isMandatory } = data
-  const isEmpty = !value
+  const isEmpty = isEmptyValue(value)
+  console.log('isEmpty')
+  console.log(isEmpty)
 
   if (isEmpty && !isMandatory) {
     if (componentPath === 'FieldYesNo') {
