@@ -26,6 +26,7 @@ import {
   ReportState
 } from '@/ADempiere/modules/report/ReportType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 type ReportActionTree = ActionTree<ReportState, IRootState>
 type ReportActionContext = ActionContext<ReportState, IRootState>
@@ -211,12 +212,15 @@ export const actions: ReportActionTree = {
       instanceUuid,
       option
     } = payload
-    let { printFormatUuid } = payload
+    const { printFormatUuid } = payload
     return new Promise(resolve => {
-      if (!printFormatUuid) {
-        printFormatUuid = context.getters.getDefaultPrintFormat(
+      if (isEmptyValue(printFormatUuid)) {
+        let printFormat: any = context.getters.getDefaultPrintFormat(
           processUuid
-        ).printFormatUuid
+        )
+        if (!isEmptyValue(printFormat)) {
+          printFormat = printFormat.printFormatUuid
+        }
       }
       const parametersList: IPanelParameters[] = <IPanelParameters[]>(
                 context.rootGetters[Namespaces.Panel + '/' + 'getParametersToServer']({

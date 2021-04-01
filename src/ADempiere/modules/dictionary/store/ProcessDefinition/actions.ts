@@ -45,7 +45,8 @@ export const actions: ProcessDefinitionActionTree = {
             printFormatsAvailable = await context.dispatch(
               Namespaces.Report + '/' + 'getListPrintFormats',
               {
-                processUuid: containerUuid
+                processUuid: containerUuid,
+                processId: responseProcess.id
               },
               { root: true }
             )
