@@ -170,9 +170,6 @@ export const actions: PanelActionTree = {
       attributeValue: fieldsList
     })
 
-    console.log('panel')
-    console.log(panel)
-
     if (isChangedDisplayedWithValue) {
       // Updated record result
       if (panel.panelType === 'browser') {
