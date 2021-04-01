@@ -22,7 +22,7 @@ import {
   WindowState
 } from '@/ADempiere/modules/persistence/PersistenceType'
 import language from '@/ADempiere/shared/lang'
-import { typeValue } from '@/ADempiere/shared/utils/valueUtils'
+import { isEmptyValue, typeValue } from '@/ADempiere/shared/utils/valueUtils'
 import {
   IContextInfoValuesResponse,
   IReferenceListData,
@@ -1044,20 +1044,24 @@ export const actions: WindowActionTree = {
       }).value
     }
 
+    const addWhereClause = (currentWhereClause: string, newWhereClause: string) => {
+      if (isEmptyValue(currentWhereClause)) {
+        return newWhereClause
+      }
+      if (isEmptyValue(newWhereClause)) {
+        return currentWhereClause
+      }
+      return `${currentWhereClause} AND ${newWhereClause}`
+    }
+
     if (isReference) {
       if (parsedWhereClause) {
-        parsedWhereClause += ` AND ${referenceWhereClause}`
-      } else {
-        parsedWhereClause += referenceWhereClause
+        parsedWhereClause = addWhereClause(parsedWhereClause, referenceWhereClause)
       }
     }
 
-    if (criteria) {
-      if (parsedWhereClause) {
-        parsedWhereClause += ` AND ${criteria.whereClause}`
-      } else {
-        parsedWhereClause += criteria.whereClause
-      }
+    if (!isEmptyValue(criteria)) {
+      parsedWhereClause = addWhereClause(parsedWhereClause, criteria.whereClause)
     }
 
     const conditionsList: KeyValueData[] = []

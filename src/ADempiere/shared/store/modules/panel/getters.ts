@@ -620,7 +620,7 @@ export const getters: PanelGetterTree = {
       }
     })
 
-    if (formatReturn) {
+    if (!isEmptyValue(formatReturn)) {
       return fieldsNameEmpty.map((fieldItem: IFieldDataExtendedUtils) => {
         const objFieldItem: IKeyValueObject = fieldItem as IKeyValueObject
         return objFieldItem[formatReturn]
