@@ -1,5 +1,5 @@
 import evaluator from '@/ADempiere/shared/utils/evaluator'
-import { parsedValueComponent } from '@/ADempiere/shared/utils/valueUtils'
+import { isEmptyValue, parsedValueComponent } from '@/ADempiere/shared/utils/valueUtils'
 import REFERENCES, {
   DEFAULT_SIZE,
   FIELDS_HIDDEN,
@@ -424,7 +424,7 @@ export function generateProcess(data: {
         }
 
         // if field with value displayed in main panel
-        if (field.value) {
+        if (!isEmptyValue(field.value)) {
           field.isShowedFromUser = true
         }
 

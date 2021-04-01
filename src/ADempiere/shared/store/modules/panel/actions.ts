@@ -14,6 +14,7 @@ import { convertIRangeAttributeDataToKeyValueData, convertObjectToKeyValue } fro
 import { typeValue } from '@/ADempiere/shared/utils/valueUtils'
 import evaluator from '@/ADempiere/shared/utils/evaluator'
 import { getContext, parseContext } from '@/ADempiere/shared/utils/contextUtils'
+import router from '@/router'
 
 type PanelActionContext = ActionContext<PanelState, IRootState>
 type PanelActionTree = ActionTree<PanelState, IRootState>
@@ -168,9 +169,6 @@ export const actions: PanelActionTree = {
       attributeName: 'fieldsList',
       attributeValue: fieldsList
     })
-
-    console.log('panel')
-    console.log(panel)
 
     if (isChangedDisplayedWithValue) {
       // Updated record result
@@ -335,7 +333,7 @@ export const actions: PanelActionTree = {
         // redirect to create new record
         const oldRoute = context.rootState.route
         if (!(oldRoute.query && oldRoute.query.action === 'create-new')) {
-          context.rootState.router.push({
+          router.push({
             name: oldRoute.name!,
             params: {
               ...oldRoute.params
@@ -395,26 +393,44 @@ export const actions: PanelActionTree = {
         attributes: defaultAttributesParsed
       }, { root: true })
         .then(() => {
-          if ([PanelContextType.Browser, PanelContextType.Form, PanelContextType.Process, PanelContextType.Report].includes(panelType)) {
-          // const fieldsUser = []
-            panel.fieldsList.forEach(itemField => {
-              if (!itemField.isAdvancedQuery || itemField.isActiveLogics) {
-              // Change Dependents
-                context.dispatch('changeDependentFieldsList', {
-                  field: itemField
-                })
-              }
-            // if (itemField.isShowedFromUserDefault || !isEmptyValue(itemField.value)) {
-            //   fieldsUser.push(itemField.columnName)
-            // }
-            })
-
-          // dispatch('changeFieldShowedFromUser', {
-          //   containerUuid,
-          //   fieldsUser,
-          //   groupField: ''
-          // })
+          const windowPanel = (itemField: any) => {
+            if (!itemField.isAdvancedQuery || itemField.isActiveLogics) {
+              // enable edit fields in panel
+              context.commit('changeFieldAttribure', {
+                attributeName: 'isReadOnlyFromForm',
+                field: itemField,
+                attributeValue: false
+              })
+            }
           }
+
+          const othersPanel = (itemField: any) => {
+            if (!itemField.isAdvancedQuery || itemField.isActiveLogics) {
+              // enable edit fields in panel
+              context.commit('changeFieldAttribure', {
+                attributeName: 'isReadOnlyFromForm',
+                field: itemField,
+                attributeValue: false
+              })
+
+              // Change Dependents
+              context.dispatch('changeDependentFieldsList', {
+                field: itemField
+              })
+            }
+          }
+          let execute = windowPanel
+          if ([PanelContextType.Browser, PanelContextType.Form, PanelContextType.Process, PanelContextType.Report].includes(panelType)) {
+            // const fieldsUser = []
+            execute = othersPanel
+
+            // dispatch('changeFieldShowedFromUser', {
+            //   containerUuid,
+            //   fieldsUser,
+            //   groupField: ''
+            // })
+          }
+          panel.fieldsList.forEach(execute)
         })
 
       resolve(defaultAttributes)

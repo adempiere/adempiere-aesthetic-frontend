@@ -72,6 +72,62 @@ export function typeValue(value: any): string {
   return typeOfValue
 }
 
+export const isEmptyValue = (value: any): boolean => {
+  // Custom empty value ADempiere to lookup
+  if (String(value).trim() === '-1') {
+    return true
+  }
+
+  let isEmpty = false
+  const typeOfValue = typeValue(value)
+
+  switch (typeOfValue) {
+    case 'UNDEFINED':
+    case 'ERRORR':
+    case 'NULL':
+      isEmpty = true
+      break
+    case 'BOOLEAN':
+    case 'DATE':
+    case 'FUNCTION': // Or class
+    case 'PROMISE':
+    case 'REGEXP':
+      isEmpty = false
+      break
+    case 'STRING':
+      isEmpty = Boolean(!value.trim().length)
+      break
+    case 'MATH':
+    case 'NUMBER':
+      if (Number.isNaN(value)) {
+        isEmpty = true
+        break
+      }
+      isEmpty = false
+      break
+    case 'JSON':
+      if (value.trim().length) {
+        isEmpty = Boolean(value.trim() === '{}')
+        break
+      }
+      isEmpty = true
+      break
+    case 'OBJECT':
+      isEmpty = Boolean(!Object.keys(value).length)
+      break
+    case 'ARGUMENTS':
+    case 'ARRAY':
+      isEmpty = Boolean(!value.length)
+      break
+    case 'MAP':
+    case 'SET':
+      isEmpty = Boolean(!value.size)
+      break
+  }
+
+  return isEmpty
+}
+
 /**
  * Parsed value to component type
  * @param {mixed} value, value to parsed
@@ -87,9 +143,9 @@ export function parsedValueComponent(data: {
     displayType: number
     isMandatory?: boolean
 }) {
-  data.isMandatory = data.isMandatory !== undefined
+  data.isMandatory = data.isMandatory || false
   let { componentPath, value, columnName, displayType, isMandatory } = data
-  const isEmpty = !value
+  const isEmpty = isEmptyValue(value)
 
   if (isEmpty && !isMandatory) {
     if (componentPath === 'FieldYesNo') {
@@ -428,41 +484,4 @@ export function tagStatus(tag: string): string {
       break
   }
   return type
-}
-
-/**
- * Search the Payment List for the Current Payment
- * @param {string} parentUuid Uuid the Parent
- * @param {string} containerUuid Uuid the Container
- * @param {string} panelType Panel Type
- * @param {string} attribute ColumName Field
- * @param {boolean| string | number} value Value
- * @param {array} level list value the preference
- */
-export function attributePreference(data: {
-  parentUuid: string
-  containerUuid: string
-  panelType: PanelContextType
-  attribute: string
-  value: boolean | string | number
-  level: any[]
-}) {
-  const { parentUuid, containerUuid, panelType, attribute, value, level } = data
-  let levelPanel: KeyValueData[] = []
-  if (level && level.length) {
-    levelPanel = level.map(parameter => {
-      return {
-        key: parameter.columnName,
-        value: parameter.value
-      }
-    })
-  }
-  return {
-    parentUuid,
-    containerUuid,
-    panelType,
-    attribute,
-    value,
-    level: levelPanel
-  }
 }

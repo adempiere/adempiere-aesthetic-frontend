@@ -1,37 +1,25 @@
 <template>
   <el-dropdown trigger="click">
-    <el-button type="text" :disabled="fieldAttributes.readonly">
+    <el-button type="text" :disabled="sourceField.readonly">
       <i class="el-icon-notebook-2 el-icon--right" @click="isActive = !isActive" />
     </el-button>
     <el-dropdown-menu slot="dropdown" class="dropdown-calc">
       <el-card
-        v-if="metadataList.length"
+        v-if="!isEmptyValue(metadataList)"
         class="box-card"
       >
         <div slot="header" class="clearfix">
           <span>
             {{ $t('components.preference.title') }}
             <b>
-              {{ fieldAttributes.name }}
+              {{ sourceField.name }}
             </b>
           </span>
         </div>
-        <div v-if="descriptionOfPreference.length" class="text item">
+        <div class="text item">
           {{
-            descriptionOfPreference
+            getDescriptionOfPreference
           }}
-          <template
-            v-for="(index) in fieldsListPreference"
-          >
-            <span
-              v-if="index.value"
-              :key="index.sequence"
-            >
-              {{
-                index.label
-              }}
-            </span>
-          </template>
         </div>
         <br>
         <div class="text item">
@@ -40,25 +28,8 @@
           >
             <el-form-item>
               <p slot="label">
-                {{ fieldAttributes.name }}
+                {{ sourceField.name }}: {{ code }}
               </p>
-              <el-switch
-                v-if="fieldAttributes.componentPath === 'FieldYesNo'"
-                v-model="code"
-                :active-text="$t('components.preference.yes')"
-                :inactive-text="$t('components.preference.no')"
-                :disabled="true"
-                style="padding-top: 30%"
-              />
-              <div
-                v-else
-              >
-                <p>
-                  {{
-                    code
-                  }}
-                </p>
-              </div>
             </el-form-item>
           </el-form>
           <el-form
@@ -83,6 +54,14 @@
         <br>
         <el-row>
           <el-col :span="24">
+            <samp style="float: left; padding-right: 10px;">
+              <el-button
+                type="danger"
+                class="custom-button-address-location"
+                icon="el-icon-delete"
+                @click="remove()"
+              />
+            </samp>
             <samp style="float: right; padding-right: 10px;">
               <el-button
                 type="danger"
@@ -94,7 +73,7 @@
                 type="primary"
                 class="custom-button-address-location"
                 icon="el-icon-check"
-                @click="close()"
+                @click="sendValue()"
               />
             </samp>
           </el-col>
@@ -102,7 +81,7 @@
       </el-card>
       <div
         v-else
-        v-loading="!metadataList.length"
+        v-loading="isEmptyValue(metadataList)"
         :element-loading-text="$t('notifications.loading')"
         element-loading-background="rgba(255, 255, 255, 0.8)"
         class="loading-window"

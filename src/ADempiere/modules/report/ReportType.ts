@@ -26,12 +26,13 @@ export interface IReportOutputData {
 
 export interface IPrintFormatData {
     id?: number
-    uuid: string
+    uuid?: string
     name: string
     description: string
     tableName: string
     isDefault: boolean
     reportViewUuid: string
+    printFormatUuid: string
 }
 
 export interface IListPrintsFormatsData {

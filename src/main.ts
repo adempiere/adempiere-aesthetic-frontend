@@ -25,6 +25,9 @@ import * as directives from '@/directives'
 import * as filters from '@/filters'
 import { sync } from 'vuex-router-sync'
 import Cookies from 'js-cookie'
+import * as globalMethods from '@/ADempiere/shared/utils/globalMethods'
+
+const methods: any = globalMethods
 
 Vue.use(VMarkdown)
 Vue.use(VueShortkey)
@@ -50,6 +53,11 @@ Object.keys(directives).forEach(key => {
 // Register global filter functions
 Object.keys(filters).forEach(key => {
   Vue.filter(key, (filters as { [key: string ]: Function })[key])
+})
+
+// Register global methods
+Object.keys(methods).forEach(key => {
+  Vue.prototype[key] = methods[key]
 })
 
 Vue.config.productionTip = false

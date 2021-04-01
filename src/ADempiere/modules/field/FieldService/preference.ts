@@ -1,41 +1,49 @@
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { IValueData } from '../../core'
-import { KeyValueData } from '../../persistence'
+import { ApiRest as serviceApi } from '@/ADempiere/shared/services/instances'
 
-export const getPreference = (data: {
+export const setPreference = (data: {
   parentUuid: string
-  containerUuid: string
-  panelType: PanelContextType
   attribute: IValueData
   value: any
-  level: KeyValueData[]
+  isForCurrentUser: IValueData
+  isForCurrentClient: IValueData
+  isForCurrentOrganization: IValueData
+  isForCurrentContainer: IValueData
 }): any => {
-  const { parentUuid, containerUuid, panelType, attribute, value, level } = data
-  return getPreference({
-    parentUuid,
-    containerUuid,
-    panelType,
-    attribute,
-    value,
-    level
+  const { parentUuid, attribute, value, isForCurrentClient, isForCurrentContainer, isForCurrentOrganization, isForCurrentUser } = data
+  return serviceApi({
+    url: '/ui/set-preference',
+    data: {
+      container_uuid: parentUuid,
+      column_name: attribute,
+      value: value,
+      is_for_current_user: isForCurrentUser,
+      is_for_current_client: isForCurrentClient,
+      is_for_current_organization: isForCurrentOrganization,
+      is_for_current_container: isForCurrentContainer
+    }
   })
 }
 
-export const updatePreference = (data: {
+export const deletePreference = (data: {
   parentUuid: string
-  containerUuid: string
-  panelType: PanelContextType
   attribute: IValueData
-  value: any
-  level: string
-}): any => {
-  const { parentUuid, containerUuid, panelType, attribute, value, level } = data
-  return updatePreference({
-    parentUuid,
-    containerUuid,
-    panelType,
-    attribute,
-    value,
-    level
+  isForCurrentUser: IValueData
+  isForCurrentClient: IValueData
+  isForCurrentOrganization: IValueData
+  isForCurrentContainer: IValueData
+}) :Promise<any> => {
+  const { parentUuid, attribute, isForCurrentClient, isForCurrentContainer, isForCurrentOrganization, isForCurrentUser } = data
+  return serviceApi({
+    url: '/ui/delete-preference',
+    data: {
+      container_uuid: parentUuid,
+      column_name: attribute,
+      is_for_current_user: isForCurrentUser,
+      is_for_current_client: isForCurrentClient,
+      is_for_current_organization: isForCurrentOrganization,
+      is_for_current_container: isForCurrentContainer
+    }
   })
 }

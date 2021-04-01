@@ -1,3 +1,4 @@
+import { IValueData } from '@/ADempiere/modules/core'
 import { IFieldData } from '@/ADempiere/modules/field'
 import { ISizeData } from '@/ADempiere/shared/utils/references'
 import { PanelContextType } from './ContextMenuType'

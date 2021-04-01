@@ -35,6 +35,7 @@ import {
 import { IFieldData } from '@/ADempiere/modules/field'
 import { getFieldTemplate } from '@/ADempiere/shared/utils/lookupFactory'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import router from '@/router'
 
 type WindowDefinitionActionTree = ActionTree<WindowDefinitionState, IRootState>
 type WindowDefinitionActionContext = ActionContext<
@@ -313,9 +314,9 @@ export const actions: WindowDefinitionActionTree = {
         return newWindow
       })
       .catch(error => {
-        // router.push({
-        //   path: '/dashboard'
-        // }, () => {})
+        router.push({
+          path: '/dashboard'
+        })
         context.dispatch('tagsView/delView', routeToDelete, { root: true })
         showMessage({
           message: language.t('login.unexpectedError').toString(),

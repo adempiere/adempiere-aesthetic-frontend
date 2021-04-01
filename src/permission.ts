@@ -24,7 +24,6 @@ const getPageTitle = (key: string) => {
 router.beforeEach(async(to: Route, _: Route, next: any) => {
   // Start progress bar
   NProgress.start()
-  store.dispatch('setRouter', router)
 
   // Determine whether the user has logged in
   if (store.state.user.token) {
@@ -73,14 +72,10 @@ router.beforeEach(async(to: Route, _: Route, next: any) => {
   }
 })
 
-let n = 0
-
 router.afterEach((to: Route) => {
   // Finish progress bar
   // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
   NProgress.done()
-  n++
-  console.log(n)
   // set page title
   document.title = getPageTitle(to.meta.title)
 })

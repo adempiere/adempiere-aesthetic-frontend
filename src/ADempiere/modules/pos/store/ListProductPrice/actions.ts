@@ -114,7 +114,7 @@ export const actions: ListProductPriceActionTree = {
       console.warn(message)
       return
     }
-    context.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice')
+    context.commit('setIsReloadProductPrice')
     let pageToken: string, token: string | undefined
     if (!pageNumber) {
       pageNumber = context.state.productPrice.pageNumber

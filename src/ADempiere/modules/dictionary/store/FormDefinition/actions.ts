@@ -9,6 +9,7 @@ import { ActionTree, ActionContext } from 'vuex'
 import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import router from '@/router'
 
 type FormDefinitionActionTree = ActionTree<FormDefinitionState, IRootState>
 type FormDefinitionActionContext = ActionContext<FormDefinitionState, IRootState>
@@ -62,14 +63,11 @@ export const actions: FormDefinitionActionTree = {
           }, { root: true })
         })
         .catch(error => {
-          // router.push(
-          //   {
-          //     path: '/dashboard'
-          //   },
-          //   () => {
-          //     return true
-          //   }
-          // )
+          router.push(
+            {
+              path: '/dashboard'
+            }
+          )
           context.dispatch(Namespaces.TagsView + '/' + 'delView', routeToDelete, { root: true })
           showMessage({
             message: language.t('login.unexpectedError').toString(),

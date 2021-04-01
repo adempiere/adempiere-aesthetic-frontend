@@ -54,6 +54,7 @@ import {
 } from '@/ADempiere/modules/report'
 import { Route } from 'vue-router'
 import { ISelectionProcessData } from '@/ADempiere/shared/store/modules/Utils/type'
+import router from '@/router'
 
 type ProcessActionContext = ActionContext<ProcessState, IRootState>
 type ProcessActionTree = ActionTree<ProcessState, IRootState>
@@ -274,7 +275,7 @@ export const actions: ProcessActionTree = {
       } else if (panelType === PanelContextType.Browser) {
         if (allData!.record.length <= 100) {
           // close view if is browser.
-          context.rootState.router.push(
+          router.push(
             { path: '/dashboard' }
           )
           // router.push(
@@ -291,7 +292,7 @@ export const actions: ProcessActionTree = {
         }
       } else {
         // close view if is process, report.
-        context.rootState.router.push({ path: '/dashboard' })
+        router.push({ path: '/dashboard' })
         // router.push(
         //     {
         //         path: '/dashboard'
@@ -1523,7 +1524,7 @@ export const actions: ProcessActionTree = {
         }
       }
 
-      context.rootState.router.push(
+      router.push(
         {
           name: 'Report Viewer',
           params: {

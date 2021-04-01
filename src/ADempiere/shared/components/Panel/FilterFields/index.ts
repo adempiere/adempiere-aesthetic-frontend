@@ -42,11 +42,12 @@ export default class FilterFields extends Vue {
     }
 
     get getFieldSelected(): any[] {
-      return this.fieldsListOptional
+      const data = this.fieldsListOptional
         .filter(fieldItem => {
           return fieldItem.isShowedFromUser
         })
         .map(itemField => itemField.columnName)
+      return data
     }
 
     // Watchers
