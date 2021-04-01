@@ -8,7 +8,7 @@ import { ActionContext, GetterTree } from 'vuex'
 import { IRootState } from '@/store'
 import { IPanelParameters, IRangeAttributeData, PanelState } from './type'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
-import { parsedValueComponent } from '@/ADempiere/shared/utils/valueUtils'
+import { isEmptyValue, parsedValueComponent } from '@/ADempiere/shared/utils/valueUtils'
 import { LOG_COLUMNS_NAME_LIST } from '@/ADempiere/shared/utils/dataUtils'
 
 type PanelGetterTree = GetterTree<PanelState, IRootState>
@@ -84,8 +84,8 @@ export const getters: PanelGetterTree = {
       (fieldItem: IFieldDataExtendedUtils) => {
         const { columnName, defaultValue } = fieldItem
         let isSQL = false
-        let parsedDefaultValue: string = fieldItem.parsedDefaultValue
-          ? fieldItem.parsedDefaultValue
+        let parsedDefaultValue: string = !isEmptyValue(fieldItem.parsedDefaultValue)
+          ? fieldItem.parsedDefaultValue!
           : ''
         const isSpeciaColumn: boolean =
                     specialColumns.includes(columnName) ||

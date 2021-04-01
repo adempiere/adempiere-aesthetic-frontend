@@ -143,11 +143,9 @@ export function parsedValueComponent(data: {
     displayType: number
     isMandatory?: boolean
 }) {
-  data.isMandatory = data.isMandatory !== undefined
+  data.isMandatory = data.isMandatory || false
   let { componentPath, value, columnName, displayType, isMandatory } = data
   const isEmpty = isEmptyValue(value)
-  console.log('isEmpty')
-  console.log(isEmpty)
 
   if (isEmpty && !isMandatory) {
     if (componentPath === 'FieldYesNo') {
