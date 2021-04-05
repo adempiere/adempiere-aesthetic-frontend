@@ -1,16 +1,18 @@
 <template>
   <div
-    v-if="!item.meta || !item.meta.hidden"
+    v-if="item.meta && !item.meta.hidden"
     :class="[isCollapse ? 'simple-mode' : 'full-mode', {'first-level': isFirstLevel}]"
   >
-    <template v-if="!alwaysShowRootMenu && theOnlyOneChild && !theOnlyOneChild.children">
+    <template v-if="isNotParent">
       <sidebar-item-link
         v-if="theOnlyOneChild.meta"
-        :to="resolvePath(theOnlyOneChild.path)"
+        :to="theOnlyOneChild"
       >
         <el-menu-item
           :index="resolvePath(theOnlyOneChild.path)"
+          :route="item"
           :class="{'submenu-title-noDropdown': isFirstLevel}"
+          @click="openItemMenu"
         >
           <svg-icon
             v-if="theOnlyOneChild.meta.icon"
@@ -19,7 +21,7 @@
           <span
             v-if="theOnlyOneChild.meta.title"
             slot="title"
-          >{{ $t('route.' + theOnlyOneChild.meta.title) }}</span>
+          >{{ ($te('route.'+item.meta.title)) ? $t('route.'+item.meta.title) : item.meta.title }}</span>
         </el-menu-item>
       </sidebar-item-link>
     </template>
@@ -28,7 +30,7 @@
       :index="resolvePath(item.path)"
       popper-append-to-body
     >
-      <template slot="title">
+      <template v-if="item.meta && item.meta.title && item.meta.icon" slot="title">
         <svg-icon
           v-if="item.meta && item.meta.icon"
           :name="item.meta.icon"
@@ -36,7 +38,7 @@
         <span
           v-if="item.meta && item.meta.title"
           slot="title"
-        >{{ $t('route.' + item.meta.title) }}</span>
+        >{{ ($te('route.'+item.meta.title)) ? $t('route.'+item.meta.title) : item.meta.title }}</span>
       </template>
       <template v-if="item.children">
         <sidebar-item
@@ -59,6 +61,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
 import { isExternal } from '@/utils/validate'
 import SidebarItemLink from './SidebarItemLink.vue'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 
 @Component({
   // Set 'name' here to prevent uglifyjs from causing recursive component not work
@@ -73,12 +77,20 @@ export default class extends Vue {
   @Prop({ default: false }) private isCollapse!: boolean
   @Prop({ default: true }) private isFirstLevel!: boolean
   @Prop({ default: '' }) private basePath!: string
+  private noShowingChildren = false
 
   get alwaysShowRootMenu() {
     if (this.item.meta && this.item.meta.alwaysShow) {
       return true
     }
     return false
+  }
+
+  get isNotParent(): boolean {
+    const hasOneshowingChild: boolean = this.showingChildNumber === 1 || this.showingChildNumber === 0
+    const hasOnlyOne: boolean = (this.theOnlyOneChild !== null) && !this.theOnlyOneChild.children
+    const validation: boolean = hasOneshowingChild && (!this.theOnlyOneChild?.children || this.noShowingChildren || this.theOnlyOneChild === null)
+    return validation
   }
 
   get showingChildNumber() {
@@ -90,14 +102,23 @@ export default class extends Vue {
           return true
         }
       })
+      if (showingChildren.length === 0) {
+        this.noShowingChildren = true
+      }
       return showingChildren.length
     }
     return 0
   }
 
-  get theOnlyOneChild() {
+  get theOnlyOneChild(): RouteConfig {
     if (this.showingChildNumber > 1) {
-      return null
+      return {
+        ...this.item,
+        path: '',
+        meta: {
+          noShowingChildren: true
+        }
+      }
     }
     if (this.item.children) {
       for (const child of this.item.children) {
@@ -109,6 +130,34 @@ export default class extends Vue {
     // If there is no children, return itself with path removed,
     // because this.basePath already conatins item's path information
     return { ...this.item, path: '' }
+  }
+
+  /**
+     * Clear field values, and set default values with open
+     * @param menuItem router item with meta attributes
+     */
+  openItemMenu(menuItem: any): void {
+    const view: RouteConfig = menuItem._props.route
+    if (view.meta && view.meta.uuid && view.meta.type) {
+      const {
+        parentUuid,
+        uuid: containerUuid,
+        type: panelType
+      } = view.meta
+      if (panelType !== PanelContextType.Window) {
+        this.$store.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {
+          parentUuid,
+          containerUuid,
+          panelType,
+          isNewRecord: false
+        })
+        if ([PanelContextType.Browser].includes(panelType)) {
+          this.$store.dispatch(Namespaces.BusinessData + '/' + 'deleteRecordContainer', {
+            viewUuid: containerUuid
+          })
+        }
+      }
+    }
   }
 
   private resolvePath(routePath: string) {

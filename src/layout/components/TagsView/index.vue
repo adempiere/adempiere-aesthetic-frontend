@@ -8,24 +8,49 @@
       class="tags-view-wrapper"
       @scroll="handleScroll"
     >
-      <router-link
+    <draggable
+    v-if="!isMobile"
+    :list="visitedViews"
+    v-bind="$attrs"
+    :set-data="setData"
+    style="display: flex;"
+    >
+    <router-link
+    v-for="tag in visitedViews"
+    ref="tag"
+    :key="tag.path"
+    :class="isActive(tag)?'active':''"
+    :to="{
+      name: tag.name,
+    path: tag.path,
+    query: tag.query,
+    fullPath: tag.fullPath,
+    params: tag.params
+    }"
+    tag="span"
+    class="tags-view-item"
+    @click.middle.native="!isAffix(tag) ? closeSelectedTag(tag) : ''"
+    @contextmenu.prevent.native="openMenu(tag,$event)"
+    >
+    <div class="tag-title">{{ generateTitle(tag.title) }}</div>
+    <div v-if="!tag.meta.affix" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+    </router-link>
+    </draggable>
+    <router-link
         v-for="tag in visitedViews"
+        v-else
         ref="tag"
         :key="tag.path"
-        :class="isActive(tag) ? 'active' : ''"
-        :to="{path: tag.path, query: tag.query, fullPath: tag.fullPath}"
+        :class="isActive(tag)?'active':''"
+        :to="{name: tag.name, path: tag.path, query: tag.query, fullPath: tag.fullPath, params: tag.params}"
         tag="span"
         class="tags-view-item"
         @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
-        @contextmenu.prevent.native="openMenu(tag, $event)"
+        @contextmenu.prevent.native="openMenu(tag,$event)"
       >
-        {{ $t('route.' + tag.meta.title) }}
-        <span
-          v-if="!isAffix(tag)"
-          class="el-icon-close"
-          @click.prevent.stop="closeSelectedTag(tag)"
-        />
-      </router-link>
+        {{ generateTitle(tag.title) }}
+        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+    </router-link>
     </scroll-pane>
     <ul
       v-show="visible"
@@ -54,31 +79,40 @@
 
 <script lang="ts">
 import path from 'path'
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
-import { PermissionModule } from '@/store/modules/permission'
-import { TagsViewModule, ITagView } from '@/store/modules/tags-view'
 import ScrollPane from './ScrollPane.vue'
+import MixinI18n from '@/ADempiere/shared/utils/i18n'
+import draggable from 'vuedraggable'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { ITagView } from '@/ADempiere/modules/tagsView/TagsViewType'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 
 @Component({
   name: 'TagsView',
+  mixins: [MixinI18n],
   components: {
-    ScrollPane
+    ScrollPane,
+    draggable
   }
 })
-export default class extends Vue {
+export default class extends Mixins(MixinI18n) {
   private visible = false
   private top = 0
   private left = 0
   private selectedTag: ITagView = {}
   private affixTags: ITagView[] = []
 
+  get isMobile(): boolean {
+    return this.$store.state.app.device === DeviceType.Mobile
+  }
+
   get visitedViews() {
-    return TagsViewModule.visitedViews
+    return this.$store.state.tagsView.visitedViews
   }
 
   get routes() {
-    return PermissionModule.routes
+    return this.$store.state.permission.routes
   }
 
   @Watch('$route')
@@ -102,7 +136,14 @@ export default class extends Vue {
   }
 
   private isActive(route: ITagView) {
-    return route.path === this.$route.path
+    if (route.name === 'Report Viewer') {
+      const isSameProcess = route.params!.processId === this.$route.params.processId
+      if (isSameProcess && route.params && route.params.tableName === this.$route.params.tableName) {
+        return isSameProcess
+      }
+      return route.path === this.$route.path
+    }
+    return route.name === this.$route.name
   }
 
   private isAffix(tag: ITagView) {
@@ -136,7 +177,7 @@ export default class extends Vue {
     for (const tag of this.affixTags) {
       // Must have tag name
       if (tag.name) {
-        TagsViewModule.addVisitedView(tag)
+        this.$store.dispatch(Namespaces.TagsView + '/' + 'addVisitedView', tag)
       }
     }
   }
@@ -144,7 +185,7 @@ export default class extends Vue {
   private addTags() {
     const { name } = this.$route
     if (name) {
-      TagsViewModule.addView(this.$route)
+      this.$store.dispatch(Namespaces.TagsView + '/' + 'addView', this.$route)
     }
     return false
   }
@@ -153,11 +194,19 @@ export default class extends Vue {
     const tags = this.$refs.tag as any[] // TODO: better typescript support for router-link
     this.$nextTick(() => {
       for (const tag of tags) {
-        if ((tag.to as ITagView).path === this.$route.path) {
+        if (this.$route.name === 'Report Viewer') {
+          if (this.$route.params && tag.to.params.processId === this.$route.params.processId && tag.to.params.tableName === this.$route.params.tableName) {
+            (this.$refs.scrollPane as ScrollPane).moveToTarget(tag as any)
+          }
+        }
+        if ((tag.to as ITagView).name === this.$route.name) {
+          if ((tag.to as ITagView).query && (tag.to as ITagView).query?.action === this.$route.query.action) {
+            (tag.to as ITagView).params!.isReadParameters = String(false)
+          }
           (this.$refs.scrollPane as ScrollPane).moveToTarget(tag as any)
           // When query is different then update
           if ((tag.to as ITagView).fullPath !== this.$route.fullPath) {
-            TagsViewModule.updateVisitedView(this.$route)
+            this.$store.dispatch(Namespaces.TagsView + '/' + 'updateVisitedView', this.$route)
           }
           break
         }
@@ -166,49 +215,81 @@ export default class extends Vue {
   }
 
   private refreshSelectedTag(view: ITagView) {
-    TagsViewModule.delCachedView(view)
+    this.$store.dispatch(Namespaces.TagsView + '/' + 'delCachedView', view)
     const { fullPath } = view
     this.$nextTick(() => {
       this.$router.replace({
         path: '/redirect' + fullPath
+      }).catch(err => {
+        console.warn(err)
       })
     })
   }
 
   private closeSelectedTag(view: ITagView) {
-    TagsViewModule.delView(view)
+    this.$store.dispatch(Namespaces.TagsView + '/' + 'delView', view)
     if (this.isActive(view)) {
-      this.toLastView(TagsViewModule.visitedViews, view)
+      this.toLastView(this.$store.state.tagsView.visitedViews, view)
+    }
+    if (view.meta && view.meta.uuid && view.meta.type) {
+      let parentUuid
+      let containerUuid = view.meta.uuid
+      if (view.meta.type === 'window') {
+        parentUuid = view.meta.uuid
+        containerUuid = view.meta.tabUuid
+        this.$store.dispatch(Namespaces.Window + '/' + 'setWindowOldRoute')
+      }
+
+      this.$store.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {
+        parentUuid,
+        containerUuid,
+        panelType: view.meta.type,
+        isNewRecord: false
+      })
+
+      if (['window', 'browser'].includes(view.meta.type)) {
+        this.$store.dispatch(Namespaces.BusinessData + '/' + 'deleteRecordContainer', {
+          viewUuid: view.meta.uuid
+        })
+      }
     }
   }
 
   private closeOthersTags() {
     if (this.selectedTag.fullPath !== this.$route.path && this.selectedTag.fullPath !== undefined) {
-      this.$router.push(this.selectedTag.fullPath)
+      this.$router.push(this.selectedTag.fullPath).catch(err => {
+        console.warn(err)
+      })
     }
-    TagsViewModule.delOthersViews(this.selectedTag)
+    this.$store.dispatch(Namespaces.TagsView + '/' + 'delOthersViews', this.selectedTag)
     this.moveToCurrentTag()
   }
 
   private closeAllTags(view: ITagView) {
-    TagsViewModule.delAllViews()
+    this.$store.dispatch(Namespaces.TagsView + '/' + 'delAllViews')
     if (this.affixTags.some(tag => tag.path === this.$route.path)) {
       return
     }
-    this.toLastView(TagsViewModule.visitedViews, view)
+    this.toLastView(this.$store.state.tagsView.visitedViews, view)
   }
 
   private toLastView(visitedViews: ITagView[], view: ITagView) {
     const latestView = visitedViews.slice(-1)[0]
     if (latestView !== undefined && latestView.fullPath !== undefined) {
-      this.$router.push(latestView.fullPath)
+      this.$router.push(latestView.fullPath).catch(err => {
+        console.warn(err)
+      })
     } else {
       // Default redirect to the home page if there is no tags-view, adjust it if you want
       if (view.name === 'Dashboard') {
         // to reload home page
-        this.$router.replace({ path: '/redirect' + view.fullPath })
+        this.$router.replace({ path: '/redirect' + view.fullPath }).catch(err => {
+          console.warn(err)
+        })
       } else {
-        this.$router.push('/')
+        this.$router.push('/').catch(err => {
+          console.warn(err)
+        })
       }
     }
   }
@@ -233,6 +314,10 @@ export default class extends Vue {
     this.visible = false
   }
 
+  private setData(dataTransfer: any) {
+    dataTransfer.setData('Text', '')
+  }
+
   private handleScroll() {
     this.closeMenu()
   }
@@ -244,6 +329,8 @@ export default class extends Vue {
 .tags-view-wrapper {
   .tags-view-item {
     .el-icon-close {
+      align-self: center;
+      min-width: 16px;
       width: 16px;
       height: 16px;
       vertical-align: 2px;
@@ -275,12 +362,18 @@ export default class extends Vue {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
 
   .tags-view-wrapper {
+    width: 100%;
     .tags-view-item {
-      display: inline-block;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      flex:none;
+      max-width: 32%;
       position: relative;
       cursor: pointer;
       height: 26px;
       line-height: 26px;
+      padding: 0 7px;
       border: 1px solid #d8dce5;
       color: #495060;
       background: #fff;
@@ -289,12 +382,14 @@ export default class extends Vue {
       margin-left: 5px;
       margin-top: 4px;
 
-      &:first-of-type {
-        margin-left: 15px;
+      div.tag-title{
+        width: -webkit-fill-available;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
-      &:last-of-type {
-        margin-right: 15px;
+      &:first-of-type {
+        margin-left: 15px;
       }
 
       &.active {
@@ -305,6 +400,8 @@ export default class extends Vue {
         &::before {
           content: '';
           background: #fff;
+          align-self: center;
+          min-width: 8px;
           display: inline-block;
           width: 8px;
           height: 8px;

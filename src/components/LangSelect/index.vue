@@ -52,22 +52,24 @@
 </template>
 
 <script lang="ts">
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Vue } from 'vue-property-decorator'
-import { AppModule } from '@/store/modules/app'
-
 @Component({
   name: 'Login'
 })
 export default class extends Vue {
   get language() {
-    return AppModule.language
+    return this.$store.state.app.language
   }
 
   private handleSetLanguage(lang: string) {
     this.$i18n.locale = lang
-    AppModule.SetLanguage(lang)
+    this.$store.dispatch(Namespaces.App + '/' + 'SetLanguage', lang)
+    if (this.$route.path !== '/login') {
+      location.reload()
+    }
     this.$message({
-      message: 'Switch Language Success',
+      message: this.$t('components.changeLanguageTips').toString(),
       type: 'success'
     })
   }

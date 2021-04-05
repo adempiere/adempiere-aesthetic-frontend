@@ -25,9 +25,8 @@
 </template>
 
 <script lang="ts">
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Vue } from 'vue-property-decorator'
-import { AppModule } from '@/store/modules/app'
-import { TagsViewModule } from '@/store/modules/tags-view'
 
 @Component({
   name: 'SizeSelect'
@@ -41,12 +40,12 @@ export default class extends Vue {
   ]
 
   get size() {
-    return AppModule.size
+    return this.$store.state.app.size
   }
 
   private handleSetSize(size: string) {
     (this as any).$ELEMENT.size = size
-    AppModule.SetSize(size)
+    this.$store.dispatch(Namespaces.App + '/' + 'SetSize', size)
     this.refreshView()
     this.$message({
       message: 'Switch Size Success',
@@ -56,11 +55,13 @@ export default class extends Vue {
 
   private refreshView() {
     // In order to make the cached page re-rendered
-    TagsViewModule.delAllCachedViews()
+    this.$store.dispatch(Namespaces.TagsView + '/' + 'delAllCachedViews')
     const { fullPath } = this.$route
     this.$nextTick(() => {
       this.$router.replace({
         path: '/redirect' + fullPath
+      }).catch(err => {
+        console.warn(err)
       })
     })
   }

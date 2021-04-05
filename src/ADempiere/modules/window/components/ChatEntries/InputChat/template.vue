@@ -1,0 +1,9 @@
+<template>
+  <toast-editor
+    ref="editor"
+    :initial-value="value"
+    height="150px"
+    :options="editorOptions"
+    @change="onContentChanged"
+  />
+</template>

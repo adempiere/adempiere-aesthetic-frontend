@@ -9,7 +9,6 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { SettingsModule } from '@/store/modules/settings'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const version = require('element-ui/package.json').version // element-ui version from node_modules
@@ -23,7 +22,7 @@ export default class extends Vue {
   private theme = ''
 
   get defaultTheme() {
-    return SettingsModule.theme
+    return this.$store.state.settings.theme
   }
 
   @Watch('defaultTheme', { immediate: true })
@@ -92,7 +91,7 @@ export default class extends Vue {
   }
 
   private getCSSString(url: string, variable: string) {
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
       const xhr = new XMLHttpRequest()
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4 && xhr.status === 200) {

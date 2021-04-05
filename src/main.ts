@@ -7,20 +7,35 @@ import SvgIcon from 'vue-svgicon'
 import '@/styles/element-variables.scss'
 import '@/styles/index.scss'
 
+import VueSplit from 'vue-split-panel'
+import VueShortkey from 'vue-shortkey'
+import 'vue-resize/dist/vue-resize.css'
+import VueResize from 'vue-resize'
+import VMarkdown from 'v-markdown/src'
+
 import App from '@/App.vue'
-import store from '@/store'
-import { AppModule } from '@/store/modules/app'
+import store from '@/ADempiere/shared/store'
 import router from '@/router'
-import i18n from '@/lang'
+import i18n from '@/ADempiere/shared/lang'
 import '@/icons/components'
 import '@/permission'
 import '@/utils/error-log'
 import '@/pwa/register-service-worker'
 import * as directives from '@/directives'
 import * as filters from '@/filters'
+import { sync } from 'vuex-router-sync'
+import Cookies from 'js-cookie'
+import * as globalMethods from '@/ADempiere/shared/utils/globalMethods'
 
+const methods: any = globalMethods
+
+Vue.use(VMarkdown)
+Vue.use(VueShortkey)
+Vue.use(VueSplit)
+Vue.use(VueResize)
+// Vue.use()W
 Vue.use(ElementUI, {
-  size: AppModule.size, // Set element-ui default size
+  size: Cookies.get('size') || 'medium', // store.state.app.app.size, // AppModule.size, // Set element-ui default size
   i18n: (key: string, value: string) => i18n.t(key, value)
 })
 
@@ -40,7 +55,14 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, (filters as { [key: string ]: Function })[key])
 })
 
+// Register global methods
+Object.keys(methods).forEach(key => {
+  Vue.prototype[key] = methods[key]
+})
+
 Vue.config.productionTip = false
+
+sync(store, router)
 
 new Vue({
   router,

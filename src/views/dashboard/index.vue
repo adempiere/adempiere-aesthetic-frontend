@@ -6,8 +6,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { UserModule } from '@/store/modules/user'
-import AdminDashboard from './admin/index.vue'
+import AdminDashboard from '@/ADempiere/shared/components/DashboardAdmin'
 import EditorDashboard from './editor/index.vue'
 
 @Component({
@@ -21,13 +20,13 @@ export default class extends Vue {
   private currentRole = 'admin-dashboard'
 
   get roles() {
-    return UserModule.roles
+    return this.$store.state.user.roles
   }
 
-  created() {
-    if (!this.roles.includes('admin')) {
-      this.currentRole = 'editor-dashboard'
-    }
-  }
+  // created() {
+  //   if (!this.roles.includes('admin')) {
+  //     this.currentRole = 'editor-dashboard'
+  //   }
+  // }
 }
 </script>

@@ -1,0 +1,59 @@
+<template>
+  <el-main
+    v-shortkey="shortsKey"
+    @shortkey.native="keyAction"
+  >
+    <el-form
+      v-shortkey="shortsKey"
+      label-position="top"
+      label-width="10px"
+      @shortkey.native="keyAction"
+      @submit.native.prevent="notSubmitForm"
+    >
+      <field-definition
+        v-for="(field) in fieldsList"
+        :key="field.columnName"
+        :metadata-field="field"
+      />
+    </el-form>
+
+    <el-table
+      ref="listProducto"
+      v-shortkey="shortsKey"
+      v-loading="!productPrice.isLoaded"
+      :data="listWithPrice"
+      border
+      fit
+      height="450"
+      highlight-current-row
+      @row-click="findlistProductWithRow"
+      @shortkey.native="keyAction"
+    >
+      <el-table-column
+        prop="product.value"
+        label="Codigo"
+      />
+      <el-table-column
+        prop="product.name"
+        label="Producto"
+      />
+      <el-table-column
+        prop="priceListName"
+        label="Lista de Precio"
+      />
+      <el-table-column
+        label="Precio"
+        align="right"
+      >
+        <template slot-scope="scope">
+          {{ formatPrice(scope.row.priceStandard) }}
+        </template>
+      </el-table-column>
+    </el-table>
+    <custom-pagination
+      :total="productPrice.recordCount"
+      :current-page="productPrice.pageNumber"
+      :handle-change-page="handleChangePage"
+    />
+  </el-main>
+</template>

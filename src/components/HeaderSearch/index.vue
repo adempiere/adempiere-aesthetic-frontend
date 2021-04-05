@@ -16,16 +16,20 @@
       filterable
       default-first-option
       remote
-      placeholder="Search"
+      :placeholder="$t('table.dataTable.search')"
       class="header-search-select"
       @change="change"
     >
       <el-option
-        v-for="item in options"
-        :key="item.path"
-        :value="item"
-        :label="item.meta.title.join(' > ')"
-      />
+        v-for="element in options"
+        :key="element.item.path"
+        :value="element.item"
+        :label="element.item.meta.title.join(' > ')"
+
+      >
+      <svg-icon :name="element.item.meta.icon" style="margin-right: 5px;"/>
+      {{ element.item.meta.title.join(' > ') }}
+      </el-option>
     </el-select>
   </div>
 </template>
@@ -33,28 +37,37 @@
 <script lang="ts">
 import path from 'path'
 import Fuse from 'fuse.js' // A lightweight fuzzy-search module
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
-import { AppModule } from '@/store/modules/app'
-import { PermissionModule } from '@/store/modules/permission'
-import i18n from '@/lang' // Internationalization
+import MixinI18n from '@/ADempiere/shared/utils/i18n'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
+// import i18n from '@/ADempiere/shared/lang' // Internationalization
 
 @Component({
-  name: 'HeaderSearch'
+  name: 'HeaderSearch',
+  mixins: [MixinI18n]
 })
-export default class extends Vue {
+export default class extends Mixins(MixinI18n) {
   private search = ''
   private show = false
-  private options: RouteConfig[] = []
+  private options: Fuse.FuseResult<RouteConfig>[] = []
   private searchPool: RouteConfig[] = []
   private fuse?: Fuse<RouteConfig>
 
+  get isMobile() {
+    return this.$store.state.app.device === DeviceType.Mobile
+  }
+
   get routes() {
-    return PermissionModule.routes
+    return this.$store.state.permission.routes
   }
 
   get lang() {
-    return AppModule.language
+    return this.$store.state.app.language
+  }
+
+  get supportPinyinSearch() {
+    return this.$store.state.settings.supportPinyinSearch
   }
 
   @Watch('lang')
@@ -68,7 +81,7 @@ export default class extends Vue {
   }
 
   @Watch('searchPool')
-  private onSearchPoolChange(value: RouteConfig[]) {
+  private onSearchPoolChange(value: any[]) {
     this.initFuse(value)
   }
 
@@ -98,8 +111,27 @@ export default class extends Vue {
     this.show = false
   }
 
-  private change(route: RouteConfig) {
-    this.$router.push(route.path)
+  change(route: RouteConfig) {
+    if (route.name) {
+      const query: any = {}
+      if (route.meta && route.meta.type === 'window') {
+        query.tabParent = 0
+      }
+
+      this.$router.push({
+        name: route.name,
+        params: {
+          childs: route.meta.childs
+        },
+        query
+      })
+    } else {
+      this.$router.push({
+        path: route.path
+      })
+    }
+
+    // this.$router.push(route.path)
     this.search = ''
     this.options = []
     this.$nextTick(() => {
@@ -115,8 +147,11 @@ export default class extends Vue {
       distance: 100,
       minMatchCharLength: 1,
       keys: [{
-        name: 'title',
+        name: 'meta.title',
         weight: 0.7
+      }, {
+        name: 'pinyinTitle',
+        weight: 0.3
       }, {
         name: 'path',
         weight: 0.3
@@ -126,27 +161,29 @@ export default class extends Vue {
 
   // Filter out the routes that can be displayed in the sidebar
   // And generate the internationalized title
-  private generateRoutes(routes: RouteConfig[], basePath = '/', prefixTitle: string[] = []) {
+  private generateRoutes(routes: RouteConfig[], basePath = '/', prefixTitle: string[] = []): RouteConfig[] {
     let res: RouteConfig[] = []
 
     for (const router of routes) {
       // skip hidden router
-      if (router.meta && router.meta.hidden) {
-        continue
-      }
+      // if (router.meta && router.meta.hidden) {
+      //   continue
+      // }
 
       const data: RouteConfig = {
         path: path.resolve(basePath, router.path),
         meta: {
+          ...router.meta,
           title: [...prefixTitle]
-        }
+        },
+        name: router.name
       }
 
       if (router.meta && router.meta.title) {
         // generate internationalized title
-        const i18ntitle = i18n.t(`route.${router.meta.title}`).toString()
+        const i18ntitle = this.generateTitle(router.meta.title)
         data.meta.title = [...data.meta.title, i18ntitle]
-        if (router.redirect !== 'noRedirect') {
+        if (router.redirect !== 'noRedirect' && router.name !== 'Report Viewer' && !router.meta.isIndex) {
           // only push the routes with title
           // special case: need to exclude parent router without redirect
           res.push(data)
@@ -164,10 +201,10 @@ export default class extends Vue {
     return res
   }
 
-  private querySearch(query: string) {
-    if (query !== '') {
+  private querySearch(query?: string) {
+    if (query && query !== '') {
       if (this.fuse) {
-        this.options = this.fuse.search(query).map((result) => result.item)
+        this.options = this.fuse.search(query)
       }
     } else {
       this.options = []
@@ -209,7 +246,7 @@ export default class extends Vue {
 
   &.show {
     .header-search-select {
-      width: 210px;
+      width: 150px;
       margin-left: 10px;
     }
   }

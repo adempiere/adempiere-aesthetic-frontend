@@ -4,17 +4,17 @@
     :class="{show: show}"
     class="rightPanel-container"
   >
-    <div class="rightPanel-background" />
-    <div class="rightPanel">
-      <div
-        class="handle-button"
-        :style="{'top': buttonTop+'px','background-color': theme}"
-        @click="show=!show"
-      >
-        <i :class="show?'el-icon-close':'el-icon-setting'" />
-      </div>
-      <div class="rightPanel-items">
-        <slot />
+      <div class="setting">
+      <div class="showme">
+        <div class="rightPanel-background" />
+        <div class="rightPanel">
+          <div class="handle-button" :style="{'top': buttonTop+'px','background-color': theme}" @click="show=!show">
+            <i :class="show?'el-icon-close':'el-icon-setting'" />
+          </div>
+          <div class="rightPanel-items">
+            <slot />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -23,7 +23,6 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { addClass, removeClass } from '@/utils'
-import { SettingsModule } from '@/store/modules/settings'
 
 @Component({
   name: 'RightPanel'
@@ -35,7 +34,7 @@ export default class extends Vue {
   private show = false
 
   get theme() {
-    return SettingsModule.theme
+    return this.$store.state.settings.theme
   }
 
   @Watch('show')

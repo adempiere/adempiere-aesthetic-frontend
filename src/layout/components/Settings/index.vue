@@ -1,57 +1,69 @@
 <template>
   <div class="drawer-container">
     <div>
-      <h3 class="drawer-title">
-        {{ $t('settings.title') }}
-      </h3>
+      <h3 class="drawer-title">{{ $t('settings.title') }}</h3>
 
       <div class="drawer-item">
         <span>{{ $t('settings.theme') }}</span>
-        <theme-picker
-          style="float: right;height: 26px;margin: -3px 8px 0 0;"
-          @change="themeChange"
-        />
+        <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="themeChange" />
       </div>
 
       <div class="drawer-item">
-        <span>{{ $t('settings.showTagsView') }}</span>
-        <el-switch
-          v-model="showTagsView"
-          class="drawer-switch"
-        />
+        <span>{{ $t('settings.tagsView') }}</span>
+        <el-switch v-model="showTagsView" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
-        <span>{{ $t('settings.showSidebarLogo') }}</span>
-        <el-switch
-          v-model="showSidebarLogo"
-          class="drawer-switch"
-        />
+        <span>{{ $t('settings.showContextMenu') }}</span>
+        <el-switch v-model="showContextMenu" class="drawer-switch" />
+      </div>
+
+      <div class="drawer-item">
+        <span> Show Title }}</span>
+        <el-switch v-model="isShowTitleForm" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
         <span>{{ $t('settings.fixedHeader') }}</span>
-        <el-switch
-          v-model="fixedHeader"
-          class="drawer-switch"
-        />
+        <el-switch v-model="fixedHeader" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
-        <span>{{ $t('settings.sidebarTextTheme') }}</span>
-        <el-switch
-          v-model="sidebarTextTheme"
-          class="drawer-switch"
-        />
+        <span>Show Header</span>
+        <el-switch v-model="showNavar" class="drawer-switch" />
       </div>
+
+      <div class="drawer-item">
+        <span>Show Menu</span>
+        <el-switch v-model="showMenu" class="drawer-switch" />
+      </div>
+
+      <div class="drawer-item">
+        <span>{{ $t('settings.sidebarLogo') }}</span>
+        <el-switch v-model="showSidebarLogo" class="drawer-switch" />
+      </div>
+
+      <a v-if="isShowJob" href="https://panjiachen.github.io/vue-element-admin-site/zh/job/" target="_blank" class="job-link">
+        <el-alert
+          title="部门目前非常缺人！有兴趣的可以点击了解详情。坐标: 字节跳动"
+          type="success"
+          :closable="false"
+        />
+      </a>
+
+      <div v-if="lang === 'zh'" class="drawer-item">
+        <span>菜单支持拼音搜索</span>
+        <el-switch v-model="supportPinyinSearch" class="drawer-switch" />
+      </div>
+
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { SettingsModule } from '@/store/modules/settings'
 import ThemePicker from '@/components/ThemePicker/index.vue'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 @Component({
   name: 'Settings',
@@ -60,40 +72,105 @@ import ThemePicker from '@/components/ThemePicker/index.vue'
   }
 })
 export default class extends Vue {
+  get isShowTitleForm() {
+    return this.$store.getters[Namespaces.FormDefinition + '/' + 'getIsShowTitleForm']
+  }
+
+  set isShowTitleForm(val: boolean) {
+    this.$store.commit(Namespaces.FormDefinition + '/' + 'changeShowTitleForm', val)
+  }
+
+  get isShowJob() {
+    return this.$store.getters.language === 'zh'
+  }
+
   get fixedHeader() {
-    return SettingsModule.fixedHeader
+    return this.$store.state.settings.fixedHeader
   }
 
   set fixedHeader(value) {
-    SettingsModule.ChangeSetting({ key: 'fixedHeader', value })
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', { key: 'fixedHeader', value })
+  }
+
+  get showNavar() {
+    return this.$store.state.settings.showNavar
+  }
+
+  set showNavar(val: boolean | undefined) {
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
+      key: 'showNavar',
+      value: val
+    })
+  }
+
+  get showMenu() {
+    return this.$store.state.settings.showMenu
+  }
+
+  set showMenu(val: boolean | undefined) {
+    this.$store.dispatch(Namespaces.App + '/' + 'ToggleSideBar', false)
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
+      key: 'showMenu',
+      value: val
+    })
   }
 
   get showTagsView() {
-    return SettingsModule.showTagsView
+    return this.$store.state.settings.showTagsView
   }
 
   set showTagsView(value) {
-    SettingsModule.ChangeSetting({ key: 'showTagsView', value })
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', { key: 'showTagsView', value })
   }
 
   get showSidebarLogo() {
-    return SettingsModule.showSidebarLogo
+    return this.$store.state.settings.showSidebarLogo
   }
 
   set showSidebarLogo(value) {
-    SettingsModule.ChangeSetting({ key: 'showSidebarLogo', value })
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', { key: 'showSidebarLogo', value })
   }
 
   get sidebarTextTheme() {
-    return SettingsModule.sidebarTextTheme
+    return this.$store.state.settings.sidebarTextTheme
   }
 
   set sidebarTextTheme(value) {
-    SettingsModule.ChangeSetting({ key: 'sidebarTextTheme', value })
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', { key: 'sidebarTextTheme', value })
+  }
+
+  get showContextMenu(): boolean {
+    return this.$store.state.settings.showContextMenu!
+  }
+
+  set showContextMenu(value: boolean) {
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
+      key: 'showContextMenu',
+      value: value
+    })
+  }
+
+  get supportPinyinSearch(): boolean {
+    return this.$store.state.settings.supportPinyinSearch
+  }
+
+  set supportPinyinSearch(value: boolean) {
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', {
+      key: 'supportPinyinSearch',
+      value: value
+    })
+  }
+
+  get lang(): string {
+    return this.$store.getters.language
+  }
+
+  private changeDisplatedTitle() {
+    this.$store.commit(Namespaces.FormDefinition + '/' + 'changeShowTitleForm', !this.isShowTitleForm)
   }
 
   private themeChange(value: string) {
-    SettingsModule.ChangeSetting({ key: 'theme', value })
+    this.$store.dispatch(Namespaces.Settings + '/' + 'ChangeSetting', { key: 'theme', value })
   }
 }
 </script>
@@ -120,6 +197,14 @@ export default class extends Vue {
 
   .drawer-switch {
     float: right
+  }
+
+  .job-link{
+    display: block;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 0;
   }
 }
 </style>

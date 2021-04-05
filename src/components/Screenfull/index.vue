@@ -8,44 +8,58 @@
 </template>
 
 <script lang="ts">
-import screenfull from 'screenfull'
 import { Component, Vue } from 'vue-property-decorator'
 
-const sf = screenfull
+interface FullscreenHTMLElement extends HTMLElement {
+  webkitRequestFullscreen?: () => Promise<void>
+  msRequestFullscreen?: () => Promise<void>
+}
+
+interface DocumentElement extends Document {
+    mozCancelFullScreen?: () => Promise<void>
+    webkitExitFullscreen?: () => Promise<void>
+    mozFullScreenElement?: () => Promise<void>
+    webkitFullscreenElement?: () => Promise<void>
+    msExitFullscreen?: () => Promise<void>
+}
 
 @Component({
   name: 'Screenfull'
 })
 export default class extends Vue {
   private isFullscreen = false
-
-  mounted() {
-    if (sf.isEnabled) {
-      sf.on('change', this.change)
-    }
-  }
-
-  beforeDestory() {
-    if (sf.isEnabled) {
-      sf.off('change', this.change)
-    }
-  }
-
-  private change() {
-    if (sf.isEnabled) {
-      this.isFullscreen = sf.isFullscreen
-    }
-  }
+  private elem: FullscreenHTMLElement = (document as DocumentElement).documentElement
 
   private click() {
-    if (!sf.isEnabled) {
-      this.$message({
-        message: 'you browser can not work',
-        type: 'warning'
-      })
-      return false
+    if (this.isFullscreen) {
+      this.closeFullscreen()
+      this.isFullscreen = true
+      return this.isFullscreen
     }
-    sf.toggle()
+    this.openFullscreen()
+    this.isFullscreen = false
+    return this.isFullscreen
+  }
+
+  private openFullscreen() {
+    if (this.elem.requestFullscreen) {
+      this.elem.requestFullscreen()
+    } else if (this.elem.webkitRequestFullscreen) {
+      this.elem.webkitRequestFullscreen()
+    } else if (this.elem.msRequestFullscreen) {
+      this.elem.msRequestFullscreen()
+    }
+  }
+
+  private closeFullscreen() {
+    const doc = (document as DocumentElement)
+    if (doc.exitFullscreen) {
+      doc.exitFullscreen()
+    } else if (doc.webkitExitFullscreen) {
+      doc.webkitExitFullscreen()
+    } else if (doc.msExitFullscreen) {
+      doc.msExitFullscreen()
+    }
   }
 }
 </script>

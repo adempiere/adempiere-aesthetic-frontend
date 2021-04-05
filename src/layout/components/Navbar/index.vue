@@ -1,83 +1,105 @@
 <template>
-  <div class="navbar">
-    <hamburger
-      id="hamburger-container"
-      :is-active="sidebar.opened"
-      class="hamburger-container"
-      @toggle-click="toggleSideBar"
-    />
-    <breadcrumb
-      id="breadcrumb-container"
-      class="breadcrumb-container"
-    />
-    <div class="right-menu">
-      <template v-if="device!=='mobile'">
-        <header-search class="right-menu-item" />
-        <error-log class="errLog-container right-menu-item hover-effect" />
-        <screenfull class="right-menu-item hover-effect" />
-        <el-tooltip
-          :content="$t('navbar.size')"
-          effect="dark"
-          placement="bottom"
+    <div class="navbar">
+        <hamburger
+            id="hamburger-container"
+            :is-active="sidebar.opened"
+            class="hamburger-container"
+            @toggle-click="toggleSideBar"
+        />
+        <el-button
+            v-if="isMenuMobile && isMobile"
+            type="text"
+            icon="el-icon-close"
+            style="
+                padding-top: 13px;
+                color: #000000;
+                font-size: 121%;
+                font-weight: 615 !important;
+            "
+            @click="isMenuOption()"
+        />
+        <breadcrumb
+            v-show="!isMenuMobile || this.device !== 'mobile'"
+            id="breadcrumb-container"
+            class="breadcrumb-container"
+            :style="isMobile ? {width: '40%'} : {width: 'auto'}"
+        />
+        <div
+            v-show="isMenuMobile && isMobile"
+            style="display: inline-flex; float: right"
         >
-          <size-select class="right-menu-item hover-effect" />
-        </el-tooltip>
-        <lang-select class="right-menu-item hover-effect" />
-      </template>
-      <el-dropdown
-        class="avatar-container right-menu-item hover-effect"
-        trigger="click"
-      >
-        <div class="avatar-wrapper">
-          <img
-            :src="avatar+'?imageView2/1/w/80/h/80'"
-            class="user-avatar"
-          >
-          <i class="el-icon-caret-bottom" />
+            <header-search
+                id="header-search"
+                class="right-menu-item"
+                style="padding-top: 10px"
+            />
+            <badge style="padding-top: 6px" />
         </div>
-        <el-dropdown-menu slot="dropdown">
-          <router-link to="/profile/">
-            <el-dropdown-item>
-              {{ $t('navbar.profile') }}
-            </el-dropdown-item>
-          </router-link>
-          <router-link to="/">
-            <el-dropdown-item>
-              {{ $t('navbar.dashboard') }}
-            </el-dropdown-item>
-          </router-link>
-          <a
-            target="_blank"
-            href="https://github.com/armour/vue-typescript-admin-template/"
-          >
-            <el-dropdown-item>
-              {{ $t('navbar.github') }}
-            </el-dropdown-item>
-          </a>
-          <a
-            target="_blank"
-            href="https://armour.github.io/vue-typescript-admin-docs/"
-          >
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
-          <el-dropdown-item
-            divided
-            @click.native="logout"
-          >
-            <span style="display:block;">
-              {{ $t('navbar.logOut') }}
-            </span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+
+        <div class="right-menu">
+            <template v-if="this.device !== 'mobile'">
+                <header-search id="header-search" class="right-menu-item" />
+                <badge />
+                <error-log
+                    class="errLog-container right-menu-item hover-effect"
+                />
+                <screenfull
+                    id="screenfull"
+                    class="right-menu-item hover-effect"
+                />
+
+                <el-tooltip
+                    :content="$t('navbar.size')"
+                    effect="dark"
+                    placement="bottom"
+                >
+                    <size-select
+                        id="size-select"
+                        class="right-menu-item hover-effect"
+                    />
+                </el-tooltip>
+
+                <lang-select class="right-menu-item hover-effect" />
+            </template>
+
+            <el-button
+                v-show="!isMenuMobile && isMobile"
+                type="text"
+                icon="el-icon-more"
+                @click="isMenuOption()"
+            >
+            </el-button>
+
+            <el-popover placement="bottom" width="245" trigger="click">
+                <div>
+                    <profile-preview :user="user" :avatar="avatar" />
+                    <el-button
+                        type="text"
+                        style="float: left"
+                        @click="handleClick"
+                        >{{ $t('navbar.profile') }}</el-button
+                    >
+                    <el-button
+                        type="text"
+                        style="float: right"
+                        @click="logout"
+                        >{{ $t('navbar.logOut') }}</el-button
+                    >
+                </div>
+                <el-button
+                    slot="reference"
+                    type="text"
+                    style="padding-top: 0px"
+                >
+                    <img :src="avatarResize" class="user-avatar" />
+                </el-button>
+            </el-popover>
+        </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { AppModule } from '@/store/modules/app'
-import { UserModule } from '@/store/modules/user'
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import ErrorLog from '@/components/ErrorLog/index.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
@@ -85,124 +107,191 @@ import HeaderSearch from '@/components/HeaderSearch/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
 import Screenfull from '@/components/Screenfull/index.vue'
 import SizeSelect from '@/components/SizeSelect/index.vue'
+import ProfilePreview from '@/layout/components/ProfilePreview'
+import Badge from '@/ADempiere/shared/components/Badge/component'
+import { getImagePath } from '@/ADempiere/shared/utils/resource'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 
 @Component({
   name: 'Navbar',
   components: {
     Breadcrumb,
+    Badge,
     ErrorLog,
     Hamburger,
     HeaderSearch,
     LangSelect,
     Screenfull,
-    SizeSelect
+    SizeSelect,
+    ProfilePreview
   }
 })
 export default class extends Vue {
-  get sidebar() {
-    return AppModule.sidebar
-  }
+    public user: any = {}
+    public isMenuMobile = false
 
-  get device() {
-    return AppModule.device.toString()
-  }
+    get isMobile(): boolean {
+      return this.$store.state.app.device === DeviceType.Mobile
+    }
 
-  get avatar() {
-    return UserModule.avatar
-  }
+    get sidebar() {
+      return this.$store.state.app.sidebar
+    }
 
-  private toggleSideBar() {
-    AppModule.ToggleSideBar(false)
-  }
+    get device(): string {
+      if (this.isMobile) {
+        return 'mobile'
+      }
+      return 'desktop'
+    }
 
-  private async logout() {
-    await UserModule.LogOut()
-    this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-  }
+    get avatar() {
+      return this.$store.state.user.avatar
+    }
+
+    get avatarResize(): string {
+      if (!this.avatar) {
+        return 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4?imageView2/1/w/80/h/80'
+      }
+
+      const { uri } = getImagePath({
+        file: this.avatar,
+        width: 40,
+        height: 40
+      })
+
+      return uri
+    }
+
+    // Methods
+    private handleOpen(key: any, keyPath: any) {
+      console.log(key, keyPath)
+    }
+
+    private handleClose(key: any, keyPath: any) {
+      console.log(key, keyPath)
+    }
+
+    private isMenuOption() {
+      this.isMenuMobile = !this.isMenuMobile
+    }
+
+    private toggleSideBar() {
+      this.$store.dispatch(Namespaces.App + '/' + 'ToggleSideBar', false)
+    }
+
+    private async logout() {
+      await this.$store.dispatch(Namespaces.User + '/' + 'LogOut')
+      this.$router.push({
+        path: '/login'
+      })
+
+      // this.$router.push(`/login?redirect=${this.$route.fullPath}`,
+      // () => {
+      //   this.$router.push({
+      //     name: 'Profile'
+      //   })
+      // })
+    }
+
+    public handleClick() {
+      this.$router.push({
+        name: 'Profile'
+      })
+    }
 }
 </script>
 
 <style lang="scss" scoped>
-.navbar {
-  height: 50px;
-  overflow: hidden;
-  position: relative;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
-
-  .hamburger-container {
-    line-height: 46px;
-    height: 100%;
-    float: left;
-    padding: 0 15px;
-    cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
-
-    &:hover {
-      background: rgba(0, 0, 0, .025)
-    }
-  }
-
-  .breadcrumb-container {
-    float: left;
-  }
-
-  .errLog-container {
+.el-dropdown {
     display: inline-block;
-    vertical-align: top;
-  }
+    position: relative;
+    color: #606266;
+    font-size: 14px;
+    width: 50px;
+}
+.navbar {
+    height: 50px;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
-  .right-menu {
-    float: right;
-    height: 100%;
-    line-height: 50px;
-
-    &:focus {
-      outline: none;
-    }
-
-    .right-menu-item {
-      display: inline-block;
-      padding: 0 8px;
-      height: 100%;
-      font-size: 18px;
-      color: #5a5e66;
-      vertical-align: text-bottom;
-
-      &.hover-effect {
+    .hamburger-container {
+        line-height: 46px;
+        height: 100%;
+        float: left;
+        padding: 0 15px;
         cursor: pointer;
-        transition: background .3s;
+        transition: background 0.3s;
+        -webkit-tap-highlight-color: transparent;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+            background: rgba(0, 0, 0, 0.025);
         }
-      }
     }
 
-    .avatar-container {
-      margin-right: 30px;
-
-      .avatar-wrapper {
-        margin-top: 5px;
-        position: relative;
-
-        .user-avatar {
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-        }
-
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
-        }
-      }
+    .breadcrumb-container {
+        float: left;
     }
-  }
+
+    .errLog-container {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .right-menu {
+        float: right;
+        display: flex;
+        height: 100%;
+        line-height: 50px;
+
+        &:focus {
+            outline: none;
+        }
+
+        .right-menu-item {
+            display: inline-block;
+            padding: 0 8px;
+            height: 100%;
+            font-size: 18px;
+            color: #5a5e66;
+            vertical-align: text-bottom;
+
+            &.hover-effect {
+                cursor: pointer;
+                transition: background 0.3s;
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.025);
+                }
+            }
+        }
+
+        .avatar-container {
+            margin-right: 30px;
+
+            .avatar-wrapper {
+                margin-top: 5px;
+                position: relative;
+
+                .user-avatar {
+                    cursor: pointer;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 10px;
+                }
+
+                .el-icon-caret-bottom {
+                    cursor: pointer;
+                    position: absolute;
+                    right: -20px;
+                    top: 25px;
+                    font-size: 12px;
+                }
+            }
+        }
+    }
 }
 </style>

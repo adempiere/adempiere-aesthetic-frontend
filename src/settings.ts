@@ -8,19 +8,28 @@ interface ISettings {
   sidebarTextTheme: boolean // If true, will change active text color for sidebar based on theme
   devServerPort: number // Port number for webpack-dev-server
   mockServerPort: number // Port number for mock server
+  // ADempiere
+  supportPinyinSearch: boolean
+  showContextMenu?: boolean
+  showMenu?: boolean
+  showNavar?: boolean
 }
 
 // You can customize below settings :)
 const settings: ISettings = {
-  title: 'Vue Typescript Admin',
+  title: 'Adempiere Aesthetic',
   showSettings: true,
   showTagsView: true,
   fixedHeader: false,
-  showSidebarLogo: false,
+  showSidebarLogo: true,
   errorLog: ['production'],
   sidebarTextTheme: true,
   devServerPort: 9527,
-  mockServerPort: 9528
+  mockServerPort: 9528,
+  // ADempiere
+  supportPinyinSearch: true,
+  showContextMenu: true,
+  showNavar: true
 }
 
 export default settings

@@ -9,6 +9,8 @@ import elementZhLocale from 'element-ui/lib/locale/lang/zh-CN'
 import elementEsLocale from 'element-ui/lib/locale/lang/es'
 import elementJaLocale from 'element-ui/lib/locale/lang/ja'
 import elementKoLocale from 'element-ui/lib/locale/lang/ko'
+import esADempiere from '@/ADempiere/shared/lang/es'
+import enADempiere from '@/ADempiere/shared/lang/en'
 
 // User defined lang
 import enLocale from './en'
@@ -23,7 +25,8 @@ Vue.use(VueI18n)
 const messages = {
   en: {
     ...enLocale,
-    ...elementEnLocale
+    ...elementEnLocale,
+    ...enADempiere
   },
   zh: {
     ...zhLocale,
@@ -31,7 +34,8 @@ const messages = {
   },
   es: {
     ...esLocale,
-    ...elementEsLocale
+    ...elementEsLocale,
+    ...esADempiere
   },
   ja: {
     ...jaLocale,
@@ -46,9 +50,37 @@ const messages = {
   }
 }
 
+const dateTimeFormats: VueI18n.DateTimeFormats = {
+  en: {
+    long: {
+      year: 'numeric',
+      month: 'long',
+      day: '2-digit',
+      weekday: 'long',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }
+  },
+  es: {
+    long: {
+      year: 'numeric',
+      month: 'long',
+      day: '2-digit',
+      weekday: 'long',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    }
+  }
+}
+
 export const getLocale = () => {
   const cookieLanguage = getLanguage()
   if (cookieLanguage) {
+    document.documentElement.lang = cookieLanguage
     return cookieLanguage
   }
 
@@ -56,6 +88,7 @@ export const getLocale = () => {
   const locales = Object.keys(messages)
   for (const locale of locales) {
     if (language.indexOf(locale) > -1) {
+      document.documentElement.lang = locale
       return locale
     }
   }
@@ -66,7 +99,9 @@ export const getLocale = () => {
 
 const i18n = new VueI18n({
   locale: getLocale(),
-  messages
+  fallbackLocale: 'en',
+  messages,
+  dateTimeFormats
 })
 
 export default i18n

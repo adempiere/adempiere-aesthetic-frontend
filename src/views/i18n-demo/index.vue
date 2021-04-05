@@ -169,8 +169,8 @@
 </template>
 
 <script lang="ts">
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Vue } from 'vue-property-decorator'
-import { AppModule } from '@/store/modules/app'
 import local from './local'
 
 @Component({
@@ -202,11 +202,11 @@ export default class extends Vue {
   }]
 
   get lang() {
-    return AppModule.language
+    return this.$store.state.app.language
   }
 
   set lang(lang) {
-    AppModule.SetLanguage(lang)
+    this.$store.dispatch(Namespaces.App + '/' + 'SetLanguage', lang)
     this.$i18n.locale = lang
     this.setOptions()
   }

@@ -48,12 +48,14 @@ export default class extends Vue {
     { label: 'Eurozone', key: 'EU' }
   ]
 
-  private activeName = 'CN'
+  public activeName = 'CN'
   private createdTimes = 0
 
   @Watch('activeName')
   private onActiveNameChange(value: string) {
-    this.$router.push(`${this.$route.path}?tab=${value}`)
+    this.$router.push(`${this.$route.path}?tab=${value}`).catch(err => {
+      console.warn(err)
+    })
   }
 
   created() {

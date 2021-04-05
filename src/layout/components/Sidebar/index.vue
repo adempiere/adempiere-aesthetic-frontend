@@ -16,7 +16,7 @@
         mode="vertical"
       >
         <sidebar-item
-          v-for="route in routes"
+          v-for="route in menu"
           :key="route.path"
           :item="route"
           :base-path="route.path"
@@ -29,12 +29,11 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { AppModule } from '@/store/modules/app'
-import { PermissionModule } from '@/store/modules/permission'
-import { SettingsModule } from '@/store/modules/settings'
+import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import SidebarItem from './SidebarItem.vue'
 import SidebarLogo from './SidebarLogo.vue'
 import variables from '@/styles/_variables.scss'
+import { RouteConfig } from 'vue-router'
 
 @Component({
   name: 'SideBar',
@@ -45,20 +44,20 @@ import variables from '@/styles/_variables.scss'
 })
 export default class extends Vue {
   get sidebar() {
-    return AppModule.sidebar
+    return this.$store.state.app.sidebar
   }
 
-  get routes() {
-    return PermissionModule.routes
+  get routes(): RouteConfig[] {
+    return this.$store.state.permission.routes
   }
 
   get showLogo() {
-    return SettingsModule.showSidebarLogo
+    return this.$store.state.settings.showSidebarLogo
   }
 
   get menuActiveTextColor() {
-    if (SettingsModule.sidebarTextTheme) {
-      return SettingsModule.theme
+    if (this.$store.state.settings.sidebarTextTheme) {
+      return this.$store.state.settings.theme
     } else {
       return variables.menuActiveText
     }
@@ -80,6 +79,26 @@ export default class extends Vue {
 
   get isCollapse() {
     return !this.sidebar.opened
+  }
+
+  get menu() {
+    const viewSearch = recursiveTreeSearch({
+      treeData: this.routes,
+      attributeValue: '5aacaab1-1ba0-4cf0-992a-0da34c460ffe',
+      attributeName: 'meta',
+      secondAttribute: 'uuid',
+      attributeChilds: 'children'
+    })
+    const router = this.routes.map((menu) => {
+      if (menu.path === '/PriceChecking') {
+        return {
+          ...viewSearch,
+          hidden: false
+        }
+      }
+      return menu
+    })
+    return router
   }
 }
 </script>
