@@ -9,7 +9,7 @@
       class="create-bp"
     >
       <el-row :gutter="24">
-        <field-definition
+        <FieldDefinition
           v-for="(field) in fieldsList"
           :ref="field.columnName"
           :key="field.columnName"

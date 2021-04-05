@@ -9,12 +9,14 @@ import ConvertAmount from './ConvertAmount'
 import fieldListCollection from './fieldListCollection'
 import Template from './template.vue'
 import TypeCollection from './TypeCollection'
+import FieldDefinition from '@/ADempiere/shared/components/Field'
 
 @Component({
   name: 'Collection',
   components: {
     TypeCollection,
-    ConvertAmount
+    ConvertAmount,
+    FieldDefinition
   },
   mixins: [MixinForm, Template]
 })

@@ -17,7 +17,7 @@
             style="float: right; display: flex; line-height: 10px;"
           >
             <span v-for="(field, index) in fieldsList" :key="index">
-              <field-definition
+              <FieldDefinition
                 :key="field.columnName"
                 :metadata-field="field"
               />
