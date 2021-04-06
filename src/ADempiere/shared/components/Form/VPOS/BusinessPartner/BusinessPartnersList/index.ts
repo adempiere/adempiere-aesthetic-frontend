@@ -10,11 +10,13 @@ import {
   IBusinessPartnerData
 } from '@/ADempiere/modules/core'
 import MixinSearchBPartnerList from '../MixinSearchBPartnerList'
+import FieldDefinition from '@/ADempiere/shared/components/Field'
 
 @Component({
   name: 'BusinessPartnersList',
   components: {
-    CustomPagination
+    CustomPagination,
+    FieldDefinition
   },
   mixins: [Template, MixinForm, MixinBusinessPartner, MixinSearchBPartnerList]
 })

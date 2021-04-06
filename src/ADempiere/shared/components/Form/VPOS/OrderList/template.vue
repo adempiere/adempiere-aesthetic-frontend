@@ -17,7 +17,7 @@
           <template
             v-for="(field) in fieldsList"
           >
-            <field-definition
+            <FieldDefinition
               :key="field.columnName"
               :metadata-field="field"
             />

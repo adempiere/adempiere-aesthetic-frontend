@@ -1,8 +1,9 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { addClass, removeClass } from '@/utils'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 @Component({
-  name: 'Menu'
+  name: 'RightPanel'
 })
 export default class Menu extends Vue {
     @Prop() clickNotClose = false
@@ -12,6 +13,21 @@ export default class Menu extends Vue {
     // Computed properties
     get theme(): string {
       return this.$store.state.settings.theme
+    }
+
+    get isShowRightPanel(): boolean {
+      return this.$store.state.contextMenuModule.isShowRightPanel
+    }
+
+    set isShowRightPanel(change: boolean) {
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel')
+    }
+
+    get icon() {
+      if (this.isShowRightPanel) {
+        return 'el-icon-close'
+      }
+      return 'el-icon-more'
     }
 
     @Watch('show')

@@ -11,11 +11,13 @@ import {
 } from '@/ADempiere/modules/pos'
 import { IProductPriceData } from '@/ADempiere/modules/core/CoreType'
 import { formatPrice } from '@/ADempiere/shared/utils/valueFormat'
+import FieldDefinition from '@/ADempiere/shared/components/Field'
 
 @Component({
   name: 'ProductList',
   components: {
-    CustomPagination
+    CustomPagination,
+    FieldDefinition
   },
   mixins: [MixinForm, Template]
 })

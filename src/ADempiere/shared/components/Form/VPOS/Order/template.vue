@@ -147,7 +147,7 @@
                                 <template
                                   v-for="(field) in fieldsList"
                                 >
-                                  <field-definition
+                                  <FieldDefinition
                                     v-if="field.columnName === 'PriceEntered'"
                                     :key="field.columnName"
                                     :metadata-field="field"
@@ -160,7 +160,7 @@
                                 <template
                                   v-for="(field) in fieldsList"
                                 >
-                                  <field-definition
+                                  <FieldDefinition
                                     v-if="field.columnName === 'QtyEntered'"
                                     :key="field.columnName"
                                     :metadata-field="field"
@@ -173,7 +173,7 @@
                                 <template
                                   v-for="(field) in fieldsList"
                                 >
-                                  <field-definition
+                                  <FieldDefinition
                                     v-if="field.columnName === 'Discount'"
                                     :key="field.columnName"
                                     :metadata-field="field"

@@ -187,7 +187,7 @@
               >
                 <template slot-scope="scope">
                   <template v-if="rowCanBeEdited(scope.row, fieldAttributes)">
-                    <field-definition
+                    <FieldDefinition
                       :is-data-table="true"
                       :is-show-label="false"
                       :in-table="true"

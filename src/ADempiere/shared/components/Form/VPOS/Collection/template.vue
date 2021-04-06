@@ -53,7 +53,7 @@
               >
                 <el-row>
                   <el-col v-for="(field, index) in fieldsList" :key="index" :span="8">
-                    <field-definition
+                    <FieldDefinition
                       :key="field.columnName"
                       :metadata-field="{
                         ...field,

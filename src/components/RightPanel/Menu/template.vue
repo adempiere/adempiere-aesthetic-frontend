@@ -1,11 +1,11 @@
 <template>
-  <div ref="rightMenu" :class="{show: show}" class="rightMenu-container">
+  <div ref="rightMenu" :class="{show: isShowRightPanel}" class="rightMenu-container">
     <div class="setting">
       <div class="showme">
         <!-- <div class="rightMenu-background" /> -->
         <div class="rightMenu">
-          <div class="handle-button" :style="{'top': buttonTop+'%'}" @click="show=!show">
-            <i :class="show?'el-icon-close':'el-icon-more'" style="color: gray;" />
+          <div class="handle-button" :style="{'top': buttonTop+'%'}" @click="show=!isShowRightPanel">
+            <i :class="icon" style="color: gray;" />
           </div>
           <div class="rightMenu-items">
             <slot />

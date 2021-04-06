@@ -36,7 +36,7 @@ import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtil
 import { INotificationProcessData } from '@/ADempiere/modules/process/ProcessType'
 import { showNotification } from '@/ADempiere/shared/utils/notifications'
 import { IReportOutputDataExtended } from '@/ADempiere/modules/report'
-import { convertFieldsListToShareLink, recursiveTreeSearch, clientDateTime } from '@/ADempiere/shared/utils/valueUtils'
+import { convertFieldsListToShareLink, recursiveTreeSearch, clientDateTime, isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import ROUTES from '@/ADempiere/shared/utils/Constants/zoomWindow'
 import MixinRelations from './MixinRelations'
 
@@ -79,12 +79,12 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     }
 
     // computed properties
-    get activeMenu(): any | string {
-      const { meta, path } = this.$route
-      if (meta.activeMenu) {
-        return meta.activeMenu
-      }
-      return path
+    get isWindow(): boolean {
+      return this.panelType === PanelContextType.Window
+    }
+
+    get isWithRecord() {
+      return !isEmptyValue(this.recordUuid) && this.recordUuid !== 'create-new'
     }
 
     get getterContextMenu(): IContextMenuData | undefined {
@@ -95,9 +95,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
 
     get isReferencesContent(): boolean {
       if (
-        this.panelType === PanelContextType.Window &&
-            this.recordUuid &&
-            this.recordUuid !== 'create-new'
+        this.isWindow && this.isWithRecord
       ) {
         return true
       }
@@ -209,7 +207,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     }
 
     get getDataLog(): IDataLog | undefined {
-      if (this.panelType === PanelContextType.Window) {
+      if (this.isWindow) {
         return this.$store.getters[Namespaces.Window + '/' + 'getDataLog'](
           this.containerUuid,
           this.recordUuid
@@ -225,7 +223,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     }
 
     get getOldRouteOfWindow(): IWindowOldRoute | false {
-      if (this.panelType === PanelContextType.Window) {
+      if (this.isWindow) {
         const oldRoute: IWindowOldRoute = this.$store.state.windowModule.windowOldRoute
         if (
           oldRoute.query.action &&
@@ -317,7 +315,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     handleRouteQueryAction(actionValue: string) {
       this.recordUuid = actionValue
       // only requires updating the context menu if it is Window
-      if (this.panelType === PanelContextType.Window) {
+      if (this.isWindow) {
         this.generateContextMenu()
         this.getReferences()
       }
@@ -326,7 +324,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     @Watch('isInsertRecord')
     async handleIsInsertRecord(newValue: any, oldValue: any) {
       if (
-        this.panelType === PanelContextType.Window &&
+        this.isWindow &&
             newValue !== oldValue
       ) {
         this.generateContextMenu()
@@ -336,7 +334,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     @Watch('getDataLog')
     async handleGetDataLog(newValue: any, oldValue: any) {
       if (
-        this.panelType === PanelContextType.Window &&
+        this.isWindow &&
             newValue !== oldValue
       ) {
         this.generateContextMenu()
@@ -366,7 +364,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     showNotification = showNotification
 
     refreshData(): void {
-      if (this.panelType === PanelContextType.Window) {
+      if (this.isWindow) {
         this.$store
           .dispatch(Namespaces.Window + '/' + 'getDataListTab', {
             parentUuid: this.parentUuid,
@@ -468,7 +466,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       const tHeader: string[] = this.getterFieldsListHeader
       const filterVal: string[] = this.getterFieldsListValue
       let list: any[] = []
-      if (this.panelType === PanelContextType.Window) {
+      if (this.isWindow) {
         list = this.getDataRecord
       } else if (this.panelType === PanelContextType.Browser) {
         // TODO: Check usage as the selection is exported with the table menu
@@ -558,7 +556,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
         this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', processAction)
       }
 
-      if (this.panelType === PanelContextType.Window && !(this.actions.find((element: Actionable) => element.action === ActionContextName.RecordAccess))) {
+      if (this.isWindow && !(this.actions.find((element: Actionable) => element.action === ActionContextName.RecordAccess))) {
         this.$store.dispatch(Namespaces.AccessRecord + '/' + 'addAttribute', {
           tableName: this.tableNameCurrentTab,
           recordId: this.getCurrentRecord[this.tableNameCurrentTab + '_ID'],
@@ -604,7 +602,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
                 !this.getDataLog && !this.getOldRouteOfWindow
               )
             } else if (
-              this.recordUuid === 'create-new' ||
+              !this.isWithRecord ||
                         !this.isInsertRecord
             ) {
               itemAction.disabled = true
@@ -886,7 +884,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     }
 
     setShareLink(): void {
-      let shareLink: string = this.panelType === PanelContextType.Window || window.location.href.includes('?') ? `${window.location.href}&` : `${window.location.href}?`
+      let shareLink: string = this.isWindow || window.location.href.includes('?') ? `${window.location.href}&` : `${window.location.href}?`
       if (this.$route.name === 'Report Viewer') {
         const processParameters = convertFieldsListToShareLink(this.processParametersExecuted!)
         const reportFormat = this.$store.getters[Namespaces.Utils + '/' + 'getReportType']

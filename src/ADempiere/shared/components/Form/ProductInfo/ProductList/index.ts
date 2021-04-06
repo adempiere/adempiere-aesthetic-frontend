@@ -8,10 +8,11 @@ import CustomPagination from '../../../Pagination'
 import MixinForm from '../../MixinForm'
 import fieldsListProductPrice from '../fieldsList'
 import Template from './template.vue'
+import FieldDefinition from '@/ADempiere/shared/components/Field'
 
 @Component({
   name: 'ProductList',
-  components: { CustomPagination },
+  components: { CustomPagination, FieldDefinition },
   mixins: [MixinForm, Template]
 })
 export default class ProductList extends Mixins(MixinForm) {

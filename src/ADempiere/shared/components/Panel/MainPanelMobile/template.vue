@@ -33,7 +33,7 @@
             >
               <el-row>
                 <template v-for="(fieldAttributes, subKey) in firstGroup.metadataFields">
-                  <field-definition
+                  <FieldDefinition
                     :ref="fieldAttributes.columnName"
                     :key="subKey"
                     :metadata-field="{
@@ -80,7 +80,7 @@
                   </div>
                   <el-row>
                     <template v-for="(fieldAttributes, subKey) in item.metadataFields">
-                      <field-definition
+                      <FieldDefinition
                         :ref="fieldAttributes.columnName"
                         :key="subKey"
                         :metadata-field="{

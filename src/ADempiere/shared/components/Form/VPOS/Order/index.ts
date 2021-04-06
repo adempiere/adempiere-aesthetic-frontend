@@ -7,6 +7,7 @@ import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IPointOfSalesData } from '@/ADempiere/modules/pos'
 import convertAmount from '@/ADempiere/shared/components/Form/VPOS/Collection/ConvertAmount/index'
 import Template from './template.vue'
+import FieldDefinition from '@/ADempiere/shared/components/Field'
 
 @Component({
   name: 'Order',
@@ -14,7 +15,8 @@ import Template from './template.vue'
   components: {
     BusinessPartner,
     ProductInfo,
-    convertAmount
+    convertAmount,
+    FieldDefinition
   }
 })
 export default class Order extends Mixins(MixinOrderLine) {
