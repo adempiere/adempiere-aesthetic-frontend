@@ -3,7 +3,6 @@
     <el-menu
       ref="contextMenu"
       v-shortkey="shorcutKey"
-      :default-active="activeMenu"
       :router="false"
       class="el-menu-demo"
       mode="horizontal"
@@ -11,18 +10,6 @@
       unique-opened
       @shortkey.native="actionContextMenu"
     >
-    <!-- menu relations -->
-      <el-submenu v-if="!isEmptyChilds" class="el-menu-item" index="1">
-        <template slot="title">
-          {{ $t('components.contextMenuRelations') }}
-        </template>
-        <el-scrollbar wrap-class="scroll">
-          <item-relations v-for="(relation, index) in relationsList" :key="index" :item="relation" />
-        </el-scrollbar>
-      </el-submenu>
-      <el-menu-item v-else disabled index="relations">
-        {{ $t('components.contextMenuRelations') }}
-      </el-menu-item>
 
       <!-- actions or process on container -->
       <el-submenu v-if="(actions)" class="el-menu-item" index="actions" @click.native="runAction(actions[0])">
@@ -100,6 +87,19 @@
       </el-submenu>
       <el-menu-item v-else disabled index="actionsDisabled">
         {{ $t('components.contextMenuActions') }}
+      </el-menu-item>
+
+          <!-- menu relations -->
+      <el-submenu v-if="!isEmptyChilds" class="el-menu-item" index="1">
+        <template slot="title">
+          {{ $t('components.contextMenuRelations') }}
+        </template>
+        <el-scrollbar wrap-class="scroll">
+          <item-relations v-for="(relation, index) in relationsList" :key="index" :item="relation" />
+        </el-scrollbar>
+      </el-submenu>
+      <el-menu-item v-else disabled index="relations">
+        {{ $t('components.contextMenuRelations') }}
       </el-menu-item>
 
       <!-- references of record -->

@@ -1,5 +1,6 @@
 import { MutationTree } from 'vuex'
 import { ContextMenuState, IContextMenuData, IListDocumentAction, IListDocumentStatus } from '@/ADempiere/modules/window/WindowType/VuexType'
+import { stat } from 'fs'
 
 type ContextMenuMutationTree = MutationTree<ContextMenuState>
 
@@ -19,21 +20,23 @@ export const mutations: ContextMenuMutationTree = {
   ) {
     state.listDocumentStatus = payload
   },
+  changeShowRigthPanel(state: ContextMenuState) {
+    state.isShowRightPanel = !state.isShowRightPanel
+  },
   resetContextMenu(state: ContextMenuState) {
-    state = {
-      contextMenu: [],
-      listDocumentStatus: {
-        defaultDocumentAction: undefined,
-        documentActionsList: [],
-        recordId: undefined,
-        recordUuid: undefined
-      },
-      listDocumentAction: {
-        defaultDocumentAction: undefined,
-        documentActionsList: [],
-        recordId: undefined,
-        recordUuid: undefined
-      }
+    state.isShowRightPanel = false
+    state.contextMenu = []
+    state.listDocumentStatus = {
+      defaultDocumentAction: undefined,
+      documentActionsList: [],
+      recordId: undefined,
+      recordUuid: undefined
+    }
+    state.listDocumentAction = {
+      defaultDocumentAction: undefined,
+      documentActionsList: [],
+      recordId: undefined,
+      recordUuid: undefined
     }
   }
 }
