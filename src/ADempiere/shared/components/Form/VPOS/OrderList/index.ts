@@ -9,11 +9,13 @@ import {
   formatDate,
   formatQuantity
 } from '@/ADempiere/shared/utils/valueFormat'
+import FieldDefinition from '@/ADempiere/shared/components/Field'
 
 @Component({
   name: 'OrdersList',
   components: {
-    CustomPagination
+    CustomPagination,
+    FieldDefinition
   },
   mixins: [MixinForm, Template]
 })

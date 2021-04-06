@@ -10,6 +10,7 @@
     :last-parameter="lastParameter"
     :report-format="reportFormat"
     :is-insert-record="isInsertRecord"
+    :is-list-record="isListRecord"
   />
 </template>
 
@@ -52,9 +53,9 @@
   .container-submenu-mobile {
     position: absolute;
     height: 39px !important;
-    width: 55px !important;
-    right: 0;
+    right: 0%;
     top: 0;
+    display: flex;
   }
 
   .container-submenu {

@@ -61,6 +61,7 @@ export interface IListDocumentAction {
 }
 
 export interface ContextMenuState {
+    isShowRightPanel: boolean
     contextMenu: IContextMenuData[]
     listDocumentStatus: IListDocumentStatus
     listDocumentAction: IListDocumentAction

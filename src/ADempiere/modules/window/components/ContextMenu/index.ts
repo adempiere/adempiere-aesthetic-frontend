@@ -16,6 +16,7 @@ export default class ContextMenu extends Vue {
     @Prop({ type: String, default: undefined }) public lastParameter?: string
     @Prop({ type: String, default: undefined }) public reportFormat?: string
     @Prop({ type: Boolean, default: undefined }) public isInsertRecord?: boolean
+    @Prop({ type: Boolean, default: false }) public isListRecord?: boolean
 
     // Computed properties
     get isMobile(): boolean {

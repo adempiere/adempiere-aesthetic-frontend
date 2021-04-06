@@ -10,7 +10,7 @@
       @shortkey.native="keyAction"
       @submit.native.prevent="notSubmitForm"
     >
-      <field-definition
+      <FieldDefinition
         v-for="(field) in fieldsList"
         :key="field.columnName"
         :metadata-field="field"

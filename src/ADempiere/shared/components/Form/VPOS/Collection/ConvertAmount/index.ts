@@ -5,9 +5,13 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import MixinForm from '../../../MixinForm'
 import fieldListConvertAmountCollection from './fieldListConvertAmountCollection'
 import Template from './template.vue'
+import FieldDefinition from '@/ADempiere/shared/components/Field'
 
 @Component({
   name: 'ConvertAmount',
+  components: {
+    FieldDefinition
+  },
   mixins: [MixinForm, Template]
 })
 export default class ConvertAmount extends Mixins(MixinForm) {

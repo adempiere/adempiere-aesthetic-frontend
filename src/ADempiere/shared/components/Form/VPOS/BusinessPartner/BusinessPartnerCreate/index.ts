@@ -6,9 +6,13 @@ import MixinForm from '../../../MixinForm'
 import MixinBusinessPartner from '../MixinBusinessPartner'
 import fieldsList from './../fieldListCreate'
 import Template from './template.vue'
+import FieldDefinition from '@/ADempiere/shared/components/Field'
 
 @Component({
   name: 'BusinessPartnerCreate',
+  components: {
+    FieldDefinition
+  },
   mixins: [Template, MixinForm, MixinBusinessPartner]
 })
 export default class BusinessPartnerCreate extends Mixins(
