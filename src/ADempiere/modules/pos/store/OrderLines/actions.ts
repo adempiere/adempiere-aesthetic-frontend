@@ -74,7 +74,7 @@ export const actions: OrderLinesActionTree = {
             lineNetAmount?: number
         }
   ): void {
-    const line: IOrderLineDataExtended[] = context.getters.getListOrderLine()
+    const line: IOrderLineDataExtended[] = context.getters.getListOrderLine
     const found: IOrderLineDataExtended[] = line.map(
       (element: IOrderLineDataExtended) => {
         if (element.uuid === params.uuid) {

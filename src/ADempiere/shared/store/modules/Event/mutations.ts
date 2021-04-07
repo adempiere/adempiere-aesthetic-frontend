@@ -50,9 +50,7 @@ export const mutations: EventMutationTree = {
     state.actionEvents.push(action)
   },
   resetStateLookup(state: EventState) {
-    state = {
-      fieldEvents: [],
-      actionEvents: []
-    }
+    state.fieldEvents = []
+    state.actionEvents = []
   }
 }
