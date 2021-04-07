@@ -105,7 +105,7 @@ export default class PriceChecking extends Mixins(MixinForm) {
 
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
-        if ((mutation.type === 'addActionKeyPerformed') && mutation.payload.columnName === 'ProductValue') {
+        if ((mutation.type === Namespaces.Event + '/' + 'addActionKeyPerformed') && mutation.payload.columnName === 'ProductValue') {
           // cleans all values except column name 'ProductValue'
           this.search = mutation.payload.value
           if (this.search && this.search.length >= 4) {

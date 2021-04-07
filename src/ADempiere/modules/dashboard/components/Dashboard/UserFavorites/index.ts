@@ -1,5 +1,6 @@
 import { convertAction } from '@/ADempiere/shared/utils/DictionaryUtils'
 import { IActionAttributesData } from '@/ADempiere/shared/utils/DictionaryUtils/type'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Mixins } from 'vue-property-decorator'
 import { getFavoritesFromServer } from '../../../DashboardService'
 import {
@@ -62,7 +63,7 @@ export default class Favorites extends Mixins(MixinDasboard) {
 
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
-        if (mutation.type === 'notifyDashboardRefresh') {
+        if (mutation.type === Namespaces.Dashboard + '/' + 'notifyDashboardRefresh') {
           this.getFavoritesList()
         }
       })

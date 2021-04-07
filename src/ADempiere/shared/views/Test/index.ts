@@ -1,6 +1,7 @@
 import ContextMenu from '@/ADempiere/modules/window/components/ContextMenu'
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import MixinForm from '../../components/Form/MixinForm'
+import { Namespaces } from '../../utils/types'
 import fieldList from './fieldList'
 import Template from './template.vue'
 
@@ -37,7 +38,7 @@ export default class TestView extends Mixins(MixinForm) {
     // Methods
     subscribeChanges() {
       return this.$store.subscribe(mutation => {
-        if (mutation.type === 'addActionKeyPerformed') {
+        if (mutation.type === Namespaces.Event + '/' + 'addActionKeyPerformed') {
           console.log(mutation)
         }
       })

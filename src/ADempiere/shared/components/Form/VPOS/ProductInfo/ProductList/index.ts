@@ -11,13 +11,12 @@ import {
 } from '@/ADempiere/modules/pos'
 import { IProductPriceData } from '@/ADempiere/modules/core/CoreType'
 import { formatPrice } from '@/ADempiere/shared/utils/valueFormat'
-import FieldDefinition from '@/ADempiere/shared/components/Field'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 @Component({
   name: 'ProductList',
   components: {
-    CustomPagination,
-    FieldDefinition
+    CustomPagination
   },
   mixins: [MixinForm, Template]
 })
@@ -30,8 +29,7 @@ export default class ProductList extends Mixins(MixinForm) {
           containerUuid: 'Products-Price-List'
         }
       }
-    })
-    metadata: any
+    }) metadata: any
 
     @Prop({ type: Boolean, default: true }) isSelectable!: boolean
     @Prop({ type: String, default: 'isShowPopoverField' }) popoverName!: String
@@ -57,14 +55,17 @@ export default class ProductList extends Mixins(MixinForm) {
     }
 
     get productPrice(): IListProductPriceItemData {
-      return this.$store.getters[
+      const productPrice = this.$store.getters[
         Namespaces.ListProductPrice + '/' + 'getProductPrice'
       ]
+      console.log('productPrice')
+      console.log(productPrice)
+      return productPrice
     }
 
     get listWithPrice(): IProductPriceData[] {
       const { list: productPricesList } = this.productPrice
-      if (productPricesList && productPricesList.length) {
+      if (productPricesList && !isEmptyValue(productPricesList)) {
         return productPricesList
       }
       return []
@@ -79,12 +80,14 @@ export default class ProductList extends Mixins(MixinForm) {
 
     get isReadyFromGetData(): boolean {
       const { isLoaded, isReload } = this.productPrice
-      return !isLoaded || isReload // && this.isShowProductsPriceList
+      return (!isLoaded || isReload) // && this.isShowProductsPriceList
     }
 
     // Watchers
     @Watch('isReadyFromGetData')
     hanldeIsReadyFromGetDataChange(isToLoad: boolean) {
+      console.log('isReadyFromGetData change')
+      console.log(isToLoad)
       if (isToLoad) {
         this.loadProductsPricesList()
       }
@@ -94,6 +97,7 @@ export default class ProductList extends Mixins(MixinForm) {
     formatPrice = formatPrice
 
     keyAction(event: any) {
+      console.log('keyAction')
       switch (event.srcKey) {
         case 'refreshList':
           /**
@@ -127,7 +131,10 @@ export default class ProductList extends Mixins(MixinForm) {
       this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'setProductPicePageNumber', newPage)
     }
 
-    findlistProductWithRow(row: any): void {
+    findlistProductWithRow(row: IProductPriceData): void {
+      console.log('hiciste click en row: ')
+      console.log(row)
+      console.log(this.isSelectable)
       if (!this.isSelectable) {
         return
       }
@@ -138,6 +145,8 @@ export default class ProductList extends Mixins(MixinForm) {
         // TODO: Verify with 'value' or 'searchValue' attribute
         value: row.product.name
       })
+      console.log('popoverName')
+      console.log(this.popoverName)
 
       // close popover of list product price
       this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
@@ -149,7 +158,7 @@ export default class ProductList extends Mixins(MixinForm) {
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
         if (
-          mutation.type === 'updateValueOfField' &&
+          mutation.type === Namespaces.FieldValue + '/' + 'updateValueOfField' &&
                 !mutation.payload.columnName.includes('DisplayColumn') &&
                 mutation.payload.containerUuid === this.metadata.containerUuid
         ) {
@@ -168,7 +177,7 @@ export default class ProductList extends Mixins(MixinForm) {
       if (this.isReadyFromGetData) {
         this.loadProductsPricesList()
       }
-      if (!this.listWithPrice || !this.listWithPrice.length) {
+      if (isEmptyValue(this.listWithPrice)) {
         this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {
           containerUuid: 'Products-Price-List',
           pageNumber: 1,

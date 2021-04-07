@@ -169,7 +169,7 @@ export default class OrdersList extends Mixins(MixinForm) {
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
         if (
-          mutation.type === 'updateValueOfField' &&
+          mutation.type === Namespaces.FieldValue + '/' + 'updateValueOfField' &&
                 !mutation.payload.columnName.includes('DisplayColumn') &&
                 !mutation.payload.columnName.includes('_UUID') &&
                 mutation.payload.containerUuid === this.metadata.containerUuid

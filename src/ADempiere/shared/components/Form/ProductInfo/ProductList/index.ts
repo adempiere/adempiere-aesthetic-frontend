@@ -253,7 +253,7 @@ export default class ProductList extends Mixins(MixinForm) {
       // if (!this.isEmptyValue(this.listWithPrice)) {
       //   this.setCurrent(this.listWithPrice[0])
       // }
-      if (mutation.type === 'updateValueOfField' &&
+      if (mutation.type === Namespaces.FieldValue + '/' + 'updateValueOfField' &&
           !mutation.payload.columnName.includes('DisplayColumn') &&
           mutation.payload.containerUuid === this.metadata.containerUuid) {
         clearTimeout(this.timeOut)
