@@ -37,7 +37,7 @@ export default class CustomPagination extends Vue {
 
     // Computed properties
     get isSelection(): boolean {
-      if (!this.selection) {
+      if (isEmptyValue(this.selection)) {
         return false
       }
       return true

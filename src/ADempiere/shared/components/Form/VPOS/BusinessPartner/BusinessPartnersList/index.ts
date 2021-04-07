@@ -112,7 +112,7 @@ export default class BusinessPartnersList extends Mixins(
     subscribeChanges() {
       return this.$store.subscribe(mutation => {
         if (
-          mutation.type === 'updateValueOfField' &&
+          mutation.type === Namespaces.FieldValue + '/' + 'updateValueOfField' &&
                 mutation.payload.containerUuid === this.metadata.containerUuid
         ) {
           const values = this.$store.getters[

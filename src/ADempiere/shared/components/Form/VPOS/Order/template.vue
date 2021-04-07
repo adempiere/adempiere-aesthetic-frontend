@@ -15,7 +15,7 @@
               <template
                 v-for="(field) in fieldsList"
               >
-                <product-info
+                <ProductInfo
                   v-if="field.columnName === 'ProductValue'"
                   :key="field.columnName"
                   :metadata="field"
@@ -23,7 +23,7 @@
               </template>
             </el-col>
             <el-col :span="6" style="padding-left: 2px; padding-right: 2px;">
-              <business-partner
+              <BusinessPartner
                 :parent-metadata="{
                   name: panelMetadata.name,
                   containerUuid: panelMetadata.containerUuid,
@@ -35,13 +35,12 @@
             </el-col>
             <el-col :span="2" :style="styleTab">
               <el-tag
-              v-if="Boolean(getOrder.documentStatus.value)"
+                v-if="!isEmptyValue(getOrder.documentStatus.value)"
                 :type="tagStatus(getOrder.documentStatus.value)"
               >
-                <span v-if="!(getOrder.documentStatus.value)">
+                <span v-if="!isEmptyValue(getOrder.documentStatus.value)">
                   {{ getOrder.documentStatus.name }}
                 </span>
-                {{ getOrder.documentStatus.name }}
               </el-tag>
             </el-col>
           </el-row>
@@ -111,9 +110,9 @@
                                 </div>
                               </el-col>
                               <el-col :span="10">
-                                {{ $t('form.pos.product.code') }}: <b>{{ currentOrderLine.product.value }}</b><br>
-                                {{ $t('form.pos.product.name') }}: <b>{{ currentOrderLine.product.name }}</b><br>
-                                {{ $t('form.pos.product.description') }}: <b>{{ currentOrderLine.product.description }}</b><br>
+                                {{ $t('form.productInfo.code') }}: <b>{{ currentOrderLine.product.value }}</b><br>
+                                {{ $t('form.productInfo.name') }}: <b>{{ currentOrderLine.product.name }}</b><br>
+                                {{ $t('form.productInfo.description') }}: <b>{{ currentOrderLine.product.description }}</b><br>
                               </el-col>
                               <el-col :span="10">
                                 <div style="float: right">
@@ -129,9 +128,8 @@
                               </el-col>
                             </el-row>
                           </el-form>
-                          <el-button slot="reference" type="text" style="display: flex; width: 110%; padding-bottom: 5%; padding-top: 5%;">
-                            <i class="el-icon-info" />
-                            {{ $t('form.productInfo.productInformation') }}
+                          <el-button slot="reference" type="text" style="display: flex;width: 110%;padding-bottom: 5%;padding-top: 5%;">
+                            <i class="el-icon-info" /> {{ $t('form.productInfo.productInformation') }}
                           </el-button>
                         </el-popover>
                       </el-dropdown-item>
@@ -140,51 +138,20 @@
                           placement="right"
                           trigger="click"
                           :title="$t('form.pos.tableProduct.editQuantities')"
+                          width="600"
+                          @hide="showFieldLine = !showFieldLine"
                         >
-                          <el-row>
-                            <el-col :span="8">
-                              <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
-                                <template
-                                  v-for="(field) in fieldsList"
-                                >
-                                  <FieldDefinition
-                                    v-if="field.columnName === 'PriceEntered'"
-                                    :key="field.columnName"
-                                    :metadata-field="field"
-                                  />
-                                </template>
-                              </el-form>
-                            </el-col>
-                            <el-col :span="8">
-                              <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
-                                <template
-                                  v-for="(field) in fieldsList"
-                                >
-                                  <FieldDefinition
-                                    v-if="field.columnName === 'QtyEntered'"
-                                    :key="field.columnName"
-                                    :metadata-field="field"
-                                  />
-                                </template>
-                              </el-form>
-                            </el-col>
-                            <el-col :span="8">
-                              <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
-                                <template
-                                  v-for="(field) in fieldsList"
-                                >
-                                  <FieldDefinition
-                                    v-if="field.columnName === 'Discount'"
-                                    :key="field.columnName"
-                                    :metadata-field="field"
-                                  />
-                                </template>
-                              </el-form>
-                            </el-col>
-                          </el-row>
-                          <el-button slot="reference" type="text">
-                            <i class="el-icon-edit" />
-                            {{ $t('form.pos.tableProduct.editQuantities') }}
+                          <FieldLine
+                            :data-line="scope.row"
+                            :show-field="showFieldLine"
+                          />
+                          <el-button
+                            slot="reference"
+                            type="text"
+                            :disabled="isDisabled"
+                            @click="showFieldLine = !showFieldLine"
+                          >
+                            <i class="el-icon-edit" /> {{ $t('form.pos.tableProduct.editQuantities') }}
                           </el-button>
                         </el-popover>
                       </el-dropdown-item>
@@ -241,31 +208,25 @@
               <p class="total"> {{ $t('form.pos.order.subTotal') }}:<b class="order-info">{{ formatPrice(getOrder.totalLines, currencyPoint.iSOCode) }}</b></p>
               <p class="total"> {{ $t('form.pos.order.discount') }}:<b class="order-info">{{ formatPrice(0, currencyPoint.iSOCode) }}</b> </p>
               <p class="total"> {{ $t('form.pos.order.tax') }}:<b style="float: right;">{{ getOrderTax(currencyPoint.iSOCode) }}</b> </p>
-               <p class="total">
+              <p class="total">
                 <b>
                   {{ $t('form.pos.order.total') }}:
                 </b>
                 <b style="float: right;">
                   <el-popover
-                  :v-model="seeConversion"
+                    :v-model="seeConversion"
                     placement="top-start"
                   >
-                    <convert-amount
-                    v-show="seeConversion"
+                    <ConvertAmount
+                      v-show="seeConversion"
                       :convert="multiplyRate"
                       :amount="getOrder.grandTotal"
                       :currency="currencyPoint"
                     />
-                    <el-button
-                    slot="reference"
-                    type="text"
-                    style="color: #000000;font-weight: 604!important;font-size: 100%;"
-                    @click="seeConversion = !seeConversion"
-                    >
+                    <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;" @click="seeConversion = !seeConversion">
                       {{ formatPrice(getOrder.grandTotal, currencyPoint.iSOCode) }}
                     </el-button>
                   </el-popover>
-                  <!-- {{ formatPrice(order.grandTotal, currencyPoint.iSOCode) }} -->
                 </b>
               </p>
             </span>

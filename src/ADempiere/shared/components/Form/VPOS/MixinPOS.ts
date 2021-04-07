@@ -13,13 +13,14 @@ import {
   requestUpdateOrderLine
 } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop, Ref, Watch, Mixins } from 'vue-property-decorator'
 import {
   formatPrice,
   formatQuantity,
   formatDate
 } from '@/ADempiere/shared/utils/valueFormat'
 import { Table } from 'element-ui'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import MixinForm from '../MixinForm'
 
 @Component({
@@ -27,7 +28,7 @@ import MixinForm from '../MixinForm'
   mixins: [MixinForm]
 })
 export default class MixinPOS extends Mixins(MixinForm) {
-    @Prop({ type: Object, required: true }) metadata!: any
+    @Prop({ type: Object, required: false }) metadata?: any
     @Ref() readonly linesTable?: Table
     // eslint-disable-next-line
     public unsubscribe: Function = () => {}
@@ -63,9 +64,12 @@ export default class MixinPOS extends Mixins(MixinForm) {
   }
 
   get listOrderLine(): IOrderLineDataExtended[] {
-    return this.$store.getters[
+    console.log('ListOrderLine')
+    const orders = this.$store.getters[
       Namespaces.OrderLines + '/' + 'getListOrderLine'
     ]
+    console.log(orders)
+    return orders
   }
 
   get ordersList(): IOrderData[] {
@@ -80,7 +84,9 @@ export default class MixinPOS extends Mixins(MixinForm) {
 
   get currentOrder(): IOrderData | Partial<IOrderData> {
     const action = this.$route.query.action
-    if (action) {
+    console.log('currentOrder req')
+    console.log(action)
+    if (!isEmptyValue(action)) {
       return this.$store.getters[Namespaces.Order + '/' + 'getOrder']
     }
 
@@ -94,7 +100,17 @@ export default class MixinPOS extends Mixins(MixinForm) {
       totalLines: 0,
       grandTotal: 0,
       salesRepresentative: undefined,
-      businessPartner: undefined
+      businessPartner: {
+        description: '',
+        duns: '',
+        id: 0,
+        lastName: '',
+        naics: '',
+        name: '',
+        taxId: '',
+        uuid: '',
+        value: ''
+      }
     }
   }
 
@@ -105,8 +121,9 @@ export default class MixinPOS extends Mixins(MixinForm) {
   }
 
   get priceListUuid(): string | undefined {
-    const currentPOS: IPointOfSalesData | undefined = this.currentPoint
-    if (!currentPOS) {
+    // const currentPOS: IPointOfSalesData | undefined = this.currentPoint
+    const currentPOS = this.currentPoint
+    if (isEmptyValue(currentPOS)) {
       return undefined
     }
     return this.currentPoint!.priceList.uuid
@@ -140,7 +157,8 @@ export default class MixinPOS extends Mixins(MixinForm) {
   // Watchers
   @Watch('getOrder')
   handleGetOrderChange(value: Partial<IOrderData> | undefined) {
-    if (value) {
+    console.log('EM1')
+    if (!isEmptyValue(value) && value) {
       this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
@@ -163,12 +181,12 @@ export default class MixinPOS extends Mixins(MixinForm) {
 
   @Watch('currentOrder')
   handleCurrentOrderChange(value: any): void {
+    console.log('currentOrder value')
+    console.log(value)
     if (!value) {
       this.orderLines = []
       this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
-      this.listOrderLines({
-        uuid: ''
-      })
+      this.listOrderLines({})
     } else {
       this.listOrderLines(value)
     }
@@ -312,6 +330,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
           })
         })
         .finally(() => {
+          console.log('EM3')
           this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
             containerUuid: this.metadata.containerUuid,
             attributes: [
@@ -430,14 +449,17 @@ export default class MixinPOS extends Mixins(MixinForm) {
 
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
+        console.log('subscribe changes')
+        console.log(mutation)
+        console.log(state)
         // TODO: Add container uuid comparison
-        if (mutation.type === 'addActionKeyPerformed') {
+        if (mutation.type === Namespaces.Event + '/' + 'addActionKeyPerformed') {
           switch (mutation.payload.columnName) {
             case 'ProductValue':
               this.findProduct(mutation.payload.value)
               break
           }
-        } else if (mutation.type === 'addActionPerformed') {
+        } else if (mutation.type === Namespaces.Event + '/' + 'addActionPerformed') {
           switch (mutation.payload.columnName) {
             case 'QtyEntered':
             case 'PriceEntered':
@@ -447,7 +469,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
               }
               break
           }
-        } else if (mutation.type === 'updateValueOfField') {
+        } else if (mutation.type === Namespaces.FieldValue + '/' + 'updateValueOfField') {
           switch (mutation.payload.columnName) {
             case 'DisplayColumn_TenderType':
               this.displayType = mutation.payload.value
@@ -492,9 +514,10 @@ export default class MixinPOS extends Mixins(MixinForm) {
         })
     }
 
-    listOrderLines(params: { uuid: string }) {
+    listOrderLines(params: { uuid?: string }) {
       const { uuid: orderUuid } = params
-      if (orderUuid) {
+      console.log(orderUuid)
+      if (!isEmptyValue(orderUuid)) {
         this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLinesFromServer', orderUuid)
         this.orderLines = this.listOrderLine
         this.handleCurrentLineChange(this.currentOrderLine)
@@ -640,8 +663,8 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     beforeMount() {
-      if (this.currentPoint) {
-        if (this.currentOrder) {
+      if (!isEmptyValue(this.currentPoint)) {
+        if (!isEmptyValue(this.currentOrder)) {
           this.listOrderLines(<IOrderData> this.currentOrder)
         }
       }
