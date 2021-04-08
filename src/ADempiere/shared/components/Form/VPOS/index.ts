@@ -1,5 +1,6 @@
 import { IPointOfSalesData } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import Collection from './Collection'
 import KeyLayout from './KeyLayout'
@@ -50,7 +51,7 @@ export default class VPOS extends Vue {
       const currentPOS: IPointOfSalesData | undefined = this.$store.getters[
         Namespaces.PointOfSales + '/' + 'getCurrentPOS'
       ]
-      if (currentPOS && currentPOS.id) {
+      if (currentPOS && !isEmptyValue(currentPOS.id)) {
         return currentPOS.id
       }
       return undefined
@@ -91,9 +92,9 @@ export default class VPOS extends Vue {
     created() {
       // load pont of sales list
       if (
-        !this.$store.getters[
+        isEmptyValue(this.$store.getters[
           Namespaces.PointOfSales + '/' + 'getSellingPointsList'
-        ]
+        ])
       ) {
         let posToSet
         // set pos id with query path
@@ -104,7 +105,7 @@ export default class VPOS extends Vue {
     }
 
     mounted() {
-      if (!this.$route.query || !this.$route.query.pos) {
+      if (isEmptyValue(this.$route.query) || isEmptyValue(this.$route.query.pos)) {
         this.$router.push(
           {
             params: {
