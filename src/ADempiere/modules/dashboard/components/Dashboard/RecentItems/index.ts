@@ -1,4 +1,5 @@
 import { convertAction } from '@/ADempiere/shared/utils/DictionaryUtils'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { getLanguage } from '@/utils/cookies'
 import { Component, Mixins } from 'vue-property-decorator'
 import { requestListRecentItems } from '../../../DashboardService'
@@ -72,7 +73,7 @@ export default class RecentItems extends Mixins(MixinDasboard) {
 
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
-        if (mutation.type === 'notifyDashboardRefresh') {
+        if (mutation.type === Namespaces.Dashboard + '/' + 'notifyDashboardRefresh') {
           this.getRecentItems({})
         }
       })

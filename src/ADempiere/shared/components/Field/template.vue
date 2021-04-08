@@ -51,12 +51,12 @@
             :field-value="recordDataFields"
           />
 
-          <preference
+          <!-- <preference
             :source-field="fieldAttributes"
             :field-value="recordDataFields"
             :panel-type="field.panelType"
             :metadata="metadataField"
-          />
+          /> -->
         </template>
 
         <component

@@ -1,10 +1,9 @@
 import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
-import { extractPagingToken } from '@/ADempiere/shared/utils/valueUtils'
+import { extractPagingToken, isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { ActionContext, ActionTree } from 'vuex'
 import { requestCreateOrder, requestCreateOrderLine, requestGetOrder, requestListOrders, requestUpdateOrder } from '../../POSService'
 import { IListOrdersResponse, IOrderData, OrderState } from '../../POSType'
-import { Message } from 'element-ui'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type OrderActionContext = ActionContext<OrderState, IRootState>
@@ -118,10 +117,10 @@ export const actions: OrderActionTree = {
    */
   reloadOrder(context: OrderActionContext, payload: { orderUuid: string }) {
     let { orderUuid } = payload
-    if (!orderUuid) {
+    if (isEmptyValue(orderUuid)) {
       orderUuid = context.rootGetters.getOrder.uuid // this.currentOrder.uuid
     }
-    if (orderUuid) {
+    if (!isEmptyValue(orderUuid)) {
       requestGetOrder(orderUuid)
         .then((orderResponse: IOrderData) => {
           context.dispatch('fillOrder', {

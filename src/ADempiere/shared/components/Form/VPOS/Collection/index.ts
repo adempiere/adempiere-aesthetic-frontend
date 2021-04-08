@@ -669,7 +669,7 @@ export default class Collection extends Mixins(MixinForm) {
 
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
-        if (mutation.type === 'updateValueOfField') {
+        if (mutation.type === Namespaces.FieldValue + '/' + 'updateValueOfField') {
           if (mutation.payload.columnName === 'DisplayColumn_TenderType') {
             this.labelTenderType = mutation.payload.value
           }

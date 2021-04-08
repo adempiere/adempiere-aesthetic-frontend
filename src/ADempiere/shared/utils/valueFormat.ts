@@ -6,6 +6,7 @@ import store from '@/ADempiere/shared/store'
 import { ILanguageData } from '@/ADempiere/modules/core/CoreType'
 import { IRangeAttributeData } from '../store/modules/panel/type'
 import language from '@/ADempiere/shared/lang'
+import { isEmptyValue } from './valueUtils'
 
 export function convertArrayKeyValueToObject(data: {
     array?: any[]
@@ -121,10 +122,10 @@ function getCurrency(): string {
 
 //  Get Formatted Price
 export function formatPrice(number: number, currency?: any): string | undefined {
-  if (!number) {
+  if (isEmptyValue(number)) {
     return undefined
   }
-  if (!currency) {
+  if (isEmptyValue(currency)) {
     currency = getCurrency()
   }
   //  Get formatted number
@@ -136,7 +137,7 @@ export function formatPrice(number: number, currency?: any): string | undefined 
 
 //  Format Quantity
 export function formatQuantity(number: any): number | undefined | string {
-  if (!number) {
+  if (isEmptyValue(number)) {
     return undefined
   }
   if (!Number.isInteger(number)) {
@@ -148,7 +149,7 @@ export function formatQuantity(number: any): number | undefined | string {
 
 // Return a format for field depending of reference for him
 export function formatField(value: any, reference?: number, optionalFormat?: any) {
-  if (!value) {
+  if (isEmptyValue(value)) {
     return undefined
   }
   if (!reference) {
@@ -192,7 +193,7 @@ export function formatField(value: any, reference?: number, optionalFormat?: any
 
 // Format percentage based on Intl library
 export function formatPercent(number: number): string | undefined {
-  if (!number) {
+  if (isEmptyValue(number)) {
     return undefined
   }
   //  Get formatted number
@@ -203,8 +204,10 @@ export function formatPercent(number: number): string | undefined {
 
 // Format a date with specific format, if format is void use default date format for language
 export function formatDate(date: moment.MomentInput, isTime?: boolean): string | undefined {
+  console.log('formatDate')
+  console.log(date)
   isTime = isTime || false
-  if (!date) {
+  if (isEmptyValue(date)) {
     return undefined
   }
   //  Format
@@ -221,7 +224,7 @@ export function formatDate(date: moment.MomentInput, isTime?: boolean): string |
  * @returns {string} ej: 'qwerty asd' | 'zxc 123'
  */
 export function trimPercentage(stringToParsed: string): string {
-  if ((stringToParsed) && String(stringToParsed).includes('%')) {
+  if (!isEmptyValue(stringToParsed) && String(stringToParsed).includes('%')) {
     let parsedValue = stringToParsed
     if (parsedValue[0] === '%') {
       parsedValue = parsedValue.slice(1)

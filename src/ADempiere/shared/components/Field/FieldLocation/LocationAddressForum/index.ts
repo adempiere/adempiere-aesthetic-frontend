@@ -60,7 +60,7 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
     subscribeChanges() {
       return this.$store.subscribe((mutation, state) => {
         const withOutColumnNames: string[] = ['C_Country_ID', 'DisplayColumn_C_Country_ID', 'C_Location_ID']
-        if (mutation.type === 'updateValueOfField' &&
+        if (mutation.type === Namespaces.FieldValue + '/' + 'updateValueOfField' &&
             mutation.payload.containerUuid === this.metadata.containerUuid) {
           if (mutation.payload.columnName === 'C_Country_ID') {
             const values: KeyValueData[] = []

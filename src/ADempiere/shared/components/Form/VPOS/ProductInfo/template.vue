@@ -8,7 +8,7 @@
           trigger="click"
           width="800"
         >
-          <product-info-list />
+          <ProductInfoList />
           <el-button
             slot="reference"
             type="text"

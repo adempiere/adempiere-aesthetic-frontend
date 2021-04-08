@@ -31,7 +31,8 @@ export enum PanelContextType {
     Browser = 'browser',
     Report = 'report',
     Table = 'table',
-    Form = 'form'
+    Form = 'form',
+    Custom = 'custom'
 }
 
 export enum ReportExportContextType {
