@@ -9,7 +9,6 @@ import ConvertAmount from '@/ADempiere/shared/components/Form/VPOS/Collection/Co
 import Template from './template.vue'
 import FieldLine from '@/ADempiere/shared/components/Form/VPOS/Order/Line'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
-import MixinForm from '../../MixinForm'
 
 @Component({
   name: 'Order',
@@ -22,14 +21,18 @@ import MixinForm from '../../MixinForm'
   }
 })
 export default class Order extends Mixins(MixinOrderLine) {
-  // fieldsList = fieldListOrders
   fieldsList = fieldListOrders
+  // fieldsList = fieldListOrders
   public seeConversion = false
   private showFieldLine = false
 
   // Computed properties
   get isDisabled(): boolean {
     return this.$store.getters[Namespaces.Order + '/' + 'getIsProcessed']
+  }
+
+  beforeMount() {
+    this.fieldsList = fieldListOrders
   }
 
   created() {
@@ -84,10 +87,15 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   get orderDate(): string | undefined {
-    if (isEmptyValue(this.getOrder) || isEmptyValue(this.getOrder!.dateOrdered)) {
-      return this.formatDate(new Date())
+    try {
+      if (isEmptyValue(this.getOrder) || !this.getOrder?.dateOrdered || isEmptyValue(this.getOrder!.dateOrdered)) {
+        const newDate = new Date().toLocaleDateString()
+        return this.formatDate(newDate)
+      }
+      return this.formatDate(this.getOrder!.dateOrdered)
+    } catch (error) {
+      return undefined
     }
-    return this.formatDate(this.getOrder!.dateOrdered)
   }
 
   get getItemQuantity(): number {
