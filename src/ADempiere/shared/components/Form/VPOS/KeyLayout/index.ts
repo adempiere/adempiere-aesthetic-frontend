@@ -9,6 +9,7 @@ import { formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
 import { requestImage } from '@/ADempiere/modules/persistence/PersistenceService/persistence'
 import { buildImageFromArrayBuffer } from '@/ADempiere/shared/utils/resource'
 import Template from './template.vue'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 @Component({
   name: 'KeyLayout',
@@ -50,8 +51,8 @@ export default class KeyLayout extends Vue {
     }
 
     get getKeyList(): any[] | undefined {
-      return this.getKeyLayout.orderList
-      // return this.getKeyLayout.keysList
+      // return this.getKeyLayout.orderList
+      return this.getKeyLayout.keysList
     }
 
     get getLayoutHeader() {
@@ -96,7 +97,7 @@ export default class KeyLayout extends Vue {
     loadKeyLayout(uuid?: string): void {
       uuid = uuid || undefined
       const currentPOS: IPointOfSalesData | undefined = this.currentPoint
-      if (!currentPOS || !currentPOS.uuid) {
+      if (isEmptyValue(currentPOS) || isEmptyValue(currentPOS!.uuid)) {
         this.$message({
           type: 'warning',
           message: 'Without POS Terminal',
@@ -111,7 +112,7 @@ export default class KeyLayout extends Vue {
     }
 
     getImage(resource: any): void {
-      if (!resource || !resource.fileName) {
+      if (isEmptyValue(resource) || isEmptyValue(resource.fileName)) {
         return
       }
 
@@ -163,7 +164,7 @@ export default class KeyLayout extends Vue {
     }
 
     setKeyActionToOrderLine(keyValue: any): void {
-      if (keyValue.subKeyLayoutUuid) {
+      if (!isEmptyValue(keyValue.subKeyLayoutUuid)) {
         this.loadKeyLayout(keyValue.subKeyLayoutUuid)
       } else {
         this.$store.dispatch(Namespaces.Event + '/' + 'notifyActionKeyPerformed', {
@@ -179,13 +180,13 @@ export default class KeyLayout extends Vue {
     handleCommand(command: any): void {
       const point = this.$store.getters[
         Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid'
-      ] // .keyLayoutUuid
+      ].keyLayoutUuid
       const toReturn = this.getKeyList!.find(
         keyLayoutItem => keyLayoutItem.subKeyLayoutUuid === point
       )
 
       let keyLayoutUuid = this.currentPoint!.keyLayoutUuid
-      if (toReturn) {
+      if (!isEmptyValue(toReturn)) {
         keyLayoutUuid = toReturn.subKeyLayoutUuid
       }
       this.loadKeyLayout(keyLayoutUuid)
@@ -194,14 +195,14 @@ export default class KeyLayout extends Vue {
     getDefaultImage(keyValue: any) {
       const { fileName } = keyValue.resourceReference
 
-      if (!fileName) {
+      if (isEmptyValue(fileName)) {
         return true
       }
 
       const image = this.valuesImage.find(
         item => item.identifier === fileName
       )
-      if (!image) {
+      if (isEmptyValue(image)) {
         return false
       }
       return image.isLoaded
@@ -210,13 +211,13 @@ export default class KeyLayout extends Vue {
     getImageFromSource(keyValue: any) {
       const { fileName } = keyValue.resourceReference
 
-      if (!fileName) {
+      if (isEmptyValue(fileName)) {
         return this.defaultImage
       }
 
       // const image = this.valuesImage.find(item => item.identifier === fileName).value
       const image = this.resource[fileName]
-      if (!image) {
+      if (isEmptyValue(image)) {
         return this.defaultImage
       }
       return image
