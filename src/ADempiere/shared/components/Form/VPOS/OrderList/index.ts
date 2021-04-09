@@ -31,6 +31,8 @@ export default class OrdersList extends Mixins(MixinForm) {
       }
     }) metadata: any
 
+    @Prop({ type: Boolean, default: false }) showField!: boolean
+
     public defaultMaxPagination = 50
     fieldsList = fieldListOrders
     public isCustomForm = true
@@ -54,7 +56,10 @@ export default class OrdersList extends Mixins(MixinForm) {
     }
 
     get tableOrder(): IListOrderItemData | Partial<IListOrderItemData> {
-      return this.$store.getters[Namespaces.Order + '/' + 'getPos'].listOrder
+      const table = this.$store.getters[Namespaces.Order + '/' + 'getPos'].listOrder
+      console.log('tableOrder')
+      console.log(table)
+      return table
     }
 
     get ordersList(): IOrderData[] {
@@ -182,6 +187,11 @@ export default class OrdersList extends Mixins(MixinForm) {
         }
       })
     }
+
+    // mounted(){
+    //   console.log('showfield x')
+    //   console.log(this.showField)
+    // }
 
     orderProcess(row: any) {
       const parametersList = [{
