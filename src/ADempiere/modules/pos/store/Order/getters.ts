@@ -1,7 +1,7 @@
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
-import { IListOrderItemData, IOrderData, IOrderLineDataExtended, IPaymentsData, IPointOfSalesData, OrderState, PointOfSalesState } from '../../POSType'
+import { IListOrderItemData, IOrderData, IOrderLineDataExtended, IPaymentsData, OrderState } from '../../POSType'
 
 type OrderGetterTree = GetterTree<OrderState, IRootState>
 
@@ -9,16 +9,18 @@ export const getters: OrderGetterTree = {
   getOrder: (state: OrderState): IOrderData | undefined => {
     return state.order as IOrderData
   },
-  getPos: (state: OrderState, getters) => {
-    const OrderPos: OrderState & {
+  getPos: (state: OrderState, getters, rootState, rootGetters) => {
+    const OrderPos: {
+      currentOrder?: Partial<IOrderData>
       lineOrder: IOrderLineDataExtended[]
       listPayments: IPaymentsData[]
+      listOrder: IListOrderItemData | Partial<IListOrderItemData>
       isProcessed: boolean
     } = {
-      currentOrder: state.order as IOrderData,
+      currentOrder: state.order,
       listOrder: getters.getListOrder,
-      lineOrder: getters[Namespaces.OrderLines + '/' + 'getListOrderLine'],
-      listPayments: getters[Namespaces.Payments + '/' + 'getListPayments'],
+      lineOrder: rootGetters[Namespaces.OrderLines + '/' + 'getListOrderLine'],
+      listPayments: rootGetters[Namespaces.Payments + '/' + 'getListPayments'],
       isProcessed: getters.getIsProcessed
     }
     return OrderPos
