@@ -269,7 +269,7 @@ export interface PointOfSalesState {
 
 // Collection Module
 export interface PaymentsState {
-    paymentBox: any[]
+    paymentBox: any
     multiplyRate: number
     divideRate: number
     multiplyRateCollection: number

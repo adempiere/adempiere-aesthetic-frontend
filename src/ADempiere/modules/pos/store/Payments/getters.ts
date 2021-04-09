@@ -5,8 +5,8 @@ import { PaymentsState, IPaymentsData } from '../../POSType'
 type PaymentsGetterTree = GetterTree<PaymentsState, IRootState>
 
 export const getters: PaymentsGetterTree = {
-  getPaymentBox: (state: PaymentsState): any[] => {
-    return state.paymentBox
+  getPaymentBox: (state: PaymentsState): PaymentsState => {
+    return state
   },
   getMultiplyRate: (state: PaymentsState): number => {
     return state.multiplyRate
