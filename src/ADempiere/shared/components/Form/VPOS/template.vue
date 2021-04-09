@@ -6,7 +6,7 @@
         <SplitArea :size="isShowedPOSOptions ? 20 : 1" :min-size="400">
           <el-container style="height: 100% !important;">
             <el-aside :width="isShowedPOSOptions ? '100%' : '0%'" style="background: white; padding: 0px !important; margin-bottom: 0px">
-              <options
+              <Options
                 :metadata="metadata"
               />
             </el-aside>

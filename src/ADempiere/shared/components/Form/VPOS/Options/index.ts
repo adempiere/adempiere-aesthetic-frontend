@@ -3,7 +3,7 @@ import Template from './template.vue'
 import ListProductPrice from '@/ADempiere/shared/components/Form/VPOS/ProductInfo/ProductList'
 import OrdersList from '@/ADempiere/shared/components/Form/VPOS/OrderList'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { IListOrderItemData, IListProductPriceItemData, IOrderData, IPointOfSalesData } from '@/ADempiere/modules/pos/POSType'
+import { IListOrderItemData, IListProductPriceItemData, IOrderData, IOrderLineDataExtended, IPointOfSalesData } from '@/ADempiere/modules/pos/POSType'
 import {
   cashClosing, createNewReturnOrder, withdrawal, generateImmediateInvoice, printOrder,
   // requestReverseSalesTransaction,
@@ -15,6 +15,7 @@ import ModalDialog from '@/ADempiere/shared/components/Dialog'
 import posProcess from '@/ADempiere/shared/utils/Constants/posProcess'
 import MixinOrderLine from '../Order/MixinOrderLine'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 @Component({
   name: 'Options',
@@ -26,9 +27,16 @@ import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/Conte
   mixins: [Template, MixinOrderLine]
 })
 export default class Options extends Mixins(MixinOrderLine) {
-    @Prop({ type: Object, default: {} }) metadata: any
+    @Prop({
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }) metadata: any
+
     activeName = ''
     public processPos = ''
+    public showFieldListOrder = false
 
     // Computed properties
     get isShowProductsPriceList(): boolean {
@@ -37,7 +45,7 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     set isShowProductsPriceList(isShowed: boolean) {
-      if ((this.$route.query.pos)) {
+      if (!isEmptyValue(this.$route.query.pos)) {
         this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
           attribute: 'isShowPopoverMenu',
           isShowed
@@ -51,7 +59,7 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     set isShowOrdersList(value: boolean) {
-      if (this.$route.query.pos) {
+      if (!isEmptyValue(this.$route.query.pos)) {
         this.$store.commit(Namespaces.Order + '/' + 'showListOrders', value)
       }
     }
@@ -70,14 +78,14 @@ export default class Options extends Mixins(MixinOrderLine) {
 
     get pointOfSalesId(): number | undefined {
       const currentPOS = this.currentPOS
-      if (currentPOS) {
-        return currentPOS.id
+      if (!isEmptyValue(currentPOS)) {
+        return currentPOS!.id
       }
       return undefined
     }
 
     get blockOption() {
-      if (this.$route.query.pos) {
+      if (!isEmptyValue(this.$route.query.pos)) {
         return 'cursor: pointer; text-align: center !important; color: black'
       }
       return 'cursor: not-allowed; text-align: center !important; color: gray;'
@@ -185,7 +193,7 @@ export default class Options extends Mixins(MixinOrderLine) {
       processOrder({
         posUuid,
         orderUuid: this.$route.query.action as string,
-        createPayments: Boolean(this.$store.getters[Namespaces.Order + '/' + 'getPos'].listPayments),
+        createPayments: !isEmptyValue(this.$store.getters[Namespaces.Order + '/' + 'getPos'].listPayments),
         payments: this.$store.getters[Namespaces.Order + '/' + 'getPos'].listPayments
       }).then(response => {
         this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', response.uuid)
@@ -216,23 +224,23 @@ export default class Options extends Mixins(MixinOrderLine) {
       this.showModal(process)
       const parametersList = [
         {
-          columnName: 'C_Order_ID',
+          key: 'C_Order_ID',
           value: this.$store.getters[Namespaces.Order + '/' + 'getPos'].currentOrder.id
         },
         {
-          columnName: 'Bill_BPartner_ID',
+          key: 'Bill_BPartner_ID',
           value: this.$store.getters[Namespaces.Order + '/' + 'getPos'].currentOrder.businessPartner.id
         },
         {
-          columnName: 'IsCancelled',
+          key: 'IsCancelled',
           value: false
         },
         {
-          columnName: 'IsShipConfirm',
+          key: 'IsShipConfirm',
           value: true
         },
         {
-          columnName: 'C_DocTypeRMA_ID',
+          key: 'C_DocTypeRMA_ID',
           value: 'VO'
         }
       ]
@@ -348,14 +356,15 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     seeOrderList() {
-      if (this.$store.getters[Namespaces.Order + '/' + 'getPos'].listOrder.recordCount <= 0) {
+      const listOrder: any = this.$store.getters[Namespaces.Order + '/' + 'getPos'].listOrder
+      if (listOrder.recordCount <= 0) {
         this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {})
       }
     }
 
     findProcess() {
       const findServer = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess']('a42ad0c6-fb40-11e8-a479-7a0060f0aa01')
-      if (!findServer) {
+      if (isEmptyValue(findServer)) {
         posProcess.forEach(item => {
           this.$store.dispatch(Namespaces.ProcessDefinition + '/' + 'getProcessFromServer', { containerUuid: item.uuid, processId: item.id })
         })

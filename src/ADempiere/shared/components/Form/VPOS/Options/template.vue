@@ -16,7 +16,7 @@
           <el-col :span="size">
             <el-card shadow="hover">
               <p
-                :style="!($route.query.action) ? 'cursor: not-allowed; text-align: center !important; color: gray;' : blockOption"
+                :style="isEmptyValue($route.query.action) ? 'cursor: not-allowed; text-align: center !important; color: gray;' : blockOption"
                 @click="newOrder"
               >
                 <i class="el-icon-news" />
@@ -33,18 +33,33 @@
                 width="800"
                 trigger="click"
                 @show="seeOrderList"
+                @hide="showFieldListOrder = !showFieldListOrder"
               >
-                <orders-list
+                <OrdersList
                   :parent-metadata="metadata"
+                  :show-field="showFieldListOrder"
                 />
                 <p
+                  slot="reference"
+                  :style="blockOption"
+                >
+                  <el-button
+                    type="text"
+                    @click="showFieldListOrder = !showFieldListOrder"
+                  >
+                    <svg-icon icon-class="list" />
+                    <br>
+                    {{ $t('form.pos.optionsPoinSales.salesOrder.ordersHistory') }}
+                  </el-button>
+                </p>
+                <!-- <p
                   slot="reference"
                   :style="blockOption"
                 >
                   <svg-icon icon-class="list" />
                   <br>
                   {{ $t('form.pos.optionsPoinSales.salesOrder.ordersHistory') }}
-                </p>
+                </p> -->
               </el-popover>
             </el-card>
           </el-col>
@@ -126,9 +141,7 @@
               </p>
             </el-card>
           </el-col>
-
-           <el-col :span="size">
-
+          <el-col :span="size">
             <el-card shadow="hover">
               <p
                 :style="blockOption"
@@ -140,7 +153,6 @@
               </p>
             </el-card>
           </el-col>
-
           <el-col :span="size">
             <el-card shadow="hover">
               <p
@@ -224,8 +236,8 @@
             <el-card shadow="hover">
               <el-popover
                 placement="right"
-                width="800"
                 trigger="click"
+                width="800"
               >
                 <list-product-price
                   :is-selectable="false"
