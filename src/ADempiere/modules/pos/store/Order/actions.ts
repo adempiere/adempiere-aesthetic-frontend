@@ -170,37 +170,37 @@ export const actions: OrderActionTree = {
     context.dispatch('listOrdersFromServer', {})
   },
   listOrdersFromServer(context: OrderActionContext, payload: {
-        posUuid: string
-        documentNo: number
-        businessPartnerUuid: string
+        posUuid?: string
+        documentNo?: number
+        businessPartnerUuid?: string
         grandTotal: number
-        openAmount: number
-        isPaid: boolean
-        isProcessed: boolean
-        isAisleSeller: boolean
-        isInvoiced: boolean
-        dateOrderedFrom: any
-        dateOrderedTo: any
-        salesRepresentativeUuid: string
+        openAmount?: number
+        isPaid?: boolean
+        isProcessed?: boolean
+        isAisleSeller?: boolean
+        isInvoiced?: boolean
+        dateOrderedFrom?: any
+        dateOrderedTo?: any
+        salesRepresentativeUuid?: string
       }) {
     const { documentNo, businessPartnerUuid, grandTotal, openAmount, isPaid, isProcessed, isAisleSeller, isInvoiced, dateOrderedFrom, dateOrderedTo, salesRepresentativeUuid } = payload
-    let { posUuid } = payload
-    if (!posUuid) {
-      posUuid = context.getters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
+    let { posUuid = payload.posUuid || undefined } = payload
+    if (isEmptyValue(posUuid)) {
+      posUuid = context.rootGetters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
     }
 
     let { pageNumber, nextPageToken } = context.state.listOrder
-    if (!pageNumber) {
+    if (isEmptyValue(pageNumber)) {
       pageNumber = 1
     }
     let pageToken = ''
-    if (!nextPageToken) {
+    if (!isEmptyValue(nextPageToken)) {
       pageToken = nextPageToken + '-' + pageNumber
     }
-
-    requestListOrders({
+    console.log('requestListOrders')
+    console.log({
       posUuid,
-      documentNo: String(documentNo),
+      documentNo,
       businessPartnerUuid,
       grandTotal,
       openAmount,
@@ -213,8 +213,23 @@ export const actions: OrderActionTree = {
       salesRepresentativeUuid,
       pageToken
     })
+    requestListOrders({
+      posUuid: posUuid!,
+      documentNo: documentNo?.toString(),
+      businessPartnerUuid: businessPartnerUuid!,
+      grandTotal,
+      openAmount: openAmount!,
+      isPaid: isPaid!,
+      isProcessed: isProcessed!,
+      isAisleSeller: isAisleSeller!,
+      isInvoiced: isInvoiced!,
+      dateOrderedFrom,
+      dateOrderedTo,
+      salesRepresentativeUuid: salesRepresentativeUuid!,
+      pageToken
+    })
       .then((responseOrdersList: IListOrdersResponse) => {
-        if (!nextPageToken || !pageToken) {
+        if (isEmptyValue(nextPageToken) || isEmptyValue(pageToken)) {
           nextPageToken = extractPagingToken(responseOrdersList.nextPageToken)
         }
 
@@ -243,7 +258,7 @@ export const actions: OrderActionTree = {
     context.commit('findOrder', findOrder)
   },
   findOrderServer(context: OrderActionContext, orderUuid: string) {
-    if (typeof orderUuid === 'string' && (orderUuid)) {
+    if (typeof orderUuid === 'string' && !isEmptyValue(orderUuid)) {
       requestGetOrder(orderUuid)
         .then((responseOrder: IOrderData) => {
           context.commit('findOrder', responseOrder)

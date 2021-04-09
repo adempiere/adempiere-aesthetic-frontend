@@ -1,4 +1,4 @@
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import MixinForm from '../../MixinForm'
 import CustomPagination from '@/ADempiere/shared/components/Pagination'
 import fieldListOrders from './fieldListOrders'
@@ -9,13 +9,14 @@ import {
   formatDate,
   formatQuantity
 } from '@/ADempiere/shared/utils/valueFormat'
-import FieldDefinition from '@/ADempiere/shared/components/Field'
+import Field from '@/ADempiere/shared/components/Field'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 @Component({
   name: 'OrdersList',
   components: {
     CustomPagination,
-    FieldDefinition
+    Field
   },
   mixins: [MixinForm, Template]
 })
@@ -28,26 +29,25 @@ export default class OrdersList extends Mixins(MixinForm) {
           containerUuid: 'Orders-List'
         }
       }
-    })
-    metadata: any
+    }) metadata: any
 
     public defaultMaxPagination = 50
-    // public fieldsList: IFieldLocation[] = fieldListOrders
     fieldsList = fieldListOrders
     public isCustomForm = true
     public activeAccordion = 'query-criteria'
     public timeOut: any = null
+    public metadataList: any[] = []
 
     // Computed properties
     get heightTable(): 500 | 250 {
-      if (!this.activeAccordion) {
+      if (isEmptyValue(this.activeAccordion)) {
         return 500
       }
       return 250
     }
 
     get highlightRow(): boolean {
-      if (this.selectOrder) {
+      if (!isEmptyValue(this.selectOrder)) {
         return true
       }
       return false
@@ -59,8 +59,8 @@ export default class OrdersList extends Mixins(MixinForm) {
 
     get ordersList(): IOrderData[] {
       const order = this.tableOrder
-      if (order && order.list) {
-        return order.list
+      if (order && !isEmptyValue(order.list)) {
+        return order.list!
       }
       return []
     }
@@ -68,15 +68,15 @@ export default class OrdersList extends Mixins(MixinForm) {
     get selectOrder(): IOrderData | null {
       const action = this.$route.query.action
       const order = this.ordersList.find((item: any) => item.uuid === action)
-      if (order) {
-        return order
+      if (!isEmptyValue(order)) {
+        return order!
       }
       return null
     }
 
     get isReadyFromGetData(): boolean {
-      const { isLoaded, isReload } = <IListOrderItemData> this.tableOrder
-      return !isLoaded || isReload
+      const { isReload } = <IListOrderItemData> this.tableOrder
+      return isReload
     }
 
     get shortsKey() {
@@ -87,12 +87,12 @@ export default class OrdersList extends Mixins(MixinForm) {
     }
 
     // Watcher
-    // @Watch('isReadyFromGetData')
-    // handleIsReadyFromGetDataChange(isToLoad: boolean) {
-    //   if (isToLoad) {
-    //     this.loadOrdersList()
-    //   }
-    // }
+    @Watch('showField')
+    hanldeShowFieldChange(value: any) {
+      if (value && isEmptyValue(this.metadataList)) {
+        this.setFieldsList()
+      }
+    }
 
     // Hooks
     created() {
@@ -133,7 +133,7 @@ export default class OrdersList extends Mixins(MixinForm) {
 
       values = this.convertValuesToSend(values)
       const point = this.$store.getters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
-      if (point) {
+      if (!isEmptyValue(point)) {
         this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
           ...values
         })
@@ -148,7 +148,7 @@ export default class OrdersList extends Mixins(MixinForm) {
       // close popover
       this.$store.commit(Namespaces.Order + '/' + 'showListOrders', false)
       this.$store.dispatch(Namespaces.Order + '/' + 'currentOrder', row)
-      if (row) {
+      if (!isEmptyValue(row)) {
         this.$store.dispatch(Namespaces.Payments + '/' + 'deleteAllCollectBox')
         this.$router.push(
           {
@@ -197,7 +197,7 @@ export default class OrdersList extends Mixins(MixinForm) {
       values.forEach(element => {
         const { value, columnName } = element
 
-        if (!value) {
+        if (isEmptyValue(value)) {
           return
         }
 
@@ -239,5 +239,23 @@ export default class OrdersList extends Mixins(MixinForm) {
       })
 
       return valuesToSend
+    }
+
+    setFieldsList(): void {
+      const list: any[] = []
+      // Product Code
+      this.fieldsList.forEach((element: any) => {
+        this.createFieldFromDictionary(element)
+          .then(response => {
+            const data = response
+            list.push({
+              ...data,
+              containerUuid: 'Orders-List'
+            })
+          }).catch(error => {
+            console.warn(`LookupFactory: Get Field From Server (State) - Error ${error.code}: ${error.message}.`)
+          })
+      })
+      this.metadataList = list
     }
 }

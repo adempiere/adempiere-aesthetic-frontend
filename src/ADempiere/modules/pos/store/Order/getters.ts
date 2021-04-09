@@ -1,4 +1,5 @@
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
 import { IListOrderItemData, IOrderData, IOrderLineDataExtended, IPaymentsData, OrderState } from '../../POSType'
@@ -34,7 +35,7 @@ export const getters: OrderGetterTree = {
     return false
   },
   getListOrder: (state: OrderState): IListOrderItemData | Partial<IListOrderItemData> => {
-    if (!(state.listOrder)) {
+    if (isEmptyValue(state.listOrder)) {
       return {
         isLoaded: false,
         isReload: true,
