@@ -1,6 +1,7 @@
 import { ICurrencyData } from '@/ADempiere/modules/core/CoreType'
 import { IOrderLineData, requestDeleteOrderLine, requestUpdateOrderLine } from '@/ADempiere/modules/pos'
 import { formatPercent, formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Mixins } from 'vue-property-decorator'
 import MixinPOS from '../MixinPOS'
 
@@ -189,9 +190,9 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
       }
 
       isValidForDeleteLine(line: any): boolean {
-        if (!this.currentOrderLine && this.orderLines) {
+        if (isEmptyValue(this.currentOrderLine) && !isEmptyValue(this.orderLines)) {
           this.currentOrderLine = this.orderLines[0]
         }
-        return !!(line)
+        return !isEmptyValue(line)
       }
 }
