@@ -55,6 +55,7 @@ export default class extends Vue {
 
 <style lang="scss" scoped>
 .components-container {
+  position: relative;
   height: 100vh;
 }
 
