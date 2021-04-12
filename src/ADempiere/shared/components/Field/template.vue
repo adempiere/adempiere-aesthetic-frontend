@@ -51,12 +51,13 @@
             :field-value="recordDataFields"
           />
 
-          <!-- <preference
+          <preference
+            v-if="field.panelType !== 'form'"
             :source-field="fieldAttributes"
             :field-value="recordDataFields"
             :panel-type="field.panelType"
             :metadata="metadataField"
-          /> -->
+          />
         </template>
 
         <component

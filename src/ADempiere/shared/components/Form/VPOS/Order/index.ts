@@ -66,9 +66,9 @@ export default class Order extends Mixins(MixinOrderLine) {
   get styleTab() {
     const isShowedPOSOptions: boolean = this.$store.getters[Namespaces.PointOfSales + '/' + 'getIsShowPOSOptions']
     if (this.isShowedPOSKeyLayout || isShowedPOSOptions) {
-      return 'adding-left: 0px; padding-right: 0px; padding-top: 3.5%;'
+      return 'adding-left: 0px; padding-right: 0px; padding-top: 3.5%;margin-right: 1%;'
     }
-    return 'padding-left: 30px; padding-right: 0px; padding-top: 2.2%;'
+    return 'padding-left: 0px; padding-right: 0px; padding-top: 2.2%;margin-right: 1%;'
   }
 
   get namePointOfSales(): IPointOfSalesData | undefined {
