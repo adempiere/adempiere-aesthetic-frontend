@@ -402,7 +402,6 @@
   .el-tag--medium {
     height: 34px;
     line-height: 32px;
-    width: 110%;
     text-align: center;
   }
   .el-col {
