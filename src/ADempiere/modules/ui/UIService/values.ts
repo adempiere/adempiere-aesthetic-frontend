@@ -1,8 +1,5 @@
 // Get Instance for connection
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import { IValueData } from '@/ADempiere/modules/core'
 import { convertLookupItem, convertReferencesList } from '../UIConvert'
 import {
@@ -35,14 +32,15 @@ export function requestLookup(data: ILookupParams): Promise<ILookupItemData> {
       }
     ]
   }
-  return requestRest({
+  return request({
     url: '/ui/get-lookup-item',
+    method: 'POST',
     data: {
       table_name: tableName,
       query: directQuery,
       filters
     }
-  }).then(evaluateResponse).then((response: any) => {
+  }).then((response: any) => {
     return convertLookupItem(response)
   })
 }
@@ -82,8 +80,9 @@ export function requestLookupList(
     ]
   }
 
-  return requestRest({
+  return request({
     url: '/ui/list-lookup-items',
+    method: 'POST',
     data: {
       table_name: tableName,
       query,
@@ -96,7 +95,6 @@ export function requestLookupList(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then((lookupListResponse: any) => {
       return {
         nextPageToken: lookupListResponse.next_page_token,
@@ -127,8 +125,9 @@ export function requestReferencesList(
     pageSize,
     pageToken
   } = data
-  return requestRest({
+  return request({
     url: '/ui/list-references',
+    method: 'POST',
     data: {
       id: recordId,
       uuid: recordUuid,
@@ -141,7 +140,6 @@ export function requestReferencesList(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then((referencesListResposnse: any) => {
       return convertReferencesList(referencesListResposnse)
     })
@@ -149,13 +147,13 @@ export function requestReferencesList(
 
 // Get default value for a field
 export function requestDefaultValue(query: any): Promise<IValueData> {
-  return requestRest({
+  return request({
     url: '/ui/get-default-value',
+    method: 'POST',
     data: {
       query
     }
   })
-    .then(evaluateResponse)
     .then(response => {
       return <IValueData>response
     })
@@ -172,15 +170,15 @@ export function requestGetContextInfoValue(
   data: IContextInfoValueParams
 ): Promise<IContextInfoValuesResponse> {
   const { query, uuid, id } = data
-  return requestRest({
+  return request({
     url: '/ui/get-context-info-value',
+    method: 'POST',
     data: {
       query,
       uuid,
       id
     }
   })
-    .then(evaluateResponse)
     .then(contextInfoValueResponse => {
       return {
         messageText: contextInfoValueResponse.message_text,

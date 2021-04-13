@@ -1,8 +1,5 @@
 // Instance for connection
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import {
   IMenuData,
   IMenuParams,
@@ -20,7 +17,7 @@ import { convertMenu, convertSession } from '@/ADempiere/modules/user'
 
 export function login(data: ILoginParams) {
   const { userName, password, token, roleUuid, organizationUuid } = data
-  return requestRest({
+  return request({
     url: '/user/login',
     method: 'post',
     data: {
@@ -41,14 +38,13 @@ export function login(data: ILoginParams) {
 export function requestUserInfoFromSession(
   token: string
 ): Promise<IUserInfoData> {
-  return requestRest({
+  return request({
     url: '/user/info',
     method: 'get',
     params: {
       token
     }
   })
-    .then(evaluateResponse)
     .then((response: IUserInfoData) => {
       return response
     })
@@ -59,14 +55,13 @@ export function requestUserInfoFromSession(
  * @param {string} token or session UUID
  */
 export function requestSessionInfo(token: string): Promise<ISessionData> {
-  return requestRest({
+  return request({
     url: '/user/session',
     method: 'get',
     params: {
       token
     }
   })
-    .then(evaluateResponse)
     .then(responseSession => {
       const session = convertSession(responseSession)
       return session
@@ -78,8 +73,9 @@ export function requestSessionInfo(token: string): Promise<ISessionData> {
  * @param {string} token or session UUID
  */
 export function logout(token: string): Promise<any> {
-  return requestRest({
+  return request({
     url: '/user/logout',
+    method: 'POST',
     data: {
       token
     }
@@ -92,14 +88,13 @@ export function logout(token: string): Promise<any> {
  */
 export function requestMenu(data: IMenuParams): Promise<IMenuData> {
   const { sessionUuid } = data
-  return requestRest({
+  return request({
     url: '/user/menu',
     method: 'get',
     params: {
       token: sessionUuid
     }
   })
-    .then(evaluateResponse)
     .then(response => {
       return convertMenu(response)
     })

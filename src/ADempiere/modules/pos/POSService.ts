@@ -1,8 +1,5 @@
 // Get Instance for connection
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import { convertProductPrice } from '@/ADempiere/modules/core'
 import {
   convertKeyLayout,
@@ -44,13 +41,13 @@ export function requestGetPointOfSales(
   data: IGetPointOfSalesParams
 ): Promise<IPointOfSalesData> {
   const { posUuid } = data
-  return requestRest({
+  return request({
     url: '/pos/get-point-of-sales',
+    method: 'POST',
     data: {
       point_of_sales_uuid: posUuid
     }
   })
-    .then(evaluateResponse)
     .then(posResponse => {
       return convertPointOfSales(posResponse)
     })
@@ -60,8 +57,9 @@ export function requestListPointOfSales(
   data: IListPointOfSalesParams
 ): Promise<IListPointOfSalesResponse> {
   const { userUuid, pageToken, pageSize } = data
-  return requestRest({
+  return request({
     url: '/pos/list-point-of-sales',
+    method: 'POST',
     data: {
       user_uuid: userUuid
     },
@@ -70,7 +68,6 @@ export function requestListPointOfSales(
       page_token: pageToken
     }
   })
-    .then(evaluateResponse)
     .then(posListResponse => {
       return {
         nextPageToken: posListResponse.next_page_token,
@@ -91,8 +88,9 @@ export function requestCreateOrder(
     documentTypeUuid,
     salesRepresentativeUuid
   } = data
-  return requestRest({
+  return request({
     url: '/pos/create-order',
+    method: 'POST',
     data: {
       pos_uuid: posUuid,
       customer_uuid: customerUuid,
@@ -100,7 +98,6 @@ export function requestCreateOrder(
       sales_representative_uuid: salesRepresentativeUuid
     }
   })
-    .then(evaluateResponse)
     .then(createOrderResponse => {
       return convertOrder(createOrderResponse)
     })
@@ -111,8 +108,9 @@ export function requestUpdateOrder(
   data: IUpdateOrderParams
 ): Promise<IOrderData> {
   const { orderUuid, posUuid, customerUuid, description } = data
-  return requestRest({
+  return request({
     url: '/pos/update-order',
+    method: 'POST',
     data: {
       order_uuid: orderUuid,
       pos_uuid: posUuid,
@@ -120,20 +118,19 @@ export function requestUpdateOrder(
       description
     }
   })
-    .then(evaluateResponse)
     .then(updateOrderResponse => {
       return convertOrder(updateOrderResponse)
     })
 }
 
 export function requestGetOrder(orderUuid: string): Promise<IOrderData> {
-  return requestRest({
+  return request({
     url: '/pos/get-order',
+    method: 'POST',
     data: {
       order_uuid: orderUuid
     }
   })
-    .then(evaluateResponse)
     .then(getOrderResponse => {
       return convertOrder(getOrderResponse)
     })
@@ -148,15 +145,18 @@ export function requestDeleteOrder(
     // documentTypeUuid,
     // salesRepresentativeUuid
   } = data
-  return requestRest({
+  return request({
     url: '/pos/delete-order',
+    method: 'POST',
     data: {
       pos_uuid: posUuid
       // customer_uuid: customerUuid,
       // document_type_uuid: documentTypeUuid,
       // sales_representative_uuid: salesRepresentativeUuid
     }
-  }).then(evaluateResponse)
+  }).then(response => {
+    return response
+  })
 }
 
 // List orders from pos uuid
@@ -221,8 +221,9 @@ export function requestListOrders(
     })
     */
 
-  return requestRest({
+  return request({
     url: '/pos/list-orders',
+    method: 'POST',
     data: {
       pos_uuid: posUuid,
       document_no: documentNo,
@@ -242,7 +243,6 @@ export function requestListOrders(
       page_token: pageToken
     }
   })
-    .then(evaluateResponse)
     .then(ordersListResponse => {
       return {
         nextPageToken: ordersListResponse.next_page_token,
@@ -269,8 +269,9 @@ export function requestCreateOrderLine(
     price,
     discountRate
   } = data
-  return requestRest({
+  return request({
     url: '/pos/create-order-line',
+    method: 'POST',
     data: {
       order_uuid: orderUuid,
       product_uuid: productUuid,
@@ -282,7 +283,6 @@ export function requestCreateOrderLine(
       warehouse_uuid: warehouseUuid
     }
   })
-    .then(evaluateResponse)
     .then(createOrderLineResponse => {
       return convertOrderLine(createOrderLineResponse)
     })
@@ -292,8 +292,9 @@ export function requestUpdateOrderLine(
   data: UpdateOrderLineParams
 ): Promise<IOrderLineData> {
   const { orderLineUuid, description, quantity, price, discountRate } = data
-  return requestRest({
+  return request({
     url: '/pos/update-order-line',
+    method: 'POST',
     data: {
       // is_add_quantity: true,
       order_line_uuid: orderLineUuid,
@@ -303,7 +304,6 @@ export function requestUpdateOrderLine(
       discount_rate: discountRate
     }
   })
-    .then(evaluateResponse)
     .then(createOrderLineResponse => {
       return convertOrderLine(createOrderLineResponse)
     })
@@ -313,20 +313,24 @@ export function requestDeleteOrderLine(
   data: IDeleteOrderLineParams
 ): Promise<any> {
   const { orderLineUuid } = data
-  return requestRest({
+  return request({
     url: '/pos/delete-order-line',
+    method: 'POST',
     data: {
       order_line_uuid: orderLineUuid
     }
-  }).then(evaluateResponse)
+  }).then(response => {
+    return response
+  })
 }
 
 export function requestListOrderLines(
   data: IListOrderLinesParams
 ): Promise<IListOrderLinesResponse> {
   const { orderUuid, pageSize, pageToken } = data
-  return requestRest({
+  return request({
     url: '/pos/list-order-lines',
+    method: 'POST',
     data: {
       order_uuid: orderUuid
     },
@@ -335,7 +339,6 @@ export function requestListOrderLines(
       page_token: pageToken
     }
   })
-    .then(evaluateResponse)
     .then(ordersLineListResponse => {
       return {
         nextPageToken: ordersLineListResponse.next_page_token,
@@ -353,13 +356,13 @@ export function getKeyLayout(
   data: IGetKeyLayoutParams
 ): Promise<IKeyLayoutData> {
   const { keyLayoutUuid } = data
-  return requestRest({
+  return request({
     url: '/pos/get-key-layout',
+    method: 'POST',
     data: {
       key_layout_uuid: keyLayoutUuid
     }
   })
-    .then(evaluateResponse)
     .then(keyLayoutResponse => {
       return convertKeyLayout(keyLayoutResponse)
     })
@@ -377,8 +380,9 @@ export function getProductPriceList(
     pageToken,
     pageSize
   } = data
-  return requestRest({
+  return request({
     url: '/pos/list-product-prices',
+    method: 'POST',
     data: {
       price_list_uuid: priceListUuid,
       search_value: searchValue,
@@ -391,7 +395,6 @@ export function getProductPriceList(
       page_token: pageToken
     }
   })
-    .then(evaluateResponse)
     .then(productPriceListResponse => {
       return {
         nextPageToken: productPriceListResponse.next_page_token,
@@ -457,8 +460,9 @@ export function createPayment(data: {
   currencyUuid: string
 }) {
   const { posUuid, orderUuid, invoiceUuid, bankUuid, referenceNo, description, amount, paymentDate, tenderTypeCode, currencyUuid } = data
-  return requestRest({
+  return request({
     url: '/pos/create-payment',
+    method: 'POST',
     data: {
       pos_uuid: posUuid,
       order_uuid: orderUuid,
@@ -472,7 +476,6 @@ export function createPayment(data: {
       currency_uuid: currencyUuid
     }
   })
-    .then(evaluateResponse)
     .then(createPaymentResponse => {
       return createPaymentResponse
     })
@@ -490,8 +493,9 @@ export function updatePayment(data: {
   tenderTypeCode: any
 }) {
   const { paymentDate, paymentUuid, bankUuid, referenceNo, description, amount, tenderTypeCode } = data
-  return requestRest({
+  return request({
     url: '/pos/update-payment',
+    method: 'POST',
     data: {
       payment_uuid: paymentUuid,
       bank_uuid: bankUuid,
@@ -502,7 +506,6 @@ export function updatePayment(data: {
       tender_type_code: tenderTypeCode
     }
   })
-    .then(evaluateResponse)
     .then(updatePaymentResponse => {
       return updatePaymentResponse
     })
@@ -514,13 +517,13 @@ export function deletePayment(data: {
   paymentUuid: string
 }) {
   const { paymentUuid } = data
-  return requestRest({
+  return request({
     url: '/pos/delete-payment',
+    method: 'POST',
     data: {
       payment_uuid: paymentUuid
     }
   })
-    .then(evaluateResponse)
     .then(deletePaymentResponse => {
       return deletePaymentResponse
     })
@@ -533,14 +536,14 @@ export function getPaymentsList(data: {
   orderUuid: string
 }):Promise<IResponseList<IPaymentsData>> {
   const { posUuid, orderUuid } = data
-  return requestRest({
+  return request({
     url: '/pos/list-payments',
+    method: 'POST',
     data: {
       pos_uuid: posUuid,
       order_uuid: orderUuid
     }
   })
-    .then(evaluateResponse)
     .then(listPaymentsResponse => {
       return {
         nextPageToken: listPaymentsResponse.next_page_token,
@@ -600,8 +603,9 @@ export function processOrder(data: {
       }
     })
   }
-  return requestRest({
+  return request({
     url: '/pos/process-order',
+    method: 'POST',
     data: {
       pos_uuid: posUuid,
       order_uuid: orderUuid,
@@ -609,7 +613,6 @@ export function processOrder(data: {
       payments: payments
     }
   })
-    .then(evaluateResponse)
     .then(processOrderResponse => {
       return processOrderResponse
     })

@@ -1,7 +1,4 @@
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import {
   IProcessRequestData,
   convertProcessLog,
@@ -17,11 +14,11 @@ import {
 export function requestRunProcess(
   requestData: IProcessRequestData
 ): Promise<IProcessLogData> {
-  return requestRest({
+  return request({
     url: '/data/process',
+    method: 'POST',
     data: requestData
   })
-    .then(evaluateResponse)
     .then(processRunResponse => {
       return convertProcessLog(processRunResponse)
     })
@@ -30,8 +27,9 @@ export function requestRunProcess(
 export function requestListProcessesLogs(
   requestData: IProcessListData
 ): Promise<IProcessLogListData> {
-  return requestRest({
+  return request({
     url: '/logs/list-process-logs',
+    method: 'POST',
     data: {
       instance_uuid: requestData.instanceUuid,
       user_uuid: requestData.userUuid,
@@ -44,7 +42,6 @@ export function requestListProcessesLogs(
       page_token: requestData.pageToken
     }
   })
-    .then(evaluateResponse)
     .then(response => {
       return {
         recordCount: response.record_count,

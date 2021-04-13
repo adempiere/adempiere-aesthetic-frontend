@@ -1,6 +1,5 @@
-import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { IValueData } from '../../core'
-import { ApiRest as serviceApi } from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 
 export const setPreference = (data: {
   parentUuid: string
@@ -12,8 +11,9 @@ export const setPreference = (data: {
   isForCurrentContainer: IValueData
 }): any => {
   const { parentUuid, attribute, value, isForCurrentClient, isForCurrentContainer, isForCurrentOrganization, isForCurrentUser } = data
-  return serviceApi({
+  return request({
     url: '/ui/set-preference',
+    method: 'POST',
     data: {
       container_uuid: parentUuid,
       column_name: attribute,
@@ -35,8 +35,9 @@ export const deletePreference = (data: {
   isForCurrentContainer: IValueData
 }) :Promise<any> => {
   const { parentUuid, attribute, isForCurrentClient, isForCurrentContainer, isForCurrentOrganization, isForCurrentUser } = data
-  return serviceApi({
+  return request({
     url: '/ui/delete-preference',
+    method: 'POST',
     data: {
       container_uuid: parentUuid,
       column_name: attribute,

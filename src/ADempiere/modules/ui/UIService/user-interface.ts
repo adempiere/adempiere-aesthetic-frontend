@@ -1,8 +1,5 @@
 // Get Instance for connection
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import {
   IResourceReferenceParams,
   IAttachmentParams,
@@ -24,7 +21,7 @@ export function requestResourceReference(
   data: IResourceReferenceParams
 ): Promise<IResourceReferenceData> {
   const { recordId, recordUuid } = data
-  return requestRest({
+  return request({
     url: '/ui/resource-reference',
     method: 'get',
     params: {
@@ -32,7 +29,6 @@ export function requestResourceReference(
       image_uuid: recordUuid
     }
   })
-    .then(evaluateResponse)
     .then((response: any) => {
       return convertResourceReference(response)!
     })
@@ -49,7 +45,7 @@ export function requestAttachment(
   data: IAttachmentParams
 ): Promise<IAttachmentData> {
   const { tableName, recordUuid, recordId } = data
-  return requestRest({
+  return request({
     url: '/ui/attachment',
     method: 'get',
     params: {
@@ -58,7 +54,6 @@ export function requestAttachment(
       uuid: recordUuid
     }
   })
-    .then(evaluateResponse)
     .then((response: any) => {
       return convertAttachment(response)
     })

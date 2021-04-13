@@ -6,13 +6,13 @@ export interface IConfigData {
     adempiere: {
         api: {
             url: string
-            service: string
-            fullPath: string
+            service?: string
+            fullPath?: string
         }
         images: {
             url: string
-            service: string
-            fullPath: string
+            service?: string
+            fullPath?: string
         }
     }
 }

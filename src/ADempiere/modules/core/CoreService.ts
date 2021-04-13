@@ -1,8 +1,5 @@
 // Get Instance for connectionimport {
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import {
   convertBusinessPartner,
   convertConversionRate,
@@ -44,8 +41,9 @@ export function requestGetProductPrice(
     warehouseUuid,
     validFrom
   } = data
-  return requestRest({
+  return request({
     url: '/pos/get-product-price',
+    method: 'POST',
     data: {
       search_value: searchValue,
       upc,
@@ -57,7 +55,6 @@ export function requestGetProductPrice(
       valid_from: validFrom
     }
   })
-    .then(evaluateResponse)
     .then(productPriceResponse => {
       return convertProductPrice(productPriceResponse)
     })
@@ -68,8 +65,9 @@ export function requestOrganizationsList(
   data: IOrganizationsListParams
 ): Promise<IOrganizationsListResponse> {
   const { roleId, roleUuid, pageSize, pageToken } = data
-  return requestRest({
+  return request({
     url: '/core/list-organizations',
+    method: 'POST',
     data: {
       role_id: roleId,
       role_uuid: roleUuid
@@ -79,7 +77,6 @@ export function requestOrganizationsList(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then(organizationsListResponse => {
       return {
         nextPageToken: organizationsListResponse.next_page_token,
@@ -98,8 +95,9 @@ export function requestWarehousesList(
   data: IWarehousesListParams
 ): Promise<IWarehousesListResponse> {
   const { organizationId, organizationUuid, pageToken, pageSize } = data
-  return requestRest({
+  return request({
     url: '/core/list-warehouses',
+    method: 'POST',
     data: {
       organization_id: organizationId,
       organization_uuid: organizationUuid
@@ -110,7 +108,6 @@ export function requestWarehousesList(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then(warehousesListResponse => {
       return {
         nextPageToken: warehousesListResponse.next_page_token,
@@ -124,7 +121,7 @@ export function requestGetCountryDefinition(
   data: IGetCountryDefinitionParams
 ): Promise<ICountryData> {
   const { id, uuid } = data
-  return requestRest({
+  return request({
     url: '/core/country',
     method: 'get',
     params: {
@@ -132,7 +129,6 @@ export function requestGetCountryDefinition(
       uuid
     }
   })
-    .then(evaluateResponse)
     .then(countryResponse => {
       return convertCountry(countryResponse)
     })
@@ -142,14 +138,14 @@ export function requestLanguagesList(
   data: ILanguagesListParams
 ): Promise<ILanguajesListResponse> {
   const { pageToken, pageSize } = data
-  return requestRest({
+  return request({
     url: '/core/list-languages',
+    method: 'POST',
     params: {
       pageToken,
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then((languagesListResponse: any) => {
       return {
         nextPageToken: languagesListResponse.next_page_token,
@@ -191,8 +187,9 @@ export function requestCreateBusinessPartner(
     countryUuid,
     posUuid
   } = data
-  return requestRest({
+  return request({
     url: '/core/create-business-partner',
+    method: 'POST',
     data: {
       value,
       tax_id: taxId,
@@ -219,7 +216,6 @@ export function requestCreateBusinessPartner(
       pos_uuid: posUuid
     }
   })
-    .then(evaluateResponse)
     .then(businessPartnerResponse => {
       return convertBusinessPartner(businessPartnerResponse)
     })
@@ -229,14 +225,13 @@ export function requestGetBusinessPartner(
   data: IGetBusinessPartnerParams
 ): Promise<IBusinessPartnerData> {
   const { searchValue } = data
-  return requestRest({
+  return request({
     url: '/core/get-business-partner',
     method: 'get',
     params: {
       search_value: searchValue
     }
   })
-    .then(evaluateResponse)
     .then(businessPartnerResponse => {
       return convertBusinessPartner(businessPartnerResponse)
     })
@@ -256,8 +251,9 @@ export function requestListBusinessPartner(
     pageSize,
     pageToken
   } = data
-  return requestRest({
+  return request({
     url: '/core/list-business-partner',
+    method: 'POST',
     data: {
       search_value: searchValue,
       value,
@@ -273,7 +269,6 @@ export function requestListBusinessPartner(
       page_token: pageToken
     }
   })
-    .then(evaluateResponse)
     .then(businessPartnerResponse => {
       return {
         nextPageToken: businessPartnerResponse.next_page_token,
@@ -304,7 +299,7 @@ export function requestGetConversionRate(
     currencyFromUuid,
     currencyToUuid
   } = data
-  return requestRest({
+  return request({
     url: '/core/get-conversion-rate',
     data: {
       conversion_type_uuid: conversionTypeUuid,
@@ -313,7 +308,6 @@ export function requestGetConversionRate(
       // conversion_date: conversionDate
     }
   })
-    .then(evaluateResponse)
     .then(conversionRateResponse => {
       return convertConversionRate(conversionRateResponse)
     })
