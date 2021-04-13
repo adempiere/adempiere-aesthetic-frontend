@@ -39,8 +39,6 @@ service.interceptors.response.use(
     // code == 50005: username or password is incorrect
     // You can change this part for your own usage.
     const res = response.data
-    console.log('response from server')
-    console.log(res)
     if (res.code >= 400) {
       // Message({
       //   message: res.message || 'Error',
