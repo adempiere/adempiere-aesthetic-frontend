@@ -25,8 +25,8 @@ import Preference from '@/ADempiere/shared/components/Field/Popover/Preference/i
     DocumentStatus,
     OperatorComparison,
     Translated,
-    Calculator
-    // Preference
+    Calculator,
+    Preference
   },
   mixins: [Template]
 })
