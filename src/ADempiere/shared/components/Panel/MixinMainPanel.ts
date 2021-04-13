@@ -7,7 +7,7 @@ import { PanelContextType } from '../../utils/DictionaryUtils/ContextMenuType'
 import { IFieldDataExtendedUtils } from '../../utils/DictionaryUtils/type'
 import { Namespaces } from '../../utils/types'
 import { convertObjectToKeyValue } from '../../utils/valueFormat'
-import { parsedValueComponent } from '../../utils/valueUtils'
+import { isEmptyValue, parsedValueComponent } from '../../utils/valueUtils'
 import FieldDefinition from '../Field'
 import FilterFields from './FilterFields'
 import { LOG_COLUMNS_NAME_LIST } from '@/ADempiere/shared/utils/dataUtils'
@@ -328,11 +328,13 @@ export default class MixinMainPanel extends Vue {
                 recordUuid: route.query.recordUuid,
                 referenceUuid: route.query.referenceUuid
               })
+              if (!isEmptyValue(referenceInfo)) {
+                parameters.referenceUuid = referenceInfo.uuid
+                parameters.referenceWhereClause = referenceInfo.whereClause
+              }
               route.params.isReadParameters = 'true'
               parameters.isLoadAllRecords = false
               parameters.isReference = true
-              parameters.referenceUuid = referenceInfo.uuid
-              parameters.referenceWhereClause = referenceInfo.whereClause
             } else if (
               route.query.action &&
                 route.query.action === 'create-new'
