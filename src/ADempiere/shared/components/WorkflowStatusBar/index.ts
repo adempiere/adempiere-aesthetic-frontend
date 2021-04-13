@@ -7,7 +7,7 @@ import {
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { IFieldDataExtendedUtils } from '../../utils/DictionaryUtils/type'
 import { Namespaces } from '../../utils/types'
-import { tagStatus } from '../../utils/valueUtils'
+import { isEmptyValue, tagStatus } from '../../utils/valueUtils'
 import Template from './template.vue'
 
 @Component({
@@ -15,7 +15,13 @@ import Template from './template.vue'
   mixins: [Template]
 })
 export default class WorkflowStatusBar extends Vue {
-    @Prop({ type: Object, default: {} }) styleSteps: any
+    @Prop({
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }) styleSteps: any
+
     @Prop({ type: String, default: '' }) parentUuid!: string
     @Prop({ type: String, default: '' }) containerUuid!: string
     @Prop({ type: String, default: 'window' }) panelType!: string
@@ -27,6 +33,10 @@ export default class WorkflowStatusBar extends Vue {
     public documentStatusesList: any[] = []
 
     // Computed properties
+    get tableName(): string {
+      return this.$store.getters[Namespaces.WindowDefinition + '/' + 'getTableNameFromTab'](this.parentUuid, this.containerUuid)
+    }
+
     get value(): any {
       return this.$store.getters[
         Namespaces.FieldValue + '/' + 'getValueOfField'
@@ -38,7 +48,7 @@ export default class WorkflowStatusBar extends Vue {
     }
 
     set value(value: any) {
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
         columnName: this.columnName,
@@ -61,7 +71,7 @@ export default class WorkflowStatusBar extends Vue {
       const panel: IPanelDataExtended | undefined = this.$store.getters[
         Namespaces.Panel + '/' + 'getPanel'
       ](this.containerUuid)
-      if (panel) {
+      if (panel && !isEmptyValue(panel)) {
         const field:
                 | IFieldDataExtendedUtils
                 | undefined = panel.fieldsList.find(fieldItem => {
@@ -93,8 +103,20 @@ export default class WorkflowStatusBar extends Vue {
     }
 
     get listDocumentActions(): IDocumentActionData[] {
-      // TODO: Add current value in disabled
-      return this.documentActions.documentActionsList
+      const documentActionsList = this.documentActions.documentActionsList
+      // verify if current status exists into list
+      const isExistsCurrentLabel = documentActionsList.some(actionItem => {
+        return actionItem.name === this.displayedValue
+      })
+      if (!isExistsCurrentLabel) {
+        // add current status into list
+        documentActionsList.push({
+          value: this.value,
+          name: this.displayedValue,
+          isDisabled: true
+        })
+      }
+      return documentActionsList
     }
 
     get infoDocumentAction(): IDocumentActionData | any {
@@ -107,7 +129,7 @@ export default class WorkflowStatusBar extends Vue {
               }
             )
 
-      if (!found) {
+      if (isEmptyValue(found)) {
         return value
       }
       return found
@@ -122,9 +144,9 @@ export default class WorkflowStatusBar extends Vue {
       if (isShowList) {
         // if (!this.withoutRecord && this.$route.query.action !== this.documentActions.recordUuid) {
         if (this.$route.query.action !== this.documentActions.recordUuid) {
-          this.$store.dispatch('listDocumentActionStatus', {
+          this.$store.dispatch(Namespaces.ContextMenu + '/' + 'listDocumentActionStatus', {
             recordUuid: this.$route.query.action,
-            tableName: this.$route.params.tableName,
+            tableName: this.tableName,
             recordId: this.$route.params.recordId
           })
         }

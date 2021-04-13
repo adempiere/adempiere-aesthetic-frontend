@@ -255,5 +255,6 @@ export interface IDocumentStatusData {
 export interface IDocumentActionData {
     value: string
     name: string
-    description: string
+    description?: string
+    isDisabled?: boolean
 }
