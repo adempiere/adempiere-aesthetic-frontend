@@ -10,6 +10,7 @@ import fieldsListProductPrice from '../fieldsList'
 import Template from './template.vue'
 import FieldDefinition from '@/ADempiere/shared/components/Field'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 
 @Component({
   name: 'ProductList',
@@ -43,7 +44,7 @@ export default class ProductList extends Mixins(MixinForm) {
 
   // Computed properties
   get isMobile() {
-    return this.$store.state.app.device === 'mobile'
+    return this.$store.state.app.device === DeviceType.Mobile
   }
 
   get defaultImage() {
