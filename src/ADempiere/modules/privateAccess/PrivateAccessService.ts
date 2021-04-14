@@ -1,8 +1,5 @@
 // Get Instance for connection
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import { convertPrivateAccess } from './PrivateAccessConvert'
 import { IPrivateAccessData } from './PrivateAccessType'
 
@@ -13,15 +10,15 @@ export function requestGetPrivateAccess(data: {
     recordUuid: string
   }): Promise<IPrivateAccessData> {
   const { tableName, recordUuid, recordId } = data
-  return requestRest({
+  return request({
     url: '/ui/get-private-access',
+    method: 'POST',
     data: {
       table_name: tableName,
       id: recordId,
       uuid: recordUuid
     }
   })
-    .then(evaluateResponse)
     .then((responsePrivateAccess: any) => {
       return convertPrivateAccess(responsePrivateAccess)
     })
@@ -34,15 +31,15 @@ export function requestLockPrivateAccess(data: {
     recordUuid: string
   }): Promise<IPrivateAccessData> {
   const { tableName, recordUuid, recordId } = data
-  return requestRest({
+  return request({
     url: '/ui/lock-private-access',
+    method: 'POST',
     data: {
       table_name: tableName,
       id: recordId,
       uuid: recordUuid
     }
   })
-    .then(evaluateResponse)
     .then((responsePrivateAccess: any) => {
       return convertPrivateAccess(responsePrivateAccess)
     })
@@ -55,15 +52,15 @@ export function requestUnlockPrivateAccess(data: {
     recordUuid: string
   }): Promise<IPrivateAccessData> {
   const { tableName, recordUuid, recordId } = data
-  return requestRest({
+  return request({
     url: '/ui/unlock-private-access',
+    method: 'POST',
     data: {
       table_name: tableName,
       id: recordId,
       uuid: recordUuid
     }
   })
-    .then(evaluateResponse)
     .then((responsePrivateAccess: any) => {
       return convertPrivateAccess(responsePrivateAccess)
     })
@@ -83,16 +80,18 @@ export function getAccessList(data: {
   sessionUuid: string
 }): Promise<any> {
   const { tableName, recordId, recordUuid, sessionUuid } = data
-  return requestRest({
+  return request({
     url: '/ui/update-access-record',
+    method: 'POST',
     params: {
       table_name: tableName,
       id: recordId,
       uuid: recordUuid,
       token: sessionUuid
     }
+  }).then(respose => {
+    return respose
   })
-    .then(evaluateResponse)
 }
 
 /**
@@ -109,8 +108,9 @@ export function updateAccessRecord(data: {
   listRecord: any[]
 }): Promise<any> {
   const { tableName, recordUuid, recordId, listRecord } = data
-  return requestRest({
+  return request({
     url: '/ui/update-access-record',
+    method: 'POST',
     params: {
       table_name: tableName,
       id: recordId,
@@ -118,5 +118,7 @@ export function updateAccessRecord(data: {
       list_rol: listRecord
     }
   })
-    .then(evaluateResponse)
+    .then(response => {
+      return response
+    })
 }

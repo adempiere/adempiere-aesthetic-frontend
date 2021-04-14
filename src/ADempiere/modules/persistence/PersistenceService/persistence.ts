@@ -1,8 +1,7 @@
 // Get Instance for connection
 import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+  request
+} from '@/ADempiere/shared/utils/request'
 import { IRequestImageData } from '@/ADempiere/shared/utils/types'
 import { getImagePath } from '@/ADempiere/shared/utils/resource'
 import {
@@ -47,14 +46,14 @@ export function requestCreateEntity(
   //   }
   // )
 
-  return requestRest({
+  return request({
     url: '/data/create',
+    method: 'POST',
     data: {
       table_name: tableName,
       attributes: newAttributesList
     }
   })
-    .then(evaluateResponse)
     .then(entityCreateResponse => {
       return convertEntity(entityCreateResponse)
     })
@@ -72,8 +71,9 @@ export function requestUpdateEntity(data: IEntityData): Promise<IEntityData> {
   //   }
   // )
 
-  return requestRest({
+  return request({
     url: '/data/update',
+    method: 'POST',
     data: {
       table_name: tableName,
       id,
@@ -81,7 +81,6 @@ export function requestUpdateEntity(data: IEntityData): Promise<IEntityData> {
       attributes: attributesList
     }
   })
-    .then(evaluateResponse)
     .then(entityUpdateResponse => {
       return convertEntity(entityUpdateResponse)
     })
@@ -89,22 +88,26 @@ export function requestUpdateEntity(data: IEntityData): Promise<IEntityData> {
 
 export function requestDeleteEntity(data: IDeleteEntityParams): Promise<any> {
   const { uuid, id, tableName } = data
-  return requestRest({
+  return request({
     url: '/data/delete',
+    method: 'POST',
     data: {
       table_name: tableName,
       id,
       uuid
     }
-  }).then(evaluateResponse)
+  }).then(response => {
+    return response
+  })
 }
 
 export function rollbackEntity(
   data: IRollbackEntityParams
 ): Promise<IEntityData> {
   const { tableName, id, uuid, eventType } = data
-  return requestRest({
+  return request({
     url: '/data/rollback-entity',
+    method: 'POST',
     data: {
       table_name: tableName,
       id,
@@ -112,7 +115,6 @@ export function rollbackEntity(
       event_type: eventType
     }
   })
-    .then(evaluateResponse)
     .then(entityResponse => {
       return convertEntity(entityResponse)
     })
@@ -123,7 +125,7 @@ export function requestGetEntity(
   data: IDeleteEntityParams
 ): Promise<IEntityData> {
   const { id, uuid, tableName } = data
-  return requestRest({
+  return request({
     url: '/data/entity',
     method: 'get',
     params: {
@@ -132,7 +134,6 @@ export function requestGetEntity(
       id
     }
   })
-    .then(evaluateResponse)
     .then(entityResponse => {
       return convertEntity(entityResponse)
     })
@@ -167,8 +168,9 @@ export function requestListEntities(
     })
   }
 
-  return requestRest({
+  return request({
     url: '/data/list',
+    method: 'POST',
     data: {
       table_name: tableName,
       // DSL Query
@@ -186,7 +188,6 @@ export function requestListEntities(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then(entitiesListResponse => {
       return convertEntityList(entitiesListResponse)
     })
@@ -196,8 +197,9 @@ export function requestTranslations(
   data: ITranslationRequestParams
 ): Promise<ITranslationResponseData> {
   const { tableName, language, uuid, id, pageSize, pageToken } = data
-  return requestRest({
+  return request({
     url: '/ui/list-translations',
+    method: 'POST',
     data: {
       table_name: tableName,
       id,
@@ -210,7 +212,6 @@ export function requestTranslations(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then(languageListResponse => {
       return {
         nextPageToken: languageListResponse.next_page_token,
@@ -230,7 +231,7 @@ export function requestResource(
   callBack: IResourceCallbacksParams
 ): Promise<any> {
   const { resourceUuid } = data
-  const stream = requestRest({
+  const stream = request({
     url: '/resource',
     method: 'get',
     params: {
@@ -256,7 +257,7 @@ export function requestImage(data: IRequestImageData): AxiosPromise<any> {
     operation
   })
 
-  return requestRest({
+  return request({
     url: urn,
     method: 'get',
     responseType: 'arraybuffer'

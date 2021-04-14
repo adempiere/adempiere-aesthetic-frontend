@@ -9,25 +9,25 @@ import ConvertAmount from './ConvertAmount'
 import fieldListCollection from './fieldListCollection'
 import Template from './template.vue'
 import TypeCollection from './TypeCollection'
-import FieldDefinition from '@/ADempiere/shared/components/Field'
 
 @Component({
   name: 'Collection',
   components: {
     TypeCollection,
-    ConvertAmount,
-    FieldDefinition
+    ConvertAmount
   },
   mixins: [MixinForm, Template]
 })
 export default class Collection extends Mixins(MixinForm) {
     @Prop({ type: Boolean, required: false }) isLoadedPanel!: boolean
-    @Prop({ type: Object, default: undefined }) amount?: any = undefined
+    @Prop({ type: Object, default: undefined }) amount?: any
     @Prop({
       type: Object,
-      default: {
-        uuid: 'Collection',
-        containerUuid: 'Collection'
+      default: () => {
+        return {
+          uuid: 'Collection',
+          containerUuid: 'Collection'
+        }
       }
     }) metadata: any
 

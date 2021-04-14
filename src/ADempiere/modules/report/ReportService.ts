@@ -1,8 +1,5 @@
 // Get Instance for connection
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import {
   convertReportView,
   convertReportOutput,
@@ -15,7 +12,6 @@ import {
   IReportsViewResponse,
   IListPrintsFormatsRequest,
   IListReportDrillTablesRequest,
-  IReportDrillTableResponse,
   IListReportOutputRequest,
   IReportOutputData
 } from './ReportType'
@@ -30,8 +26,9 @@ export function requestListReportsViews(
   data: IListReportsViewsRequest
 ): Promise<IReportsViewResponse> {
   const { tableName, processUuid, pageToken, pageSize } = data
-  return requestRest({
+  return request({
     url: '/ui/list-report-views',
+    method: 'POST',
     data: {
       table_name: tableName,
       process_uuid: processUuid
@@ -41,7 +38,6 @@ export function requestListReportsViews(
       page_size: pageSize
     }
   })
-    .then(evaluateResponse)
     .then(reportViewResponse => {
       return {
         nextPageToken: reportViewResponse.next_page_token,
@@ -60,8 +56,9 @@ export function requestListPrintFormats(
   data: IListPrintsFormatsRequest
 ): Promise<IListPrintsFormatsData> {
   const { tableName, processUuid, reportViewUuid, pageToken, pageSize } = data
-  return requestRest({
+  return request({
     url: '/ui/list-print-formats',
+    method: 'POST',
     data: {
       table_name: tableName,
       report_view_uuid: reportViewUuid,
@@ -72,7 +69,6 @@ export function requestListPrintFormats(
       page_size: pageSize
     }
   })
-    .then(evaluateResponse)
     .then(responseListPrintFormats => {
       return convertListPrintFormats(responseListPrintFormats)
     })
@@ -83,8 +79,9 @@ export function requestListDrillTables(
   data: IListReportDrillTablesRequest
 ): any /* Promise<IReportDrillTableResponse> */ {
   const { tableName, pageToken, pageSize } = data
-  requestRest({
+  request({
     url: '/ui/list-drill-tables',
+    method: 'POST',
     data: {
       table_name: tableName
     },
@@ -93,7 +90,6 @@ export function requestListDrillTables(
       page_size: pageSize
     }
   })
-    .then(evaluateResponse)
     .then(drillTablesResponse => {
       return {
         list: drillTablesResponse.records.map(
@@ -111,8 +107,9 @@ export function requestListDrillTables(
 export function requestGetReportOutput(
   data: IListReportOutputRequest
 ): Promise<IReportOutputData> {
-  return requestRest({
+  return request({
     url: '/ui/get-report-output',
+    method: 'POST',
     data: {
       table_name: data.tableName,
       // reference
@@ -129,7 +126,6 @@ export function requestGetReportOutput(
       order_by_clause: data.orderByClause
     }
   })
-    .then(evaluateResponse)
     .then(reportOutpuResponse => {
       return convertReportOutput(reportOutpuResponse)
     })

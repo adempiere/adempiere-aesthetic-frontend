@@ -1,8 +1,5 @@
 // Get Instance for connection
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import { IResponseList } from '@/ADempiere/shared/utils/types'
 import {
   convertChatEntry,
@@ -18,8 +15,9 @@ export function requestListEntityLogs(
   data: IWorkflowExtendedParams
 ): Promise<IListEntityLogsResponse> {
   const { tableName, recordId, recordUuid, pageToken, pageSize } = data
-  return requestRest({
+  return request({
     url: '/logs/list-entity-logs',
+    method: 'POST',
     data: {
       table_name: tableName,
       id: recordId,
@@ -31,7 +29,6 @@ export function requestListEntityLogs(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then((entityLogsListResponse: any) => {
       return {
         nextPageToken: entityLogsListResponse.next_page_token,
@@ -48,8 +45,9 @@ export function requestListEntityLogs(
 // Get workflow log for a record
 export function requestListWorkflowsLogs(data: IWorkflowExtendedParams): Promise<IResponseList<IWorkflowProcessData>> {
   const { tableName, recordUuid, recordId, pageSize, pageToken } = data
-  return requestRest({
+  return request({
     url: '/logs/list-workflow-logs',
+    method: 'POST',
     data: {
       table_name: tableName,
       id: recordId,
@@ -61,7 +59,6 @@ export function requestListWorkflowsLogs(data: IWorkflowExtendedParams): Promise
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then((workflowLogsListResponse: any) => {
       return {
         nextPageToken: workflowLogsListResponse.next_page_token,
@@ -80,8 +77,9 @@ export function requestListWorkflows(
   data: IWorkflowParams
 ): Promise<IListWorkflowsResponse> {
   const { tableName, pageToken, pageSize } = data
-  return requestRest({
+  return request({
     url: '/workflow/list-workflow',
+    method: 'POST',
     data: {
       table_name: tableName
     },
@@ -91,7 +89,6 @@ export function requestListWorkflows(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then((workflowListResponse: any) => {
       return {
         nextPageToken: workflowListResponse.next_page_token,
@@ -116,8 +113,9 @@ export function requestListEntityChats(
   data: IWorkflowExtendedParams
 ): Promise<IListEntityChatsResponse> {
   const { tableName, recordId, recordUuid, pageSize, pageToken } = data
-  return requestRest({
+  return request({
     url: '/logs/list-entity-chats',
+    method: 'POST',
     data: {
       table_name: tableName,
       id: recordId,
@@ -129,7 +127,6 @@ export function requestListEntityChats(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then((entityChatListResponse: any) => {
       return {
         nextPageToken: entityChatListResponse.next_page_token,
@@ -147,8 +144,9 @@ export function requestListChatsEntries(
   data: IListChatEntriesParams
 ): Promise<IListChatEntriesResponse> {
   const { id, uuid, pageToken, pageSize } = data
-  return requestRest({
+  return request({
     url: '/logs/list-chat-entries',
+    method: 'POST',
     data: {
       id,
       uuid
@@ -159,7 +157,6 @@ export function requestListChatsEntries(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then((chatEntriesListResponse: any) => {
       return {
         nextPageToken: chatEntriesListResponse.next_page_token,
@@ -183,8 +180,9 @@ export function requestCreateChatEntry(
   data: ICreateChatEntryParams
 ): Promise<IChatEntryData> {
   const { tableName, recordUuid, recordId, comment } = data
-  return requestRest({
+  return request({
     url: '/ui/create-chat-entry',
+    method: 'POST',
     data: {
       table_name: tableName,
       id: recordId,
@@ -192,7 +190,6 @@ export function requestCreateChatEntry(
       comment: comment
     }
   })
-    .then(evaluateResponse)
     .then((chatEntryResponse: any) => {
       return convertChatEntry(chatEntryResponse)
     })
@@ -220,8 +217,9 @@ export function requestListDocumentStatuses(
     pageSize,
     pageToken
   } = data
-  return requestRest({
+  return request({
     url: '/workflow/list-document-statuses',
+    method: 'POST',
     data: {
       id: recordId,
       uuid: recordUuid,
@@ -234,7 +232,6 @@ export function requestListDocumentStatuses(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then((listDocumentsActionsResponse: any) => {
       return {
         nextPageToken: listDocumentsActionsResponse.next_page_token,
@@ -257,8 +254,9 @@ export function requestListDocumentActions(
     pageToken,
     pageSize
   } = data
-  return requestRest({
+  return request({
     url: '/workflow/list-document-actions',
+    method: 'POST',
     data: {
       id: recordId,
       uuid: recordUuid,
@@ -272,7 +270,6 @@ export function requestListDocumentActions(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then((listDocumentsActionsResponse: any) => {
       return {
         nextPageToken: listDocumentsActionsResponse.next_page_token,

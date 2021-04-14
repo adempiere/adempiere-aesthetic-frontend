@@ -1,8 +1,5 @@
 // Get Instance for connection
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import { convertEntityList } from '@/ADempiere/modules/persistence'
 import {
   FilterType,
@@ -52,7 +49,7 @@ export function requestBrowserSearch(
     }
   )
 
-  return requestRest({
+  return request({
     url: '/ui/list-browser-items',
     data: {
       // Running Parameters
@@ -72,7 +69,6 @@ export function requestBrowserSearch(
       page_size: pageSize
     }
   })
-    .then(evaluateResponse)
     .then(responseBrowserSearch => {
       return convertEntityList(responseBrowserSearch)
     })

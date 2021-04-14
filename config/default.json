@@ -1,18 +1,14 @@
 {
-    "server": {
-        "host": "localhost",
-        "port": 9527
+  "server": {
+    "host": "localhost",
+    "port": 9527
+  },
+  "adempiere": {
+    "api": {
+      "url": "http://localhost:8085/adempiere-api"
     },
-    "adempiere": {
-        "api": {
-            "url": "http://localhost:8085",
-            "service": "/adempiere-api",
-            "fullPath": "http://localhost:8085/adempiere-api"
-        },
-        "images": {
-            "url": "http://localhost:8085",
-            "service": "/adempiere-api",
-            "fullPath": "http://localhost:8085/adempiere-api/img"
-        }
+    "images": {
+      "url": "http://localhost:8085/adempiere-api/img"
     }
+  }
 }

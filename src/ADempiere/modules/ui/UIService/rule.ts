@@ -1,7 +1,4 @@
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import { ICallOutData, ICallOutParams } from '../UITypes'
 
 export function runCallOutRequest(data: ICallOutParams): Promise<ICallOutData> {
@@ -18,8 +15,9 @@ export function runCallOutRequest(data: ICallOutParams): Promise<ICallOutData> {
     attributesList
   } = data
 
-  return requestRest({
+  return request({
     url: '/ui/run-callout',
+    method: 'POST',
     data: {
       table_name: tableName,
       window_uuid: windowUuid,
@@ -31,5 +29,7 @@ export function runCallOutRequest(data: ICallOutParams): Promise<ICallOutData> {
       window_no: windowNo,
       attributes: attributesList
     }
-  }).then(evaluateResponse)
+  }).then(response => {
+    return response
+  })
 }

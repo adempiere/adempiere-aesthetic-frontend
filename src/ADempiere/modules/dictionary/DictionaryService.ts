@@ -1,7 +1,4 @@
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import {
   convertField,
   convertReference,
@@ -29,7 +26,7 @@ export const requestWindowMetadata = (
   data: IDictionaryRequest
 ): Promise<IWindowData> => {
   const { id, uuid } = data
-  return requestRest({
+  return request({
     url: '/dictionary/window',
     method: 'get',
     params: {
@@ -37,7 +34,6 @@ export const requestWindowMetadata = (
       id
     }
   })
-    .then(evaluateResponse)
     .then(response => {
       return convertWindow(response)
     })
@@ -52,7 +48,7 @@ export function requestProcessMetadata(
   data: IDictionaryRequest
 ): Promise<IProcessData> {
   const { id, uuid } = data
-  return requestRest({
+  return request({
     url: '/dictionary/process',
     method: 'get',
     params: {
@@ -60,7 +56,6 @@ export function requestProcessMetadata(
       id
     }
   })
-    .then(evaluateResponse)
     .then(response => {
       return convertProcess(response)
     })
@@ -75,7 +70,7 @@ export function requestBrowserMetadata(
   data: IDictionaryRequest
 ): Promise<IBrowserData> {
   const { id, uuid } = data
-  return requestRest({
+  return request({
     url: '/dictionary/browser',
     method: 'get',
     params: {
@@ -83,7 +78,6 @@ export function requestBrowserMetadata(
       id
     }
   })
-    .then(evaluateResponse)
     .then(response => {
       return convertBrowser(response)
     })
@@ -96,7 +90,7 @@ export function requestBrowserMetadata(
  */
 export function requestForm(data: IDictionaryRequest): Promise<IFormData> {
   const { id, uuid } = data
-  return requestRest({
+  return request({
     url: '/dictionary/form',
     method: 'get',
     params: {
@@ -104,7 +98,6 @@ export function requestForm(data: IDictionaryRequest): Promise<IFormData> {
       id
     }
   })
-    .then(evaluateResponse)
     .then(response => {
       return convertForm(response)
     })
@@ -113,7 +106,7 @@ export function requestForm(data: IDictionaryRequest): Promise<IFormData> {
 export function requestFieldMetadata(
   data: IDictionaryFieldRequest
 ): Promise<IFieldData> {
-  return requestRest({
+  return request({
     url: '/dictionary/field',
     method: 'get',
     params: {
@@ -127,7 +120,6 @@ export function requestFieldMetadata(
       element_column_name: data.elementColumnName
     }
   })
-    .then(evaluateResponse)
     .then(response => {
       return convertField(response)
     })
@@ -137,7 +129,7 @@ export function requestReference(data: {
     uuid: string
     columnName: string
 }): Promise<IReferenceData> {
-  return requestRest({
+  return request({
     url: '/dictionary/reference',
     method: 'get',
     params: {
@@ -145,7 +137,6 @@ export function requestReference(data: {
       column_name: data.columnName
     }
   })
-    .then(evaluateResponse)
     .then(response => {
       return convertReference(response)
     })
@@ -155,7 +146,7 @@ export function requestValidationRule(
   data: IDictionaryRequest
 ): Promise<IValidationRule> {
   const { id, uuid } = data
-  return requestRest({
+  return request({
     url: '/dictionary/validation',
     method: 'get',
     params: {
@@ -163,7 +154,6 @@ export function requestValidationRule(
       id
     }
   })
-    .then(evaluateResponse)
     .then(response => {
       return convertValidationRule(response)
     })

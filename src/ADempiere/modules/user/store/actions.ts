@@ -31,17 +31,10 @@ export const actions: UserActionTree = {
         organizationUuid,
         roleUuid
       })
-        .then((logInResponse: any) => {
-          if ([13, 500].includes(logInResponse.code)) {
-            reject(logInResponse)
-            return
-          }
-
-          const { result: resultedToken } = logInResponse
-
+        .then((resultedToken: any) => {
           context.commit('SET_TOKEN', resultedToken)
           setToken(resultedToken)
-          resolve(logInResponse)
+          resolve(resultedToken)
         })
         .catch(error => {
           reject(error)

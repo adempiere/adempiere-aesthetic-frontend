@@ -1,7 +1,4 @@
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import { IFavoriresFromServerParams } from '.'
 import {
   convertRecentItemsList,
@@ -23,8 +20,9 @@ export function requestListRecentItems(
   data: ListRecentItemsParams
 ): Promise<IRecentItemResponseData> {
   const { userUuid, roleUuid, pageToken, pageSize } = data
-  return requestRest({
+  return request({
     url: '/logs/list-recent-items',
+    method: 'POST',
     data: {
       user_uuid: userUuid,
       role_uuid: roleUuid,
@@ -36,7 +34,6 @@ export function requestListRecentItems(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then(recentItmesReponse => {
       return convertRecentItemsList(recentItmesReponse)
     })
@@ -46,8 +43,9 @@ export function getFavoritesFromServer(
   data: IFavoriresFromServerParams
 ): Promise<IFavoriresFromServerResponse> {
   const { userId, userUuid, pageToken, pageSize } = data
-  return requestRest({
+  return request({
     url: '/dashboard/list-favorites',
+    method: 'POST',
     data: {
       user_id: userId,
       user_uuid: userUuid
@@ -58,7 +56,6 @@ export function getFavoritesFromServer(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then(favoritesListReponse => {
       return {
         recordCount: favoritesListReponse.record_count,
@@ -77,8 +74,9 @@ export function getPendingDocumentsFromServer(
   data: IPendingDocumentsFromServerParams
 ): Promise<IPendingDocumentsFromServerResponse> {
   const { userId, userUuid, roleId, roleUuid, pageToken, pageSize } = data
-  return requestRest({
+  return request({
     url: '/dashboard/list-pending-documents',
+    method: 'POST',
     data: {
       user_id: userId,
       user_uuid: userUuid,
@@ -91,7 +89,6 @@ export function getPendingDocumentsFromServer(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then(pendingDocumentsListResponse => {
       return {
         recordCount: pendingDocumentsListResponse.record_count,
@@ -110,8 +107,9 @@ export function requestListDashboards(
   data: IListDashboardsParams
 ): Promise<IListDashboardsResponse> {
   const { roleId, roleUuid, pageToken, pageSize } = data
-  return requestRest({
+  return request({
     url: '/dashboard/list-dashboards',
+    method: 'POST',
     data: {
       role_id: roleId,
       role_uuid: roleUuid
@@ -122,7 +120,6 @@ export function requestListDashboards(
       pageSize
     }
   })
-    .then(evaluateResponse)
     .then(dashboardsListResponse => {
       return {
         recordCount: dashboardsListResponse.record_count,

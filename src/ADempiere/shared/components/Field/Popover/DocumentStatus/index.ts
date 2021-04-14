@@ -2,6 +2,7 @@ import { IDocumentActionData } from '@/ADempiere/modules/window'
 import { IListDocumentAction } from '@/ADempiere/modules/window/WindowType/VuexType'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
 
@@ -43,16 +44,16 @@ export default class FieldDocumentStatus extends Vue {
       return found.name
     }
 
-    get descriptionDocumentActions(): string {
+    get descriptionDocumentActions(): string | undefined {
       const found: IDocumentActionData | undefined = this.listDocumentActions.find((element: IDocumentActionData) => {
         if (element.value === this.valueActionDocument) {
           return element
         }
       })
-      if (!found) {
+      if (isEmptyValue(found)) {
         return this.valueActionDocument
       }
-      return found.description
+      return found!.description
     }
 
     get processOrderUuid(): any[] {
@@ -63,7 +64,7 @@ export default class FieldDocumentStatus extends Vue {
     listActionDocument(isShowList: boolean): void {
       if (isShowList) {
         if (!this.withoutRecord && this.$route.query.action !== this.documentActions.recordUuid) {
-          this.$store.dispatch('listDocumentActionStatus', {
+          this.$store.dispatch(Namespaces.ContextMenu + '/' + 'listDocumentActionStatus', {
             recordUuid: this.$route.query.action,
             tableName: this.$route.params.tableName,
             recordId: this.$route.params.recordId

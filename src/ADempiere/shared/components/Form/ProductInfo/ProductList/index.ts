@@ -9,6 +9,8 @@ import MixinForm from '../../MixinForm'
 import fieldsListProductPrice from '../fieldsList'
 import Template from './template.vue'
 import FieldDefinition from '@/ADempiere/shared/components/Field'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
 
 @Component({
   name: 'ProductList',
@@ -41,6 +43,10 @@ export default class ProductList extends Mixins(MixinForm) {
   public indexTable = 0
 
   // Computed properties
+  get isMobile() {
+    return this.$store.state.app.device === DeviceType.Mobile
+  }
+
   get defaultImage() {
     return require('@/image/ADempiere/pos/no-image.jpg')
   }
@@ -63,8 +69,8 @@ export default class ProductList extends Mixins(MixinForm) {
 
   get listWithPrice(): IProductPriceData[] {
     const { list } = this.productPrice
-    if (list && list.length) {
-      return list
+    if (!isEmptyValue(list)) {
+      return list!
     }
     return []
   }
@@ -84,17 +90,17 @@ export default class ProductList extends Mixins(MixinForm) {
 
   get listPrice(): number {
     const pos: IPointOfSalesData | undefined = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
-    if (pos) {
-      return pos.priceList.id
+    if (!isEmptyValue(pos)) {
+      return pos!.priceList.id
     }
     return 0
   }
 
   get process() {
-    if (this.reportAsociated) {
+    if (!isEmptyValue(this.reportAsociated)) {
       const process = this.reportAsociated.map(element => {
         const findProcess = this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](element.uuid)
-        if (findProcess) {
+        if (!isEmptyValue(findProcess)) {
           return {
             ...element,
             name: findProcess.name,
@@ -119,12 +125,22 @@ export default class ProductList extends Mixins(MixinForm) {
     this.setCurrent(this.listWithPrice[value])
   }
 
+  @Watch('currentPoint')
+  handleCurrentPointChange(value: IPointOfSalesData | undefined) {
+    if (!isEmptyValue(value)) {
+      this.loadProductsPricesList()
+    }
+  }
+
   // Hooks
   created() {
     this.unsubscribe = this.subscribeChanges()
-    if (this.isReadyFromGetData) {
-      this.loadProductsPricesList()
-    }
+    this.$store.commit(Namespaces.ListProductPrice + '/' + 'setListProductPrice', {
+      isLoaded: false
+    })
+    this.timeOut = setTimeout(() => {
+      this.validatePos(this.currentPoint)
+    }, 3000)
   }
 
   beforeDestroy() {
@@ -136,13 +152,14 @@ export default class ProductList extends Mixins(MixinForm) {
 
   formatQuantity = formatQuantity
 
-  srcImage(keyValue: string) {
-    if (!keyValue) {
+  getImageFromSource(keyValue: string) {
+    if (isEmptyValue(keyValue)) {
       return this.defaultImage
     }
+
     // const image = this.valuesImage.find(item => item.identifier === fileName).value
     const image = this.resource[keyValue]
-    if (!image) {
+    if (isEmptyValue(image)) {
       return this.defaultImage
     }
     return image
@@ -223,7 +240,7 @@ export default class ProductList extends Mixins(MixinForm) {
   }
 
   getTaxAmount(basePrice: number, taxRate: number): number {
-    if (!basePrice || !taxRate) {
+    if (isEmptyValue(basePrice) || isEmptyValue(taxRate)) {
       return 0
     }
     return (basePrice * taxRate) / 100
@@ -231,7 +248,7 @@ export default class ProductList extends Mixins(MixinForm) {
 
   associatedprocesses(product: any, report: { parametersList: { columnName: string, value: any }[] }) {
     report.parametersList.push({ columnName: 'M_Product_ID', value: product }, { columnName: 'M_PriceList_ID', value: this.listPrice })
-    this.$store.dispatch('processOption', {
+    this.$store.dispatch(Namespaces.Process + '/' + 'processOption', {
       action: report,
       parametersList: report.parametersList,
       reportFormat: 'pdf',
@@ -265,5 +282,25 @@ export default class ProductList extends Mixins(MixinForm) {
         }, 1000)
       }
     })
+  }
+
+  /**
+     * @param {object} PointOfSales
+     */
+  validatePos(PointOfSales: IPointOfSalesData | undefined): void {
+    console.log(isEmptyValue(PointOfSales), this.isReadyFromGetData)
+    if (isEmptyValue(PointOfSales)) {
+      const message: string = this.$t('notifications.errorPointOfSale').toString()
+      this.$store.commit(Namespaces.ListProductPrice + '/' + 'setListProductPrice', {
+        isLoaded: true,
+        productPricesList: []
+      })
+      this.$message({
+        type: 'info',
+        message,
+        duration: 1500,
+        showClose: true
+      })
+    }
   }
 }

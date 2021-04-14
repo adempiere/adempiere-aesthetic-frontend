@@ -4,7 +4,7 @@ import { IConfigData, ImagePathData, IRequestImageData } from './types'
 export function getImagePath(data: IRequestImageData): ImagePathData {
   const { operation = data.operation || 'fit', width = data.width || 300, height = data.height || 300, file } = data
   const config: IConfigData = getConfig()
-  const url: string = config.adempiere.images.fullPath
+  const url: string = config.adempiere.images.url
   const urn = `/img?action=${operation}&width=${width}&height=${height}&url=${file}`
   const uri = `${url}${urn}`
 

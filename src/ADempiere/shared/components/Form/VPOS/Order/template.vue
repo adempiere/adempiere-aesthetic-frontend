@@ -1,10 +1,10 @@
 <template>
-  <div
+  <el-row
     v-if="isLoaded"
-    id="headerContainer"
-    style="display: -webkit-box; height: 100%"
+    style="height: 100%;"
   >
-    <el-container style="background: white; height: 100%!important;">
+  <el-col :span="23" class="grid-content" style="height: 100%;">
+        <el-container style="background: white; height: 100%!important;">
       <el-header
         height="auto"
         :style="isShowedPOSKeyLayout ? 'padding-right: 20px; padding-left: 0px;' : 'padding-right: 0px; padding-left: 0px;'"
@@ -33,7 +33,7 @@
                 :is-disabled="isDisabled"
               />
             </el-col>
-            <el-col :span="2" :style="styleTab">
+            <el-col :span="1" :style="styleTab">
               <el-tag
                 v-if="!isEmptyValue(getOrder.documentStatus.value)"
                 :type="tagStatus(getOrder.documentStatus.value)"
@@ -42,6 +42,11 @@
                   {{ getOrder.documentStatus.name }}
                 </span>
               </el-tag>
+            </el-col>
+            <el-col :span="1" :style="styleTab">
+              <el-button type="primary" plain :disabled="isEmptyValue(this.$route.query.action)" @click="newOrder">
+                {{ $t('form.pos.optionsPoinSales.salesOrder.newOrder') }}
+              </el-button>
             </el-col>
           </el-row>
         </el-form>
@@ -255,7 +260,9 @@
         </el-container>
       </el-main>
     </el-container>
-    <div style="position: relative;padding-top: 30vh; z-index: 100;">
+  </el-col>
+    <el-col :span="1" class="grid-content" style="height: 100%;">
+      <div style="position: relative; padding-top: 30vh; z-index: 100;">
       <el-button
         :circle="true"
         type="primary"
@@ -263,7 +270,8 @@
         @click="isShowedPOSKeyLayout = !isShowedPOSKeyLayout"
       />
     </div>
-  </div>
+    </el-col>
+  </el-row>
   <div
     v-else
     key="form-loading"
@@ -394,6 +402,7 @@
   .el-tag--medium {
     height: 34px;
     line-height: 32px;
+    text-align: center;
   }
   .el-col {
     border-radius: 4px;

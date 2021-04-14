@@ -1,8 +1,5 @@
 // Instance for connection
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import {
   convertRole,
   convertSession
@@ -10,14 +7,13 @@ import {
 import { IRoleData, ISessionData } from '../UserType'
 
 export function requestRolesList(token: string): Promise<IRoleData[]> {
-  return requestRest({
+  return request({
     url: 'user/roles',
     method: 'get',
     params: {
       token
     }
   })
-    .then(evaluateResponse)
     .then(responseRoles => {
       const rolesList: IRoleData[] = responseRoles.map(
         (itemRole: any) => {
@@ -41,7 +37,7 @@ export function requestChangeRole(params: {
     warehouseUuid?: string
 }): Promise<ISessionData> {
   const { roleUuid, warehouseUuid, organizationUuid } = params
-  return requestRest({
+  return request({
     url: 'user/change-role',
     method: 'post',
     data: {
@@ -50,7 +46,6 @@ export function requestChangeRole(params: {
       warehouse: warehouseUuid
     }
   })
-    .then(evaluateResponse)
     .then(responseChangeRole => {
       return convertSession(responseChangeRole)
     })

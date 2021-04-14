@@ -6,7 +6,7 @@
         <SplitArea :size="isShowedPOSOptions ? 20 : 1" :min-size="400">
           <el-container style="height: 100% !important;">
             <el-aside :width="isShowedPOSOptions ? '100%' : '0%'" style="background: white; padding: 0px !important; margin-bottom: 0px">
-              <options
+              <Options
                 :metadata="metadata"
               />
             </el-aside>
@@ -25,7 +25,7 @@
         <SplitArea :size="isShowedPOSOptions ? 80 : 99" :min-size="990">
           <Split :gutter-size="isShowedPOSKeyLaout ? 10 : 0" @onDrag="onDragKeyLayout">
             <SplitArea :size="isShowedPOSKeyLaout ? 69 : 99" :min-size="900" style="overflow: hidden">
-              <order
+              <Order
                 :metadata="metadata"
               />
             </SplitArea>
@@ -35,11 +35,11 @@
               :min-size="300"
               style="overflow: auto"
             >
-              <key-layout
+              <KeyLayout
                 v-if="!showCollection"
                 key="layout-component"
               />
-              <collection
+              <Collection
                 v-else
                 key="collection-component"
               />

@@ -21,7 +21,7 @@
       :data="listWithPrice"
       border
       fit
-      height="550"
+      :height="isMobile ? '300' : '550'"
       highlight-current-row
       @row-click="findlistProductWithRow"
       @current-change="handleCurrentChange"

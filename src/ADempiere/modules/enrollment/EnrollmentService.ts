@@ -1,8 +1,5 @@
 // Get Instance for connection
-import {
-  ApiRest as requestRest,
-  evaluateResponse
-} from '@/ADempiere/shared/services/instances'
+import { request } from '@/ADempiere/shared/utils/request'
 import {
   IEnrollUserParams,
   IEnrollUserResponse,
@@ -23,7 +20,7 @@ export function requestEnrollUser(
   data: IEnrollUserParams
 ): Promise<IEnrollUserResponse> {
   const { name, userName, password, eMail } = data
-  return requestRest({
+  return request({
     url: '/enrollment/enroll',
     data: {
       user_name: userName,
@@ -34,7 +31,6 @@ export function requestEnrollUser(
       application_type: applicationType
     }
   })
-    .then(evaluateResponse)
     .then(enrollResponse => {
       return {
         userName: enrollResponse.user_name,
@@ -59,7 +55,7 @@ export function requestForgotPassword(
     userName = eMailOrUserName
   }
 
-  return requestRest({
+  return request({
     url: '/enrollment/reset-password',
     data: {
       user_name: userName,
@@ -68,7 +64,6 @@ export function requestForgotPassword(
       application_type: applicationType
     }
   })
-    .then(evaluateResponse)
     .then(forgotResponse => {
       return {
         responseType: forgotResponse.response_type,
@@ -87,7 +82,7 @@ export function requestChangePassword(data: {
     password: string
 }): Promise<IForgotPasswordResponse> {
   const { token, password } = data
-  return requestRest({
+  return request({
     url: '/enrollment/change-password',
     data: {
       token,
@@ -96,7 +91,6 @@ export function requestChangePassword(data: {
       application_type: applicationType
     }
   })
-    .then(evaluateResponse)
     .then(changePasswordResponse => {
       return {
         responseType: changePasswordResponse.response_type,
@@ -114,7 +108,7 @@ export function requestActivateUser(data: {
     token: string
 }): Promise<IForgotPasswordResponse> {
   const { token } = data
-  return requestRest({
+  return request({
     url: '/enrollment/activate-user',
     data: {
       token,
@@ -122,7 +116,6 @@ export function requestActivateUser(data: {
       application_type: applicationType
     }
   })
-    .then(evaluateResponse)
     .then(activateUserResponse => {
       return {
         responseType: activateUserResponse.response_type,

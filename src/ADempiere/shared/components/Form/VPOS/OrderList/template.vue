@@ -9,15 +9,15 @@
           Ver Histórico de Órdenes
         </template>
         <el-form
-          v-if="isLoaded"
+          v-if="!isEmptyValue(metadataList)"
           label-position="top"
           label-width="10px"
           @submit.native.prevent="notSubmitForm"
         >
           <template
-            v-for="(field) in fieldsList"
+            v-for="(field) in metadataList"
           >
-            <FieldDefinition
+            <Field
               :key="field.columnName"
               :metadata-field="field"
             />
@@ -26,7 +26,7 @@
         <div
           v-else
           key="form-loading"
-          v-loading="!isLoaded"
+          v-loading="isEmptyValue(metadataList)"
           :element-loading-text="$t('notifications.loading')"
           element-loading-spinner="el-icon-loading"
           element-loading-background="rgba(255, 255, 255, 0.8)"
