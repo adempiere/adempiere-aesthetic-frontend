@@ -163,7 +163,7 @@ export default class PriceChecking extends Mixins(MixinForm) {
                 }
               })
           }
-        } else if ((mutation.type === 'updateValueOfField') && (mutation.payload.columnName === 'ProductValue') &&
+        } else if ((mutation.type === Namespaces.FieldValue + '/' + 'updateValueOfField') && (mutation.payload.columnName === 'ProductValue') &&
         mutation.payload.value) {
           if (this.timeOut) {
             clearTimeout(this.timeOut)
