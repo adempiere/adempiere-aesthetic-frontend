@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <el-row
-      v-if="!isEmptyValue(metadataList)"
+      v-if="!isEmptyValue(metadataList) && isLoadedField"
     >
       <template
         v-for="(field, index) in metadataList"
