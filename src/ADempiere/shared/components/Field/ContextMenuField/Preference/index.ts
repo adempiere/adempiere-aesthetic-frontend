@@ -8,6 +8,7 @@ import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import Template from './template.vue'
 import MixinForm from '../../../Form/MixinForm'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type IPreferenceMetadataItem = IFieldTemplateData & { containerUuid?: string }
 
@@ -85,6 +86,13 @@ export default class Preference extends Mixins(MixinForm) {
       return expl
     }
 
+    // Hooks
+    beforeMount() {
+      if (isEmptyValue(this.metadataList)) {
+        this.setFieldsList()
+      }
+    }
+
     // Watchers
     @Watch('isActive')
     handleIsActiveChange(value: boolean) {
@@ -107,6 +115,7 @@ export default class Preference extends Mixins(MixinForm) {
     close() {
       // this.$children[0].$props.visible = false
       (this.$children[0] as any).visible = false
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
     }
 
     remove(): void {
@@ -172,7 +181,7 @@ export default class Preference extends Mixins(MixinForm) {
       setPreference({
         parentUuid: this.sourceField.parentUuid,
         attribute: this.sourceField.columnName,
-        value: this.code,
+        value: this.fieldValue,
         isForCurrentUser,
         isForCurrentClient,
         isForCurrentOrganization,

@@ -149,7 +149,7 @@
                         <div class="small-4 columns">
                           <div class="wrapper">
                             <div
-                              v-show="(windowMetadata.tabsListChildren)"
+                              v-show="!isEmptyValue(windowMetadata.tabsListChildren)"
                               class="open-detail"
                             />
                             <!-- open childs tabs -->
@@ -196,7 +196,7 @@
                     </SplitArea>
                     <SplitArea v-show="isShowedTabsChildren" :size="50">
                       <el-header
-                        v-if="isShowedTabsChildren && (windowMetadata.tabsListChildren)"
+                        v-if="isShowedTabsChildren && !isEmptyValue(windowMetadata.tabsListChildren)"
                         style="height: auto; padding-right: 35px !important; padding-bottom: 33px;"
                       >
                         <div class="w-33">
@@ -295,6 +295,17 @@
           </el-main>
         </SplitArea>
       </Split>
+      <right-panel
+        v-if="panelContextMenu && isMobile"
+      >
+        <component
+          :is="componentRender"
+          :field-attributes="contextMenuField.fieldAttributes"
+          :source-field="contextMenuField.fieldAttributes"
+          :record-uuid="contextMenuField.fieldAttributes.recordUuid"
+          :field-value="contextMenuField.valueField"
+        />
+      </right-panel>
     </el-container>
   </div>
   <div

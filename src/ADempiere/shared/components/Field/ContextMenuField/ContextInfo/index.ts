@@ -1,3 +1,4 @@
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
@@ -26,6 +27,11 @@ export default class FieldContextInfo extends Vue {
     }
 
     // Methods
+    notSubmitForm(event: any) {
+      event.preventDefault()
+      return false
+    }
+
     redirect(params: { window: any }): void {
       const { window } = params
       const viewSearch = recursiveTreeSearch({
@@ -52,5 +58,6 @@ export default class FieldContextInfo extends Vue {
           message: this.$t('notifications.noRoleAccess').toString()
         })
       }
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
     }
 }

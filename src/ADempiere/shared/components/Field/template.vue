@@ -18,46 +18,49 @@
         :required="isMandatory"
       >
         <template slot="label">
-          <operator-comparison
-            v-if="field.isComparisonField"
-            key="is-field-operator-comparison"
-            :field-attributes="fieldAttributes"
-            :field-value="field.value"
-          />
-          <context-info
-            v-else-if="isContextInfo"
-            key="is-field-context-info"
-            :field-attributes="fieldAttributes"
-            :field-value="field.value"
-          />
-          <span v-else key="is-field-name">
-            {{ isFieldOnly }}
-          </span>
-
-          <document-status
-            v-if="isDocuemntStatus"
-            :field="fieldAttributes"
-          />
-
-          <translated
-            v-if="field.isTranslatedField"
-            :field-attributes="fieldAttributes"
-            :record-uuid="field.recordUuid"
-          />
-
-          <calculator
-            v-if="field.isNumericField && !field.isReadOnlyFromLogic"
-            :field-attributes="fieldAttributes"
-            :field-value="recordDataFields"
-          />
-
-          <!-- <preference
-            v-if="field.panelType !== 'form'"
-            :source-field="fieldAttributes"
-            :field-value="recordDataFields"
-            :panel-type="field.panelType"
-            :metadata="metadataField"
-          /> -->
+          <el-dropdown
+            size="mini"
+            :hide-on-click="true"
+            trigger="click"
+            @command="handleCommand"
+          >
+            <span class="el-dropdown-link">
+              <span key="is-field-name">
+                {{ field.name }}
+              </span>
+              <i
+                class="el-icon-more el-icon--right"
+              />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <template
+                v-for="(option, key) in optionField"
+              >
+                <el-dropdown-item
+                  v-if="option.enabled"
+                  :key="key"
+                  :command="option"
+                  :divided="true"
+                >
+                  <div class="contents">
+                    <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
+                      <i :class="option.icon" style="font-weight: bolder;" />
+                    </div>
+                    <div v-else style="margin-right: 5%">
+                      <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
+                    </div>
+                    <div>
+                      <span class="contents">
+                        <b class="label">
+                          {{ option.name }}
+                        </b>
+                      </span>
+                    </div>
+                  </div>
+                </el-dropdown-item>
+              </template>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
 
         <component
@@ -79,6 +82,63 @@
     :in-table="true"
   />
 </template>
+
+<style scoped>
+  .svg-icon {
+    width: 1em;
+    height: 1.5em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+  }
+  .el-dropdown .el-button-group {
+    display: flex;
+  }
+  .el-dropdown-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    padding: 10px 0;
+    margin: 5px 0;
+    background-color: #FFFFFF;
+    border: 1px solid #e6ebf5;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    max-height: 250px;
+    max-width: 220px;
+    overflow: auto;
+  }
+  .el-dropdown-menu--mini .el-dropdown-menu__item {
+    line-height: 14px;
+    padding: 0px 15px;
+    padding-top: 1%;
+    padding-right: 15px;
+    padding-bottom: 1%;
+    padding-left: 15px;
+    font-size: 10px;
+  }
+  .el-dropdown-menu__item--divided {
+    position: relative;
+    /* margin-top: 6px; */
+    border-top: 1px solid #e6ebf5;
+  }
+  .label {
+    font-size: 14px;
+    margin-top: 0% !important;
+    margin-left: 0px;
+    text-align: initial;
+  }
+  .description {
+    margin: 0px;
+    font-size: 12px;
+    text-align: initial;
+  }
+  .contents {
+    display: inline-flex;
+  }
+</style>
 
 <style lang="scss">
   .custom-tittle-popover {

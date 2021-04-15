@@ -1,142 +1,181 @@
 <template>
-  <div class="container-submenu-mobile container-context-menu">
-    <el-button
-      type="text"
-      style="right: 70%;position: absolute;"
-      @click="runAction(actions[0])"
+  <div v-if="!isListRecord" class="container-submenu-mobile container-context-menu">
+    <!-- actions or process on container -->
+    <el-dropdown
+      size="mini"
+      :hide-on-click="true"
+      split-button
+      trigger="click"
+      @command="clickRunAction"
+      @click="runAction(defaultActionToRun)"
     >
-      {{ $t('components.RunProcess') }}
-    </el-button>
-    <right-menu>
-      <el-menu
-        ref="contextMenu"
-        v-shortkey="shorcutKey"
-        :default-active="activeMenu"
-        :router="false"
-        class="el-menu-demo"
-        mode="vertical"
-        menu-trigger="hover"
-        unique-opened
-        style="width: 258px; float: right;"
-      >
-      <!-- menu relations -->
-        <el-submenu v-if="!isEmptyChilds" index="relations">
-          <template slot="title">
-            <svg-icon icon-class="tree" />
-            {{ $t('components.contextMenuRelations') }}
-          </template>
-          <el-menu-item-group>
-            <el-scrollbar wrap-class="scroll">
-              <item-relations v-for="(relation, index) in relationsList" :key="index" :item="relation" />
-            </el-scrollbar>
-          </el-menu-item-group>
-        </el-submenu>
-
-        <el-menu-item v-else disabled index="relations">
-          {{ $t('components.contextMenuRelations') }}
-        </el-menu-item>
-
-        <!-- actions or process on container -->
-        <el-submenu index="actions">
-          <template slot="title">
-            <svg-icon icon-class="link" />
-            {{ $t('components.contextMenuActions') }}
-          </template>
-          <el-menu-item-group>
-            <el-scrollbar wrap-class="scroll">
-              <template v-for="(action, index) in actions">
-                <el-submenu
-                  v-if="action.childs"
-                  :key="index"
-                  :index="action.name"
-                  :disabled="action.disabled"
-                >
-                  <template slot="title">
-                    {{ action.name }}
-                  </template>
-                  <el-menu-item
-                    v-for="(child, key) in action.childs"
-                    :key="key"
-                    :index="child.uuid"
-                    @click="runAction(child)"
-                  >
-                    {{ child.name }}
-                  </el-menu-item>
-                </el-submenu>
-                <el-menu-item
-                  v-else
-                  :key="index"
-                  :index="action.name"
-                  :disabled="action.disabled"
-                  @click="runAction(action)"
-                >
-                  <svg-icon v-if="action.type === 'process'" icon-class="component" />
+      {{ defaultActionName }}
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item
+          command="refreshData"
+        >
+          <div class="contents">
+            <div style="margin-right: 5%;margin-top: 10%;">
+              <i class="el-icon-refresh" style="font-weight: bolder;" />
+            </div>
+            <div>
+              <span class="contents">
+                <b class="label">
+                  {{ $t('components.contextMenuRefresh') }}
+                </b>
+              </span>
+              <p
+                class="description"
+              >
+                {{ $t('data.noDescription') }}
+              </p>
+            </div>
+          </div>
+        </el-dropdown-item>
+        <el-dropdown-item
+          v-for="(action, index) in actions"
+          :key="index"
+          :command="action"
+          :divided="true"
+        >
+          <div class="contents">
+            <div style="margin-right: 5%;margin-top: 10%;">
+              <i :class="iconAction(action)" style="font-weight: bolder;" />
+            </div>
+            <div>
+              <span class="contents">
+                <b class="label">
                   {{ action.name }}
-                </el-menu-item>
-              </template>
-              <!-- other actions -->
-              <el-menu-item v-show="isReport" index="downloadReport">
-                <a :href="downloads" :download="file">
-                  {{ $t('components.contextMenuDownload') }}
-                </a>
-              </el-menu-item>
-              <el-submenu
-                v-if="isManageDataRecords"
-                :disabled="isDisabledExportRecord"
-                index="exportRecord"
+                </b>
+              </span>
+              <p
+                class="description"
               >
-                <template slot="title">
-                  {{ $t('data.exportRecord') }}
-                </template>
-                <el-menu-item v-for="(format, keyFormat) in supportedTypes" :key="keyFormat" :index="keyFormat" @click.native="exportRecord(keyFormat)">
-                  {{ format }}
-                </el-menu-item>
-              </el-submenu>
-              <el-menu-item v-show="$route.name === 'Report Viewer'" index="printFormat" @click="redirect">
-                {{ $t('components.contextMenuPrintFormatSetup') }}
-              </el-menu-item>
-              <el-menu-item v-if="isManageDataRecords" index="refreshData" @click="refreshData">
-                {{ $t('components.contextMenuRefresh') }}
-              </el-menu-item>
-              <el-menu-item index="shareLink" @click="setShareLink()">
-                {{ $t('components.contextMenuShareLink') }}
-              </el-menu-item>
-            </el-scrollbar>
-          </el-menu-item-group>
-        </el-submenu>
-
-        <!-- references of record -->
-        <el-submenu :disabled="!(isReferencesContent && isLoadedReferences)" class="el-menu-item" index="references">
-          <template slot="title">
-            {{ $t('components.contextMenuReferences') }}
-          </template>
-          <template v-if="this.references && (this.references.referencesList)">
-            <el-scrollbar wrap-class="scroll-child">
-              <el-menu-item
-                v-for="(reference, index) in this.references.referencesList"
-                :key="index"
-                :index="reference.displayName"
-                @click="openReference(reference)"
+                {{ $t('data.noDescription') }}
+              </p>
+            </div>
+          </div>
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <!-- menu relations -->
+    <el-dropdown size="mini" @command="clickRelation">
+      <el-button size="mini">
+        {{ $t('components.contextMenuRelations') }} <i class="el-icon-arrow-down el-icon--right" />
+      </el-button>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item
+          v-for="(relation, index) in relationsList"
+          :key="index"
+          :command="relation"
+          :divided="true"
+        >
+          <div class="contents">
+            <div style="margin-right: 5%;margin-top: 10%;">
+              <svg-icon :icon-class="relation.meta.icon" />
+            </div>
+            <div>
+              <span class="contents">
+                <b class="label">
+                  {{ relation.meta.title }}
+                </b>
+              </span>
+              <p
+                class="description"
               >
-                {{ reference.displayName }}
-              </el-menu-item>
-            </el-scrollbar>
-          </template>
-          <el-menu-item v-else index="not-references" disabled>
-            {{ $t('components.withOutReferences') }}
-          </el-menu-item>
-        </el-submenu>
-      </el-menu>
-    </right-menu>
+                {{ relation.meta.description }}
+              </p>
+            </div>
+          </div>
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <el-dropdown size="mini" @command="clickReferences">
+      <el-button size="mini" :disabled="!(isReferencesContent && isLoadedReferences)">
+        {{ $t('components.contextMenuReferences') }} <i class="el-icon-arrow-down el-icon--right" />
+      </el-button>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item
+          v-for="(reference, index) in references.referencesList"
+          :key="index"
+          :command="reference"
+          :divided="true"
+        >
+          <div class="contents">
+            <div>
+              <span class="contents">
+                <b class="label">
+                  {{ reference.displayName }}
+                </b>
+              </span>
+              <p
+                class="description"
+              >
+                {{ $t('data.noDescription') }}
+              </p>
+            </div>
+          </div>
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
   </div>
 </template>
 
 <style scoped>
+  .el-tree-node__children {
+    overflow: hidden;
+    background-color: transparent;
+    max-width: 99%;
+    overflow: auto;
+  }
+  .el-dropdown .el-button-group {
+    display: flex;
+  }
+  .el-dropdown-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    padding: 10px 0;
+    margin: 5px 0;
+    background-color: #FFFFFF;
+    border: 1px solid #e6ebf5;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    max-height: 250px;
+    max-width: 220px;
+    overflow: auto;
+  }
+  .el-dropdown-menu--mini .el-dropdown-menu__item {
+    line-height: 14px;
+    padding: 0px 15px;
+    font-size: 10px;
+  }
+  .el-dropdown-menu__item--divided {
+    position: relative;
+    /* margin-top: 6px; */
+    border-top: 1px solid #e6ebf5;
+  }
   .svg-icon {
     width: 1em;
     height: 2em;
     vertical-align: -0.15em;
     fill: currentColor;
     overflow: hidden;
+  }
+  .label {
+    font-size: 14px;
+    margin-top: 0% !important;
+    margin-left: 0px;
+    text-align: initial;
+  }
+  .description {
+    margin: 0px;
+    font-size: 12px;
+    text-align: initial;
+  }
+  .contents {
+    display: inline-flex;
   }
 </style>

@@ -1,4 +1,5 @@
 
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { addClass, removeClass } from '@/utils'
 import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
 import Template from './template.vue'
@@ -10,7 +11,7 @@ import Template from './template.vue'
 export default class RightPanel extends Vue {
     @Prop({ default: false, type: Boolean }) private clickNotClose?: boolean
     @Prop({ default: 250, type: Number }) private buttonTop?: number
-    @Ref() readonly rightPanel?: ChildNode
+    @Ref() readonly rightMenu?: ChildNode
     public show = false
 
     // Computed properties
@@ -18,12 +19,28 @@ export default class RightPanel extends Vue {
       return this.$store.state.settings.theme
     }
 
+    get isShowRightPanel(): boolean {
+      return this.$store.state.contextMenuModule.isShowRightPanel
+    }
+
+    set isShowRightPanel(value: boolean) {
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel')
+    }
+
+    get icon(): 'el-icon-close' | 'el-icon-more' {
+      if (this.isShowRightPanel) {
+        return 'el-icon-close'
+      }
+      return 'el-icon-more'
+    }
+
+    // Methods
     addEventClick(): void {
       window.addEventListener('click', this.closeSidebar)
     }
 
     closeSidebar(evt: any): void {
-      const parent = evt.target.closest('.rightPanel')
+      const parent = evt.target.closest('.rightMenu')
       if (!parent) {
         this.show = false
         window.removeEventListener('click', this.closeSidebar)
@@ -31,7 +48,7 @@ export default class RightPanel extends Vue {
     }
 
     insertToBody(): void {
-      const elx: ChildNode = this.rightPanel!
+      const elx: ChildNode = this.rightMenu!
       const body: HTMLBodyElement = document.querySelector('body')!
       body.insertBefore(elx, body.firstChild)
     }
@@ -43,19 +60,15 @@ export default class RightPanel extends Vue {
         this.addEventClick()
       }
       if (value) {
-        addClass(document.body, 'showRightPanel')
+        addClass(document.body, 'showRightMenu')
       } else {
-        removeClass(document.body, 'showRightPanel')
+        removeClass(document.body, 'showRightMenu')
       }
     }
 
     // Hooks
-    mounted(): void {
-      this.insertToBody()
-    }
-
     beforeDestroy(): void {
-      const elx = this.rightPanel
+      const elx = this.rightMenu
       elx?.remove()
     }
 }

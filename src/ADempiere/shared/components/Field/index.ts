@@ -1,10 +1,7 @@
 import Template from './template.vue'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
-import ContextInfo from './Popover/ContextInfo'
 import DocumentStatus from './Popover/DocumentStatus'
 import OperatorComparison from './Popover/OperatorComparison'
-import Calculator from './Popover/Calculator'
-import Translated from './Popover/Translated'
 import {
   evalutateTypeField,
   fieldIsDisplayed
@@ -16,22 +13,22 @@ import {
   ISizeData
 } from '../../utils/references'
 import { Namespaces } from '../../utils/types'
-import Preference from '@/ADempiere/shared/components/Field/Popover/Preference/index'
+import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
+import { RouteConfig } from 'vue-router'
+import { IOptionField } from './type'
+import { DeviceType } from '@/ADempiere/modules/app/AppType'
+import ContextMenu from '@/ADempiere/modules/window/components/ContextMenu'
 
 @Component({
   name: 'FieldDefinition',
   components: {
-    ContextInfo,
     DocumentStatus,
-    OperatorComparison,
-    Translated,
-    Calculator
-    // Preference
+    OperatorComparison
   },
   mixins: [Template]
 })
 export default class FieldDefinition extends Vue {
-    @Prop({ type: Object, default: {} }) metadataField?: any
+    @Prop({ type: Object, default: () => { return {} } }) metadataField?: any
     @Prop({
       type: [Number, String, Boolean, Array, Object, Date],
       default: undefined
@@ -42,8 +39,14 @@ export default class FieldDefinition extends Vue {
     @Prop({ type: Boolean, default: false }) inTable?: boolean
     @Prop({ type: Boolean, default: false }) isAdvancedQuery?: boolean
     public field: any = {}
+    public visible: boolean = this.$store.state.contextMenuModule.isShowPopoverField
+    public value: any
 
     // Computed properties
+    get isMobile(): boolean {
+      return this.$store.state.app.device === DeviceType.Mobile
+    }
+
     // load the component that is indicated in the attributes of received property
     get componentRender() {
       if (!(this.field.componentPath || !this.field.isSupported)) {
@@ -335,12 +338,64 @@ export default class FieldDefinition extends Vue {
       )
     }
 
+    get optionField(): IOptionField[] {
+      return [
+        {
+          name: this.$t('field.info'),
+          enabled: true,
+          fieldAttributes: this.fieldAttributes,
+          icon: 'el-icon-info'
+        },
+        {
+          name: this.$t('table.ProcessActivity.zoomIn'),
+          enabled: this.isContextInfo,
+          fieldAttributes: this.fieldAttributes,
+          icon: 'el-icon-files'
+        },
+        {
+          name: this.$t('language'),
+          enabled: this.field.isTranslatedField,
+          fieldAttributes: this.fieldAttributes,
+          icon: 'language'
+        },
+        {
+          name: this.$t('field.calculator'),
+          enabled: this.field.isNumericField,
+          fieldAttributes: this.fieldAttributes,
+          recordDataFields: this.recordDataFields,
+          valueField: this.valueField,
+          icon: 'el-icon-s-operation'
+        },
+        {
+          name: this.$t('field.preference'),
+          enabled: true,
+          fieldAttributes: this.fieldAttributes,
+          valueField: this.valueField,
+          icon: 'el-icon-notebook-2'
+        }
+      ]
+    }
+
+    get permissionRoutes(): RouteConfig[] {
+      return this.$store.getters.permission_routes
+    }
+
+    get valueField() {
+      return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        parentUuid: this.fieldAttributes.parentUuid,
+        containerUuid: this.fieldAttributes.containerUuid,
+        columnName: this.fieldAttributes.columnName
+      })
+    }
+
     @Watch('metadataField')
     handleMetaadataFieldChange(value: any) {
       this.field = value
     }
 
     // Methods
+    recursiveTreeSearch = recursiveTreeSearch
+
     focusField() {
       if (
         this.field.handleRequestFocus ||
@@ -349,6 +404,45 @@ export default class FieldDefinition extends Vue {
         // eslint-disable-next-line
         // @ts-ignore
         this.$refs[this.field.columnName].requestFocus()
+      }
+    }
+
+    handleCommand(command: any): void {
+      if (command.name === this.$t('table.ProcessActivity.zoomIn')) {
+        this.redirect({ window: command.fieldAttributes.reference.zoomWindows[0] })
+        return
+      }
+      if (this.isMobile) {
+        this.$store.commit(ContextMenu + '/' + 'changeShowRigthPanel', true)
+      }
+      this.$store.commit(ContextMenu + '/' + 'changeShowPopoverField', true)
+      this.$store.dispatch(ContextMenu + '/' + 'setOptionField', command)
+    }
+
+    redirect(params: { window: any }) {
+      const { window } = params
+      const viewSearch = recursiveTreeSearch({
+        treeData: this.permissionRoutes,
+        attributeValue: window.uuid,
+        attributeName: 'meta',
+        secondAttribute: 'uuid',
+        attributeChilds: 'children'
+      })
+      if (viewSearch) {
+        this.$router.push({
+          name: viewSearch.name,
+          query: {
+            action: 'advancedQuery',
+            tabParent: (0).toString(),
+            [this.fieldAttributes.columnName]: this.value
+          }
+        })
+      } else {
+        this.$message({
+          type: 'error',
+          showClose: true,
+          message: this.$t('notifications.noRoleAccess').toString()
+        })
       }
     }
 

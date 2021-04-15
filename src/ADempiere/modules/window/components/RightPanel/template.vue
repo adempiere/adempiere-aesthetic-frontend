@@ -1,13 +1,22 @@
 <template>
-  <div ref="rightPanel" :class="{show: show}" class="rightPanel-container">
+  <div
+    ref="rightMenu"
+    :class="{show: isShowRightPanel}"
+    class="rightMenu-container"
+  >
     <div class="setting">
       <div class="showme">
-        <div class="rightPanel-background" />
-        <div class="rightPanel">
-          <div class="handle-button" :style="{'top': buttonTop+'px','background-color': theme}" @click="show=!show">
-            <i :class="show?'el-icon-close':'el-icon-setting'" />
+        <!-- <div class="rightMenu-background" /> -->
+        <div class="rightMenu">
+          <div
+            class="handle-button"
+            :style="{'top': buttonTop+'px','background-color': theme}"
+            @click="isShowRightPanel=!isShowRightPanel"
+          >
+            <i :class="icon" style="color: white;" />
           </div>
-          <div class="rightPanel-items">
+
+          <div class="rightMenu-items">
             <slot />
           </div>
         </div>
@@ -26,55 +35,60 @@
   top: 250px;
 }
 .showme {
-  display: none;
+  display: block;
 }
 
 .setting:hover .showme {
   display: block;
 }
-.showRightPanel {
-  overflow: hidden;
+.showrightMenu {
+  overflow: visible;
   position: relative;
   width: calc(100% - 15px);
 }
 </style>
 
 <style lang="scss" scoped>
-.rightPanel-background {
-  position: fixed;
-  top: 0;
-  left: 0;
+.rightMenu-background {
   opacity: 0;
   transition: opacity .3s cubic-bezier(.7, .3, .1, 1);
   background: rgba(0, 0, 0, .2);
+  width: 0;
+  height: 0;
+  top: 0;
+  left: 0;
+  position: fixed;
   z-index: -1;
 }
 
-.rightPanel {
-  width: 100%;
-  max-width: 260px;
-  height: 100vh;
+.rightMenu {
+  background: #fff;
+  z-index: 3000;
   position: fixed;
-  top: 0;
-  right: 0;
+  height: 100vh;
+  width: 100%;
+  max-width: 80%;
+  top: 0px;
+  left: 0px;
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, .05);
   transition: all .25s cubic-bezier(.7, .3, .1, 1);
   transform: translate(100%);
-  background: #fff;
   z-index: 40000;
+  left: auto;
+  right: 0px;
 }
 
 .show {
   transition: all .3s cubic-bezier(.7, .3, .1, 1);
 
-  .rightPanel-background {
+  .rightMenu-background {
     z-index: 20000;
     opacity: 1;
     width: 100%;
     height: 100%;
   }
 
-  .rightPanel {
+  .rightMenu {
     transform: translate(0);
   }
 }

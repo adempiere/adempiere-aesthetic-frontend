@@ -23,8 +23,13 @@ export const mutations: ContextMenuMutationTree = {
   changeShowRigthPanel(state: ContextMenuState) {
     state.isShowRightPanel = !state.isShowRightPanel
   },
+  changeShowPopoverField(state: ContextMenuState) {
+    state.isShowPopoverField = !state.isShowPopoverField
+  },
   resetContextMenu(state: ContextMenuState) {
     state.isShowRightPanel = false
+    state.isShowPopoverField = false
+    state.optionField = {}
     state.contextMenu = []
     state.listDocumentStatus = {
       defaultDocumentAction: undefined,
@@ -38,5 +43,8 @@ export const mutations: ContextMenuMutationTree = {
       recordId: undefined,
       recordUuid: undefined
     }
+  },
+  fieldContextMenu(state: ContextMenuState, payload) {
+    state.optionField = payload
   }
 }
