@@ -17,7 +17,6 @@ import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import { RouteConfig } from 'vue-router'
 import { IOptionField } from './type'
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
-import ContextMenu from '@/ADempiere/modules/window/components/ContextMenu'
 
 @Component({
   name: 'FieldDefinition',
@@ -413,10 +412,10 @@ export default class FieldDefinition extends Vue {
         return
       }
       if (this.isMobile) {
-        this.$store.commit(ContextMenu + '/' + 'changeShowRigthPanel', true)
+        this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
       }
-      this.$store.commit(ContextMenu + '/' + 'changeShowPopoverField', true)
-      this.$store.dispatch(ContextMenu + '/' + 'setOptionField', command)
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowPopoverField', true)
+      this.$store.dispatch(Namespaces.ContextMenu + '/' + 'setOptionField', command)
     }
 
     redirect(params: { window: any }) {

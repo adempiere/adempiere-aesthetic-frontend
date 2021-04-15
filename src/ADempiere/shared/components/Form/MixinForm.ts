@@ -4,6 +4,7 @@ import { Namespaces } from '../../utils/types'
 import { createFieldFromDefinition, createFieldFromDictionary, IFieldTemplateData, IOverwriteDefinitionData } from '@/ADempiere/shared/utils/lookupFactory'
 import { IPanelDataExtended } from '@/ADempiere/modules/dictionary/DictionaryType/VuexType'
 import Field from '@/ADempiere/shared/components/Field'
+import { isEmptyValue } from '../../utils/valueUtils'
 
 @Component({
   name: 'MixinForm',
@@ -14,16 +15,30 @@ import Field from '@/ADempiere/shared/components/Field'
 })
 export default class MixinForm extends Vue {
     @Prop({ type: Object, default: undefined }) metadata?: any
-    public formUuid: string = this.$route.meta.uuid
+    public formUuid!: string
     // eslint-disable-next-line
     // @ts-ignore
-    public containerUuid: string = this.metadata.containerUuid || this.$route.meta.uuid || this.metadata.uuid
+    public containerUuid!: string
     public fieldsList: any[] = []
     public panelMetadata: any = {}
     public isLoaded = false
     public isCustomForm = false
     public unsubscribe: Function = () => undefined
     public panelType: PanelContextType = PanelContextType.Form
+
+    // Hooks
+    created() {
+      let containerUuid: string = this.$route.meta.uuid
+      if (!isEmptyValue(this.metadata)) {
+        containerUuid = this.metadata.containerUuid
+        if (isEmptyValue(containerUuid)) {
+          containerUuid = this.metadata.uuid
+        }
+      }
+      this.containerUuid = containerUuid
+      this.formUuid = this.$route.meta.uuid
+      this.getPanel()
+    }
 
     // Computed properties
 
@@ -194,10 +209,5 @@ export default class MixinForm extends Vue {
         action: action.action,
         containerUuid: this.containerUuid
       })
-    }
-
-    // Hooks
-    created() {
-      this.getPanel()
     }
 }

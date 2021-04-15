@@ -1,7 +1,7 @@
 import preferenceFields from './preferenceFields'
 import { setPreference, deletePreference } from '@/ADempiere/modules/field/FieldService/preference'
 import { createFieldFromDictionary, IFieldTemplateData } from '@/ADempiere/shared/utils/lookupFactory'
-import { Component, Prop, Watch, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
 import { IFieldLocation } from '../../FieldLocation/fieldList'
 import language from '@/lang'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
@@ -30,11 +30,16 @@ export default class Preference extends Mixins(MixinForm) {
     }) fieldValue: any
 
     // Data
-    private preferenceFields: IFieldLocation[] = preferenceFields
-    private metadataList: IPreferenceMetadataItem[] = []
+    private preferenceFields!: IFieldLocation[]
+    public metadataList!: IPreferenceMetadataItem[]
     private code = ''
     private description: string[] = []
     private isActive = false
+
+    created() {
+      this.metadataList = []
+      this.preferenceFields = preferenceFields
+    }
 
     // Computed properties
     get fieldsListPreference() {
@@ -110,7 +115,6 @@ export default class Preference extends Mixins(MixinForm) {
     }
 
     // Methods
-    createFieldFromDictionary = createFieldFromDictionary
 
     close() {
       // this.$children[0].$props.visible = false
@@ -155,19 +159,20 @@ export default class Preference extends Mixins(MixinForm) {
       const fieldsList: (IFieldTemplateData & { containerUuid: string })[] = []
       // Product Code
       this.preferenceFields.forEach((element: any) => {
-        this.createFieldFromDictionary(element)
-          .then((metadata: IFieldTemplateData) => {
-            const data: IFieldTemplateData = metadata
-            fieldsList.push({
-              ...data,
-              containerUuid: 'field-reference'
-            })
-            if (data.value) {
-              this.description.push(data.name!)
-            }
-          }).catch(error => {
-            console.warn(`LookupFactory: Get Field From Server (State) - Error ${error.code}: ${error.message}.`)
+        console.log('elemento')
+        console.log(element)
+        this.createFieldFromDictionary(element).then((metadata: IFieldTemplateData) => {
+          const data: IFieldTemplateData = metadata
+          fieldsList.push({
+            ...data,
+            containerUuid: 'field-reference'
           })
+          if (data.value) {
+            this.description.push(data.name!)
+          }
+        }).catch(error => {
+          console.warn(`LookupFactory: Get Field From Server (State) - Error ${error.code}: ${error.message}.`)
+        })
       })
       this.metadataList = fieldsList
     }
