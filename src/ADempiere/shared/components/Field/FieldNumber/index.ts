@@ -3,7 +3,7 @@ import {
   FIELDS_DECIMALS
 } from '@/ADempiere/shared/utils/references'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { calculationValue, clearVariables } from '@/ADempiere/shared/utils/valueUtils'
+import { calculationValue, clearVariables, isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { NumberFormatOptions } from 'vue-i18n'
 import { Component, Mixins } from 'vue-property-decorator'
 import MixinField from '../Mixin/MixinField'
@@ -25,21 +25,21 @@ export default class FieldNumber extends Mixins(MixinField) {
     // Computed properties
     get cssClassStyle(): string {
       let styleClass = ' custom-field-number '
-      if (this.metadata.cssClassName) {
+      if (!isEmptyValue(this.metadata.cssClassName)) {
         styleClass += this.metadata.cssClassName
       }
       return styleClass
     }
 
     get maxValue(): number {
-      if (!this.metadata.valueMax) {
+      if (isEmptyValue(this.metadata.valueMax)) {
         return Infinity
       }
       return Number(this.metadata.valueMax)
     }
 
     get minValue(): number {
-      if (!this.metadata.valueMin) {
+      if (isEmptyValue(this.metadata.valueMin)) {
         return -Infinity
       }
       return Number(this.metadata.valueMin)
@@ -61,7 +61,7 @@ export default class FieldNumber extends Mixins(MixinField) {
     }
 
     get isShowControls(): boolean {
-      if (this.metadata.showControl) {
+      if (!isEmptyValue(this.metadata.showControl)) {
         if (this.metadata.showControl === 0) {
           return false
         }
@@ -70,7 +70,7 @@ export default class FieldNumber extends Mixins(MixinField) {
     }
 
     get controlsPosition(): 'right' | undefined {
-      if (this.metadata.showControl) {
+      if (!isEmptyValue(this.metadata.showControl)) {
         // show side controls
         if (this.metadata.showControl === 1) {
           return undefined
@@ -90,7 +90,7 @@ export default class FieldNumber extends Mixins(MixinField) {
 
     get displayedValue(): string | number {
       let value: number = this.value
-      if (!value) {
+      if (isEmptyValue(value)) {
         value = 0
       }
       if (!this.isDecimal) {
@@ -130,7 +130,7 @@ export default class FieldNumber extends Mixins(MixinField) {
 
     // Methods
     parseValue(value: any): number | undefined {
-      if (!value) {
+      if (isEmptyValue(value)) {
         return undefined
       }
       return Number(value)
@@ -141,7 +141,7 @@ export default class FieldNumber extends Mixins(MixinField) {
       // this.focusGained(event)
 
       this.$nextTick(() => {
-        this.metadata.columnName.focus()
+        (this.$refs[this.metadata.columnName] as HTMLElement).focus()
       })
     }
 
@@ -154,8 +154,8 @@ export default class FieldNumber extends Mixins(MixinField) {
       const isAllowed = event.key.match(this.expression)
       if (isAllowed) {
         const result = calculationValue(this.value, event)
-        if (result) {
-          this.valueToDisplay = result
+        if (!isEmptyValue(result)) {
+          this.valueToDisplay = result!
           this.isShowed = true
         } else {
           this.valueToDisplay = '...'
@@ -166,9 +166,9 @@ export default class FieldNumber extends Mixins(MixinField) {
           event.preventDefault()
           const newValue = String(this.value).slice(0, -1)
           const result = calculationValue(newValue, event)
-          if (result) {
+          if (!isEmptyValue(result)) {
             this.value = this.parseValue(result)
-            this.valueToDisplay = result
+            this.valueToDisplay = result!
             this.isShowed = true
           } else {
             this.valueToDisplay = '...'
@@ -180,9 +180,9 @@ export default class FieldNumber extends Mixins(MixinField) {
           event.preventDefault()
           const newValue = String(this.value).slice(-1)
           const result = calculationValue(newValue, event)
-          if (result) {
+          if (!isEmptyValue(result)) {
             this.value = this.parseValue(result)
-            this.valueToDisplay = result
+            this.valueToDisplay = result!
             this.isShowed = true
           } else {
             this.valueToDisplay = '...'
@@ -195,7 +195,7 @@ export default class FieldNumber extends Mixins(MixinField) {
     }
 
     changeValue(): void {
-      if (this.valueToDisplay && this.valueToDisplay !== '...') {
+      if (!isEmptyValue(this.valueToDisplay) && this.valueToDisplay !== '...') {
         const result = this.parseValue(this.valueToDisplay)
         this.preHandleChange(result)
       }
