@@ -49,10 +49,6 @@ export default class extends Vue {
     }
   }
 
-  mounted() {
-    this.insertToBody()
-  }
-
   beforeDestroy() {
     const elx = this.$refs.rightPanel as Element
     elx.remove()
