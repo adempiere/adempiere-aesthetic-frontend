@@ -212,6 +212,7 @@ export default class Order extends Mixins(MixinOrderLine) {
     })
       .catch(() => undefined)
       .finally(() => {
+        this.$store.commit(Namespaces.Payments + '/' + 'setListPayments', [])
         const { templateBusinessPartner } = this.currentPoint!
 
         this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
