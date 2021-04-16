@@ -53,7 +53,8 @@ const fieldList: IFieldLocation[] = [
       defaultValue: '@#C_Country_ID@',
       size: 24,
       sequenceFields: 'CO',
-      index: 2
+      index: 2,
+      isMandatory: true
     }
   },
   {
@@ -75,7 +76,8 @@ const fieldList: IFieldLocation[] = [
       isCustomField: true,
       size: 24,
       sequenceFields: 'C',
-      index: 4
+      index: 4,
+      isMandatory: true
     }
   },
   {

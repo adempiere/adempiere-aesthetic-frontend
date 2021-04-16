@@ -22,7 +22,6 @@
               type="primary"
               class="custom-button-create-bp"
               icon="el-icon-check"
-              :loading="isLoadingRecord"
               @click="createBusinessParter"
             />
             <el-button
