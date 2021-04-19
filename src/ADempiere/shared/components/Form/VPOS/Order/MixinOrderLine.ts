@@ -1,5 +1,6 @@
 import { ICurrencyData } from '@/ADempiere/modules/core/CoreType'
 import { IOrderLineData, requestDeleteOrderLine, requestUpdateOrderLine } from '@/ADempiere/modules/pos'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatPercent, formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Mixins } from 'vue-property-decorator'
@@ -167,21 +168,21 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
         const containerUuid = this.formUuid
         //  Editable fields
         if (quantityOrdered) {
-          this.$store.commit('updateValueOfField', {
+          this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             containerUuid,
             columnName: 'QtyEntered',
             value: quantityOrdered
           })
         }
         if (currentPrice) {
-          this.$store.commit('updateValueOfField', {
+          this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             containerUuid,
             columnName: 'PriceEntered',
             value: currentPrice
           })
         }
         if (discount) {
-          this.$store.commit('updateValueOfField', {
+          this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             containerUuid,
             columnName: 'Discount',
             value: discount

@@ -114,5 +114,8 @@ export const actions: ContextMenuActionTree = {
           )
         })
     })
+  },
+  setOptionField(context: ContextMenuActionContext, params) {
+    context.commit('fieldContextMenu', params)
   }
 }

@@ -93,6 +93,13 @@ export default class ProductList extends Mixins(MixinForm) {
       }
     }
 
+    @Watch('currentPoint')
+    handleCurrentPointChange(value: IPointOfSalesData | undefined) {
+      if (!isEmptyValue(value)) {
+        this.loadProductsPricesList()
+      }
+    }
+
     // Methods
     formatPrice = formatPrice
 
@@ -170,20 +177,35 @@ export default class ProductList extends Mixins(MixinForm) {
       })
     }
 
+    /**
+     * @param {object} PointOfSales
+     */
+    validatePos(PointOfSales: IPointOfSalesData | undefined): void {
+      console.log(isEmptyValue(PointOfSales), this.isReadyFromGetData)
+      if (isEmptyValue(PointOfSales)) {
+        const message: string = this.$t('notifications.errorPointOfSale').toString()
+        this.$store.commit(Namespaces.ListProductPrice + '/' + 'setListProductPrice', {
+          isLoaded: true,
+          productPricesList: []
+        })
+        this.$message({
+          type: 'info',
+          message,
+          duration: 1500,
+          showClose: true
+        })
+      }
+    }
+
     // Hooks
     created() {
       this.unsubscribe = this.subscribeChanges()
-
-      if (this.isReadyFromGetData) {
-        this.loadProductsPricesList()
-      }
-      if (isEmptyValue(this.listWithPrice)) {
-        this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {
-          containerUuid: 'Products-Price-List',
-          pageNumber: 1,
-          searchValue: ''
-        })
-      }
+      this.$store.commit(Namespaces.ListProductPrice + '/' + 'setListProductPrice', {
+        isLoaded: true
+      })
+      this.timeOut = setTimeout(() => {
+        this.validatePos(this.currentPoint)
+      }, 3000)
     }
 
     beforeDestroy() {

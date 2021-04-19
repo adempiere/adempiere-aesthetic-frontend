@@ -7,6 +7,7 @@ import MixinBusinessPartner from '../MixinBusinessPartner'
 import fieldsList from './../fieldListCreate'
 import Template from './template.vue'
 import FieldDefinition from '@/ADempiere/shared/components/Field'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 @Component({
   name: 'BusinessPartnerCreate',
@@ -43,14 +44,6 @@ export default class BusinessPartnerCreate extends Mixins(
     // eslint-disable-next-line
     public unsubscribe: Function = () => {}
 
-    // Computed properties
-    get emptyMandatoryFields(): string[] {
-      const field: string[] = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
-        containerUuid: this.containerUuid
-      })
-      return field
-    }
-
     // Watch
     @Watch('showField')
     handleShowFieldChange(value: boolean) {
@@ -74,16 +67,17 @@ export default class BusinessPartnerCreate extends Mixins(
         containerUuid: this.containerUuid,
         format: 'object'
       })
-      if (!values) {
-        return
-      }
       const name2 = this.$store.getters[Namespaces.FieldValue + 'getValueOfField']({
         containerUuid: this.containerUuid,
         columnName: 'Name2'
       })
       values = this.convertValuesToSend(values)
       values.name2 = name2
-      if (!this.emptyMandatoryFields) {
+      const emptyMandatoryFields = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
+        containerUuid: this.containerUuid,
+        formatReturn: 'name'
+      })
+      if (isEmptyValue(emptyMandatoryFields)) {
         this.isLoadingRecord = true
         requestCreateBusinessPartner(values)
           .then((responseBPartner: IBusinessPartnerData) => {
@@ -101,7 +95,7 @@ export default class BusinessPartnerCreate extends Mixins(
             this.showsPopovers.isShowCreate = true
             this.$message({
               type: 'warning',
-              message: error.message,
+              message: error.message + 'Name',
               duration: 1500,
               showClose: true
             })
@@ -115,7 +109,7 @@ export default class BusinessPartnerCreate extends Mixins(
       } else {
         this.$message({
           type: 'warning',
-          message: this.$t('notifications.mandatoryFieldMissing').toString() + this.emptyMandatoryFields,
+          message: this.$t('notifications.mandatoryFieldMissing').toString() + emptyMandatoryFields,
           duration: 1500,
           showClose: true
         })

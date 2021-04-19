@@ -110,7 +110,7 @@ export class FieldAutocomplete extends Mixins(MixinField) {
     }
 
     set value(value: any){
-        this.$store.commit('updateValueOfField', {
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             parentUuid: this.metadata.parentUuid,
             containerUuid: this.metadata.containerUuid,
             columnName: this.metadata.columnName,
@@ -128,7 +128,7 @@ export class FieldAutocomplete extends Mixins(MixinField) {
     }
 
     set displayedValue(value: any){
-        this.$store.commit('updateValueOfField', {
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
             parentUuid: this.metadata.parentUuid,
             containerUuid: this.metadata.containerUuid,
             // DisplayColumn_'ColumnName'

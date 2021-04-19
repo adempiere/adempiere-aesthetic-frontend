@@ -62,6 +62,8 @@ export interface IListDocumentAction {
 
 export interface ContextMenuState {
     isShowRightPanel: boolean
+    isShowPopoverField: boolean
+    optionField: any
     contextMenu: IContextMenuData[]
     listDocumentStatus: IListDocumentStatus
     listDocumentAction: IListDocumentAction

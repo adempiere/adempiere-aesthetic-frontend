@@ -26,7 +26,7 @@ export default class extends Vue {
     }
 
     set value(value: any) {
-      this.$store.commit('updateValueOfField', {
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         parentUuid: this.metadata.parentUuid,
         containerUuid: this.metadata.containerUuid,
         columnName: this.metadata.columnName,

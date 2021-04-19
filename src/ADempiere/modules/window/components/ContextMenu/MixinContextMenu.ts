@@ -58,13 +58,13 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     @Prop({ default: undefined, type: String }) private lastParameter?: string
     @Prop({ default: undefined, type: String }) private reportFormat?: String
     @Prop({ default: undefined, type: Boolean })
-    private isInsertRecord?: boolean
+    @Prop({ default: undefined, type: Boolean }) private isInsertRecord?: boolean
 
-    @Prop({ default: 'xlsx', type: String })
-    private defaultFormatExport?: string
+    @Prop({ default: false, type: Boolean }) isListRecord?: boolean
+    @Prop({ default: 'xlsx', type: String }) private defaultFormatExport?: string
 
     @Prop({ default: false, type: Boolean }) isDisplayed?: boolean
-    private actions: IContextActionData[] = []
+    protected actions: IContextActionData[] = []
     private supportedTypes = supportedTypes
     public references: IReferenceDataExtended[] = []
     public file: any = this.getProcessResult.download || ''
@@ -226,7 +226,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       if (this.isWindow) {
         const oldRoute: IWindowOldRoute = this.$store.state.windowModule.windowOldRoute
         if (
-          oldRoute.query.action &&
+          !isEmptyValue(oldRoute.query.action) &&
                 oldRoute.query.action !== 'create-new' &&
                 this.$route.query.action === 'create-new'
         ) {
@@ -277,7 +277,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
           return fieldItem
         }
       })
-      if (record) {
+      if (!isEmptyValue(record)) {
         return record
       }
       return {} as IKeyValueObject
@@ -287,7 +287,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       const windowUuid: string = (this.getterContextMenu?.actions[0] as any).parentUuid
       const getWindow = this.$store.getters[Namespaces.WindowDefinition + '/' + 'getWindow'](windowUuid)
       const current = getWindow.tabs[0]
-      if (current) {
+      if (!isEmptyValue(current)) {
         return current.tableName
       }
       return ''
@@ -473,7 +473,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
         list = this.getDataSelection
       }
       let title: string | undefined = (this.metadataMenu as any).name
-      if (!title || title === '') {
+      if (isEmptyValue(title)) {
         title = this.$route.meta.title
       }
       const data = this.formatJson(filterVal, list)
@@ -518,15 +518,15 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       // the function is broken avoiding that an error is generated when closing
       // session being in a window, since the store of vuex is cleaned, being
       // this.metadataMenu with value undefined
-      if (!this.metadataMenu) {
+      if (isEmptyValue(this.metadataMenu)) {
         return
       }
-      this.actions = this.metadataMenu.actions!
+      this.actions = this.metadataMenu!.actions!
 
       // TODO: Add store attribute to avoid making repeated requests
       let isChangePrivateAccess = true
       if (this.isReferencesContent) {
-        if (this.getCurrentRecord && this.tableNameCurrentTab) {
+        if (!isEmptyValue(this.getCurrentRecord) && !isEmptyValue(this.tableNameCurrentTab)) {
           this.$store
             .dispatch(Namespaces.BusinessData + '/' + 'getPrivateAccessFromServer', {
               tableName: this.tableNameCurrentTab,
@@ -556,7 +556,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
         this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', processAction)
       }
 
-      if (this.isWindow && !(this.actions.find((element: Actionable) => element.action === ActionContextName.RecordAccess))) {
+      if (this.isWindow && isEmptyValue(this.actions.find((element: Actionable) => element.action === ActionContextName.RecordAccess))) {
         this.$store.dispatch(Namespaces.AccessRecord + '/' + 'addAttribute', {
           tableName: this.tableNameCurrentTab,
           recordId: this.getCurrentRecord[this.tableNameCurrentTab + '_ID'],
@@ -625,7 +625,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
             containerUuid: action.associated.containerUuid
           })
 
-          if (attributes) {
+          if (!isEmptyValue(attributes)) {
             this.$store.dispatch(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
               containerUuid: action.uuid,
               attributes: <KeyValueData[]>attributes
@@ -654,10 +654,10 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       })
 
       // run process or report
-      if (!fieldsNotReady) {
+      if (isEmptyValue(fieldsNotReady)) {
         let menuParentUuid = this.menuParentUuid
-        if (!menuParentUuid && this.$route.params) {
-          if (this.$route.params.menuParentUuid) {
+        if (isEmptyValue(menuParentUuid) && this.$route.params) {
+          if (!isEmptyValue(this.$route.params.menuParentUuid)) {
             menuParentUuid = this.$route.params.menuParentUuid
           }
         }
@@ -671,16 +671,15 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
 
         const reportableAction = <ReportableActions>action
         let reportFormat = reportableAction.reportExportType
-        if (!reportFormat) {
+        if (isEmptyValue(reportFormat)) {
           reportFormat = <ReportExportContextType> this.$route.query.reportType
-          if (!reportFormat) {
+          if (isEmptyValue(reportFormat)) {
             reportFormat = this.$route.meta.reportFormat
-            if (!reportFormat) {
+            if (isEmptyValue(reportFormat)) {
               reportFormat = ReportExportContextType.Html // 'html'
             }
           }
         }
-
         this.$store.dispatch(action.action, {
           action,
           parentUuid: this.containerUuid,
@@ -706,11 +705,11 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
 
     updateReport(action: any) {
       let instanceUuid: string = action.instanceUuid
-      if (!instanceUuid) {
+      if (isEmptyValue(instanceUuid)) {
         instanceUuid = this.$route.params.instanceUuid
       }
       let processId: string = action.processId
-      if (!processId) {
+      if (isEmptyValue(processId)) {
         processId = this.$route.params.processId
       }
       this.$store.dispatch(Namespaces.Report + '/' + 'getReportOutputFromServer', {

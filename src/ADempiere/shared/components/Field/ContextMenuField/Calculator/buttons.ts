@@ -1,4 +1,4 @@
-import { ICalculatorObject } from './calculatorRows'
+import { ICalculatorObject } from './type'
 
 const buttons: ICalculatorObject[] = [
   {

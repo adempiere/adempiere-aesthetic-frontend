@@ -17,6 +17,7 @@ import { IWindowDataExtended } from '@/ADempiere/modules/dictionary'
 import { IEntityLogData, IWorkflowProcessData } from '../../WindowType'
 import { IRecordSelectionData } from '@/ADempiere/modules/persistence'
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
+import RightPanel from '@/ADempiere/modules/window/components/RightPanel'
 
 @Component({
   name: 'WindowView',
@@ -31,7 +32,8 @@ import { DeviceType } from '@/ADempiere/modules/app/AppType'
     WorkflowLogs,
     WorkflowStatusBar,
     SplitPane,
-    ModalDialog
+    ModalDialog,
+    RightPanel
   }
 })
 export default class WindowView extends Vue {
@@ -48,6 +50,33 @@ export default class WindowView extends Vue {
     public isShowedRecordPanel = false
 
     // Computed properties
+    get contextMenuField() {
+      return this.$store.getters[Namespaces.ContextMenu + '/' + 'getFieldContextMenu']
+    }
+
+    get panelContextMenu(): boolean {
+      return this.$store.state.contextMenuModule.isShowRightPanel
+    }
+
+    get componentRender() {
+      let component
+      switch (this.contextMenuField.name) {
+        case this.$t('field.info'):
+          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/ContextInfo')
+          break
+        case this.$t('language'):
+          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Translated')
+          break
+        case this.$t('field.calculator'):
+          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Calculator')
+          break
+        case this.$t('field.preference'):
+          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Preference')
+          break
+      }
+      return component
+    }
+
     get isNewRecord(): boolean {
       return (
         !this.$route.query ||

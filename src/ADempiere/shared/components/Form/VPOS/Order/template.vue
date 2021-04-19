@@ -33,7 +33,7 @@
                 :is-disabled="isDisabled"
               />
             </el-col>
-            <el-col :span="1" :style="styleTab">
+            <el-col :span="1" :style="styleTab + 'float: left;'">
               <el-tag
                 v-if="!isEmptyValue(getOrder.documentStatus.value)"
                 :type="tagStatus(getOrder.documentStatus.value)"
@@ -43,7 +43,7 @@
                 </span>
               </el-tag>
             </el-col>
-            <el-col :span="1" :style="styleTab">
+            <el-col :span="2" :style="styleTab + 'float: right;'">
               <el-button type="primary" plain :disabled="isEmptyValue(this.$route.query.action)" @click="newOrder">
                 {{ $t('form.pos.optionsPoinSales.salesOrder.newOrder') }}
               </el-button>
@@ -56,7 +56,6 @@
           <el-main style="padding-top: 0px; padding-right: 10px; padding-bottom: 0px; padding-left: 10px;">
             <el-table
               ref="linesTable"
-              v-loading="updateOrderProcessPos"
               v-shortkey="shortsKey"
               :data="allOrderLines"
               border
@@ -144,11 +143,12 @@
                           trigger="click"
                           :title="$t('form.pos.tableProduct.editQuantities')"
                           width="600"
-                          @hide="showFieldLine = !showFieldLine"
+                          @hide="showFieldLine = false"
                         >
                           <FieldLine
                             :data-line="scope.row"
                             :show-field="showFieldLine"
+                            :current-line="currentOrderLine"
                           />
                           <el-button
                             slot="reference"

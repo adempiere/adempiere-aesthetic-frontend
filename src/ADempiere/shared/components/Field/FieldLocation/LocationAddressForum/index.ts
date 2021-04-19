@@ -3,6 +3,7 @@ import { IEntityData, KeyValueData } from '@/ADempiere/modules/persistence/Persi
 import { getSequenceAsList } from '@/ADempiere/shared/utils/location'
 import { showNotification } from '@/ADempiere/shared/utils/notifications'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import MixinForm from '../../../Form/MixinForm'
 import MixinLocationField from '../MixinLocation'
@@ -167,15 +168,15 @@ export default class LocationAddressForm extends Mixins(MixinLocationField, Mixi
     }
 
     sendValuesToServer(): void {
-      const fieldsNotReady = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
+      const emptyMandatoryFields = this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListEmptyMandatory']({
         containerUuid: this.containerUuid,
-        isValidate: true
+        formatReturn: 'name'
       })
-      if (fieldsNotReady) {
+      if (!isEmptyValue(emptyMandatoryFields)) {
         showNotification({
           type: 'warning',
           title: this.$t('notifications.emptyValues').toString(),
-          name: '<b>' + fieldsNotReady + '.</b> ',
+          name: '<b>' + emptyMandatoryFields + '.</b> ',
           message: this.$t('notifications.fieldMandatory').toString(),
           isRedirect: false
         })

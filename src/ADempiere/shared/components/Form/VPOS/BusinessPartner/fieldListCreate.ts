@@ -10,7 +10,8 @@ const fieldListCreate: Partial<IFieldLocation>[] = [
     tabindex: '0',
     overwriteDefinition: {
       isCustomField: true,
-      size: 24
+      size: 24,
+      isMandatory: true
     }
   },
   {
@@ -21,7 +22,8 @@ const fieldListCreate: Partial<IFieldLocation>[] = [
     isFromDictionary: true,
     overwriteDefinition: {
       isCustomField: true,
-      size: 24
+      size: 24,
+      isMandatory: true
     }
   },
   {
@@ -68,7 +70,8 @@ const fieldListCreate: Partial<IFieldLocation>[] = [
       componentPath: 'FieldLocation',
       handleActionPerformed: false,
       isSendParentValues: true,
-      popoverPlacement: 'top'
+      popoverPlacement: 'top',
+      isMandatory: true
     }
   }
 ]

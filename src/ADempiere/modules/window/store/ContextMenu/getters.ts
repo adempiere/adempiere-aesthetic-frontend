@@ -22,6 +22,8 @@ export const getters: ContextMenuGetterTree = {
     getters, rootState, rootGetters
   ) => (containerOrMenuUuid: string) => {
     const dataTree = rootGetters.permission_routes
+    console.log('relations')
+    console.log(dataTree)
     return recursiveTreeSearch({
       treeData: dataTree,
       attributeName: 'name',
@@ -55,5 +57,8 @@ export const getters: ContextMenuGetterTree = {
     } else {
       return undefined
     }
+  },
+  getFieldContextMenu: (state: ContextMenuState) => {
+    return state.optionField
   }
 }

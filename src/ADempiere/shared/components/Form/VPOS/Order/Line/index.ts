@@ -6,6 +6,7 @@ import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { createFieldFromDictionary, IFieldTemplateData } from '@/ADempiere/shared/utils/lookupFactory'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import Template from './template.vue'
+import { IFieldLocation } from '@/ADempiere/shared/components/Field/FieldLocation/fieldList'
 
 @Component({
   name: 'FieldLine',
@@ -23,34 +24,47 @@ export default class FieldLine extends Vue {
 
     @Prop({
       type: Boolean,
-      default: true
+      default: false
     }) showField!: boolean
+
+    @Prop({
+      type: Object,
+      default: () => { return {} }
+    }) currentLine: any
 
       // Data
       private metadataList: any[] = []
       private panelMetadata: any = {}
       private isLoaded = false
+      private isLoadedField = false
       private panelType: PanelContextType = PanelContextType.Custom
-      private fieldsListLine = fieldsListLine
+      private fieldsListLine: IFieldLocation[] = fieldsListLine
+      private fieldsList: any[] = []
+
+      created() {
+        console.log('currentLine')
+        console.log(this.currentLine)
+      }
 
       // Watchers
       @Watch('showField')
       handleShowFieldChange(value: boolean) {
-        if (value && isEmptyValue(this.metadataList)) {
+        console.log('showFieldChange')
+        if (value && isEmptyValue(this.metadataList) && (this.dataLine.uuid === this.currentLine.uuid)) {
           this.setFieldsList()
+          this.metadataList = this.setFieldsList()
+          this.metadataList.sort(this.sortFields)
+          this.isLoadedField = true
         }
         if (value) {
           this.fillOrderLineQuantities({
-            currentPrice: this.dataLine.price,
-            quantityOrdered: this.dataLine.quantity,
-            discount: this.dataLine.discountRate
+            currentPrice: this.currentLine.price,
+            quantityOrdered: this.currentLine.quantity,
+            discount: this.currentLine.discountRate
           })
+          this.metadataList.sort(this.sortFields)
+          this.isLoadedField = true
         }
-      }
-
-      mounted() {
-        console.log('props')
-        console.log(this.$props)
       }
 
       // Methods
@@ -61,7 +75,7 @@ export default class FieldLine extends Vue {
         return false
       }
 
-      setFieldsList(): void {
+      setFieldsList(): IFieldTemplateData[] {
         const fieldsList: IFieldTemplateData[] = []
         // Product Code
         this.fieldsListLine.forEach((element: any) => {
@@ -76,7 +90,7 @@ export default class FieldLine extends Vue {
               console.warn(`LookupFactory: Get Field From Server (State) - Error ${error.code}: ${error.message}.`)
             })
         })
-        this.metadataList = fieldsList
+        return fieldsList
       }
 
       fillOrderLineQuantities(params: {
@@ -108,5 +122,15 @@ export default class FieldLine extends Vue {
             value: discount
           })
         }
+      }
+
+      sortFields(field: any, nextField: any): 1 | -1 | 0 {
+        if (field.sequence < nextField.sequence) {
+          return 1
+        }
+        if (field.sequence > nextField.sequence) {
+          return -1
+        }
+        return 0
       }
 }

@@ -2,7 +2,7 @@ import { ID, INTEGER } from '@/ADempiere/shared/utils/references'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { calculationValue, clearVariables } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
-import { ICalculatorObject } from './calculatorRows'
+import { ICalculatorObject } from './type'
 
 import buttons from './buttons'
 import Template from './template.vue'
@@ -21,15 +21,32 @@ export default class FieldCalc extends Vue {
     public valueToDisplay = ''
 
     // Computed properties
-    // public tableData: ICalculatorObject[] = calculatorRows
     get tableData(): ICalculatorObject[] {
       return buttons
     }
 
+    get valueField() {
+      return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        parentUuid: this.fieldAttributes.parentUuid,
+        containerUuid: this.fieldAttributes.containerUuid,
+        columnName: this.fieldAttributes.columnName
+      })
+    }
+
     // Watchers
+    @Watch('valueField')
+    handleValueFieldChange(value: any) {
+      console.log(value)
+    }
+
     @Watch('fieldValue')
     handleFieldValueChange(value: number) {
       this.calcValue = value
+    }
+
+    // Hooks
+    created() {
+      this.calcValue = this.valueField
     }
 
     // Methods
@@ -86,6 +103,7 @@ export default class FieldCalc extends Vue {
         .finally(() => {
           clearVariables()
           this.$children[0].$props.visible = true
+          this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
         })
     }
 
@@ -132,7 +150,7 @@ export default class FieldCalc extends Vue {
     }
 
     calculateValue(event: any): void {
-      const result = calculationValue(this.fieldValue, event)
+      const result = calculationValue(this.valueField, event)
       if (result) {
         this.valueToDisplay = result
       } else {
