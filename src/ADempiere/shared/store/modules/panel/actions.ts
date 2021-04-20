@@ -11,7 +11,7 @@ import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import language from '@/ADempiere/shared/lang'
 import { IRecordSelectionData, KeyValueData } from '@/ADempiere/modules/persistence/PersistenceType'
 import { convertIRangeAttributeDataToKeyValueData, convertObjectToKeyValue } from '@/ADempiere/shared/utils/valueFormat'
-import { typeValue } from '@/ADempiere/shared/utils/valueUtils'
+import { isEmptyValue, typeValue } from '@/ADempiere/shared/utils/valueUtils'
 import evaluator from '@/ADempiere/shared/utils/evaluator'
 import { getContext, parseContext } from '@/ADempiere/shared/utils/contextUtils'
 import router from '@/router'
@@ -70,8 +70,8 @@ export const actions: PanelActionTree = {
           // })
         }
         //  Get dependent fields
-        if (itemField.parentFieldsList && itemField.isActive) {
-          itemField.parentFieldsList.forEach((parentColumnName: any) => {
+        if (!isEmptyValue(itemField.parentFieldsList) && itemField.isActive) {
+          itemField.parentFieldsList!.forEach((parentColumnName: any) => {
             const parentField: IFieldDataExtendedUtils | undefined = listFields.find((parentFieldItem: any) => {
               return parentFieldItem.columnName === parentColumnName &&
                     parentColumnName !== itemField.columnName
@@ -698,12 +698,12 @@ export const actions: PanelActionTree = {
     fieldsList: IFieldDataExtendedUtils[]
   }) {
     let { field, fieldsList } = params
-    if (!(field.dependentFieldsList)) {
+    if (isEmptyValue(field.dependentFieldsList)) {
       // breaks if there are no field dependencies
       return
     }
     //  Get all fields
-    if (!(fieldsList)) {
+    if (isEmptyValue(fieldsList)) {
       fieldsList = context.getters.getFieldsListFromPanel(field.containerUuid)
     }
     const dependentsList: IFieldDataExtendedUtils[] = fieldsList.filter(fieldItem => {
@@ -714,7 +714,7 @@ export const actions: PanelActionTree = {
     dependentsList.map(async fieldDependent => {
       //  isDisplayed Logic
       let isDisplayedFromLogic, isMandatoryFromLogic, isReadOnlyFromLogic, defaultValue
-      if (fieldDependent.displayLogic) {
+      if (!isEmptyValue(fieldDependent.displayLogic)) {
         isDisplayedFromLogic = evaluator.evaluateLogic({
           context: getContext,
           parentUuid: field.parentUuid,
@@ -723,7 +723,7 @@ export const actions: PanelActionTree = {
         })
       }
       //  Mandatory Logic
-      if (fieldDependent.mandatoryLogic) {
+      if (!isEmptyValue(fieldDependent.mandatoryLogic)) {
         isMandatoryFromLogic = evaluator.evaluateLogic({
           context: getContext,
           parentUuid: field.parentUuid,
@@ -732,7 +732,7 @@ export const actions: PanelActionTree = {
         })
       }
       //  Read Only Logic
-      if (fieldDependent.readOnlyLogic) {
+      if (!isEmptyValue(fieldDependent.readOnlyLogic)) {
         isReadOnlyFromLogic = evaluator.evaluateLogic({
           context: getContext,
           parentUuid: field.parentUuid,
@@ -741,7 +741,7 @@ export const actions: PanelActionTree = {
         })
       }
       //  Default Value
-      if ((fieldDependent.defaultValue) &&
+      if (!isEmptyValue(fieldDependent.defaultValue) &&
         fieldDependent.defaultValue.includes('@') &&
         !fieldDependent.defaultValue.includes('@SQL=')) {
         defaultValue = parseContext({
@@ -750,7 +750,7 @@ export const actions: PanelActionTree = {
           value: fieldDependent.defaultValue
         }).value
       }
-      if (fieldDependent.defaultValue &&
+      if (!isEmptyValue(fieldDependent.defaultValue) &&
         fieldDependent.defaultValue.includes('@SQL=')) {
         defaultValue = parseContext({
           parentUuid: field.parentUuid!,
@@ -797,12 +797,13 @@ export const actions: PanelActionTree = {
     containerUuid: string
     panelType: PanelContextType
     panelMetadata?: any
-    tabMetadata?: any
     routeToDelete?: Route
     isAdvancedQuery?: boolean
   }) {
-    const { isAdvancedQuery = payload.isAdvancedQuery || false, panelType, parentUuid, containerUuid, panelMetadata, routeToDelete, tabMetadata } = payload
+    const { isAdvancedQuery = payload.isAdvancedQuery || false, panelType, parentUuid, containerUuid, panelMetadata, routeToDelete } = payload
     let executeAction: string
+    console.log('panelType')
+    console.log(panelType)
     switch (panelType) {
       case PanelContextType.Process:
       case PanelContextType.Report:
@@ -820,13 +821,22 @@ export const actions: PanelActionTree = {
         executeAction = Namespaces.WindowDefinition + '/' + 'getFieldsFromTab'
         break
     }
+    console.log('execute ACTION')
+    console.log(executeAction)
+    console.warn({
+      parentUuid,
+      containerUuid,
+      panelType,
+      panelMetadata,
+      isAdvancedQuery,
+      routeToDelete
+    })
 
     return context.dispatch(executeAction, {
       parentUuid,
       containerUuid,
       panelType,
       panelMetadata,
-      tabMetadata,
       isAdvancedQuery,
       routeToDelete
     }, { root: true })
