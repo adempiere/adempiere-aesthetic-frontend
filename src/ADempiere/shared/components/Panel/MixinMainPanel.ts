@@ -219,7 +219,7 @@ export default class MixinMainPanel extends Vue {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             panelType: this.panelType,
-            tabMetadata: this.metadata,
+            panelMetadata: this.metadata,
             isAdvancedQuery: this.isAdvancedQuery
           })
           .then(panelResponse => {
