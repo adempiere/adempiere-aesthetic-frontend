@@ -1,17 +1,18 @@
 import { Component, Mixins, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
 import MixinContextMenu from '../MixinContextMenu'
-import { IContextActionData } from '../../../WindowType'
+import { IContextActionData, RecordAccessAction, WindowDefinitionAction, WindowProcessAsociatedAction, WindowTabAssociatedAction } from '../../../WindowType'
 import VueI18n from 'vue-i18n'
-import { ActionContextName, ActionContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
+import { ProcessDefinitionAction } from '@/ADempiere/modules/dictionary'
 
 @Component({
   name: 'ContextMenuMobile',
   mixins: [Template, MixinContextMenu]
 })
 export default class ContextMenuMobile extends Mixins(MixinContextMenu) {
+  private openedsMenu: string[] = ['actions']
   // Computed properties
-  get isPanelTypeMobile(): boolean {
+  get isPanelTypeMobile() {
     if (['process', 'report'].includes(this.$route.meta.type)) {
       return true
     }
@@ -58,7 +59,7 @@ export default class ContextMenuMobile extends Mixins(MixinContextMenu) {
     return this.$t('components.RunProcess')
   }
 
-  get iconDefault(): string {
+  get iconDefault() {
     if (this.isPanelTypeMobile) {
       return 'component'
     }
@@ -66,20 +67,22 @@ export default class ContextMenuMobile extends Mixins(MixinContextMenu) {
   }
 
   // Methods
-  clickRelation(item: any) {
+  clickRelation(item: { name: string | undefined }) {
     this.$router.push({
       name: item.name,
       query: {
         tabParent: (0).toString()
       }
-    })
+    }, () => {})
   }
 
-  clickRunAction(action: any) {
+  clickRunAction(action: string | IContextActionData) {
     if (action === 'refreshData') {
       this.refreshData()
     } else {
-      this.runAction(action)
+      if (typeof action !== 'string') {
+        this.runAction(action)
+      }
     }
   }
 
@@ -87,30 +90,30 @@ export default class ContextMenuMobile extends Mixins(MixinContextMenu) {
     this.openReference(reference)
   }
 
-  iconAction(action: IContextActionData): string | undefined {
-    let icon: string | undefined
-    if (action.type === ActionContextType.DataAction) {
+  iconAction(action: { type: string, action: any }) {
+    let icon
+    if (action.type === 'dataAction') {
       switch (action.action) {
-        case ActionContextName.SetDefaultValues:
+        case 'setDefaultValues':
           icon = 'el-icon-news'
           break
-        case ActionContextName.DeleteEntity:
+        case 'deleteEntity':
           icon = 'el-icon-delete'
           break
-        case ActionContextName.UndoModifyData:
+        case 'undoModifyData':
           icon = 'el-icon-refresh-left'
           break
-        case ActionContextName.LockRecord:
+        case 'lockRecord':
           icon = 'el-icon-lock'
           break
-        case ActionContextName.UnlockRecord:
+        case 'unlockRecord':
           icon = 'el-icon-unlock'
           break
-        case ActionContextName.RecordAccess:
+        case 'recordAccess':
           icon = 'el-icon-c-scale-to-original'
           break
       }
-    } else if (action.type === ActionContextType.Process) {
+    } else if (action.type === 'process') {
       icon = 'el-icon-setting'
     } else {
       icon = 'el-icon-setting'
@@ -118,7 +121,7 @@ export default class ContextMenuMobile extends Mixins(MixinContextMenu) {
     return icon
   }
 
-  styleLabelAction(value: any) {
+  styleLabelAction(value: any): string {
     if (value) {
       return 'font-size: 14px;margin-top: 0% !important;margin-left: 0px;margin-bottom: 10%;display: contents;'
     } else {
