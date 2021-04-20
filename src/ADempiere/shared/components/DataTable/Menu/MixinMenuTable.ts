@@ -289,7 +289,7 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
             action: 'advancedQuery',
             [elementName]: records
           }
-        }, undefined)
+        }, () => {})
       }
     }
 }

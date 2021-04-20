@@ -10,7 +10,7 @@ export default class UnsupportedView extends Vue {
   redirect() {
     this.$store.dispatch('tagsView/delView', this.$route)
       .then(() => {
-        this.$router.push('/dashboard', undefined)
+        this.$router.push('/dashboard', () => {})
       })
   }
 }

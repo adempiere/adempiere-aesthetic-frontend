@@ -47,10 +47,10 @@ export default class FieldContextInfo extends Vue {
           name: viewSearch.name,
           query: {
             action: 'advancedQuery',
-            tabParent: String(0),
-            [this.fieldAttributes.columnName]: String(this.value)
+            tabParent: (0).toString(),
+            [this.fieldAttributes.columnName]: (this.value)?.toString()
           }
-        }, undefined)
+        }, () => {})
       } else {
         this.$message({
           type: 'error',

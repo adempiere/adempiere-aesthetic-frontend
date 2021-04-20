@@ -464,7 +464,7 @@ export default class FieldDefinition extends Vue {
             tabParent: (0).toString(),
             [this.fieldAttributes.columnName]: this.value
           }
-        })
+        }, () => {})
       } else {
         this.$message({
           type: 'error',

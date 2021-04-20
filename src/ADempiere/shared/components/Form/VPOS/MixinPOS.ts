@@ -13,7 +13,7 @@ import {
   requestUpdateOrderLine
 } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { Component, Vue, Prop, Ref, Watch, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Ref, Watch, Mixins } from 'vue-property-decorator'
 import {
   formatPrice,
   formatQuantity,
@@ -225,7 +225,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
     formatQuantity = formatQuantity
 
     withoutPOSTerminal(): boolean {
-      if (!this.currentPoint) {
+      if (isEmptyValue(this.currentPoint)) {
         this.$message({
           type: 'warning',
           message: 'Without POS Terminal',
@@ -258,7 +258,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     updateOrder(update: any): void {
-      if (update.value !== this.getOrder?.businessPartner?.uuid && this.currentPoint) {
+      if (update.value !== this.getOrder?.businessPartner?.uuid && !isEmptyValue(this.currentPoint)) {
         this.$store.dispatch(Namespaces.Order + '/' + 'updateOrder', {
           orderUuid: this.$route.query.action,
           posUuid: this.currentPoint?.uuid,
@@ -348,7 +348,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
         return
       }
       const orderUuid = this.$route.query.action
-      if (!orderUuid) {
+      if (isEmptyValue(orderUuid)) {
         const posUuid = this.currentPoint!.uuid
 
         let customerUuid: string = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
@@ -359,7 +359,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
           containerUuid: this.containerUuid,
           columnName: 'C_BPartner_ID'
         })
-        if (!customerUuid || id === 1000006) {
+        if (isEmptyValue(customerUuid) || id === 1000006) {
           customerUuid = this.currentPoint!.templateBusinessPartner.uuid
         }
 
@@ -373,16 +373,15 @@ export default class MixinPOS extends Mixins(MixinForm) {
           .then((response: Partial<IOrderData>) => {
             this.reloadOrder(true, response.uuid)
 
-            this.$router
-              .push({
-                params: {
-                  ...this.$route.params
-                },
-                query: {
-                  ...this.$route.query,
-                  action: response.uuid
-                }
-              })
+            this.$router.push({
+              params: {
+                ...this.$route.params
+              },
+              query: {
+                ...this.$route.query,
+                action: response.uuid
+              }
+            })
               .then(() => {
                 if (withLine) {
                   this.createOrderLine(response.uuid!)
@@ -645,10 +644,10 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     mounted() {
-      if (this.$route.query && this.$route.query.action) {
+      if (!isEmptyValue(this.$route.query)) {
         const orderUuid: string | undefined = this.$route.query.action as string
         this.reloadOrder(true, orderUuid)
-        if (this.$route.query.pos && this.allOrderLines && !this.$route.query.action) {
+        if (!isEmptyValue(this.$route.query.pos) && !isEmptyValue(this.allOrderLines) && isEmptyValue(this.$route.query.action)) {
           this.$router.push({
             params: {
               ...this.$route.params
@@ -657,7 +656,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
               ...this.$route.query,
               action: this.getOrder?.uuid
             }
-          })
+          }, () => {})
         }
       }
     }

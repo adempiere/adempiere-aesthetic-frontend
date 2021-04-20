@@ -115,7 +115,7 @@ export default class ProcessActivity extends Vue {
             fileName: activity.output.fileName
           }
         },
-        undefined)
+        () => {})
       } else if (activity.command === 'zoomIn') {
         const viewSearch = recursiveTreeSearch({
           treeData: this.permissionRoutes,
@@ -131,7 +131,7 @@ export default class ProcessActivity extends Vue {
               ...this.$route.query,
               ...activity.parametersList
             }
-          })
+          }, () => {})
         }
       }
     }

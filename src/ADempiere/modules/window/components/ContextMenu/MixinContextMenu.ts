@@ -42,6 +42,7 @@ import MixinRelations from './MixinRelations'
 
 @Component({
   name: 'MixinContextMenu',
+  mixins: [MixinRelations],
   components: {
     ItemRelations
   }
@@ -52,23 +53,20 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     @Prop({ default: undefined, type: String }) private parentUuid?: string
     @Prop({ type: String, required: true }) private containerUuid?: string
     @Prop({ default: undefined, type: String }) private panelType?: PanelContextType
-
     @Prop({ default: undefined, type: String }) private tableName?: string
     @Prop({ default: false, type: Boolean }) private isReport?: boolean
     @Prop({ default: undefined, type: String }) private lastParameter?: string
     @Prop({ default: undefined, type: String }) private reportFormat?: String
-    @Prop({ default: undefined, type: Boolean })
     @Prop({ default: undefined, type: Boolean }) private isInsertRecord?: boolean
-
     @Prop({ default: false, type: Boolean }) isListRecord?: boolean
     @Prop({ default: 'xlsx', type: String }) private defaultFormatExport?: string
-
     @Prop({ default: false, type: Boolean }) isDisplayed?: boolean
+
     protected actions: IContextActionData[] = []
     private supportedTypes = supportedTypes
     public references: IReferenceDataExtended[] = []
-    public file: any = this.getProcessResult.download || ''
-    public downloads: any = this.getProcessResult.url || ''
+    public file: any = this.$store.getters[Namespaces.Process + '/' + 'getProcessResult'].download || ''
+    public downloads: any = this.$store.getters[Namespaces.Process + '/' + 'getProcessResult'].url || ''
     private metadataMenu?: Partial<IContextMenuData> = {}
     private recordUuid = this.$route.query.action
     public isLoadedReferences = false
@@ -766,7 +764,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
             query: {
               ...this.getOldRouteOfWindow.query
             }
-          })
+          }, () => {})
         } else if (action.action === ActionContextName.RecordAccess) {
           this.$store.dispatch(Namespaces.Process + '/' + 'setShowDialog', {
             type: this.panelType,
@@ -828,10 +826,9 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
               referenceUuid: referenceElement.uuid,
               recordUuid: referenceElement.recordUuid,
               // windowUuid: this.parentUuid,
-              // tabParent: 0
-              tabParent: String(0)
+              tabParent: (0).toString()
             }
-          })
+          }, () => {})
         } else {
           this.$message({
             type: 'error',
@@ -913,6 +910,6 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
           action: this.getReportDefinition!.output!.printFormatUuid,
           tabParent
         }
-      }, undefined)
+      }, () => {})
     }
 }

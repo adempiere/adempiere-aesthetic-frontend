@@ -177,7 +177,7 @@ export default class Order extends Mixins(MixinOrderLine) {
     if (!isEmptyValue(value)) {
       this.$router.push({
         query: {
-          pos: String(value!.id)
+          pos: (value!.id).toString()
         }
       })
         .catch(

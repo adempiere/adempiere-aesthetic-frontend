@@ -164,8 +164,7 @@ export default class OrdersList extends Mixins(MixinForm) {
               ...this.$route.query,
               action: row.uuid
             }
-          }
-        )
+          }, () => {})
         const orderUuid = this.$route.query.action
         this.$store.dispatch(Namespaces.Payments + '/' + 'listPayments', { orderUuid })
       }

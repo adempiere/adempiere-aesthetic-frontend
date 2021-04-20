@@ -134,6 +134,7 @@ import { Form as ElForm, Input } from 'element-ui'
 import MixinLogin from '@/ADempiere/shared/components/Login/MixinLogin'
 import SocialSign from './components/SocialSignin.vue'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 @Component({
   name: 'Login',
@@ -229,7 +230,7 @@ export default class extends Vue {
       (this.$refs.loginForm as ElForm).validate(async(valid: boolean) => {
         const expr = '/'
         const query = (this.$route.query.redirect as string)
-        if (query) {
+        if (!isEmptyValue(query)) {
           this.loginForm = {
             ...this.loginForm,
             roleUuid: this.clientIdRedirect(query, expr) || '',

@@ -82,9 +82,9 @@ export default class PendingDocuments extends Mixins(MixinDasboard) {
             },
             query: {
               action: 'criteria',
-              tabParent: String(tabParent)
+              tabParent: tabParent?.toString()
             }
-          }, undefined)
+          }, () => {})
       } else {
         this.$message({
           type: 'error',
