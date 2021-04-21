@@ -489,6 +489,8 @@ export default class MixinMainPanel extends Vue {
             criteria: parameters.criteria
           })
           .then(response => {
+            console.log('response getDataListTab')
+            console.log(response)
             let action = 'create-new'
             let params = this.$route.params
             if (response && response.length && !parameters.isNewRecord) {
@@ -508,13 +510,12 @@ export default class MixinMainPanel extends Vue {
                 action = this.dataRecords.UUID
               }
               let viewTitle = ''
-              if (this.$route.query && this.$route.query.action) {
-                viewTitle = <string> this.$route.query.action
+              if (this.$route.query && !isEmptyValue(this.$route.query.action)) {
+                viewTitle = this.$route.query.action as string
               }
               this.setTagsViewTitle(viewTitle)
               this.isLoadRecord = true
             }
-
             this.$router.push(
               {
                 name: this.$route.name!,

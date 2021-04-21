@@ -35,6 +35,7 @@ import {
   requestUnlockPrivateAccess
   , IPrivateAccessData
 } from '@/ADempiere/modules/privateAccess'
+import { convertArrayKeyValueToObject } from '@/ADempiere/shared/utils/valueFormat'
 
 type BusinessDataActionTree = ActionTree<BusinessDataState, IRootState>
 type BusinessDataActionContext = ActionContext<BusinessDataState, IRootState>
@@ -579,7 +580,7 @@ export const actions: BusinessDataActionTree = {
             isAddRecord?: boolean
             isAddDefaultValues?: boolean
         }
-  ): Promise<void | IRecordObjectListFromCriteria[]> {
+  ): Promise<void | IKeyValueObject> {
     let { parentUuid, containerUuid } = parameters
     const {
       tableName,
@@ -647,10 +648,9 @@ export const actions: BusinessDataActionTree = {
       pageToken: nextPageToken
     })
       .then((dataResponse: IEntityListData) => {
-        const recordsList: IRecordObjectListFromCriteria[] = dataResponse.recordsList.map(
+        const recordsList: IKeyValueObject[] = dataResponse.recordsList.map(
           (record: IEntityData) => {
-            const values: KeyValueData<IValueData>[] =
-                            record.attributes
+            const values: KeyValueData<IValueData>[] = record.attributes
             let isEdit = false
             if (isAddDefaultValues) {
               if (
@@ -664,11 +664,16 @@ export const actions: BusinessDataActionTree = {
               }
             }
 
+            const ObjValues: IKeyValueObject = convertArrayKeyValueToObject({
+              array: values,
+              keyName: 'key'
+            })
+
             // overwrite default values and sets the values obtained from the
             // server (empty fields are not brought from the server)
             return {
-              defaultValues, // ...defaultValues,
-              values, // ...values,
+              ...defaultValues, // ...defaultValues,
+              ...ObjValues, // ...values,
               // datatables attributes
               isNew: false,
               isEdit,
