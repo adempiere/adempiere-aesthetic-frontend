@@ -1,5 +1,6 @@
 import Template from './template.vue'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import C2 from 'vue-class-component'
 import TabParent from '../../components/Tab'
 import TabChildren from '../../components/Tab/TabChildren'
 import ContextMenu from '../../components/ContextMenu'
@@ -18,6 +19,19 @@ import { IEntityLogData, IWorkflowProcessData } from '../../WindowType'
 import { IRecordSelectionData } from '@/ADempiere/modules/persistence'
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import RightPanel from '@/ADempiere/modules/window/components/RightPanel'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
+
+Component.registerHooks([
+  'beforeRouteEnter',
+  'beforeRouteLeave',
+  'beforeRouteUpdate'
+])
+
+C2.registerHooks([
+  'beforeRouteEnter',
+  'beforeRouteLeave',
+  'beforeRouteUpdate'
+])
 
 @Component({
   name: 'WindowView',
@@ -78,9 +92,13 @@ export default class WindowView extends Vue {
     }
 
     get isNewRecord(): boolean {
+      console.log('isNewRecord - WorkflowStatusBar')
+      console.log({
+        query: this.$route.query
+      })
       return (
-        !this.$route.query ||
-        !this.$route.query.action ||
+        isEmptyValue(this.$route.query) ||
+        isEmptyValue(this.$route.query.action) ||
         this.$route.query.action === 'create-new'
       )
     }
@@ -374,6 +392,12 @@ export default class WindowView extends Vue {
       const panel = this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](
         this.windowMetadata.currentTabUuid
       )
+      console.log('panel - isWorkflowBarStatus')
+      console.log({
+        panel: panel,
+        isDocumentTab: this.isDocumentTab,
+        isNewRecord: this.isNewRecord
+      })
       if (
         panel &&
             this.isDocumentTab &&
@@ -387,6 +411,15 @@ export default class WindowView extends Vue {
     // Navigation Guards
 
     beforeRouteUpdate(to: Route, from: Route, next: Function) {
+      console.log('beforeRouteUpdate')
+      console.log('currentRoute')
+      console.log(this.$route)
+      console.log('route')
+      console.log({
+        to,
+        from,
+        next
+      })
       this.$store.dispatch(Namespaces.Window + '/' + 'setWindowOldRoute', {
         path: from.path,
         fullPath: from.fullPath,
@@ -444,13 +477,13 @@ export default class WindowView extends Vue {
       this.showContainerInfo = !this.showContainerInfo
       if (this.showContainerInfo) {
         let tableName: string = this.$route.params.tableName
-        if (!tableName) {
+        if (isEmptyValue(tableName)) {
           tableName = this.getTableName!
         }
 
         const record = this.currentRecord
         let recordId = ''
-        if (record) {
+        if (!isEmptyValue(record)) {
           recordId = record[tableName + '_ID']
         }
         this.$router.push(
@@ -462,8 +495,7 @@ export default class WindowView extends Vue {
             query: {
               ...this.$route.query
             }
-          }
-        )
+          }, () => {})
 
         let recordUuid
         if (!this.isNewRecord) {
