@@ -1,8 +1,7 @@
 import { IPanelDataExtended } from '@/ADempiere/modules/dictionary/DictionaryType/VuexType'
 import {
   IDocumentActionData,
-  IListDocumentAction,
-  IListDocumentStatus
+  IListDocumentAction
 } from '@/ADempiere/modules/window'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { IFieldDataExtendedUtils } from '../../utils/DictionaryUtils/type'
@@ -30,7 +29,7 @@ export default class WorkflowStatusBar extends Vue {
     public chatNote = ''
     public columnName = 'DocStatus'
     public displayColumnName = 'DisplayColumn_DocStatus'
-    public documentStatusesList: any[] = []
+    public documentStatusesList?: any[]
 
     // Computed properties
     get tableName(): string {
@@ -38,13 +37,14 @@ export default class WorkflowStatusBar extends Vue {
     }
 
     get value(): any {
-      return this.$store.getters[
+      const val = this.$store.getters[
         Namespaces.FieldValue + '/' + 'getValueOfField'
       ]({
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
         columnName: this.columnName
       })
+      return val
     }
 
     set value(value: any) {
@@ -84,16 +84,15 @@ export default class WorkflowStatusBar extends Vue {
 
     get getActive(): any {
       const valueStatus: any = this.value
-      return this.listDocumentStatus.findIndex(
+      const getActive = this.listDocumentStatus.findIndex(
         (index: any) => index.value === valueStatus
       )
+      return getActive
     }
 
     get listDocumentStatus(): IDocumentActionData[] {
-      const documentStatus: IListDocumentStatus = this.$store.getters[
-        Namespaces.ContextMenu + '/' + 'getListDocumentStatus'
-      ]
-      return documentStatus.documentActionsList
+      const listDocumentStatus = this.$store.getters[Namespaces.ContextMenu + '/' + 'getListDocumentStatus'].documentActionsList
+      return listDocumentStatus
     }
 
     get documentActions(): IListDocumentAction {
@@ -103,9 +102,9 @@ export default class WorkflowStatusBar extends Vue {
     }
 
     get listDocumentActions(): IDocumentActionData[] {
-      const documentActionsList = this.documentActions.documentActionsList
+      const documentActionsList: IDocumentActionData[] = this.documentActions.documentActionsList
       // verify if current status exists into list
-      const isExistsCurrentLabel = documentActionsList.some(actionItem => {
+      const isExistsCurrentLabel: boolean = documentActionsList.some(actionItem => {
         return actionItem.name === this.displayedValue
       })
       if (!isExistsCurrentLabel) {
