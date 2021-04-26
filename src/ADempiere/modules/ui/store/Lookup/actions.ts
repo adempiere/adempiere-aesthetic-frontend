@@ -13,6 +13,7 @@ import {
 } from '@/ADempiere/modules/ui/UITypes'
 import { getToken as getSession } from '@/utils/cookies'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 type LookupActionContext = ActionContext<LookupState, IRootState>
 type LookupActionTree = ActionTree<LookupState, IRootState>
@@ -43,7 +44,7 @@ export const actions: LookupActionTree = {
       directQuery,
       value
     } = payload
-    if (!directQuery) {
+    if (isEmptyValue(directQuery)) {
       return
     }
 
@@ -65,7 +66,7 @@ export const actions: LookupActionTree = {
       .then((lookupItemResponse: ILookupItemData) => {
         const label: IValueData = lookupItemResponse.values.DisplayColumn
         const option: Required<ILookupOptions> = {
-          label: (!label) ? ' ' : label,
+          label: isEmptyValue(label) ? ' ' : label,
           uuid: lookupItemResponse.uuid,
           id: value // lookupItemResponse.values.KeyColumn
         }
@@ -113,7 +114,7 @@ export const actions: LookupActionTree = {
   ): Promise<ILookupOptions[] | void> | undefined {
     const {
       parentUuid,
-      columnName = payload.columnName || payload.tableName,
+      columnName = payload.columnName,
       containerUuid,
       tableName,
       query,
@@ -122,7 +123,7 @@ export const actions: LookupActionTree = {
       blankValue,
       valuesList = payload.valuesList || []
     } = payload
-    if (!query) {
+    if (isEmptyValue(query)) {
       return
     }
     let parsedQuery: string = query
@@ -146,7 +147,7 @@ export const actions: LookupActionTree = {
     }
 
     return requestLookupList({
-      columnName,
+      columnName: columnName!,
       tableName,
       query: parsedQuery,
       whereClause: parsedWhereClause,
@@ -161,10 +162,10 @@ export const actions: LookupActionTree = {
               DisplayColumn: label
             } = itemLookup.values
 
-            if (id) {
+            if (!isEmptyValue(id)) {
               list.push({
                 label,
-                id: <number>id,
+                id: id as number,
                 uuid: itemLookup.uuid
               })
             }

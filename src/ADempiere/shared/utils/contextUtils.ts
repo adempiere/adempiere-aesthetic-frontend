@@ -3,6 +3,7 @@ import { convertBooleanToString } from './valueFormat'
 import { IReferenceData } from '@/ADempiere/modules/field'
 import evaluator from '@/ADempiere/shared/utils/evaluator'
 import { Namespaces } from './types'
+import { isEmptyValue } from './valueUtils'
 // import store from '@/store'
 export default evaluator
 
@@ -25,7 +26,7 @@ export const getContext = (data: {
       columnName
     })
   }
-  if (!isPreferenceValue && !value) {
+  if (!isPreferenceValue && isEmptyValue(value)) {
     value = store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
       parentUuid,
       containerUuid,
@@ -182,7 +183,7 @@ export function parseContext(data: {
   const errorsList: string[] = []
   // let contextInfo: any
 
-  if (!value) {
+  if (isEmptyValue(value)) {
     value = undefined
     if (specialColumns.includes(columnName!)) {
       value = contextInfo = getContext({
@@ -225,14 +226,13 @@ export function parseContext(data: {
 
     token = inString.substring(0, secondIndexTag)
     columnName = token
-
     contextInfo = getContext({
       parentUuid,
       containerUuid,
       columnName
     }) // get context
 
-    if (!contextInfo) {
+    if (isEmptyValue(contextInfo)) {
       // get global context
       if (token.startsWith('#') || token.startsWith('$')) {
         contextInfo = getContext({
@@ -249,7 +249,7 @@ export function parseContext(data: {
     }
 
     // menu attribute isEmptyValue isSOTrx
-    if (isSOTrxMenu !== undefined && token === 'IsSOTrx' && !contextInfo) {
+    if (!isEmptyValue(isSOTrxMenu) !== undefined && token === 'IsSOTrx' && isEmptyValue(contextInfo)) {
       contextInfo = isSOTrxMenu
     }
 
@@ -257,7 +257,7 @@ export function parseContext(data: {
       contextInfo = convertBooleanToString(contextInfo)
     }
 
-    if (!contextInfo) {
+    if (isEmptyValue(contextInfo)) {
       // console.info(`No Context for: ${token}`)
       isError = true
       errorsList.push(token)
