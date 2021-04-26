@@ -18,7 +18,10 @@ export const mutations: ContextMenuMutationTree = {
     state: ContextMenuState,
     payload: IListDocumentStatus
   ) {
-    state.listDocumentStatus = payload
+    state.listDocumentStatus.documentActionsList = payload.documentActionsList
+    state.listDocumentStatus.recordId = payload.recordId
+    state.listDocumentStatus.defaultDocumentAction = payload.defaultDocumentAction
+    state.listDocumentStatus.recordUuid = payload.recordUuid
   },
   changeShowRigthPanel(state: ContextMenuState) {
     state.isShowRightPanel = !state.isShowRightPanel
