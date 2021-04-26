@@ -10,12 +10,13 @@ import {
   LookupState
 } from '@/ADempiere/modules/ui/UITypes'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 type LookupGettersTree = GetterTree<LookupState, IRootState>
 
 export const getters: LookupGettersTree = {
   getLookupItem: (
-    state: LookupState, getters, rootGetters
+    state: LookupState, getters, rootState, rootGetters
   ) => (parameters: {
         parentUuid: string
         containerUuid: string
@@ -49,7 +50,7 @@ export const getters: LookupGettersTree = {
                     itemLookup.tableName === tableName &&
                     itemLookup.sessionUuid === getSession() &&
                     itemLookup.clientId ===
-                        getters[Namespaces.Preference + '/' + 'getPreferenceClientId'] &&
+                        rootGetters[Namespaces.Preference + '/' + 'getPreferenceClientId'] &&
                     itemLookup.value === value
                 )
               }
@@ -60,7 +61,7 @@ export const getters: LookupGettersTree = {
     return undefined
   },
   getLookupList: (
-    state: LookupState, getters
+    state: LookupState, getters, rootState, rootGetters
   ) => (parameters: {
         parentUuid: string
         containerUuid: string
@@ -81,12 +82,10 @@ export const getters: LookupGettersTree = {
             | ILookupListExtended
             | undefined = state.lookupList.find(
               (itemLookup: ILookupListExtended) => {
-                return (
-                  itemLookup.parsedQuery === parsedQuery &&
+                return itemLookup.parsedQuery === parsedQuery &&
                     itemLookup.tableName === tableName &&
                     itemLookup.sessionUuid === getSession() &&
-                    itemLookup.clientId === getters[Namespaces.Preference + '/' + 'getPreferenceClientId']
-                )
+                    itemLookup.clientId === rootGetters[Namespaces.Preference + '/' + 'getPreferenceClientId']
               }
             )
     if (lookupList) {
@@ -116,7 +115,7 @@ export const getters: LookupGettersTree = {
       directQuery,
       value
     } = parameters
-    const list: ILookupOptions[] = getters.getLookupList({
+    const list = getters.getLookupList({
       parentUuid,
       containerUuid,
       tableName,
@@ -125,7 +124,7 @@ export const getters: LookupGettersTree = {
 
     const allList: ILookupOptions[] = list
     // set item values getter from server into list
-    if (!list) {
+    if (isEmptyValue(list)) {
       const item:
                 | Required<ILookupOptions>
                 | undefined = getters.getLookupItem({
@@ -135,8 +134,8 @@ export const getters: LookupGettersTree = {
                   directQuery,
                   value
                 })
-      if (item) {
-        allList.push(item)
+      if (!isEmptyValue(item)) {
+        allList.push(item!)
       }
     }
     return allList
