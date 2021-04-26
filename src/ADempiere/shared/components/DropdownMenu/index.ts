@@ -48,8 +48,7 @@ export default class DropdownMenu extends Vue {
             // childs: item.children?
             child: item.children
           }
-        }
-      )
+        }, () => {})
     }
 
     /**

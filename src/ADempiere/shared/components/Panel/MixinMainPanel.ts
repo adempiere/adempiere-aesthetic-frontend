@@ -219,7 +219,7 @@ export default class MixinMainPanel extends Vue {
             parentUuid: this.parentUuid,
             containerUuid: this.containerUuid,
             panelType: this.panelType,
-            tabMetadata: this.metadata,
+            panelMetadata: this.metadata,
             isAdvancedQuery: this.isAdvancedQuery
           })
           .then(panelResponse => {
@@ -489,6 +489,8 @@ export default class MixinMainPanel extends Vue {
             criteria: parameters.criteria
           })
           .then(response => {
+            console.log('response getDataListTab')
+            console.log(response)
             let action = 'create-new'
             let params = this.$route.params
             if (response && response.length && !parameters.isNewRecord) {
@@ -508,31 +510,21 @@ export default class MixinMainPanel extends Vue {
                 action = this.dataRecords.UUID
               }
               let viewTitle = ''
-              if (this.$route.query && this.$route.query.action) {
-                viewTitle = <string> this.$route.query.action
+              if (this.$route.query && !isEmptyValue(this.$route.query.action)) {
+                viewTitle = this.$route.query.action as string
               }
               this.setTagsViewTitle(viewTitle)
               this.isLoadRecord = true
             }
-
-            this.$route = {
-              ...this.$route,
-              params,
-              query: {
-                ...this.$route.query,
-                action
-              }
-            }
-            // this.$router.push(
-            //   {
-            //     name: this.$route.name!,
-            //     params,
-            //     query: {
-            //       ...this.$route.query,
-            //       action
-            //     }
-            //   }
-            // )
+            this.$router.push(
+              {
+                name: this.$route.name!,
+                params,
+                query: {
+                  ...this.$route.query,
+                  action
+                }
+              }, () => {})
 
             if (action === 'create-new') {
               this.$store.dispatch(Namespaces.Panel + '/' + 'setDefaultValues', {

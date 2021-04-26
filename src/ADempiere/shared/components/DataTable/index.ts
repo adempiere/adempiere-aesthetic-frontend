@@ -596,18 +596,18 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
             this.$store.dispatch(Namespaces.Window + '/' + 'setDataLog', {})
           }
           const tableName: string = this.panelMetadata!.tableName
-          // this.$router.push({
-          //   name: this.$route.name!,
-          //   query: {
-          //     ...this.$route.query,
-          //     action: row.UUID
-          //   },
-          //   params: {
-          //     ...this.$router.params,
-          //     tableName,
-          //     recordId: row[`${tableName}_ID`]
-          //   }
-          // }, () => {})
+          this.$router.push({
+            name: this.$route.name!,
+            query: {
+              ...this.$route.query,
+              action: row.UUID
+            },
+            params: {
+              ...this.$route.query,
+              tableName,
+              recordId: row[`${tableName}_ID`]
+            }
+          }, () => {})
           this.$store.commit('setCurrentRecord', row)
         } else {
           if (!row.isEdit) {

@@ -58,9 +58,7 @@ export default class TabParent extends Mixins(MixinTab) {
             params: {
               ...this.$route.params
             }
-          },
-          undefined
-        )
+          }, () => {})
 
         this.$route.meta.tabUuid = this.tabUuid
       }

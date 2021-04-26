@@ -177,7 +177,7 @@ export default class Order extends Mixins(MixinOrderLine) {
     if (!isEmptyValue(value)) {
       this.$router.push({
         query: {
-          pos: String(value!.id)
+          pos: (value!.id).toString()
         }
       })
         .catch(
@@ -212,6 +212,7 @@ export default class Order extends Mixins(MixinOrderLine) {
     })
       .catch(() => undefined)
       .finally(() => {
+        this.$store.commit(Namespaces.Payments + '/' + 'setListPayments', [])
         const { templateBusinessPartner } = this.currentPoint!
 
         this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {

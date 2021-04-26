@@ -1,5 +1,6 @@
 import { INotificationProcessData } from '@/ADempiere/modules/process/ProcessType'
 import { Prop, Ref, Watch, Component, Vue } from 'vue-property-decorator'
+import { RawLocation } from 'vue-router'
 import { Namespaces } from '../../utils/types'
 import Template from './template.vue'
 
@@ -38,28 +39,21 @@ export default class Badge extends Vue {
 
     handleCurrentChange(val: any) {
       if (val !== null) {
-        let options: {
-              name: string
-              params?: {
-                  processId?: number
-                  instanceUuid?: string
-                  fileName?: string
-              }
-          } = {
-            name: 'ProcessActivity'
-          }
+        let options: RawLocation = {
+          name: 'ProcessActivity'
+        }
         if (this.getRecordNotification && this.getRecordNotification[0].isReport && val.className !== 'procesActivity') {
           options = {
             name: 'Report Viewer',
             params: {
-              processId: this.getRecordNotification[0].processId,
-              instanceUuid: this.getRecordNotification[0].instanceUuid,
-              fileName: this.getRecordNotification[0].download
+              processId: this.getRecordNotification[0].processId?.toString() || '',
+              instanceUuid: this.getRecordNotification[0].instanceUuid || '',
+              fileName: this.getRecordNotification[0].download || ''
             }
           }
         }
         // this.$router.push(options.name, () => {})
-        this.$router.push(options.name)
+        this.$router.push(options, () => {})
       }
     }
 

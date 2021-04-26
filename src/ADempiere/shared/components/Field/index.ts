@@ -17,6 +17,7 @@ import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import { RouteConfig } from 'vue-router'
 import { IOptionField } from './type'
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
+import ContextMenu from '@/ADempiere/modules/window/components/ContextMenu'
 
 @Component({
   name: 'FieldDefinition',
@@ -31,19 +32,45 @@ export default class FieldDefinition extends Vue {
     @Prop({
       type: [Number, String, Boolean, Array, Object, Date],
       default: undefined
-    })
-    recordDataFields?: any
+    }) recordDataFields?: any
 
     @Prop({ type: Boolean, default: false }) inGroup?: boolean
     @Prop({ type: Boolean, default: false }) inTable?: boolean
     @Prop({ type: Boolean, default: false }) isAdvancedQuery?: boolean
     public field: any = {}
-    public visible: boolean = this.$store.state.contextMenuModule.isShowPopoverField
+    public visibleForDesktop = false
     public value: any
 
     // Computed properties
     get isMobile(): boolean {
       return this.$store.state.app.device === DeviceType.Mobile
+    }
+
+    get contextMenuField() {
+      return this.$store.getters[ContextMenu + '/' + 'getFieldContextMenu']
+    }
+
+    get panelContextMenu(): boolean {
+      return this.$store.state.contextMenuModule.isShowRightPanel
+    }
+
+    get optionFieldFComponentRender() {
+      let component
+      switch (this.contextMenuField.name) {
+        case this.$t('field.info'):
+          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/ContextInfo')
+          break
+        case this.$t('language'):
+          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Translated')
+          break
+        case this.$t('field.calculator'):
+          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Calculator')
+          break
+        case this.$t('field.preference'):
+          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Preference')
+          break
+      }
+      return component
     }
 
     // load the component that is indicated in the attributes of received property
@@ -413,6 +440,8 @@ export default class FieldDefinition extends Vue {
       }
       if (this.isMobile) {
         this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
+      } else {
+        this.visibleForDesktop = true
       }
       this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowPopoverField', true)
       this.$store.dispatch(Namespaces.ContextMenu + '/' + 'setOptionField', command)
@@ -435,7 +464,7 @@ export default class FieldDefinition extends Vue {
             tabParent: (0).toString(),
             [this.fieldAttributes.columnName]: this.value
           }
-        })
+        }, () => {})
       } else {
         this.$message({
           type: 'error',

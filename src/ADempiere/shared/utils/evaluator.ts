@@ -1,4 +1,5 @@
 import { convertStringToBoolean } from '@/ADempiere/shared/utils/valueFormat'
+import { isEmptyValue } from './valueUtils'
 
 /**
  * This class is used for evaluate a conditional
@@ -33,15 +34,23 @@ class evaluator {
         logic: string
         defaultReturned?: boolean
     }): boolean {
-    const defaultReturned = (logicToEvaluate.defaultReturned === undefined) ? false : logicToEvaluate.defaultReturned
     const {
       parentUuid,
       containerUuid,
       context,
-      logic
+      logic,
+      defaultReturned = logicToEvaluate.defaultReturned || false
     } = logicToEvaluate
+    console.log('evaluateLogic')
+    console.log({
+      parentUuid,
+      containerUuid,
+      context,
+      logic,
+      defaultReturned
+    })
     // empty logic
-    if (logic) {
+    if (isEmptyValue(logic)) {
       return defaultReturned
     }
     const st: string = logic.trim().replace('\n', '')
@@ -49,7 +58,7 @@ class evaluator {
     const stList: string[] = st.split(expr)
     const it: number = stList.length
 
-    if (it / 2 - (it + 1) / 2 === 0) {
+    if (((it / 2) - ((it + 1) / 2)) === 0) {
       console.info(
                 `Logic does not comply with format "<expression> [<logic> <expression>]"  -->  ${logic}`
       )
@@ -65,7 +74,7 @@ class evaluator {
         retValue = evaluator.evaluateLogicTuples({
           parentUuid,
           containerUuid,
-          context,
+          context: context!,
           logic: element,
           defaultReturned
         })
@@ -76,7 +85,7 @@ class evaluator {
                         evaluator.evaluateLogicTuples({
                           parentUuid,
                           containerUuid,
-                          context,
+                          context: context!,
                           logic: element,
                           defaultReturned
                         })
@@ -86,7 +95,7 @@ class evaluator {
                         evaluator.evaluateLogicTuples({
                           parentUuid,
                           containerUuid,
-                          context,
+                          context: context!,
                           logic: element,
                           defaultReturned
                         })
@@ -113,19 +122,19 @@ class evaluator {
   static evaluateLogicTuples(logicToEvaluate: {
         parentUuid?: string | null
         containerUuid?: string | null
-        context?: Function
-        defaultReturned: boolean
+        context: Function
+        defaultReturned?: boolean
         logic: string
     }): boolean {
     let {
       parentUuid,
       context,
       containerUuid,
-      defaultReturned,
+      defaultReturned = logicToEvaluate.defaultReturned || false,
       logic
     } = logicToEvaluate
     // not context info, not logic
-    if (logic) {
+    if (isEmptyValue(logic)) {
       return defaultReturned
     }
 
@@ -165,14 +174,12 @@ class evaluator {
         containerUuid = null
       }
 
-      let value
-      if (context) {
-        value = context({
-          parentUuid,
-          containerUuid,
-          columnName: first
-        })
-      }
+      // let value
+      const value = context({
+        parentUuid,
+        containerUuid,
+        columnName: first
+      })
       // in context exists this column name
       // if (isEmptyValue(value)) {
       // // console.info(`.The column ${first} not exists in context.`)
@@ -195,7 +202,7 @@ class evaluator {
     let secondEval: any = second.trim()
     if (expr.test(second)) {
       second = second.replace(/@/g, ' ').trim() // strip tag
-      secondEval = context!({
+      secondEval = context({
         parentUuid,
         containerUuid,
         columnName: first
@@ -206,10 +213,10 @@ class evaluator {
     }
 
     // Handling of ID compare (null => 0)
-    if (first.includes('_ID') && !firstEval) {
+    if (first.includes('_ID') && isEmptyValue(firstEval)) {
       firstEval = '0'
     }
-    if (second.includes('_ID') && !secondEval) {
+    if (second.includes('_ID') && isEmptyValue(secondEval)) {
       secondEval = '0'
     }
 
@@ -227,40 +234,40 @@ class evaluator {
      * @return {boolean}
      */
   static evaluateLogicTuple(
-    value1: string | number,
+    value1: string | number | undefined,
     operand: string,
-    value2: string | number
+    value2: string | number | undefined
   ): boolean {
     // Convert value 1 string value to boolean value
-    const value1boolean: boolean = convertStringToBoolean(value1.toString())
+    const value1boolean = (value1) ? convertStringToBoolean(value1.toString()) : Boolean(value1)
 
     // Convert value 2 string value to boolean value
-    const value2boolean: boolean = convertStringToBoolean(value2.toString())
+    const value2boolean = (value2) ? convertStringToBoolean(value2.toString()) : Boolean(value2)
 
     // if both values are empty, but not equal (" ", NaN, null, undefined)
-    const isBothEmptyValues: boolean = !value1boolean && !value2boolean
+    const isBothEmptyValues: boolean = isEmptyValue(value1boolean) && isEmptyValue(value2boolean)
 
     let isValueLogic
     switch (operand) {
       case '=':
       case '==':
-        isValueLogic = value1 === value2 || isBothEmptyValues
+        isValueLogic = value1boolean === value2boolean || isBothEmptyValues
         break
 
       case '<':
-        isValueLogic = value1 < value2 && !isBothEmptyValues
+        isValueLogic = value1boolean! < value2boolean! && !isBothEmptyValues
         break
 
       case '<=':
-        isValueLogic = value1 <= value2 || isBothEmptyValues
+        isValueLogic = value1boolean! <= value2boolean! || isBothEmptyValues
         break
 
       case '>':
-        isValueLogic = value1 > value2 && !isBothEmptyValues
+        isValueLogic = value1boolean! > value2boolean! && !isBothEmptyValues
         break
 
       case '>=':
-        isValueLogic = value1 >= value2 || isBothEmptyValues
+        isValueLogic = value1boolean! >= value2boolean! || isBothEmptyValues
         break
 
       case '~':
@@ -269,7 +276,7 @@ class evaluator {
       case '!=':
       case '<>':
       default:
-        isValueLogic = value1 !== value2 && !isBothEmptyValues
+        isValueLogic = value1boolean !== value2boolean && !isBothEmptyValues
         break
     }
     return isValueLogic

@@ -46,7 +46,7 @@ export default class MixinDasboard extends Vue {
             action: recordUuid,
             tabParent
           }
-        })
+        }, () => {})
       } else {
         this.$message({
           type: 'error',

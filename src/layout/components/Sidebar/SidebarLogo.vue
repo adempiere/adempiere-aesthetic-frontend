@@ -45,13 +45,13 @@ export default class extends Vue {
   profile() {
     this.$router.push({
       path: '/profile/index?'
-    })
+    }, () => {})
   }
 
   dashboard() {
     this.$router.push({
       path: '/'
-    })
+    }, () => {})
   }
 }
 </script>

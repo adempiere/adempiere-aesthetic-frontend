@@ -104,8 +104,7 @@ export default class ModalProcess extends Vue {
               ...this.$route.query,
               action: this.windowRecordSelected.UUID
             }
-          }
-        )
+          }, () => {})
         this.closeDialog()
       } else if (action) {
         const fieldNotReady = this.$store.getters[Namespaces.Panel + '/' + 'isNotReadyForSubmit'](action.uuid)

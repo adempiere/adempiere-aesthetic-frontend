@@ -124,11 +124,11 @@ export default class extends Mixins(MixinI18n) {
           childs: route.meta.childs
         },
         query
-      })
+      }, () => {})
     } else {
       this.$router.push({
         path: route.path
-      })
+      }, () => {})
     }
 
     // this.$router.push(route.path)

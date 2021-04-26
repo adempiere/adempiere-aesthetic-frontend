@@ -1,4 +1,5 @@
 import { IPanelDataExtended } from '@/ADempiere/modules/dictionary'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { MutationTree } from 'vuex'
 import { PanelState } from './type'
 
@@ -15,7 +16,7 @@ export const mutations: PanelMutationTree = {
     payload.field[payload.attributeName] = payload.attributeValue
   },
   changeFieldLogic(state: PanelState, payload) {
-    if (payload.isDisplayedFromLogic) {
+    if (!isEmptyValue(payload.isDisplayedFromLogic)) {
       payload.field.isDisplayedFromLogic = Boolean(payload.isDisplayedFromLogic)
     }
     payload.field.isMandatoryFromLogic = Boolean(payload.isMandatoryFromLogic)

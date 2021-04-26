@@ -39,8 +39,8 @@ export default class Item extends Vue {
       this.$router.push({
         name: item.name,
         query: {
-          tabParent: ''
+          tabParent: '0'
         }
-      })
+      }, () => {})
     }
 }

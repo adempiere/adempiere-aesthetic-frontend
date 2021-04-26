@@ -90,7 +90,7 @@ export default class ReportViewer extends Vue {
               this.$store
                 .dispatch('tagsView/delView', this.$route)
                 .then(() => {
-                  this.$router.push('/')
+                  this.$router.push('/', () => {})
                 })
               return
             }

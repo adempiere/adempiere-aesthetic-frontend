@@ -30,10 +30,10 @@ export const getters: PanelGetterTree = {
     const panel = <IPanelDataExtended | undefined>(
             getters.getPanel(containerUuid)
         )
-    if (!panel) {
+    if (isEmptyValue(panel)) {
       return []
     }
-    return panel.fieldsList
+    return panel!.fieldsList
   },
   getFieldsIsDisplayed: (state: PanelState, getters) => (containerUuid: string) => {
     const fieldsList: IFieldDataExtendedUtils[] = getters.getFieldsListFromPanel(containerUuid)
@@ -636,21 +636,34 @@ export const getters: PanelGetterTree = {
   getFieldsListNotMandatory: (state: PanelState, getters) => (params: { containerUuid: string, isEvaluateShowed?: boolean}): IFieldDataExtendedUtils[] => {
     const { containerUuid, isEvaluateShowed = params.isEvaluateShowed || true } = params
     // all optionals (not mandatory) fields
-    const notMandatoryFields = getters.getFieldsListFromPanel(containerUuid).filter((fieldItem: IFieldDataExtendedUtils) => {
+    const fieldsList: any[] = getters.getFieldsListFromPanel(containerUuid)
+    console.log('fieldsList from getFieldsListNotMandatory getters')
+    fieldsList.forEach((element: any) => {
+      if (element.columnName === 'C_Project_ID' || element.columnName === 'C_Campaign_ID') {
+        console.log('faltante')
+        console.log({
+          ...element
+        })
+      }
+    })
+    const notMandatoryFields = fieldsList.filter((fieldItem: IFieldDataExtendedUtils) => {
       const isMandatory: boolean = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
       if (!isMandatory) {
         if (isEvaluateShowed) {
-          return fieldIsDisplayed({
+          const fieldIsDisplayedRes = fieldIsDisplayed({
             panelType: fieldItem.panelType,
             isActive: fieldItem.isActive,
             isDisplayed: fieldItem.isDisplayed,
             isDisplayedFromLogic: fieldItem.isDisplayedFromLogic,
             isQueryCriteria: fieldItem.isQueryCriteria
           })
+          return fieldIsDisplayedRes
         }
         return !isMandatory
       }
     })
+    console.log('getFieldsListNotMandatory')
+    console.log(notMandatoryFields)
     return notMandatoryFields
   }
 }

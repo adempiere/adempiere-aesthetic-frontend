@@ -2,6 +2,7 @@ import { IPanelDataExtended } from '@/ADempiere/modules/dictionary/DictionaryTyp
 import { IRecordSelectionData } from '@/ADempiere/modules/persistence/PersistenceType'
 import DataTable from '@/ADempiere/shared/components/DataTable'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import MixinTab from '../MixinTab'
 import Template from './template.vue'
@@ -17,7 +18,7 @@ export default class TabChildren extends Mixins(MixinTab) {
     @Prop({ type: String, default: undefined })
     firstTabUuid?: string
 
-    public currentTabChild = this.$route.query.tabChild
+    currentTabChild?: any = ''
 
     // Computed properties
     // data this current tab
@@ -53,7 +54,7 @@ export default class TabChildren extends Mixins(MixinTab) {
     // Watchers
     @Watch('$route.query.tabChild')
     handleRouteQueryTabChildChange(actionValue: any) {
-      if (!actionValue) {
+      if (isEmptyValue(actionValue)) {
         this.currentTabChild = '0'
         return
       }
@@ -63,6 +64,7 @@ export default class TabChildren extends Mixins(MixinTab) {
     // Current TabChildren
     @Watch('currentTabChild')
     handleCurrentTabChildChange(newValue: any, oldValue: any) {
+      console.log('TabChild change')
       if (newValue !== oldValue) {
         this.$router.push(
           {
@@ -73,9 +75,7 @@ export default class TabChildren extends Mixins(MixinTab) {
             params: {
               ...this.$route.params
             }
-          },
-          undefined
-        )
+          }, () => {})
       }
     }
 
@@ -98,6 +98,7 @@ export default class TabChildren extends Mixins(MixinTab) {
 
     // Hooks
     created() {
+      this.currentTabChild = this.$route.query.tabChild as string || ''
       this.setCurrentTabChild()
       const currentIndex = parseInt(this.currentTabChild.toString(), 10)
       this.tabUuid = this.tabsList[currentIndex].uuid

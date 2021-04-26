@@ -27,7 +27,6 @@ import {
   ActionContextType,
   PanelContextType
 } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
-import store from '@/ADempiere/shared/store'
 import {
   IAdditionalAttributesData,
   IFieldDataExtendedUtils
@@ -36,6 +35,7 @@ import { IFieldData } from '@/ADempiere/modules/field'
 import { getFieldTemplate } from '@/ADempiere/shared/utils/lookupFactory'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import router from '@/router'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 type WindowDefinitionActionTree = ActionTree<WindowDefinitionState, IRootState>
 type WindowDefinitionActionContext = ActionContext<
@@ -334,11 +334,15 @@ export const actions: WindowDefinitionActionTree = {
             containerUuid: string
             // tabId,
             panelType: PanelContextType
-            tabMetadata?: ITabData
+            panelMetadata?: any
             isAdvancedQuery: boolean
         }
   ) {
-    payload.tabMetadata = payload.tabMetadata || undefined
+    console.log('getFieldsFromTab')
+    console.log({
+      ...payload
+    })
+    payload.panelMetadata = payload.panelMetadata || {}
     payload.panelType = payload.panelType || PanelContextType.Window
     payload.isAdvancedQuery = payload.isAdvancedQuery || false
 
@@ -348,11 +352,11 @@ export const actions: WindowDefinitionActionTree = {
       panelType,
       isAdvancedQuery
     } = payload
-    let { tabMetadata } = payload
+    let { panelMetadata: tabMetadata } = payload
 
     return new Promise(resolve => {
-      if (!tabMetadata) {
-        tabMetadata = store.getters.getTab(parentUuid, containerUuid)
+      if (isEmptyValue(tabMetadata)) {
+        tabMetadata = context.getters.getTab(parentUuid, containerUuid)
       }
 
       const additionalAttributes: IAdditionalAttributesData = {
@@ -368,14 +372,14 @@ export const actions: WindowDefinitionActionTree = {
         //
         isReadOnlyFromForm: false,
         isAdvancedQuery,
-        isEvaluateValueChanges: isAdvancedQuery
+        isEvaluateValueChanges: !isAdvancedQuery
       }
 
       let isWithUuidField = false // indicates it contains the uuid field
       let fieldLinkColumnName = ''
 
       //  Convert and add to app attributes
-      const fieldsList: IFieldDataExtendedUtils[] = tabMetadata!.fields.map(
+      const fieldsList: IFieldDataExtendedUtils[] = tabMetadata!.fields!.map(
         (fieldItem: IFieldData, index: number) => {
           const generatedField: IFieldDataExtendedUtils = generateField(
             {
@@ -427,8 +431,9 @@ export const actions: WindowDefinitionActionTree = {
       }
 
       // panel for save on store
+      const tabMetadataBefore = tabMetadata as ITabData
       const panel: IPanelData = {
-        ...tabMetadata!,
+        ...tabMetadataBefore!,
         containerUuid,
         isAdvancedQuery,
         fieldLinkColumnName,

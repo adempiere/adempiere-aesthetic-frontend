@@ -1089,7 +1089,7 @@ export const actions: WindowActionTree = {
       .then((response: IRecordObjectListFromCriteria[]) => {
         if (
           isRefreshPanel &&
-                    recordUuid &&
+                    !isEmptyValue(recordUuid) &&
                     recordUuid !== 'create-new'
         ) {
           const newValues:
@@ -1237,13 +1237,6 @@ export const actions: WindowActionTree = {
     })
   },
   setWindowOldRoute(context: WindowActionContext, oldPath?: IWindowOldRoute) {
-    if (!oldPath) {
-      oldPath = {
-        path: '',
-        fullPath: '',
-        query: {}
-      }
-    }
     context.commit('setWindowOldRoute', oldPath)
   },
   setTabSequenceRecord(context: WindowActionContext, record: any) {

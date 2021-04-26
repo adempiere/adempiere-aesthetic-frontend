@@ -21,10 +21,10 @@
           <el-dropdown
             size="mini"
             :hide-on-click="true"
-            trigger="click"
+            trigger="hover"
             @command="handleCommand"
           >
-            <span class="el-dropdown-link">
+            <span style="border: aqua;">
               <span key="is-field-name">
                 {{ field.name }}
               </span>
@@ -42,7 +42,39 @@
                   :command="option"
                   :divided="true"
                 >
-                  <div class="contents">
+                                    <el-popover
+                    v-if="!isMobile"
+                    placement="top"
+                    width="400"
+                    trigger="click"
+                    style="padding: 0px;"
+                  >
+                    <component
+                      :is="optionFieldFComponentRender"
+                      v-if="visibleForDesktop"
+                      :field-attributes="contextMenuField.fieldAttributes"
+                      :source-field="contextMenuField.fieldAttributes"
+                      :field-value="contextMenuField.valueField"
+                    />
+                    <el-button slot="reference" type="text" style="color: #606266;">
+                      <div class="contents">
+                        <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
+                          <i :class="option.icon" style="font-weight: bolder;" />
+                        </div>
+                        <div v-else style="margin-right: 5%">
+                          <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
+                        </div>
+                        <div>
+                          <span class="contents">
+                            <b class="label">
+                              {{ option.name }}
+                            </b>
+                          </span>
+                        </div>
+                      </div>
+                    </el-button>
+                  </el-popover>
+                  <div v-if="isMobile" class="contents">
                     <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
                       <i :class="option.icon" style="font-weight: bolder;" />
                     </div>
@@ -83,6 +115,28 @@
   />
 </template>
 
+<style>
+.el-dropdown-menu__item:not(.is-disabled):hover, .el-dropdown-menu__item:focus {
+  background: white;
+}
+.el-dropdown-menu--mini .el-dropdown-menu__item {
+  line-height: 14px;
+  padding: 0px 15px;
+  padding-top: 0%;
+  padding-right: 15px;
+  padding-bottom: 0%;
+  padding-left: 15px;
+  font-size: 10px;
+  background: white;
+}
+.el-dropdown-menu--mini .el-dropdown-menu__item.el-dropdown-menu__item--divided {
+  margin-top: 0%;
+}
+.el-popper {
+  padding: 0px;
+}
+</style>
+
 <style scoped>
   .svg-icon {
     width: 1em;
@@ -99,8 +153,8 @@
     top: 0;
     left: 0;
     z-index: 10;
-    padding: 10px 0;
-    margin: 5px 0;
+    padding: 0px 0;
+    margin: 0px 0;
     background-color: #FFFFFF;
     border: 1px solid #e6ebf5;
     border-radius: 4px;

@@ -148,12 +148,10 @@ export function getEvaluatedLogics(field: {
     mandatoryLogic: string
     readOnlyLogic: string
 }) {
-  field.isDisplayed =
-        field.isDisplayed === undefined ? true : field.isDisplayed
   const {
     parentUuid,
     containerUuid,
-    isDisplayed,
+    isDisplayed = field.isDisplayed || true,
     displayLogic,
     mandatoryLogic,
     readOnlyLogic
@@ -170,7 +168,7 @@ export function getEvaluatedLogics(field: {
     }
 
   let isDisplayedFromLogic: boolean = isDisplayed
-  if (displayLogic) {
+  if (!isEmptyValue(displayLogic)) {
     isDisplayedFromLogic = evaluator.evaluateLogic({
       ...commonParameters,
       logic: displayLogic
@@ -178,7 +176,7 @@ export function getEvaluatedLogics(field: {
   }
 
   let isMandatoryFromLogic = false
-  if (mandatoryLogic) {
+  if (!isEmptyValue(mandatoryLogic)) {
     isMandatoryFromLogic = evaluator.evaluateLogic({
       ...commonParameters,
       logic: mandatoryLogic
@@ -186,7 +184,7 @@ export function getEvaluatedLogics(field: {
   }
 
   let isReadOnlyFromLogic = false
-  if (readOnlyLogic) {
+  if (!isEmptyValue(readOnlyLogic)) {
     isReadOnlyFromLogic = evaluator.evaluateLogic({
       ...commonParameters,
       logic: readOnlyLogic
@@ -225,7 +223,6 @@ export function generateField(data: {
     isMandatoryFromLogic: false,
     isReadOnlyFromLogic: false
   }
-
   let parentFieldsList: string[] = []
   let parsedDefaultValue: string | undefined = fieldToGenerate.defaultValue
   let parsedDefaultValueTo: string | undefined =
