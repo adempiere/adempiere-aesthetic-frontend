@@ -12,6 +12,7 @@ import {
   IReferenceListData,
   IReferencesListParams
 } from '../UITypes'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 /**
  * Request a Lookup data from Reference
@@ -25,7 +26,7 @@ import {
 export function requestLookup(data: ILookupParams): Promise<ILookupItemData> {
   const { tableName, directQuery, value } = data
   let filters: any[] = []
-  if (value) {
+  if (!isEmptyValue(value)) {
     filters = [
       {
         value
@@ -41,7 +42,7 @@ export function requestLookup(data: ILookupParams): Promise<ILookupItemData> {
       filters
     }
   }).then((response: any) => {
-    return convertLookupItem(response)
+    return response
   })
 }
 

@@ -93,7 +93,7 @@
       </el-dropdown-menu>
     </el-dropdown>
     <el-dropdown size="mini" @command="clickReferences">
-      <el-button size="mini" :disabled="!(isReferecesContent && isLoadedReferences)">
+      <el-button size="mini" :disabled="!(isReferencesContent && isLoadedReferences)">
         {{ $t('components.contextMenuReferences') }} <i class="el-icon-arrow-down el-icon--right" />
       </el-button>
       <el-dropdown-menu slot="dropdown">

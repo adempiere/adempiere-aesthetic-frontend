@@ -58,7 +58,7 @@
                         <el-container>
                           <el-aside width="100%" style="overflow: hidden;">
                             <el-scrollbar>
-                              <workflow-status-bar
+                              <WorkflowStatusBar
                                 v-if="isWorkflowBarStatus"
                                 :style-steps="styleStepsSimple"
                                 :container-uuid="windowMetadata.currentTabUuid"

@@ -4,6 +4,7 @@ import { convertStringToBoolean } from '@/ADempiere/shared/utils/valueFormat'
 import { GetterTree } from 'vuex'
 import { IRootState } from '@/store'
 import { FieldValueState } from './type'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 type FieldValueGetterTree = GetterTree<FieldValueState, IRootState>
 
@@ -25,7 +26,7 @@ export const getters: FieldValueGetterTree = {
     key += columnName
     value = state.field[key]
 
-    if (parentUuid && !value) {
+    if (parentUuid && isEmptyValue(value)) {
       // get in window level
       key = parentUuid + '_' + columnName
       value = state.field[parentUuid + '_' + columnName]
@@ -115,5 +116,8 @@ export const getters: FieldValueGetterTree = {
     const valueProcessed = state.field[`${parentUuid}_Processed`]
 
     return convertStringToBoolean(valueProcessed)
+  },
+  getAllField: (state: FieldValueState) => {
+    return state.field
   }
 }

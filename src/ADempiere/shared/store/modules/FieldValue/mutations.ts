@@ -1,4 +1,5 @@
 import { KeyValueData } from '@/ADempiere/modules/persistence'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { FieldValueState } from './type'
@@ -41,7 +42,7 @@ export const mutations: FieldValueMutationTree = {
         if (isOverWriteParent) {
           Vue.set(state.field, keyParent, value)
         } else {
-          if (value) {
+          if (!isEmptyValue(value)) {
             // tab child no replace parent context with empty
             Vue.set(state.field, keyParent, value)
           }
@@ -63,6 +64,12 @@ export const mutations: FieldValueMutationTree = {
           isOverWriteParent: boolean
           attributes: Partial<KeyValueData>[]
       }) {
+    console.trace('updateValuesOfContainer')
+    console.log({
+      payload,
+      state: state
+    })
+
     const { parentUuid, containerUuid, isOverWriteParent } = payload
     payload.attributes.forEach(attribute => {
       // const { value, columnName } = attribute

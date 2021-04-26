@@ -1034,8 +1034,13 @@ export const actions: WindowActionTree = {
       }).value
     }
 
+    console.warn('preference current')
+    console.log({
+      preference: context.rootGetters[Namespaces.Preference + '/' + 'getAllPreference'],
+      field: context.rootGetters[Namespaces.FieldValue + '/' + 'getAllField']
+    })
     let parsedWhereClause: string = tab.whereClause
-    if (parsedWhereClause && parsedWhereClause.includes('@')) {
+    if (!isEmptyValue(parsedWhereClause) && parsedWhereClause.includes('@')) {
       parsedWhereClause = parseContext({
         parentUuid,
         containerUuid,
@@ -1066,13 +1071,28 @@ export const actions: WindowActionTree = {
 
     const conditionsList: KeyValueData[] = []
     // TODO: evaluate if overwrite values to conditions
-    if (!isLoadAllRecords && tab.isParentTab && tab.tableName && value) {
+    if (!isLoadAllRecords && tab.isParentTab && !isEmptyValue(tab.tableName) && !isEmptyValue(value)) {
       conditionsList.push({
         // columnName,
         key: columnName!,
         value
       })
     }
+    console.log('conditionsList')
+    console.log(conditionsList)
+    console.log('data to getObjectListFromCriteria')
+    console.log({
+      parentUuid,
+      containerUuid,
+      tableName: tab.tableName,
+      query: parsedQuery,
+      whereClause: parsedWhereClause,
+      orderByClause: tab.orderByClause,
+      conditionsList,
+      isParentTab: tab.isParentTab,
+      isAddRecord,
+      isShowNotification
+    })
     return context
       .dispatch(Namespaces.BusinessData + '/' + 'getObjectListFromCriteria', {
         parentUuid,

@@ -2,6 +2,7 @@ import { GetterTree } from 'vuex'
 import { PreferenceState } from './state'
 import { IRootState } from '@/store'
 import { IKeyValueObject } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 type PreferenceGetterTree = GetterTree<PreferenceState, IRootState>
 
@@ -24,7 +25,7 @@ export const getters: PreferenceGetterTree = {
       // context for window
       const keyParent: string = key + columnName
       const valueParent = state.preference[keyParent]
-      if (valueParent) {
+      if (!isEmptyValue(valueParent)) {
         return valueParent
       }
     }
