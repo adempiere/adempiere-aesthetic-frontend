@@ -442,7 +442,7 @@ export const actions: PanelActionTree = {
     recordUuid: string
   }): void {
     const { parentUuid, containerUuid, recordUuid } = params
-    const recordAndSelection: IRecordSelectionData = context.getters.getDataRecordAndSelection(containerUuid)
+    const recordAndSelection: IRecordSelectionData = context.rootGetters[Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'](containerUuid)
     const recordRow = recordAndSelection.record.find(record => record.UUID === recordUuid)
 
     let attributes: KeyValueData<any>[] = []
@@ -464,24 +464,24 @@ export const actions: PanelActionTree = {
     containerUuid: string
     attributes?: any[] | IKeyValueObject
   }) {
+    console.trace('notifyPanelChange trace')
     const { parentUuid, containerUuid } = params
     const { attributes = params.attributes || [] } = params
     let attributesParsed: KeyValueData[] = []
     if (typeValue(attributes) === 'OBJECT') {
-      attributesParsed = convertObjectToKeyValue({
-        object: attributes
-      })
-    } else {
-      attributesParsed = attributes.map((item: any) => {
-        return convertIRangeAttributeDataToKeyValueData(item)
-      })
+      attributesParsed = convertObjectToKeyValue(attributes)
     }
+    //  else {
+    //   attributesParsed = attributes.map((item: any) => {
+    //     return convertIRangeAttributeDataToKeyValueData(item)
+    //   })
+    // }
 
     // Update field
     context.dispatch(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
       parentUuid,
       containerUuid,
-      attributes: attributesParsed
+      attributes: isEmptyValue(attributesParsed) ? attributes : attributesParsed
     }, { root: true })
       .then(() => {
         const panel: IPanelDataExtended | undefined = context.getters.getPanel(containerUuid)
