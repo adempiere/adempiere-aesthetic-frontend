@@ -534,9 +534,7 @@ export default class MixinMainPanel extends Vue {
                 isNewRecord: true
               })
             } else {
-              const attributes = convertObjectToKeyValue({
-                object: this.dataRecords
-              })
+              const attributes = convertObjectToKeyValue(this.dataRecords)
               this.$store.dispatch(Namespaces.Panel + '/' + 'notifyPanelChange', {
                 parentUuid: this.parentUuid,
                 containerUuid: this.containerUuid,
