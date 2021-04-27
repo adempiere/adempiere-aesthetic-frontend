@@ -1220,9 +1220,8 @@ export const actions: WindowActionTree = {
     const { containerUuid, recordUuid } = payload
     let { tableName } = payload
 
-    if (!tableName) {
-      tableName = context.rootGetters[Namespaces.WindowDefinition + '/' + 'getTab'](windowUuid, containerUuid)
-        .tableName
+    if (isEmptyValue(tableName)) {
+      tableName = context.rootGetters[Namespaces.WindowDefinition + '/' + 'getTab'](windowUuid, containerUuid).tableName
     }
 
     return new Promise(resolve => {

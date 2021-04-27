@@ -25,7 +25,6 @@ import {
   IDataLog,
   IPrivateAccessDataExtended,
   IRecordSelectionData,
-  IReferenceDataExtended,
   IReferenceListDataExtended,
   IWindowOldRoute,
   KeyValueData
@@ -64,7 +63,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
 
     protected actions: IContextActionData[] = []
     private supportedTypes = supportedTypes
-    public references: IReferenceDataExtended[] = []
+    public references: Partial<IReferenceListDataExtended> | IReferenceListDataExtended[] = []
     public file: any = ''
     public downloads: any = ''
     private metadataMenu?: Partial<IContextMenuData> = {}
@@ -102,12 +101,12 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       return false
     }
 
-    get getterReferences(): IReferenceDataExtended[] {
+    get getterReferences(): IReferenceListDataExtended[] {
       if (this.isReferencesContent) {
-        const result: IReferenceListDataExtended = this.$store.getters[
+        const result: IReferenceListDataExtended[] = this.$store.getters[
           Namespaces.Window + '/' + 'getReferencesList'
         ](this.parentUuid, this.recordUuid)
-        return result.referencesList
+        return result
       }
       return []
     }
