@@ -682,7 +682,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
             }
           }
         }
-        this.$store.dispatch(action.action, {
+        this.$store.dispatch(Namespaces.Process + '/' + action.action, {
           action,
           parentUuid: this.containerUuid,
           containerUuid: containerParams, // EVALUATE IF IS action.uuid
