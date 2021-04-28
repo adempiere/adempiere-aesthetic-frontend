@@ -13,7 +13,8 @@ import {
   IListPrintsFormatsRequest,
   IListReportDrillTablesRequest,
   IListReportOutputRequest,
-  IReportOutputData
+  IReportOutputData,
+  IReportDrillTableResponse
 } from './ReportType'
 
 /**
@@ -79,7 +80,7 @@ export function requestListDrillTables(
   data: IListReportDrillTablesRequest
 ): any /* Promise<IReportDrillTableResponse> */ {
   const { tableName, pageToken, pageSize } = data
-  request({
+  return request({
     url: '/ui/list-drill-tables',
     method: 'POST',
     data: {
@@ -89,18 +90,17 @@ export function requestListDrillTables(
       page_token: pageToken,
       page_size: pageSize
     }
-  })
-    .then(drillTablesResponse => {
-      return {
-        list: drillTablesResponse.records.map(
-          (drill: any) => {
-            return convertDrillTables(drill)
-          }
-        ),
-        nextPageToken: drillTablesResponse.next_page_token,
-        recordCount: drillTablesResponse.record_count
-      }
+  }).then((drillTablesResponse: any) => {
+    const list = drillTablesResponse.records.map((drill: any) => {
+      return convertDrillTables(drill)
     })
+    const output: IReportDrillTableResponse = {
+      list,
+      nextPageToken: drillTablesResponse.next_page_token,
+      recordCount: drillTablesResponse.record_count
+    }
+    return output
+  })
 }
 
 // Get report output from parameters

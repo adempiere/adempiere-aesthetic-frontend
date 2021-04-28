@@ -460,30 +460,29 @@ export const actions: ProcessActionTree = {
                           printFormatUuid: output.printFormatUuid,
                           reportViewUuid: output.reportViewUuid
                         }, { root: true }
-                      )
-                        .then(
-                          (
-                            drillTablesResponse: IDrillTablesDataExtended[]
-                          ) => {
-                            drillTablesList.childs = drillTablesResponse
-                            if (
-                              drillTablesList
-                                .childs.length
-                            ) {
-                              // Get contextMenu metadata and concat drill tables list with contextMenu actions
-                              const contextMenuMetadata: IContextMenuData = context.rootGetters[Namespaces.ContextMenu + '/' + 'getContextMenu'](
-                                processResult.processUuid
-                              )
+                      ).then(
+                        (
+                          drillTablesResponse: IDrillTablesDataExtended[]
+                        ) => {
+                          drillTablesList.childs = drillTablesResponse
+                          if (
+                            drillTablesList
+                              .childs.length
+                          ) {
+                            // Get contextMenu metadata and concat drill tables list with contextMenu actions
+                            const contextMenuMetadata: IContextMenuData = context.rootGetters[Namespaces.ContextMenu + '/' + 'getContextMenu'](
+                              processResult.processUuid
+                            )
 
-                              const drillTablesListActions: DrillTableAction = <
+                            const drillTablesListActions: DrillTableAction = <
                                                                 DrillTableAction
                                                             >drillTablesList
-                              contextMenuMetadata.actions.push(
-                                drillTablesListActions
-                              )
-                            }
+                            contextMenuMetadata.actions.push(
+                              drillTablesListActions
+                            )
                           }
-                        )
+                        }
+                      )
                     }
                   }
                 }
@@ -597,7 +596,7 @@ export const actions: ProcessActionTree = {
           parameters: parametersList!,
           selectionsList,
           tableName: tableName!,
-          recordId: Number(recordId!)
+          recordId: isEmptyValue(recordId!) ? undefined : Number(recordId!)
         })
           .then((runProcessResponse: IProcessLogData) => {
             const { instanceUuid, output } = runProcessResponse
@@ -1468,13 +1467,12 @@ export const actions: ProcessActionTree = {
         menuParentUuid = processOutput.menuParentUuid!
       }
 
-      let tableName = ''
+      let tableName
       if (processOutput.option && processOutput.option) {
         if (processOutput.option === PrintFormatOptions.DrillTable) {
           tableName = processOutput.resultTableName!
         }
       }
-
       router.push(
         {
           name: 'Report Viewer',
@@ -1483,9 +1481,9 @@ export const actions: ProcessActionTree = {
             instanceUuid: processOutput.instanceUuid!,
             fileName: (!processOutput.output?.fileName) ? processOutput.fileName! : processOutput.output.fileName,
             menuParentUuid,
-            tableName
+            tableName: tableName as string
           }
-        }
+        }, () => {}
       )
 
       // router.push(
