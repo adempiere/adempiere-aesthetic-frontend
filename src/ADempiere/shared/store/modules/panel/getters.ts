@@ -4,7 +4,7 @@ import { specialColumns } from '@/ADempiere/shared/utils/contextUtils'
 import { fieldIsDisplayed, getDefaultValue } from '@/ADempiere/shared/utils/DictionaryUtils'
 import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
-import { ActionContext, GetterTree } from 'vuex'
+import { GetterTree } from 'vuex'
 import { IRootState } from '@/store'
 import { IPanelParameters, IRangeAttributeData, PanelState } from './type'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
@@ -12,7 +12,6 @@ import { isEmptyValue, parsedValueComponent } from '@/ADempiere/shared/utils/val
 import { LOG_COLUMNS_NAME_LIST } from '@/ADempiere/shared/utils/dataUtils'
 
 type PanelGetterTree = GetterTree<PanelState, IRootState>
-type PanelActionContext = ActionContext<PanelState, IRootState>
 
 export const getters: PanelGetterTree = {
   getPanel: (state: PanelState) => (
@@ -221,7 +220,7 @@ export const getters: PanelGetterTree = {
 
     let { fieldsList = payload.fieldsList || [] } = payload
 
-    if (!fieldsList) {
+    if (isEmptyValue(fieldsList)) {
       fieldsList = getters.getFieldsListFromPanel(containerUuid)
     }
 
@@ -311,14 +310,13 @@ export const getters: PanelGetterTree = {
      * @returns {Array<Object>} [{ columnName: name key, value: value to send, operator }]
      */
   getParametersToServer: (
-    state: PanelState,
-    context: PanelActionContext
+    state: PanelState, getters, rootState, rootGetters
   ) => (payload: {
         containerUuid: string
-        row: IKeyValueObject
-        fieldsList: IFieldDataExtendedUtils[]
-        withOutColumnNames: string[]
-        isEvaluateMandatory: boolean
+        row?: IKeyValueObject
+        fieldsList?: IFieldDataExtendedUtils[]
+        withOutColumnNames?: string[]
+        isEvaluateMandatory?: boolean
     }): IPanelParameters[] => {
     const {
       containerUuid,
@@ -328,8 +326,8 @@ export const getters: PanelGetterTree = {
     } = payload
     let { fieldsList = payload.fieldsList || [] } = payload
 
-    if (!fieldsList) {
-      fieldsList = context.getters.getFieldsListFromPanel(containerUuid)
+    if (isEmptyValue(fieldsList)) {
+      fieldsList = getters.getFieldsListFromPanel(containerUuid)
     }
     const parametersRange: IPanelParameters[] = []
 
@@ -369,14 +367,14 @@ export const getters: PanelGetterTree = {
       if (isDisplayed) {
         // from table
         if (row) {
-          if (row[columnName]) {
+          if (!isEmptyValue(row[columnName])) {
             return true
           }
           return false
         }
 
         // from field value
-        const value = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        const value = rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
           parentUuid: fieldItem.parentUuid,
           containerUuid,
           columnName
@@ -386,17 +384,15 @@ export const getters: PanelGetterTree = {
           fieldItem.isRange &&
                     fieldItem.componentPath !== 'FieldNumber'
         ) {
-          valueTo = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+          valueTo = rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
             parentUuid: fieldItem.parentUuid,
             containerUuid,
             columnName: fieldItem.columnNameTo
           })
         }
         if (
-          (value) ||
-                    (valueTo) ||
-                    (fieldItem.isAdvancedQuery &&
-                        ['NULL', 'NOT_NULL'].includes(fieldItem.operator!))
+          !isEmptyValue(value) || !isEmptyValue(valueTo) ||
+          (fieldItem.isAdvancedQuery && ['NULL', 'NOT_NULL'].includes(fieldItem.operator!))
         ) {
           return true
         }
@@ -414,7 +410,7 @@ export const getters: PanelGetterTree = {
         value = row[columnName]
         valueTo = row[parameterItem.columnNameTo!]
       } else {
-        value = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        value = rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
           parentUuid: parameterItem.parentUuid,
           containerUuid,
           columnName: columnName
@@ -458,7 +454,7 @@ export const getters: PanelGetterTree = {
       // only to fields type Time, Date and DateTime, and is range, with values
       // manage as Array = [value, valueTo]
       if (isRange && parameterItem.componentPath !== 'FieldNumber') {
-        valueTo = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        valueTo = rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
           parentUuid: parameterItem.parentUuid,
           containerUuid,
           columnName: parameterItem.columnNameTo
@@ -484,6 +480,7 @@ export const getters: PanelGetterTree = {
 
     // parametersList = parametersList.concat(parametersRange)
     parameters.concat(parametersRange)
+    console.log(parameters)
     return parameters
   },
   getFieldFromColumnName: (state: PanelState, getters) => (parameters: { containerUuid: string, columnName: string }): IFieldDataExtendedUtils | undefined => {
