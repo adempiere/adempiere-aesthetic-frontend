@@ -54,7 +54,7 @@ export default class WindowView extends Vue {
   // eslint-disable-next-line
     @Prop({ type: Object, default: () => {} }) styleSteps: any
     public windowMetadata: Partial<IWindowDataExtended> = {}
-    public windowUuid: string = this.$route.meta.uuid
+    public windowUuid = ''
     public panelType: PanelContextType = PanelContextType.Window
     public isLoaded = false
     // TODO: Manage attribute with store
@@ -452,6 +452,7 @@ export default class WindowView extends Vue {
 
     // Hooks
     created() {
+      this.windowUuid = this.$route.meta.uuid
       this.getWindow()
       if (this.isShowedRecordNavigation) {
         this.handleResize()
