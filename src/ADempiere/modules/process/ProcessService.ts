@@ -1,3 +1,4 @@
+import { IPanelParameters } from '@/ADempiere/shared/store/modules/panel/type'
 import { request } from '@/ADempiere/shared/utils/request'
 import {
   IProcessRequestData,
@@ -6,6 +7,7 @@ import {
   IProcessListData,
   IProcessLogListData
 } from '.'
+import { KeyValueData } from '../persistence'
 
 /**
  * Request a process
@@ -14,10 +16,42 @@ import {
 export function requestRunProcess(
   requestData: IProcessRequestData
 ): Promise<IProcessLogData> {
+  const {
+    uuid,
+    tableName,
+    recordId,
+    recordUuid,
+    isSummary,
+    reportType,
+    tableSelectedId,
+    reportViewUuid,
+    parametersList,
+    selectionsList,
+    printFormatUuid
+  } = requestData
+  let parameters: KeyValueData[] = []
+  parameters = parametersList.map((parameter: IPanelParameters) => {
+    return {
+      key: parameter.columnName,
+      value: parameter.value
+    }
+  })
   return request({
     url: '/data/process',
     method: 'POST',
-    data: requestData
+    data: {
+      process_uuid: uuid,
+      table_name: tableName,
+      id: recordId,
+      uuid: recordUuid,
+      is_summary: isSummary,
+      report_type: reportType,
+      table_selected_id: tableSelectedId,
+      report_view_uuid: reportViewUuid,
+      parameters,
+      selections: selectionsList,
+      print_format_uuid: printFormatUuid
+    }
   })
     .then(processRunResponse => {
       return convertProcessLog(processRunResponse)

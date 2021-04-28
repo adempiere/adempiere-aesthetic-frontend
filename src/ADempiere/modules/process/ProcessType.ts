@@ -20,7 +20,7 @@ export interface IProcessLogData {
     lastRun: number
     logsList: IProcessInfoLogData[]
     // parametersList?: any
-    parameters?: KeyValueData[]
+    parameters?: KeyValueData[] | IPanelParameters[]
     output: IReportOutputData
     //
     processUuid?: string
@@ -42,7 +42,8 @@ export interface IProcessRequestData {
     reportType?: string
     tableSelectedId?: number
     reportViewUuid?: string
-    parameters: KeyValueData[]
+    parameters: KeyValueData[] | IPanelParameters[]
+    parametersList: IPanelParameters[]
     selectionsList?: any[]
     printFormatUuid?: string
 }
