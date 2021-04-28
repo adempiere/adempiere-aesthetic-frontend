@@ -102,7 +102,7 @@ export default class ProcessActivity extends Vue {
 
     // Methods
     getProcessMetadata(uuid: string): IProcessData | undefined {
-      return this.$store.getters[Namespaces.Process + '/' + 'getProcess'](uuid)
+      return this.$store.getters[Namespaces.ProcessDefinition + '/' + 'getProcess'](uuid)
     }
 
     handleCommand(activity: any): void {

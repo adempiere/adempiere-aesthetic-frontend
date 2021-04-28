@@ -25,7 +25,6 @@ import {
   IDataLog,
   IPrivateAccessDataExtended,
   IRecordSelectionData,
-  IReferenceDataExtended,
   IReferenceListDataExtended,
   IWindowOldRoute,
   KeyValueData
@@ -64,11 +63,11 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
 
     protected actions: IContextActionData[] = []
     private supportedTypes = supportedTypes
-    public references: IReferenceDataExtended[] = []
-    public file: any = this.$store.getters[Namespaces.Process + '/' + 'getProcessResult'].download || ''
-    public downloads: any = this.$store.getters[Namespaces.Process + '/' + 'getProcessResult'].url || ''
+    public references: Partial<IReferenceListDataExtended> | IReferenceListDataExtended[] = []
+    public file: any = ''
+    public downloads: any = ''
     private metadataMenu?: Partial<IContextMenuData> = {}
-    private recordUuid = this.$route.query.action
+    private recordUuid = ''
     public isLoadedReferences = false
 
     get getProcessResult() {
@@ -82,6 +81,8 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     }
 
     get isWithRecord() {
+      console.log('isWithRecord')
+      console.log(this.recordUuid)
       return !isEmptyValue(this.recordUuid) && this.recordUuid !== 'create-new'
     }
 
@@ -100,12 +101,12 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       return false
     }
 
-    get getterReferences(): IReferenceDataExtended[] {
+    get getterReferences(): IReferenceListDataExtended[] {
       if (this.isReferencesContent) {
-        const result: IReferenceListDataExtended = this.$store.getters[
+        const result: IReferenceListDataExtended[] = this.$store.getters[
           Namespaces.Window + '/' + 'getReferencesList'
         ](this.parentUuid, this.recordUuid)
-        return result.referencesList
+        return result
       }
       return []
     }
@@ -351,6 +352,9 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     // Note: Check if those watchers are hooks
 
     created() {
+      this.recordUuid = this.$route.query.action as string
+      this.file = this.$store.getters[Namespaces.Process + '/' + 'getProcessResult'].download
+      this.downloads = this.$store.getters[Namespaces.Process + '/' + 'getProcessResult'].url
       this.generateContextMenu()
     }
 
@@ -678,7 +682,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
             }
           }
         }
-        this.$store.dispatch(action.action, {
+        this.$store.dispatch(Namespaces.Process + '/' + action.action, {
           action,
           parentUuid: this.containerUuid,
           containerUuid: containerParams, // EVALUATE IF IS action.uuid
