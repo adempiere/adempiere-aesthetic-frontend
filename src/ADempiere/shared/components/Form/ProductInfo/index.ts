@@ -7,6 +7,7 @@ import MixinField from '../../Field/Mixin/MixinField'
 import ProductInfoList from './ProductList'
 import staticReportRoutes, { IZoomWindowReportRoute } from '@/ADempiere/shared/utils/Constants/zoomReport'
 import Template from './template.vue'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 @Component({
   name: 'ProductInfo',
@@ -26,7 +27,7 @@ export default class ProductInfo extends Mixins(MixinField) {
     }
 
     set isShowProductsPriceList(isShowed: boolean | undefined) {
-      if (this.$route.query.pos) {
+      if (!isEmptyValue(this.$route.query.pos)) {
         this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
           attribute: 'isShowPopoverField',
           isShowed
@@ -37,8 +38,8 @@ export default class ProductInfo extends Mixins(MixinField) {
     get listWithPrice(): IProductPriceData[] {
       const productPrice: IListProductPriceItemData = this.$store.getters[Namespaces.ListProductPrice + '/' + 'getProductPrice']
       const { list } = productPrice
-      if (list && list?.length) {
-        return list
+      if (!isEmptyValue(list)) {
+        return list!
       }
       return []
     }
@@ -132,7 +133,7 @@ export default class ProductInfo extends Mixins(MixinField) {
       //   return [procces[key]]
       // })
       // if (this.isEmptyValue(this.currentPos)) {
-        procces.forEach((report) => {
+      procces.forEach((report) => {
         this.$store.dispatch(Namespaces.ProcessDefinition + '/' + 'getProcessFromServer', { containerUuid: report.uuid })
       })
     }

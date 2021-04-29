@@ -1,6 +1,6 @@
 import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
-import { extractPagingToken } from '@/ADempiere/shared/utils/valueUtils'
+import { extractPagingToken, isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { ActionContext, ActionTree } from 'vuex'
 import { getProductPriceList } from '../../POSService'
 import { IListProductPriceResponse, IPointOfSalesData, ListProductPriceState } from '../../POSType'
@@ -105,7 +105,7 @@ export const actions: ListProductPriceActionTree = {
     } = payload
     let { pageNumber, searchValue } = payload
     const posUuid = context.rootGetters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
-    if (!posUuid) {
+    if (isEmptyValue(posUuid)) {
       const message = 'Sin punto de venta seleccionado'
       showMessage({
         type: 'info',
@@ -116,14 +116,14 @@ export const actions: ListProductPriceActionTree = {
     }
     context.commit('setIsReloadProductPrice')
     let pageToken: string, token: string | undefined
-    if (!pageNumber) {
+    if (isEmptyValue(pageNumber)) {
       pageNumber = context.state.productPrice.pageNumber
       if (!pageNumber) {
         pageNumber = 1
       }
 
       token = context.state.productPrice.token
-      if (token) {
+      if (!isEmptyValue(token)) {
         pageToken = token + '-' + pageNumber
       }
     }
@@ -134,7 +134,7 @@ export const actions: ListProductPriceActionTree = {
     const { uuid: priceListUuid } = priceList
     const { uuid: warehouseUuid } = context.rootGetters['user/getWarehouse']
 
-    if (!searchValue) {
+    if (isEmptyValue(searchValue)) {
       searchValue = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid,
         columnName: 'ProductValue'
@@ -148,7 +148,7 @@ export const actions: ListProductPriceActionTree = {
         warehouseUuid,
         pageToken
       }).then((responseProductPrice: IListProductPriceResponse) => {
-        if (!token || !pageToken) {
+        if (isEmptyValue(token) || isEmptyValue(pageToken)) {
           token = extractPagingToken(responseProductPrice.nextPageToken)
         }
 
@@ -174,6 +174,6 @@ export const actions: ListProductPriceActionTree = {
     })
   },
   updateSearch(context: ListProductPriceActionContext, newValue: string) {
-    context.commit('updtaeSearchProduct', newValue)
+    context.commit('updateSearchProduct', newValue)
   }
 }

@@ -117,7 +117,9 @@ export default class ProductList extends Mixins(MixinForm) {
   // Watchers
   @Watch('isReadyFromGetData')
   handleIsReadyFromGetData(isToLoad: boolean) {
-    this.loadProductsPricesList()
+    if (isToLoad) {
+      this.loadProductsPricesList()
+    }
   }
 
   @Watch('indexTable')
@@ -207,11 +209,7 @@ export default class ProductList extends Mixins(MixinForm) {
   }
 
   loadProductsPricesList() {
-    this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo', {
-      containerUuid: undefined,
-      pageNumber: undefined,
-      searchValue: undefined
-    })
+    this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo', {})
   }
 
   /**
