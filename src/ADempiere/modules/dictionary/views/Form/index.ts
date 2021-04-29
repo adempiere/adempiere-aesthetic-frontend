@@ -17,7 +17,7 @@ import ModalDialog from '@/ADempiere/shared/components/Dialog'
   }
 })
 export default class FormView extends Vue {
-    public formUuid: string = this.$route.meta.uuid || ''
+    public formUuid = ''
     public formMetadata: Partial<IFormDataExtended> = {}
     public isLoaded = false
     public panelType: PanelContextType = PanelContextType.Form
@@ -86,6 +86,7 @@ export default class FormView extends Vue {
 
     // Hooks
     created() {
+      this.formUuid = this.$route.meta.uuid
       this.getForm()
     }
 }

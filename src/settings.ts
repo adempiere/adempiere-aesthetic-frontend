@@ -28,7 +28,7 @@ const settings: ISettings = {
   mockServerPort: 9528,
   // ADempiere
   supportPinyinSearch: true,
-  showContextMenu: true,
+  // showContextMenu: true,
   showNavar: true
 }
 
