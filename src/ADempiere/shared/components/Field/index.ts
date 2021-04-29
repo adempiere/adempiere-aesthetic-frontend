@@ -47,7 +47,7 @@ export default class FieldDefinition extends Vue {
     }
 
     get contextMenuField() {
-      return this.$store.getters[ContextMenu + '/' + 'getFieldContextMenu']
+      return this.$store.getters[Namespaces.ContextMenu + '/' + 'getFieldContextMenu']
     }
 
     get panelContextMenu(): boolean {
@@ -438,6 +438,8 @@ export default class FieldDefinition extends Vue {
         this.redirect({ window: command.fieldAttributes.reference.zoomWindows[0] })
         return
       }
+      console.log('handleCommand')
+      console.log(command)
       if (this.isMobile) {
         this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
       } else {
