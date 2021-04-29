@@ -510,11 +510,20 @@ export default class WindowView extends Vue {
             recordId
           })
         }
-        this.$store.dispatch(Namespaces.ChatEntries + '/' + this.activeInfo, {
-          tableName,
-          recordId,
-          recordUuid
-        })
+        const posibleActions = ['listWorkflowLogs', 'listRecordLogs']
+        if (posibleActions.includes(this.activeInfo)) {
+          this.$store.dispatch(Namespaces.ContainerInfo + '/' + this.activeInfo, {
+            tableName,
+            recordId,
+            recordUuid
+          })
+        } else {
+          this.$store.dispatch(Namespaces.ChatEntries + '/' + this.activeInfo, {
+            tableName,
+            recordId,
+            recordUuid
+          })
+        }
       }
       this.$store.dispatch(Namespaces.Utils + '/' + 'showContainerInfo', !this.getterShowContainerInfo)
     }
