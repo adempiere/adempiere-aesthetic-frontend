@@ -64,7 +64,6 @@ export default class MixinPOS extends Mixins(MixinForm) {
   }
 
   get listOrderLine(): IOrderLineDataExtended[] {
-    console.log('ListOrderLine')
     const orders = this.$store.getters[
       Namespaces.OrderLines + '/' + 'getListOrderLine'
     ]

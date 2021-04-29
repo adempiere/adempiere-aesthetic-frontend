@@ -464,7 +464,6 @@ export const actions: PanelActionTree = {
     containerUuid: string
     attributes?: any[] | IKeyValueObject
   }) {
-    console.trace('notifyPanelChange trace')
     const { parentUuid, containerUuid } = params
     const { attributes = params.attributes || [] } = params
     let attributesParsed: KeyValueData[] = []
@@ -802,8 +801,6 @@ export const actions: PanelActionTree = {
   }) {
     const { isAdvancedQuery = payload.isAdvancedQuery || false, panelType, parentUuid, containerUuid, panelMetadata, routeToDelete } = payload
     let executeAction: string
-    console.log('panelType')
-    console.log(panelType)
     switch (panelType) {
       case PanelContextType.Process:
       case PanelContextType.Report:
@@ -821,16 +818,6 @@ export const actions: PanelActionTree = {
         executeAction = Namespaces.WindowDefinition + '/' + 'getFieldsFromTab'
         break
     }
-    console.log('execute ACTION')
-    console.log(executeAction)
-    console.warn({
-      parentUuid,
-      containerUuid,
-      panelType,
-      panelMetadata,
-      isAdvancedQuery,
-      routeToDelete
-    })
 
     return context.dispatch(executeAction, {
       parentUuid,

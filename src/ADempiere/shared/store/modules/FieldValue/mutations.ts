@@ -64,12 +64,6 @@ export const mutations: FieldValueMutationTree = {
           isOverWriteParent: boolean
           attributes: Partial<KeyValueData>[]
       }) {
-    console.trace('updateValuesOfContainer')
-    console.log({
-      payload,
-      state: state
-    })
-
     const { parentUuid, containerUuid, isOverWriteParent } = payload
     payload.attributes.forEach(attribute => {
       // const { value, columnName } = attribute
