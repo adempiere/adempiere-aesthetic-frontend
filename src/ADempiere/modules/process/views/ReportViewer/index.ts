@@ -7,9 +7,15 @@ import { Component, Vue } from 'vue-property-decorator'
 import { INotificationProcessData } from '../../ProcessType'
 import Template from './template.vue'
 import { reportFormatsList } from '@/ADempiere/shared/utils/exportUtil'
+import ModalDialog from '@/ADempiere/shared/components/Dialog'
+import ContextMenu from '@/ADempiere/modules/window/components/ContextMenu'
 
 @Component({
   name: 'ReportViewer',
+  components: {
+    ModalDialog,
+    ContextMenu
+  },
   mixins: [Template]
 })
 export default class ReportViewer extends Vue {

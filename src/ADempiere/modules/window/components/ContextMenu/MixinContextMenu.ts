@@ -38,6 +38,7 @@ import { IReportOutputDataExtended } from '@/ADempiere/modules/report'
 import { convertFieldsListToShareLink, recursiveTreeSearch, clientDateTime, isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import ROUTES from '@/ADempiere/shared/utils/Constants/zoomWindow'
 import MixinRelations from './MixinRelations'
+import { IPanelParameters } from '@/ADempiere/shared/store/modules/panel/type'
 
 @Component({
   name: 'MixinContextMenu',
@@ -214,7 +215,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       }
     }
 
-    get processParametersExecuted(): KeyValueData[] | undefined {
+    get processParametersExecuted(): KeyValueData[] | undefined | IPanelParameters[] {
       const result: INotificationProcessData = this.$store.getters[
         Namespaces.Process + '/' + 'getCachedReport'
       ](this.$route.params.instanceUuid)

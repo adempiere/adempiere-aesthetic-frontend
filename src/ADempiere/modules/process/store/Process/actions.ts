@@ -55,6 +55,7 @@ import {
 import { Route } from 'vue-router'
 import { ISelectionProcessData } from '@/ADempiere/shared/store/modules/Utils/type'
 import router from '@/router'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 type ProcessActionContext = ActionContext<ProcessState, IRootState>
 type ProcessActionTree = ActionTree<ProcessState, IRootState>
@@ -126,7 +127,7 @@ export const actions: ProcessActionTree = {
             containerUuid,
             selection: allData.selection
           })
-          if (!selectionsList || selectionsList.length < 1) {
+          if (isEmptyValue(selectionsList)) {
             showNotification({
               title: language
                 .t('data.selectionRequired')
@@ -148,7 +149,7 @@ export const actions: ProcessActionTree = {
                         processTable?: any
                         tableName: string
                         valueRecord?: any
-                    } = context.rootGetters[Namespaces.Utils + '/' + 'getRecordUuidMenu']()
+                    } = context.rootGetters[Namespaces.Utils + '/' + 'getRecordUuidMenu']
           tab = <ITabDataExtended>(
                         context.rootGetters[Namespaces.WindowDefinition + '/' + 'getTab'](parentUuid, containerUuid)
                     )
@@ -173,12 +174,12 @@ export const actions: ProcessActionTree = {
         }
       }
       // get info metadata process
-      const processDefinition: IProcessData = isActionDocument
+      const processDefinition: IProcessData = !isEmptyValue(isActionDocument)
         ? action
         : context.rootGetters[Namespaces.ProcessDefinition + '/' + 'getProcess'](action.uuid)
       let reportType: any = reportFormat
 
-      if (!parametersList || !parametersList.length) {
+      if (isEmptyValue(parametersList)) {
         parametersList = <IPanelParameters[]>(
                     context.rootGetters[Namespaces.Panel + '/' + 'getParametersToServer']({
                       containerUuid: processDefinition.uuid
@@ -186,7 +187,7 @@ export const actions: ProcessActionTree = {
                 )
       }
 
-      const isSession = !!getToken()
+      const isSession = !isEmptyValue(getToken())
       let procesingMessage: any = {
         close: () => false
       }
@@ -207,12 +208,8 @@ export const actions: ProcessActionTree = {
               containerUuid,
               panelType,
               lastRun: timeInitialized,
-              parameters: parametersList.map((element: IPanelParameters) => {
-                return {
-                  key: element.columnName,
-                  value: element.value
-                }
-              }),
+              parameters: parametersList!,
+              parametersList,
               logs: [],
               isError: false,
               isProcessing: true,
@@ -229,19 +226,13 @@ export const actions: ProcessActionTree = {
               }
             }
       let processResult: INotificationProcessData
-      if (isActionDocument) {
+      if (!isEmptyValue(isActionDocument)) {
         processResult = {
           ...processLog,
           processUuid: action.uuid,
           processId: action.id,
           processName: 'Procesar Orden',
-          parameters: parametersList.map((item: IPanelParameters) => {
-            const itemParam: KeyValueData = {
-              key: item.columnName,
-              value: item.value
-            }
-            return itemParam
-          })
+          parameters: parametersList
         }
       } else {
         // Run process on server and wait for it for notify
@@ -249,7 +240,7 @@ export const actions: ProcessActionTree = {
         processResult = {
           ...processLog,
           menuParentUuid,
-          processIdPath: (!routeToDelete) ? '' : routeToDelete!.path,
+          processIdPath: isEmptyValue(routeToDelete) ? '' : routeToDelete!.path,
           printFormatUuid: action.printFormatUuid,
           // process attributes
           action: <ActionContextName>processDefinition.name,
@@ -259,13 +250,7 @@ export const actions: ProcessActionTree = {
           processUuid: processDefinition.uuid,
           processId: processDefinition.id,
           processName: processDefinition.processName!,
-          parameters: parametersList.map((item: IPanelParameters) => {
-            const itemParam: KeyValueData = {
-              key: item.columnName,
-              value: item.value
-            }
-            return itemParam
-          }),
+          parameters: parametersList,
           isReport: processDefinition.isReport
         }
       }
@@ -276,14 +261,9 @@ export const actions: ProcessActionTree = {
         if (allData!.record.length <= 100) {
           // close view if is browser.
           router.push(
-            { path: '/dashboard' }
+            { path: '/dashboard' },
+            () => {}
           )
-          // router.push(
-          //     {
-          //         path: '/dashboard'
-          //     },
-          //     () => {}
-          // )
           context.dispatch(Namespaces.TagsView + '/' + 'delView', routeToDelete, { root: true })
           // delete data associate to browser
           context.dispatch(Namespaces.Browser + '/' + 'deleteRecordContainer', {
@@ -292,13 +272,7 @@ export const actions: ProcessActionTree = {
         }
       } else {
         // close view if is process, report.
-        router.push({ path: '/dashboard' })
-        // router.push(
-        //     {
-        //         path: '/dashboard'
-        //     },
-        //     () => {}
-        // )
+        router.push({ path: '/dashboard' }, () => {})
         context.dispatch(Namespaces.TagsView + '/' + 'delView', routeToDelete, { root: true })
 
         // reset panel and set defalt isShowedFromUser
@@ -324,15 +298,8 @@ export const actions: ProcessActionTree = {
               uuid: processDefinition.uuid,
               id: processDefinition.id,
               reportType,
-              parameters: parametersList!.map(
-                (item: IPanelParameters) => {
-                  const itemParam: KeyValueData = {
-                    key: item.columnName,
-                    value: item.value
-                  }
-                  return itemParam
-                }
-              ),
+              parameters: parametersList!,
+              parametersList: parametersList!,
               // selectionsList: selection,
               tableName: windowSelectionProcess.tableName,
               recordId: <number>(selectionWindow[windowSelectionProcess.tableName])
@@ -383,8 +350,7 @@ export const actions: ProcessActionTree = {
                     processResult.processUuid
                   )
                   if (
-                    reportViewList &&
-                                        !reportViewList.childs
+                    reportViewList && isEmptyValue(reportViewList.childs)
                   ) {
                     context
                       .dispatch(
@@ -435,7 +401,7 @@ export const actions: ProcessActionTree = {
                     processResult.processUuid
                   )
                   if (
-                    printFormatList && !printFormatList.childs.length
+                    printFormatList && isEmptyValue(printFormatList.childs.length)
                   ) {
                     context
                       .dispatch(Namespaces.Report + '/' + 'getListPrintFormats', {
@@ -478,48 +444,45 @@ export const actions: ProcessActionTree = {
                     childs: [],
                     option: PrintFormatOptions.DrillTable
                   }
-                  if (output.tableName) {
+                  if (!isEmptyValue(output.tableName)) {
                     drillTablesList.childs =
                     <IDrillTablesDataExtended[]>context.rootGetters[Namespaces.Report + '/' + 'getDrillTablesList'](processResult.processUuid)
                     if (
-                      drillTablesList &&
-                                            !drillTablesList.childs
+                      drillTablesList && isEmptyValue(drillTablesList.childs)
                     ) {
-                      context
-                        .dispatch(
-                          Namespaces.Report + '/' + 'getDrillTablesFromServer',
-                          {
-                            processUuid: processResult.processUuid,
-                            instanceUuid,
-                            processId: processDefinition.id,
-                            tableName: output.tableName,
-                            printFormatUuid: output.printFormatUuid,
-                            reportViewUuid: output.reportViewUuid
-                          }, { root: true }
-                        )
-                        .then(
-                          (
-                            drillTablesResponse: IDrillTablesDataExtended[]
-                          ) => {
-                            drillTablesList.childs = drillTablesResponse
-                            if (
-                              drillTablesList
-                                .childs.length
-                            ) {
-                              // Get contextMenu metadata and concat drill tables list with contextMenu actions
-                              const contextMenuMetadata: IContextMenuData = context.rootGetters[Namespaces.ContextMenu + '/' + 'getContextMenu'](
-                                processResult.processUuid
-                              )
+                      context.dispatch(
+                        Namespaces.Report + '/' + 'getDrillTablesFromServer',
+                        {
+                          processUuid: processResult.processUuid,
+                          instanceUuid,
+                          processId: processDefinition.id,
+                          tableName: output.tableName,
+                          printFormatUuid: output.printFormatUuid,
+                          reportViewUuid: output.reportViewUuid
+                        }, { root: true }
+                      ).then(
+                        (
+                          drillTablesResponse: IDrillTablesDataExtended[]
+                        ) => {
+                          drillTablesList.childs = drillTablesResponse
+                          if (
+                            drillTablesList
+                              .childs.length
+                          ) {
+                            // Get contextMenu metadata and concat drill tables list with contextMenu actions
+                            const contextMenuMetadata: IContextMenuData = context.rootGetters[Namespaces.ContextMenu + '/' + 'getContextMenu'](
+                              processResult.processUuid
+                            )
 
-                              const drillTablesListActions: DrillTableAction = <
+                            const drillTablesListActions: DrillTableAction = <
                                                                 DrillTableAction
                                                             >drillTablesList
-                              contextMenuMetadata.actions.push(
-                                drillTablesListActions
-                              )
-                            }
+                            contextMenuMetadata.actions.push(
+                              drillTablesListActions
+                            )
                           }
-                        )
+                        }
+                      )
                     }
                   }
                 }
@@ -531,10 +494,10 @@ export const actions: ProcessActionTree = {
                   logs: logList,
                   output
                 })
-                if (processResult.output) {
+                if (!isEmptyValue(processResult.output)) {
                   context.dispatch(
                     Namespaces.Utils + '/' + 'setReportTypeToShareLink',
-                    processResult.output.reportType,
+                    processResult.output!.reportType,
                     { root: true }
                   )
                 }
@@ -629,23 +592,16 @@ export const actions: ProcessActionTree = {
           uuid: processDefinition.uuid,
           id: processDefinition.id,
           reportType,
-          // parametersList,
-          parameters: parametersList.map(
-            (element: IPanelParameters) => {
-              return {
-                key: element.columnName,
-                value: element.value
-              }
-            }
-          ),
+          parametersList: parametersList!,
+          parameters: parametersList!,
           selectionsList,
           tableName: tableName!,
-          recordId: Number(recordId!)
+          recordId: isEmptyValue(recordId!) ? undefined : Number(recordId!)
         })
           .then((runProcessResponse: IProcessLogData) => {
             const { instanceUuid, output } = runProcessResponse
             let logList: IProcessInfoLogData[] = []
-            if (runProcessResponse.logsList) {
+            if (!isEmptyValue(runProcessResponse.logsList)) {
               logList = runProcessResponse.logsList
             }
 
@@ -668,8 +624,7 @@ export const actions: ProcessActionTree = {
               }
               const contextMenuMetadata: IContextMenuData = <IContextMenuData>
               context.rootGetters[Namespaces.ContextMenu + '/' + 'getContextMenu'](
-                processResult.processUuid
-              )
+                processResult.processUuid)
               // Report views List to context menu
               const reportViewList: Partial<SummaryAction> = {
                 name: language.t('views.reportView'),
@@ -761,12 +716,8 @@ export const actions: ProcessActionTree = {
                   }
                 )
                 if (index !== -1) {
-                  const printFormatListActions = <
-                                        PrintFormatsAction
-                                    >printFormatList
-                  contextMenuMetadata.actions[
-                    index
-                  ] = printFormatListActions
+                  const printFormatListActions = <PrintFormatsAction>printFormatList
+                  contextMenuMetadata.actions[index] = printFormatListActions
                 }
               }
 
@@ -778,23 +729,20 @@ export const actions: ProcessActionTree = {
                 childs: [],
                 option: PrintFormatOptions.DrillTable //  'drillTable'
               }
-              if (output.tableName) {
+              if (!isEmptyValue(output.tableName)) {
                 drillTablesList.childs = context.rootGetters[Namespaces.Report + '/' + 'getDrillTablesList'](
                   processResult.processUuid
                 )
                 if (
-                  drillTablesList &&
-                                    !drillTablesList.childs
-                ) {
-                  context
-                    .dispatch(Namespaces.Report + '/' + 'getDrillTablesFromServer', {
-                      processUuid: processResult.processUuid,
-                      instanceUuid,
-                      processId: processDefinition.id,
-                      tableName: output.tableName,
-                      printFormatUuid: output.printFormatUuid,
-                      reportViewUuid: output.reportViewUuid
-                    }, { root: true })
+                  drillTablesList && isEmptyValue(drillTablesList.childs)) {
+                  context.dispatch(Namespaces.Report + '/' + 'getDrillTablesFromServer', {
+                    processUuid: processResult.processUuid,
+                    instanceUuid,
+                    processId: processDefinition.id,
+                    tableName: output.tableName,
+                    printFormatUuid: output.printFormatUuid,
+                    reportViewUuid: output.reportViewUuid
+                  }, { root: true })
                     .then(drillTablesResponse => {
                       drillTablesList.childs = drillTablesResponse
                       if (drillTablesList.childs!.length
@@ -818,10 +766,10 @@ export const actions: ProcessActionTree = {
               output
             })
             resolve(processResult)
-            if (processResult.output) {
+            if (!isEmptyValue(processResult.output)) {
               context.dispatch(
                 Namespaces.Utils + '/' + 'setReportTypeToShareLink',
-                processResult.output.reportType,
+                processResult.output!.reportType,
                 { root: true }
               )
             }
@@ -870,14 +818,14 @@ export const actions: ProcessActionTree = {
               containerUuid
             })
 
-            context.dispatch('setProcessTable', {
+            context.dispatch(Namespaces.Utils + '/' + 'setProcessTable', {
               valueRecord: 0,
               tableName: '',
               processTable: false
-            })
-            context.dispatch('setProcessSelect', {
+            }, { root: true })
+            context.dispatch(Namespaces.Utils + '/' + 'setProcessSelect', {
               finish: true
-            })
+            }, { root: true })
           })
       }
     })
@@ -965,7 +913,8 @@ export const actions: ProcessActionTree = {
         uuid: processDefinition.uuid,
         id: processDefinition.id,
         reportType,
-        parameters: parametersList
+        parameters: parametersList,
+        parametersList
       })
         .then(runProcessResponse => {
           const { instanceUuid, output } = runProcessResponse
@@ -1218,6 +1167,7 @@ export const actions: ProcessActionTree = {
                   id: processDefinition!.id,
                   reportType,
                   parameters: parametersList,
+                  parametersList,
                   selectionsList: selection,
                   tableName: windowSelectionProcess.tableName!,
                   recordId: selection[windowSelectionProcess.tableName!]
@@ -1517,13 +1467,12 @@ export const actions: ProcessActionTree = {
         menuParentUuid = processOutput.menuParentUuid!
       }
 
-      let tableName = ''
+      let tableName
       if (processOutput.option && processOutput.option) {
         if (processOutput.option === PrintFormatOptions.DrillTable) {
           tableName = processOutput.resultTableName!
         }
       }
-
       router.push(
         {
           name: 'Report Viewer',
@@ -1532,9 +1481,9 @@ export const actions: ProcessActionTree = {
             instanceUuid: processOutput.instanceUuid!,
             fileName: (!processOutput.output?.fileName) ? processOutput.fileName! : processOutput.output.fileName,
             menuParentUuid,
-            tableName
+            tableName: tableName as string
           }
-        }
+        }, () => {}
       )
 
       // router.push(
@@ -1647,7 +1596,8 @@ export const actions: ProcessActionTree = {
       requestRunProcess({
         uuid: processDefinition.uuid,
         recordId: idProcess,
-        parameters: parametersList!
+        parameters: parametersList!,
+        parametersList: parametersList!
       })
         .then((runProcessResponse: IProcessLogData) => {
           const { output } = runProcessResponse

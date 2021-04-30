@@ -154,31 +154,30 @@ export const actions: ReportActionTree = {
       tableName,
       reportViewUuid
     } = payload
-    return new Promise(resolve => {
-      requestListDrillTables({ tableName })
-        .then((responseDrillTables: IReportDrillTableResponse) => {
-          const drillTablesList: IDrillTablesDataExtended[] = responseDrillTables.list.map(
-            (drillTableItem: IDrillTablesData) => {
-              return {
-                ...drillTableItem,
-                name: drillTableItem.printName,
-                type: ActionContextType.UpdateReport,
-                option: PrintFormatOptions.DrillTable,
-                instanceUuid,
-                printFormatUuid,
-                reportViewUuid,
-                processUuid,
-                processId
-              }
+    return new Promise((resolve) => {
+      requestListDrillTables({ tableName }).then((responseDrillTables: IReportDrillTableResponse) => {
+        const drillTablesList: IDrillTablesDataExtended[] = responseDrillTables.list.map(
+          (drillTableItem: IDrillTablesData) => {
+            return {
+              ...drillTableItem,
+              name: drillTableItem.printName,
+              type: ActionContextType.UpdateReport,
+              option: PrintFormatOptions.DrillTable,
+              instanceUuid,
+              printFormatUuid,
+              reportViewUuid,
+              processUuid,
+              processId
             }
-          )
-          context.commit('setDrillTablesList', {
-            containerUuid: processUuid,
-            drillTablesList
-          })
-
-          resolve(drillTablesList)
+          }
+        )
+        context.commit('setDrillTablesList', {
+          containerUuid: processUuid,
+          drillTablesList
         })
+
+        resolve(drillTablesList)
+      })
         .catch((error: any) => {
           console.warn(
                         `Error getting drill tables: ${error.message}. Code: ${error.code}.`

@@ -338,10 +338,6 @@ export const actions: WindowDefinitionActionTree = {
             isAdvancedQuery: boolean
         }
   ) {
-    console.log('getFieldsFromTab')
-    console.log({
-      ...payload
-    })
     payload.panelMetadata = payload.panelMetadata || {}
     payload.panelType = payload.panelType || PanelContextType.Window
     payload.isAdvancedQuery = payload.isAdvancedQuery || false
@@ -406,11 +402,8 @@ export const actions: WindowDefinitionActionTree = {
         }
       )
 
-      console.log(fieldsList)
-
       let isTabsChildren = false
       if (!isAdvancedQuery) {
-        console.log(parentUuid)
         const window: IWindowDataExtended = context.getters.getWindow(
           parentUuid
         )

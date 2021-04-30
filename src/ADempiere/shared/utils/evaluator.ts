@@ -41,14 +41,6 @@ class evaluator {
       logic,
       defaultReturned = logicToEvaluate.defaultReturned || false
     } = logicToEvaluate
-    console.log('evaluateLogic')
-    console.log({
-      parentUuid,
-      containerUuid,
-      context,
-      logic,
-      defaultReturned
-    })
     // empty logic
     if (isEmptyValue(logic)) {
       return defaultReturned

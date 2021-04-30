@@ -59,11 +59,6 @@ export default class ChatEntries extends Vue {
   sendComment() {
     // const comment = this.$store.getters[Namespaces.ChatEntries]
     const comment: string = this.$store.getters[Namespaces.ChatEntries + '/' + 'getChatTextLong']
-    console.log('sendComment active')
-    console.log('comment')
-    console.log(comment)
-    console.log('tableName')
-    console.log(this.tableName)
 
     if (comment) {
       this.$store.dispatch(Namespaces.ChatEntries + '/' + 'createChatEntry', {

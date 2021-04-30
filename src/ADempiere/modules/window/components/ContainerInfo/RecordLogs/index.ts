@@ -47,7 +47,7 @@ export default class RecordLogs extends Vue {
     }
 
     // Methods
-    showKeys(key: number, index: number) {
+    showKey(key: number, index: number) {
       if (key === this.currentKey && index === this.typeAction) {
         this.currentKey = 1000
       } else {

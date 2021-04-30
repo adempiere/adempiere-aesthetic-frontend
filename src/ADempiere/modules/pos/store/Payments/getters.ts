@@ -21,7 +21,6 @@ export const getters: PaymentsGetterTree = {
     return state.divideRateCollection
   },
   getListPayments: (state: PaymentsState): IPaymentsData[] => {
-    console.log(state.listPayments)
     return state.listPayments
   },
   getListsPaymentTypes: (state: PaymentsState): any[] => {

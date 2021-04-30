@@ -1078,21 +1078,6 @@ export const actions: WindowActionTree = {
         value
       })
     }
-    console.log('conditionsList')
-    console.log(conditionsList)
-    console.log('data to getObjectListFromCriteria')
-    console.log({
-      parentUuid,
-      containerUuid,
-      tableName: tab.tableName,
-      query: parsedQuery,
-      whereClause: parsedWhereClause,
-      orderByClause: tab.orderByClause,
-      conditionsList,
-      isParentTab: tab.isParentTab,
-      isAddRecord,
-      isShowNotification
-    })
     return context
       .dispatch(Namespaces.BusinessData + '/' + 'getObjectListFromCriteria', {
         parentUuid,

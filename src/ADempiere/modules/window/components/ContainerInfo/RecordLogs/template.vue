@@ -19,7 +19,7 @@
                 <el-link
                   type="primary"
                   style="float: right;"
-                  @click="showkey(key)"
+                  @click="showKey(key)"
                 >
                   {{ $t('window.containerInfo.changeDetail') }}
                 </el-link>

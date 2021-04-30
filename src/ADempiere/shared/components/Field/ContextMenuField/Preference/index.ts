@@ -159,8 +159,6 @@ export default class Preference extends Mixins(MixinForm) {
       const fieldsList: (IFieldTemplateData & { containerUuid: string })[] = []
       // Product Code
       this.preferenceFields.forEach((element: any) => {
-        console.log('elemento')
-        console.log(element)
         this.createFieldFromDictionary(element).then((metadata: IFieldTemplateData) => {
           const data: IFieldTemplateData = metadata
           fieldsList.push({

@@ -195,13 +195,13 @@ export default class extends Mixins(MixinI18n) {
     this.$nextTick(() => {
       for (const tag of tags) {
         if (this.$route.name === 'Report Viewer') {
-          if (this.$route.params && tag.to.params.processId === this.$route.params.processId && tag.to.params.tableName === this.$route.params.tableName) {
+          if (this.$route.params && tag.to && tag.to.params && tag.to.params.processId === this.$route.params.processId && tag.to.params.tableName === this.$route.params.tableName) {
             (this.$refs.scrollPane as ScrollPane).moveToTarget(tag as any)
           }
         }
         if ((tag.to as ITagView).name === this.$route.name) {
-          if ((tag.to as ITagView).query && (tag.to as ITagView).query?.action === this.$route.query.action) {
-            (tag.to as ITagView).params!.isReadParameters = String(false)
+          if ((tag.to as ITagView).query && (tag.to as ITagView).query?.action && (tag.to as ITagView).query?.action === this.$route.query.action) {
+            (tag.to as ITagView).params!.isReadParameters = (false).toString()
           }
           (this.$refs.scrollPane as ScrollPane).moveToTarget(tag as any)
           // When query is different then update

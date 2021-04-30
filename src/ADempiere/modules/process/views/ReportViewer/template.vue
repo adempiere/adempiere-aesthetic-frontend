@@ -4,7 +4,7 @@
         key="report-viewer-loaded"
         style="min-height: inherit;"
     >
-        <context-menu
+        <ContextMenu
             v-if="showContextMenu"
             :container-uuid="reportResult.processUuid"
             :panel-type="panelType"
@@ -66,7 +66,7 @@
             </el-col>
         </el-row>
 
-        <modal-dialog
+        <ModalDialog
             :metadata="processMetadata"
             :parent-uuid="reportResult.processUuid"
             :report-export-type="reportFormat"
