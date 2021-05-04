@@ -2,9 +2,9 @@
   <el-card class="box-card" :body-style="{padding: '0px'}" shadow="never">
     <div class="recent-items">
       <el-table :data="dataResult" max-height="455" @row-click="handleClick">
-        <el-table-column width="40">
+        <el-table-column width="60">
           <template slot-scope="{row}">
-            <svg-icon :icon-class="row.icon" class="icon-window" />
+            <svg-icon :name="row.icon" class="icon-window" />
           </template>
         </el-table-column>
         <el-table-column>
@@ -35,7 +35,7 @@
 </template>
 
 <style scoped>
-  .el-table{
+  .el-table {
     background-color: #FFFFFF;
     cursor: pointer;
   }

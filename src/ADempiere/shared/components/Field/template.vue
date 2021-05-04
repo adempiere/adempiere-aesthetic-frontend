@@ -62,7 +62,7 @@
                           <i :class="option.icon" style="font-weight: bolder;" />
                         </div>
                         <div v-else style="margin-right: 5%">
-                          <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
+                          <svg-icon :name="option.icon" style="margin-right: 5px;" />
                         </div>
                         <div>
                           <span class="contents">
@@ -79,7 +79,7 @@
                       <i :class="option.icon" style="font-weight: bolder;" />
                     </div>
                     <div v-else style="margin-right: 5%">
-                      <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
+                      <svg-icon :name="option.icon" style="margin-right: 5px;" />
                     </div>
                     <div>
                       <span class="contents">

@@ -8,7 +8,7 @@
             >
                 <el-table-column width="40">
                     <template slot-scope="{row}">
-                        <svg-icon :icon-class="row.icon" class="icon-window" />
+                        <svg-icon :name="row.icon" class="icon-window" />
                     </template>
                 </el-table-column>
                 <el-table-column>
