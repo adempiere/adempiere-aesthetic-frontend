@@ -1,5 +1,4 @@
-import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
+import { isEmptyValue, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
@@ -32,8 +31,8 @@ export default class MixinDasboard extends Vue {
 
       if (viewSearch) {
         let recordUuid
-        if (row.uuidRecord) {
-          recordUuid = String(row.uuidRecord)
+        if (!isEmptyValue(row.uuidRecord)) {
+          recordUuid = row.uuidRecord
         }
         let tabParent = ''
         if (row.action === 'window') {

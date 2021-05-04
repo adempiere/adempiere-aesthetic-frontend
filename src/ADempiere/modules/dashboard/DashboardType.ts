@@ -10,6 +10,7 @@ export interface IRecentItemData {
     tableName: string
     id: number
     uuid: string
+    uuidRecord?: string
     displayName: string
     updated: number | Date
     referenceUuid: string
@@ -116,7 +117,7 @@ export interface DashboardState {
 
 export interface IRecentItemDataExtended extends IRecentItemData {
     icon: string
-    uuidRecord: string
+    uuidRecord?: string
     name: string
     description: string
 }
