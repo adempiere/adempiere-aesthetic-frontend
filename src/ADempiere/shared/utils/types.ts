@@ -6,6 +6,7 @@ export interface IConfigData {
     adempiere: {
         api: {
             url: string
+            timeout?: number
             service?: string
             fullPath?: string
         }
