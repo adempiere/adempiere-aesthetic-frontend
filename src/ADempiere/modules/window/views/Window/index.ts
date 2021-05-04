@@ -92,10 +92,6 @@ export default class WindowView extends Vue {
     }
 
     get isNewRecord(): boolean {
-      console.log('isNewRecord - WorkflowStatusBar')
-      console.log({
-        query: this.$route.query
-      })
       return (
         isEmptyValue(this.$route.query) ||
         isEmptyValue(this.$route.query.action) ||
@@ -363,7 +359,7 @@ export default class WindowView extends Vue {
 
     get recordId() {
       const currentRecord = this.getRecord
-      if (!currentRecord) {
+      if (isEmptyValue(currentRecord)) {
         return undefined
       }
       return currentRecord[`${this.getTableName}_ID`]
@@ -373,7 +369,7 @@ export default class WindowView extends Vue {
       const currentRecord = this.$store.getters[
         Namespaces.Window + '/' + 'getCurrentRecord'
       ]
-      if (!currentRecord) {
+      if (isEmptyValue(currentRecord)) {
         return this.getterDataRecords[0]
       }
       return currentRecord
@@ -392,12 +388,6 @@ export default class WindowView extends Vue {
       const panel = this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](
         this.windowMetadata.currentTabUuid
       )
-      console.log('panel - isWorkflowBarStatus')
-      console.log({
-        panel: panel,
-        isDocumentTab: this.isDocumentTab,
-        isNewRecord: this.isNewRecord
-      })
       if (
         panel &&
             this.isDocumentTab &&
@@ -411,15 +401,6 @@ export default class WindowView extends Vue {
     // Navigation Guards
 
     beforeRouteUpdate(to: Route, from: Route, next: Function) {
-      console.log('beforeRouteUpdate')
-      console.log('currentRoute')
-      console.log(this.$route)
-      console.log('route')
-      console.log({
-        to,
-        from,
-        next
-      })
       this.$store.dispatch(Namespaces.Window + '/' + 'setWindowOldRoute', {
         path: from.path,
         fullPath: from.fullPath,
