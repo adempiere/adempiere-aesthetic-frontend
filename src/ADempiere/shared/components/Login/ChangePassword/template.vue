@@ -32,7 +32,7 @@
             @blur="capsTooltip = false"
           />
           <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+            <svg-icon :name="passwordType === 'password' ? 'eye' : 'eye-open'" />
           </span>
         </el-form-item>
       </el-tooltip>
@@ -55,7 +55,7 @@
             @keyup.enter.native="handleSubmit"
           />
           <span class="show-pwd" @click="showPasswordConfirm">
-            <svg-icon :icon-class="passwordConfirmType === 'password' ? 'eye' : 'eye-open'" />
+            <svg-icon :name="passwordConfirmType === 'password' ? 'eye' : 'eye-open'" />
           </span>
         </el-form-item>
       </el-tooltip>

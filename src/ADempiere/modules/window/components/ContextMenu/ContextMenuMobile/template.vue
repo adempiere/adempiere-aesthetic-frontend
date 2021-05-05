@@ -72,7 +72,7 @@
         >
           <div class="contents">
             <div style="margin-right: 5%;margin-top: 10%;">
-              <svg-icon :icon-class="relation.meta.icon" />
+              <svg-icon :name="relation.meta.icon" />
             </div>
             <div>
               <span class="contents">

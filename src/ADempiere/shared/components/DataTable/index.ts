@@ -16,7 +16,7 @@ import { ActionContextType, PanelContextType } from '../../utils/DictionaryUtils
 import { IBrowserDataExtended, IPanelDataExtended } from '@/ADempiere/modules/dictionary/DictionaryType/VuexType'
 import { fieldIsDisplayed, sortFields } from '../../utils/DictionaryUtils'
 import { IFieldDataExtendedUtils } from '../../utils/DictionaryUtils/type'
-import { typeValue } from '../../utils/valueUtils'
+import { isEmptyValue, typeValue } from '../../utils/valueUtils'
 import { formatField } from '../../utils/valueFormat'
 import { FIELDS_DECIMALS, FIELDS_QUANTITY, COLUMNS_READ_ONLY_FORM, IFieldFormType } from '../../utils/references'
 import { ElInput } from 'element-ui/types/input'
@@ -76,7 +76,7 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
 
     get getMenuTable(): IContextActionData[] {
       const process: IContextMenuData | undefined = this.$store.getters[Namespaces.ContextMenu + '/' + 'getContextMenu'](this.containerUuid)
-      if (process && (process.actions)) {
+      if (process && !isEmptyValue(process.actions)) {
         return process.actions.filter((menu: IContextActionData) => {
           if (menu.type === ActionContextType.Process || menu.type === ActionContextType.Application) {
             return menu
@@ -100,7 +100,7 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
 
     get isLoadedPanel(): boolean {
       const panelMetadata: IPanelDataExtended | undefined = this.$store.getters[Namespaces.Panel + '/' + 'getPanel']('table_' + this.containerUuid)
-      if (panelMetadata) {
+      if (!isEmptyValue(panelMetadata)) {
         return true
       }
       return false
@@ -155,10 +155,15 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
       overflow?: string
       } {
       if (this.isParent) {
-        if (this.activeName) {
+        if (!isEmptyValue(this.activeName)) {
           return {
             height: '55%',
             overflow: 'auto'
+          }
+        } else if (this.isMobile) {
+          return {
+            height: '10%',
+            overflow: 'hidden'
           }
         }
         return {
@@ -166,8 +171,13 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
           overflow: 'hidden'
         }
       }
+      if (this.isMobile) {
+        return {
+          height: '10%'
+        }
+      }
       return {
-        height: '35px'
+        height: '20%'
       }
     }
 
@@ -588,7 +598,19 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
       }
 
       handleRowClick(row: any, column?: any, event?: any): void {
+        // console.log('handleRowClick')
+        // console.log({
+        //   row,
+        //   recordsData: this.recordsData
+        // })
         this.currentTable = this.recordsData.findIndex(item => item.UUID === row.UUID)
+        // console.log('currentTable')
+        // console.log(this.currentTable)
+        // console.log('data x')
+        // console.log({
+        //   isShowedPanelRecord: this.isShowedPanelRecord,
+        //   isParent: this.isParent
+        // })
         if (this.isShowedPanelRecord && this.isParent) {
           if (this.uuidCurrentRecordSelected !== row.UUID) {
             this.uuidCurrentRecordSelected = row.UUID
@@ -596,6 +618,8 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
             this.$store.dispatch(Namespaces.Window + '/' + 'setDataLog', {})
           }
           const tableName: string = this.panelMetadata!.tableName
+          // console.log('tableName')
+          // console.log(tableName)
           this.$router.push({
             name: this.$route.name!,
             query: {
@@ -603,12 +627,12 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
               action: row.UUID
             },
             params: {
-              ...this.$route.query,
+              ...this.$route.params,
               tableName,
               recordId: row[`${tableName}_ID`]
             }
           }, () => {})
-          this.$store.commit('setCurrentRecord', row)
+          this.$store.commit(Namespaces.Window + '/' + 'setCurrentRecord', row)
         } else {
           if (!row.isEdit) {
             row.isEdit = true

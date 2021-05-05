@@ -15,8 +15,16 @@ export function request(requestValues: AxiosRequestConfig): Promise<any> {
     requestValues.params = {}
   }
   requestValues.baseURL = config.adempiere.api.url
+  // //  Timeout
+  if (config.adempiere.api.timeout && config.adempiere.api.timeout > 0) {
+    requestValues.timeout = config.adempiere.api.timeout
+  }
   requestValues.params.token = getToken()
   requestValues.params.language = getLocale() || 'en_US'
+  // console.warn('send request')
+  // console.warn({
+  //   ...requestValues
+  // })
   return new Promise(resolve => {
     requestAPI(requestValues).then(response => {
       resolve(response)

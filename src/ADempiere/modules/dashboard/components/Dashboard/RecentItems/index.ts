@@ -54,7 +54,7 @@ export default class RecentItems extends Mixins(MixinDasboard) {
                 ...item,
                 action: actionConverted.name,
                 icon: actionConverted.icon,
-                uuidRecord: item.uuid,
+                uuidRecord: item.uuidRecord,
                 updated: new Date(item.updated),
                 uuid: item.menuUuid,
                 name: item.menuName,

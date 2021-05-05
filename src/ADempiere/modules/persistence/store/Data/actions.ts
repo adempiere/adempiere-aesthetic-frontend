@@ -7,6 +7,7 @@ import { TABLE, TABLE_DIRECT } from '@/ADempiere/shared/utils/references'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import {
   extractPagingToken,
+  isEmptyValue,
   typeValue
 } from '@/ADempiere/shared/utils/valueUtils'
 import { ActionContext, ActionTree } from 'vuex'
@@ -614,7 +615,7 @@ export const actions: BusinessDataActionTree = {
     )
 
     let nextPageToken = ''
-    if (dataStore.nextPageToken) {
+    if (!isEmptyValue(dataStore.nextPageToken)) {
       nextPageToken = dataStore.nextPageToken + '-' + dataStore.pageNumber
     }
 
@@ -684,7 +685,7 @@ export const actions: BusinessDataActionTree = {
 
         const originalNextPageToken: string = dataResponse.nextPageToken
         let token: string = originalNextPageToken
-        if (!token) {
+        if (isEmptyValue(token)) {
           token = dataStore.nextPageToken!
         } else {
           token = extractPagingToken(token)

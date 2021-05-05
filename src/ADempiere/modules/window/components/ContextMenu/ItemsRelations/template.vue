@@ -29,7 +29,7 @@
         :index="item.meta.uuid"
         @click="handleClick(item)"
     >
-        <svg-icon v-if="isMobile" :icon-class="classIconMenuRight" />
+        <svg-icon v-if="isMobile" :name="classIconMenuRight" />
         {{ item.meta.title }}
     </el-menu-item>
 </template>

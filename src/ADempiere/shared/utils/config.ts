@@ -6,7 +6,8 @@ export function getConfig(): IConfigData {
     adempiere: {
       api: {
         // service: JSON.stringify(config.adempiere.api.service).replace(/['"]+/g, ''),
-        url: JSON.stringify(config.adempiere.api.url).replace(/['"]+/g, '')
+        url: JSON.stringify(config.adempiere.api.url).replace(/['"]+/g, ''),
+        timeout: Number(JSON.stringify(config.adempiere.api.timeout).replace(/['"]+/g, ''))
         // fullPath: JSON.stringify(config.adempiere.api.fullPath).replace(/['"]+/g, '')
       },
       images: {
