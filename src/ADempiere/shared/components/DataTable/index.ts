@@ -598,19 +598,7 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
       }
 
       handleRowClick(row: any, column?: any, event?: any): void {
-        // console.log('handleRowClick')
-        // console.log({
-        //   row,
-        //   recordsData: this.recordsData
-        // })
         this.currentTable = this.recordsData.findIndex(item => item.UUID === row.UUID)
-        // console.log('currentTable')
-        // console.log(this.currentTable)
-        // console.log('data x')
-        // console.log({
-        //   isShowedPanelRecord: this.isShowedPanelRecord,
-        //   isParent: this.isParent
-        // })
         if (this.isShowedPanelRecord && this.isParent) {
           if (this.uuidCurrentRecordSelected !== row.UUID) {
             this.uuidCurrentRecordSelected = row.UUID
@@ -618,8 +606,6 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
             this.$store.dispatch(Namespaces.Window + '/' + 'setDataLog', {})
           }
           const tableName: string = this.panelMetadata!.tableName
-          // console.log('tableName')
-          // console.log(tableName)
           this.$router.push({
             name: this.$route.name!,
             query: {

@@ -511,7 +511,7 @@ export default class WindowView extends Vue {
 
     handleClick(tab: any, event: any) {
       let tableName: string | undefined = this.$route.params.tableName
-      if (!tableName) {
+      if (isEmptyValue(tableName)) {
         tableName = this.getTableName
       }
 
@@ -522,7 +522,7 @@ export default class WindowView extends Vue {
 
       const record = this.currentRecord
       let recordId = ''
-      if (record) {
+      if (!isEmptyValue(record)) {
         recordId = record[tableName + '_ID']
       }
 
