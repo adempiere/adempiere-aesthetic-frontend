@@ -424,9 +424,8 @@ export const actions: WindowDefinitionActionTree = {
       }
 
       // panel for save on store
-      const tabMetadataBefore = tabMetadata as ITabData
       const panel: IPanelData = {
-        ...tabMetadataBefore!,
+        ...(tabMetadata as any),
         containerUuid,
         isAdvancedQuery,
         fieldLinkColumnName,
@@ -438,7 +437,10 @@ export const actions: WindowDefinitionActionTree = {
         isTabsChildren // to delete records assiciated
       }
       context.dispatch(Namespaces.Panel + '/' + 'addPanel', panel, { root: true })
-      resolve(panel)
+      const panelExtend = context.rootGetters[Namespaces.Panel + '/' + 'getPanel'](
+        panel.containerUuid
+      )
+      resolve(panelExtend)
 
       context.dispatch('changeTabAttribute', {
         tab: tabMetadata,

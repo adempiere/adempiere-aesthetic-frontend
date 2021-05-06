@@ -49,7 +49,7 @@ export default class MixinMainPanel extends Vue {
     public firstGroup: any = {}
     public groupsView = 0
     public clientId: number = this.getContainerClientId
-    public tagTitle = {
+    public tagTitle: { base: string, action: string} = {
       base: this.$route.meta.title,
       action: ''
     }
@@ -346,7 +346,7 @@ export default class MixinMainPanel extends Vue {
             ) {
               route.params.isReadParameters = (true as any)
               Object.keys(route.params).forEach(param => {
-                if (route.params[param]) {
+                if (!isEmptyValue(route.params[param])) {
                   parameters.criteria[param] = route.params[param]
                 }
               })
@@ -357,7 +357,7 @@ export default class MixinMainPanel extends Vue {
               parameters.isLoadAllRecords = true
               route.params.isReadParameters = (true as any)
             } else if (
-              route.query.action &&
+              !isEmptyValue(route.query.action) &&
                 ![
                   'create-new',
                   'reference',
@@ -383,7 +383,7 @@ export default class MixinMainPanel extends Vue {
               this.getData(parameters)
             }
             let viewTitle = ''
-            if (route.query && route.query.action) {
+            if (route.query && !isEmptyValue(route.query.action)) {
               viewTitle = <string>route.query.action
             }
             this.setTagsViewTitle(viewTitle)
@@ -622,7 +622,7 @@ export default class MixinMainPanel extends Vue {
     setTagsViewTitle(actionValue: string) {
       if (
         actionValue !== 'create-new' &&
-            actionValue &&
+            !isEmptyValue(actionValue) &&
             this.panelMetadata!.isDocument &&
             this.getterDataStore.isLoaded
       ) {
