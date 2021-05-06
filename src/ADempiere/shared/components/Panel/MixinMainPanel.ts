@@ -332,7 +332,7 @@ export default class MixinMainPanel extends Vue {
                 parameters.referenceUuid = referenceInfo.uuid
                 parameters.referenceWhereClause = referenceInfo.whereClause
               }
-              route.params.isReadParameters = 'true'
+              route.params.isReadParameters = (true as any)
               parameters.isLoadAllRecords = false
               parameters.isReference = true
             } else if (
@@ -344,7 +344,7 @@ export default class MixinMainPanel extends Vue {
               route.query.action &&
                 route.query.action === 'criteria'
             ) {
-              route.params.isReadParameters = 'true'
+              route.params.isReadParameters = (true as any)
               Object.keys(route.params).forEach(param => {
                 if (route.params[param]) {
                   parameters.criteria[param] = route.params[param]
@@ -355,7 +355,7 @@ export default class MixinMainPanel extends Vue {
                 route.query.action === 'listRecords'
             ) {
               parameters.isLoadAllRecords = true
-              route.params.isReadParameters = 'true'
+              route.params.isReadParameters = (true as any)
             } else if (
               route.query.action &&
                 ![
@@ -370,7 +370,7 @@ export default class MixinMainPanel extends Vue {
               parameters.value = route.query.action
               parameters.tableName = this.metadata.tableName
               parameters.columnName = 'UUID'
-              route.params.isReadParameters = 'true'
+              route.params.isReadParameters = (true as any)
             }
             // Only call get data if panel type is window
             if (
@@ -489,8 +489,6 @@ export default class MixinMainPanel extends Vue {
             criteria: parameters.criteria
           })
           .then(response => {
-            console.log('response getDataListTab')
-            console.log(response)
             let action = 'create-new'
             let params = this.$route.params
             if (response && response.length && !parameters.isNewRecord) {
@@ -634,14 +632,14 @@ export default class MixinMainPanel extends Vue {
           tableName: this.metadata.tableName
         })
       }
-      if (actionValue === 'create-new' || !actionValue) {
+      if (actionValue === 'create-new' || isEmptyValue(actionValue)) {
         this.tagTitle.action = this.$t('tagsView.newRecord').toString()
       } else if (actionValue === 'advancedQuery') {
         this.tagTitle.action = this.$t('tagsView.advancedQuery').toString()
       } else {
         const { identifierColumns } = this.panelMetadata!
-        if (identifierColumns) {
-          const keyName: string = identifierColumns[0].columnName
+        if (!isEmptyValue(identifierColumns)) {
+          const keyName: string = identifierColumns![0].columnName
           if (this.dataRecords[keyName]) {
             this.tagTitle.action = this.dataRecords[keyName]
           } else {

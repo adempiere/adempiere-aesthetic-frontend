@@ -173,8 +173,9 @@ export default class extends Mixins(MixinI18n) {
   }
 
   private initTags() {
-    this.affixTags = this.filterAffixTags(this.routes)
-    for (const tag of this.affixTags) {
+    // this.affixTags = this.filterAffixTags(this.routes)
+    const affixTags = this.affixTags = this.filterAffixTags(this.routes)
+    for (const tag of affixTags) {
       // Must have tag name
       if (tag.name) {
         this.$store.dispatch(Namespaces.TagsView + '/' + 'addVisitedView', tag)
@@ -201,7 +202,7 @@ export default class extends Mixins(MixinI18n) {
         }
         if ((tag.to as ITagView).name === this.$route.name) {
           if ((tag.to as ITagView).query && (tag.to as ITagView).query?.action && (tag.to as ITagView).query?.action === this.$route.query.action) {
-            (tag.to as ITagView).params!.isReadParameters = (false).toString()
+            (tag.to as ITagView).params!.isReadParameters = (false as any)
           }
           (this.$refs.scrollPane as ScrollPane).moveToTarget(tag as any)
           // When query is different then update

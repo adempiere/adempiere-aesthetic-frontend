@@ -446,10 +446,8 @@ export const actions: PanelActionTree = {
     const recordRow = recordAndSelection.record.find(record => record.UUID === recordUuid)
 
     let attributes: KeyValueData<any>[] = []
-    if (recordRow) {
-      attributes = convertObjectToKeyValue({
-        object: recordRow
-      })
+    if (!isEmptyValue(recordRow)) {
+      attributes = convertObjectToKeyValue(recordRow)
     }
     //  Change Value
     context.dispatch('notifyPanelChange', {
