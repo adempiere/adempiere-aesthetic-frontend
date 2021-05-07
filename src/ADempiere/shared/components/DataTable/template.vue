@@ -28,7 +28,7 @@
             </el-collapse-item>
           </el-collapse>
           <div v-if="!isMobile">
-            <table-main-menu
+            <TableMainMenu
               :container-uuid="containerUuid"
               :parent-uuid="parentUuid"
               :panel-type="panelType"
