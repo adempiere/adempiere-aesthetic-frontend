@@ -47,7 +47,7 @@
               @click="(newRecordsQuantity <= 0) ? addNewRow() : callOffNewRecord()"
             />
             <icon-element icon="el-icon-news">
-              <fixed-columns
+              <FixedColumns
                 :container-uuid="containerUuid"
                 :panel-type="panelType"
                 class="header-search-input"
@@ -60,7 +60,11 @@
               class="field-optional"
             />
             <div :class="{show: showTableSearch}" class="local-search-container">
-              <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
+              <svg-icon
+              class="search-icon"
+              name="search"
+              icon-class="search"
+              @click.stop="click()" />
               <el-input
                 ref="headerSearchInput"
                 v-model="searchTable"
