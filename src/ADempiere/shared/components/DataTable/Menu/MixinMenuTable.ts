@@ -4,7 +4,8 @@ import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtil
 import { exportFileFromJson, exportFileZip, supportedTypes } from '@/ADempiere/shared/utils/exportUtil'
 import { FIELDS_QUANTITY } from '@/ADempiere/shared/utils/references'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { clientDateTime, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
+import { clientDateTime, isEmptyValue, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
+import { ElMenuItem } from 'element-ui/types/menu-item'
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
 import { BookType } from 'xlsx/types'
@@ -213,7 +214,7 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
       }
 
       let title = this.panelMetadata.name
-      if (!title) {
+      if (isEmptyValue(title)) {
         title = this.$route.meta.title
       }
 
@@ -230,8 +231,8 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
     /**
      * Export record as .txt into compressed .zip file
      */
-    exporZipRecordTable(recordContextMenu?: boolean): void {
-      recordContextMenu = recordContextMenu || false
+    exporZipRecordTable(instance: ElMenuItem): void {
+      const recordContextMenu = false
       const header = this.getterFieldsListHeader
       const filterVal = this.getterFieldsListValue
       let list = this.getDataSelection
@@ -243,7 +244,7 @@ export default class MixinMenuTable extends Mixins(MixinTable) {
       }
       const data = this.formatJson(filterVal, list)
       let title = this.panelMetadata.name
-      if (!title) {
+      if (isEmptyValue(title)) {
         title = this.$route.meta.title
       }
       exportFileZip({
