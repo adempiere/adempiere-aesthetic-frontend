@@ -1,6 +1,7 @@
 import { ILookupOptions } from '@/ADempiere/modules/ui'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { convertBooleanToString } from '@/ADempiere/shared/utils/valueFormat'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import MixinField from '../Mixin/MixinField'
 import Template from './template.vue'
@@ -10,16 +11,12 @@ import Template from './template.vue'
   mixins: [Template, MixinField]
 })
 export default class FieldSelect extends Mixins(MixinField) {
-    private label = ''
-    private blankOption: Partial<ILookupOptions> = {
-      id: undefined,
-      uuid: undefined,
-      label: this.label
-    }
+    private label = ' '
+    private blankOption: Partial<ILookupOptions> = {}
 
     public isLoading = false
-    public optionsList: Partial<ILookupOptions>[] = [this.blankOption]
-    public blankValues: any[] = [null, undefined, -1]
+    public optionsList: Partial<ILookupOptions>[] = []
+    public blankValues: any[] = []
 
     // Computed properties
     get isPanelWindow(): boolean {
@@ -71,7 +68,7 @@ export default class FieldSelect extends Mixins(MixinField) {
       // sets the value to blank when the lookupList or lookupItem have no
       // values, or if only lookupItem does have a value
       if (
-        !allOptions ||
+        isEmptyValue(allOptions) ||
             (allOptions.length && !this.blankValues.includes(allOptions[0].id))
       ) {
         allOptions.unshift(this.blankOption)
@@ -101,7 +98,7 @@ export default class FieldSelect extends Mixins(MixinField) {
         })
       }
 
-      if (!value) {
+      if (isEmptyValue(value)) {
         /* eslint-disable */
             this.displayedValue = undefined
             this.uuidValue = undefined
@@ -349,8 +346,16 @@ export default class FieldSelect extends Mixins(MixinField) {
         this.value = this.blankOption.id
     }
 
+        
     // Hooks
     async created() {
+        this.blankOption = {
+            id: undefined,
+            uuid: undefined,
+            label: this.label
+        }
+        this.optionsList = [this.blankOption]
+        this.blankValues = [null, undefined, -1]
         this.changeBlankOption()
     }
 

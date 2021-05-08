@@ -17,7 +17,6 @@ import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import { RouteConfig } from 'vue-router'
 import { IOptionField } from './type'
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
-import ContextMenu from '@/ADempiere/modules/window/components/ContextMenu'
 
 @Component({
   name: 'FieldDefinition',
@@ -190,6 +189,11 @@ export default class FieldDefinition extends Vue {
 
       if (this.isPanelWindow) {
         let isWithRecord: boolean = this.field.recordUuid !== 'create-new'
+
+        if ((this.preferenceClientId !== this.metadataField.clientId) && isWithRecord) {
+          return true
+        }
+
         if (this.field.isAlwaysUpdateable) {
           return false
         }

@@ -1,5 +1,6 @@
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
@@ -24,7 +25,7 @@ export default class MixinField extends Vue {
 
     get cssClassStyle(): string {
       let styleClass = ''
-      if (this.metadata.cssClassName) {
+      if (!isEmptyValue(this.metadata.cssClassName)) {
         styleClass = this.metadata.cssClassName
       }
       return styleClass
@@ -148,7 +149,7 @@ export default class MixinField extends Vue {
     focusGained(value: any): void {
       if (this.metadata.handleContentSelection) {
         // select all the content inside the text box
-        if (value.target.selectionStart && value.target.selectionStart) {
+        if (!isEmptyValue(value.target.selectionStart) && !isEmptyValue(value.target.selectionStart)) {
           value.target.selectionStart = 0
           value.target.selectionEnd = value.target.value.length
         }
@@ -209,7 +210,7 @@ export default class MixinField extends Vue {
     async created() {
       if (
         this.metadata.isSQLValue &&
-            (!this.metadata.value || this.metadata.value.isSQL)
+            (isEmptyValue(this.metadata.value) || this.metadata.value.isSQL)
       ) {
         const value = await this.$store.dispatch(Namespaces.BusinessData + '/' + 'getValueBySQL', {
           parentUuid: this.metadata.parentUuid,
