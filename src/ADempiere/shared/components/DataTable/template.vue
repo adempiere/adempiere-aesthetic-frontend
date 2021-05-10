@@ -102,7 +102,11 @@
 
         <el-main style="padding: 0px !important; overflow: hidden;">
           <div v-if="isEmptyValue(activeName) && isParent" :class="{show: showTableSearch}" class="local-search-container">
-            <svg-icon class-name="search-icon" icon-class="search" @click.stop="click()" />
+            <svg-icon
+            class="search-icon"
+            name="search"
+            icon-class="search"
+            @click.stop="click()" />
             <el-input
               ref="headerSearchInput"
               v-model="searchTable"
