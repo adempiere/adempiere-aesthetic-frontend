@@ -11,42 +11,41 @@
   >
     {{ modalMetadata.description }}<br><br>
     <div
-    v-if="panelType !== 'From'"
+      v-if="panelType !== 'From'"
     >
-    <sequence-order
-      v-if="modalMetadata.isSortTab"
-      key="order"
-      :parent-uuid="parentUuid"
-      :container-uuid="modalMetadata.uuid"
-      :order="modalMetadata.sortOrderColumnName"
-      :included="modalMetadata.sortYesNoColumnName"
-      :identifiers-list="modalMetadata.identifierColumns"
-      :key-column="modalMetadata.keyColumn"
-    />
-
-    <template v-else>
-      <main-panel
-        v-if="(modalMetadata.uuid)"
-        key="main-panel"
+      <record-access />
+      <sequence-order
+        v-if="modalMetadata.isSortTab"
+        key="order"
         :parent-uuid="parentUuid"
         :container-uuid="modalMetadata.uuid"
-        :metadata="modalMetadata"
-        :panel-type="modalMetadata.panelType"
+        :order="modalMetadata.sortOrderColumnName"
+        :included="modalMetadata.sortYesNoColumnName"
+        :identifiers-list="modalMetadata.identifierColumns"
+        :key-column="modalMetadata.keyColumn"
       />
-    </template>
+      <template v-else>
+        <main-panel
+          v-if="!isEmptyValue(modalMetadata.uuid)"
+          key="main-panel"
+          :parent-uuid="parentUuid"
+          :container-uuid="modalMetadata.uuid"
+          :metadata="modalMetadata"
+          :panel-type="modalMetadata.panelType"
+        />
+      </template>
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button
+        type="danger"
+        icon="el-icon-close"
         @click="closeDialog"
-      >
-        {{ $t('components.dialogCancelButton') }}
-      </el-button>
+      />
       <el-button
         type="primary"
+        icon="el-icon-check"
         @click="runAction(modalMetadata)"
-      >
-        {{ $t('components.dialogConfirmButton') }}
-      </el-button>
+      />
     </span>
   </el-dialog>
 </template>
