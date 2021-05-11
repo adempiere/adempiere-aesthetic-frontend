@@ -432,6 +432,11 @@ export default class FieldDefinition extends Vue {
       this.field = value
     }
 
+    @Watch('panelContextMenu')
+    handlePanelContextMenu(value: boolean) {
+      this.visibleForDesktop = false
+    }
+
     // Methods
     recursiveTreeSearch = recursiveTreeSearch
 
