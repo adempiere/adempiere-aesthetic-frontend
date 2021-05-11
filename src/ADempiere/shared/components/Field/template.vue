@@ -14,24 +14,24 @@
       :xl="sizeFieldResponsive.xl"
       :class="classField"
     >
-      <el-form-item
-        :required="isMandatory"
-      >
+      <el-form-item>
         <template slot="label">
           <el-dropdown
             size="mini"
             :hide-on-click="true"
-            trigger="hover"
+            trigger="click"
+            :split-button="true"
+            :style="isMobile ? 'text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width:'+labelStyle+'%' : ''"
             @command="handleCommand"
+            @click="false"
           >
-            <span style="border: aqua;">
-              <span key="is-field-name">
-                {{ field.name }}
+            <div :style="isMobile ? 'display: flex;width: auto;' : 'display: block;'">
+              <span :style="isMandatory && isEmptyValue(valueField) ? 'border: aqua; color: #f34b4b' : 'border: aqua;'">
+                <span key="is-field-name">
+                  {{ field.name }}
+                </span>
               </span>
-              <i
-                class="el-icon-more el-icon--right"
-              />
-            </span>
+            </div>
             <el-dropdown-menu slot="dropdown">
               <template
                 v-for="(option, key) in optionField"
@@ -42,12 +42,13 @@
                   :command="option"
                   :divided="true"
                 >
-                                    <el-popover
+                  <el-popover
                     v-if="!isMobile"
                     placement="top"
                     width="400"
                     trigger="click"
                     style="padding: 0px;"
+                    :hide="visibleForDesktop"
                   >
                     <component
                       :is="optionFieldFComponentRender"
@@ -62,7 +63,7 @@
                           <i :class="option.icon" style="font-weight: bolder;" />
                         </div>
                         <div v-else style="margin-right: 5%">
-                          <svg-icon :name="option.icon" style="margin-right: 5px;" />
+                          <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
                         </div>
                         <div>
                           <span class="contents">
@@ -79,7 +80,7 @@
                       <i :class="option.icon" style="font-weight: bolder;" />
                     </div>
                     <div v-else style="margin-right: 5%">
-                      <svg-icon :name="option.icon" style="margin-right: 5px;" />
+                      <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
                     </div>
                     <div>
                       <span class="contents">
@@ -94,7 +95,6 @@
             </el-dropdown-menu>
           </el-dropdown>
         </template>
-
         <component
           :is="componentRender"
           :ref="field.columnName"
@@ -115,7 +115,27 @@
   />
 </template>
 
+<style scoped>
+.el-form--label-top .el-form-item__label {
+  padding-bottom: 0px !important;
+  display: block;
+}
+</style>
 <style>
+.el-button--mini {
+  font-size: 14px;
+  color: #606266 !important;
+  font-weight: 605!important;
+  border: 0;
+  padding-top: 7px;
+  padding-right: 0px;
+  padding-bottom: 7px;
+  padding-left: 15px;
+}
+.el-button:hover, .el-button:focus {
+  color: #606266;
+  cursor: auto;
+}
 .el-dropdown-menu__item:not(.is-disabled):hover, .el-dropdown-menu__item:focus {
   background: white;
 }
@@ -135,8 +155,14 @@
 .el-popper {
   padding: 0px;
 }
+.el-textarea {
+    position: relative;
+    width: 100%;
+    vertical-align: bottom;
+    font-size: 14px;
+    display: flex;
+}
 </style>
-
 <style scoped>
   .svg-icon {
     width: 1em;
@@ -153,8 +179,8 @@
     top: 0;
     left: 0;
     z-index: 10;
-    padding: 0px 0;
-    margin: 0px 0;
+    padding: 0px;
+    margin: 0px;
     background-color: #FFFFFF;
     border: 1px solid #e6ebf5;
     border-radius: 4px;
@@ -222,6 +248,7 @@
     margin-left: 0px;
     margin-right: 0px;
   }
+
   /* Global Styles */
   .el-textarea__inner:not(.in-table) {
     min-height: 36px !important;

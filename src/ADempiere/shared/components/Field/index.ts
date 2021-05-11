@@ -41,6 +41,15 @@ export default class FieldDefinition extends Vue {
     public value: any
 
     // Computed properties
+    get labelStyle() {
+      if (this.field.name.length >= 25) {
+        return '35'
+      } else if (this.field.name.length >= 20) {
+        return '50'
+      }
+      return '90'
+    }
+
     get isMobile(): boolean {
       return this.$store.state.app.device === DeviceType.Mobile
     }

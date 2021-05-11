@@ -7,15 +7,19 @@ import { IPanelDataExtended } from '@/ADempiere/modules/dictionary'
 import { Namespaces } from '../../utils/types'
 import { IRecordSelectionData } from '@/ADempiere/modules/persistence'
 import { showNotification } from '../../utils/notifications'
+import RecordAccess from '@/ADempiere/modules/privateAccess/components/RecordAccess'
 import { WindowTabAssociatedAction } from '@/ADempiere/modules/window'
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
+import { isEmptyValue } from '../../utils/valueUtils'
+import { updateAccessRecord } from '@/ADempiere/modules/privateAccess'
 
 @Component({
   name: 'ModalProcess',
   mixins: [Template],
   components: {
     MainPanel,
-    SequenceOrder
+    SequenceOrder,
+    RecordAccess
   }
 })
 export default class ModalProcess extends Vue {
@@ -58,22 +62,24 @@ export default class ModalProcess extends Vue {
     // Watchers
     @Watch('isVisibleDialog')
     handleIsVisibleDialogChange(value: boolean) {
-      if (this.modalMetadata.isSortTab) {
-        const data = this.$store.getters[
-          Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'
-        ](this.modalMetadata.containerUuid)
-        if (!data.isLoaded && !data.record.length) {
-          this.$store
-            .dispatch(Namespaces.Window + '/' + 'getDataListTab', {
-              parentUuid: this.modalMetadata.parentUuid,
-              containerUuid: this.modalMetadata.containerUuid,
-              isAddRecord: true
-            })
-            .catch(error => {
-              console.warn(
-                            `Error getting data list tab. Message: ${error.message}, code ${error.code}.`
-              )
-            })
+      if (value) {
+        if (this.modalMetadata.isSortTab) {
+          const data = this.$store.getters[
+            Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'
+          ](this.modalMetadata.containerUuid)
+          if (!data.isLoaded && !data.record.length) {
+            this.$store
+              .dispatch(Namespaces.Window + '/' + 'getDataListTab', {
+                parentUuid: this.modalMetadata.parentUuid,
+                containerUuid: this.modalMetadata.containerUuid,
+                isAddRecord: true
+              })
+              .catch(error => {
+                console.warn(
+                              `Error getting data list tab. Message: ${error.message}, code ${error.code}.`
+                )
+              })
+          }
         }
       }
     }
@@ -106,7 +112,7 @@ export default class ModalProcess extends Vue {
             }
           }, () => {})
         this.closeDialog()
-      } else if (action) {
+      } else if (!isEmptyValue(action)) {
         const fieldNotReady = this.$store.getters[Namespaces.Panel + '/' + 'isNotReadyForSubmit'](action.uuid)
         if (this.panelType === PanelContextType.Form) {
           this.$store.dispatch(Namespaces.Process + '/' + 'processPos', {
@@ -163,6 +169,10 @@ export default class ModalProcess extends Vue {
             })
           }
         }
+      }
+      if (action.action === undefined) {
+        const list = this.$store.getters[Namespaces.AccessRecord + '/' + 'getListRecordAcces']
+        updateAccessRecord(list)
       }
     }
 }
