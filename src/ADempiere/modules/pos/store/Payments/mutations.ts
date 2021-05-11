@@ -19,7 +19,7 @@ export const mutations: PaymentsMutatiionTree = {
   currencyDivideRateCollection(state: PaymentsState, divideRateCollection: number) {
     state.divideRateCollection = divideRateCollection
   },
-  setListPayments(state: PaymentsState, list: IPaymentsData[]) {
+  setListPayments(state: PaymentsState, list: { payments: IPaymentsData[], isLoaded: boolean}) {
     state.listPayments = list
   },
   setTenderTypeDisplaye(state: PaymentsState, tenderTypeDisplaye: any[]) {
@@ -30,5 +30,8 @@ export const mutations: PaymentsMutatiionTree = {
   },
   setConvertionPayment(state: PaymentsState, convertion) {
     state.convertion = convertion
+  },
+  setFieldCurrency(state: PaymentsState, currency) {
+    state.fieldCurrency = currency
   }
 }

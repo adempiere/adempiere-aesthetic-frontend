@@ -274,8 +274,12 @@ export interface PaymentsState {
     divideRate: number
     multiplyRateCollection: number
     divideRateCollection: number
-    listPayments: IPaymentsData[]
+    listPayments: {
+        payments: IPaymentsData[]
+        isLoaded: boolean
+    }
     tenderTypeDisplaye: any[]
+    fieldCurrency: any
     currency: any[]
     convertion: any
 }

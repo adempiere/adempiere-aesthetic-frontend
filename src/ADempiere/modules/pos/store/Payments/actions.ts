@@ -5,6 +5,7 @@ import { ActionContext, ActionTree } from 'vuex'
 import { PaymentsState, IPaymentsData } from '../../POSType'
 import { createPayment, deletePayment, getPaymentsList, updatePayment } from '../../POSService'
 import { IResponseList, Namespaces } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 type PaymentsActionContext = ActionContext<PaymentsState, IRootState>
 type PaymentsActionTree = ActionTree<PaymentsState, IRootState>
@@ -69,13 +70,13 @@ export const actions: PaymentsActionTree = {
       currencyToUuid: params.currencyToUuid
     })
       .then((response: IConversionRateData | Partial<IConversionRateData>) => {
-        const divideRate: number = (!response.divideRate) ? 1 : response.divideRate
+        context.commit('setFieldCurrency', response.currencyTo)
+        const divideRate: number = isEmptyValue(response.divideRate) ? 1 : response.divideRate!
         if (params.containerUuid === 'Collection') {
           context.commit('currencyDivideRateCollection', divideRate)
         } else {
-          context.commit('currencyDivideRate', divideRate)
+          context.commit('currencyDivideRateCollection', divideRate)
         }
-        context.commit('currencyDivideRate', divideRate)
       })
       .catch(error => {
         console.warn(`conversionDivideRate: ${error.message}. Code: ${error.code}.`)
@@ -137,13 +138,13 @@ export const actions: PaymentsActionTree = {
     currencyUuid: string
   }) {
     const { posUuid, orderUuid, invoiceUuid, bankUuid, referenceNo, description, amount, paymentDate, tenderTypeCode, currencyUuid } = params
-    const listPayments: IPaymentsData | undefined = context.getters.getListPayments.find((payment: IPaymentsData) => {
+    const listPayments: IPaymentsData | undefined = context.getters.getListPayments.payments.find((payment: IPaymentsData) => {
       if ((payment.tenderTypeCode === tenderTypeCode) && (payment.tenderTypeCode === 'X') && (currencyUuid === payment.currencyUuid)) {
         return payment
       }
       return undefined
     })
-    if (!listPayments) {
+    if (isEmptyValue(listPayments)) {
       createPayment({
         posUuid,
         orderUuid,
@@ -170,11 +171,11 @@ export const actions: PaymentsActionTree = {
         })
     } else {
       updatePayment({
-        paymentUuid: listPayments.uuid,
+        paymentUuid: listPayments!.uuid,
         bankUuid,
         referenceNo,
         description,
-        amount: listPayments.amount + amount,
+        amount: listPayments!.amount + amount,
         paymentDate,
         tenderTypeCode
       })
@@ -220,7 +221,10 @@ export const actions: PaymentsActionTree = {
       orderUuid
     })
       .then((response: IResponseList<IPaymentsData>) => {
-        context.commit('setListPayments', response.list)
+        context.commit('setListPayments', {
+          payments: response.list.reverse(),
+          isLoaded: true
+        })
       })
       .catch(error => {
         console.warn(`ListPaymentsFromServer: ${error.message}. Code: ${error.code}.`)
@@ -228,15 +232,6 @@ export const actions: PaymentsActionTree = {
       .finally(() => {
         context.dispatch(Namespaces.Utils + '/' + 'updatePaymentPos', false, { root: true })
       })
-  },
-  tenderTypeDisplaye(context: PaymentsActionContext, tenderType: any[]) {
-    const displayTenderType = tenderType.map(item => {
-      return {
-        tenderTypeCode: item.id,
-        tenderTypeDisplay: item.label
-      }
-    })
-    context.commit('setTenderTypeDisplaye', displayTenderType)
   },
   // upload orders to theServer
   uploadOrdersToServer(context: PaymentsActionContext, params: {

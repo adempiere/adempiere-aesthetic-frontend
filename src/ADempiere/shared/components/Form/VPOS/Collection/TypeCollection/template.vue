@@ -22,7 +22,7 @@
                         {{
                           tenderTypeFind({
                             currentPayment: value.tenderTypeCode,
-                            listTypePayment: typesPayment
+                            listTypePayment: labelTypesPayment
                           })
                         }}
                       </span>
@@ -46,11 +46,7 @@
                       </el-button>
 
                       <div
-                      v-if="currencyFind({
-                        currencyCurrent: value.currencyUuid,
-                        listCurrecy: listCurrency,
-                        defaultCurrency: currency
-                      }).currencyDisplay !== currency.iSOCode"
+                      v-if="loginConvertion"
                       slot="header"
                       class="clearfix"
                       style="padding-bottom: 20px;"
@@ -61,26 +57,10 @@
                         </b>
                       </p>
                       <br>
-                      <p class="total">
+                      <p v-if="!isEmptyValue(value.currencyConvertion)" class="total">
                         <b style="float: right;">
-                          {{
-                            formatPrice(
-                              (amountConvertion(value)),
-                              currencyFind({
-                                currencyCurrent: value.currencyUuid,
-                                listCurrency: listCurrency,
-                                defaultCurrency: currency
-                                }).currencyDisplay
-                              )
-                          }}
+                          {{ formatPrice(value.amountConvertion, value.currencyConvertion.iSOCode) }}
                         </b>
-                      </p>
-                      </div>
-                      <div v-else slot="header" class="clearfix">
-                        <p class="total">
-                          <b style="float: right; padding-top: 18px; padding-bottom: 20px;">
-                            {{ formatPrice(value.amount, currency.iSOCode) }}
-                          </b>
                         </p>
                       </div>
                     </div>

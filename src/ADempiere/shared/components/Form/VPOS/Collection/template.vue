@@ -56,7 +56,10 @@
                   <el-col v-for="(field, index) in fieldsList" :key="index" :span="8">
                     <FieldDefinition
                       :key="field.columnName"
-                      :metadata-field="field"
+                      :metadata-field="field.columnName === 'PayAmt' ? {
+                        ...field,
+                        labelCurrency: isEmptyValue($store.getters.getFieldCuerrency) ? currencyPoint : $store.getters.getFieldCuerrency
+                      } : field"
                     />
                   </el-col>
                 </el-row>
@@ -78,6 +81,7 @@
             :is-add-type-pay="listPayments"
             :currency="currencyPoint"
             :list-types-payments="fieldsList[2]"
+            :is-loaded="isLoadedPayments"
           />
           <div
             v-else

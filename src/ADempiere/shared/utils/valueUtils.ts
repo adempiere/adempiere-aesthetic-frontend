@@ -425,12 +425,12 @@ export function tenderTypeFind(params: {
 }) {
   const { currentPayment, listTypePayment } = params
   const payment = listTypePayment.find(item => {
-    if (item.tenderTypeCode === currentPayment) {
-      return item.tenderTypeDisplay
+    if (item.id === currentPayment) {
+      return item.id
     }
   })
   if (payment) {
-    return payment.tenderTypeDisplay
+    return payment.label
   }
   return currentPayment
 }

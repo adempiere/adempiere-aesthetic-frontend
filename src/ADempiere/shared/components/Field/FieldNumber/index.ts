@@ -125,6 +125,12 @@ export default class FieldNumber extends Mixins(MixinField) {
     }
 
     get currencyCode(): string {
+      if (!isEmptyValue(this.metadata.labelCurrency)) {
+        if (this.metadata.labelCurrency.iSOCode === this.currencyDefinition.iSOCode) {
+          return this.currencyDefinition.iSOCode
+        }
+        return this.metadata.labelCurrency.iSOCode
+      }
       return this.currencyDefinition.iSOCode
     }
 
