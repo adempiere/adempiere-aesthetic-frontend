@@ -45,7 +45,6 @@
                   <el-popover
                     v-if="!isMobile"
                     placement="top"
-                    width="400"
                     trigger="click"
                     style="padding: 0px;"
                     :hide="visibleForDesktop"

@@ -50,6 +50,7 @@ export interface IOverwriteDefinitionData extends IAdditionalAttributesData {
     handleKeyPressed?: boolean
     handleKeyReleased?: boolean
     value?: boolean
+    isNumericField?: boolean
 }
 
 export type IFieldTemplateMetadataType = Partial<IFieldDataExtendedUtils> & {
