@@ -452,6 +452,7 @@ export default class FieldDefinition extends Vue {
     }
 
     handleCommand(command: any): void {
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', false)
       if (command.name === this.$t('table.ProcessActivity.zoomIn')) {
         this.redirect({ window: command.fieldAttributes.reference.zoomWindows[0] })
         return

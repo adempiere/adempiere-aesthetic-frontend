@@ -59,6 +59,10 @@ export default class ModalProcess extends Vue {
       ](this.containerUuid)
     }
 
+    get showRecordAccess(): boolean {
+      return this.$store.getters[Namespaces.ContextMenu + '/' + 'getShowRecordAccess']
+    }
+
     // Watchers
     @Watch('isVisibleDialog')
     handleIsVisibleDialogChange(value: boolean) {
@@ -92,9 +96,11 @@ export default class ModalProcess extends Vue {
         type: this.modalMetadata.panelType,
         action: undefined
       })
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', false)
     }
 
     runAction(action: WindowTabAssociatedAction) {
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', false)
       if (action.isSortTab) {
         this.$store.dispatch(Namespaces.Window + '/' + 'updateSequence', {
           parentUuid: this.modalMetadata.parentUuid,

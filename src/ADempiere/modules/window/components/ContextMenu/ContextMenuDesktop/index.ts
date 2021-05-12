@@ -1,7 +1,7 @@
-import { ProcessDefinitionAction } from '@/ADempiere/modules/dictionary'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 import VueI18n from 'vue-i18n'
-import { Component, Mixins, Vue } from 'vue-property-decorator'
-import { WindowTabAssociatedAction, WindowProcessAsociatedAction, WindowDefinitionAction, RecordAccessAction, IContextActionData } from '../../../WindowType'
+import { Component, Mixins } from 'vue-property-decorator'
+import { IContextActionData } from '../../../WindowType'
 import MixinContextMenu from '../MixinContextMenu'
 import Template from './template.vue'
 
@@ -79,6 +79,10 @@ export default class ContextMenuDesktop extends Mixins(MixinContextMenu) {
   clickRunAction(action: string | IContextActionData) {
     if (action === 'refreshData') {
       this.refreshData()
+    } else if (typeof action !== 'string' && action.action === 'recordAccess') {
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', true)
+      this.runAction(action)
     } else {
       if (typeof action !== 'string') {
         this.runAction(action)

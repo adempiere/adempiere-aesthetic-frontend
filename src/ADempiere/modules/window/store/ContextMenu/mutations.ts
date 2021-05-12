@@ -49,5 +49,8 @@ export const mutations: ContextMenuMutationTree = {
   },
   fieldContextMenu(state: ContextMenuState, payload) {
     state.optionField = payload
+  },
+  setRecordAccess(state: ContextMenuState, recordAccess: boolean) {
+    state.recordAccess = recordAccess
   }
 }
