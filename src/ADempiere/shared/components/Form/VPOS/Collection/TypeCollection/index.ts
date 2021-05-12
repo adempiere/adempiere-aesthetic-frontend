@@ -1,6 +1,8 @@
-import { IFieldData, IReferenceData } from '@/ADempiere/modules/field'
+import { requestGetConversionRate } from '@/ADempiere/modules/core'
+import { IFieldData } from '@/ADempiere/modules/field'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatDate, formatPrice } from '@/ADempiere/shared/utils/valueFormat'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import Template from './template.vue'
 
@@ -12,7 +14,14 @@ export default class TypeCollection extends Vue {
     @Prop({ type: Array, default: undefined }) isAddTypePay?: any[]
     @Prop({ type: Object, default: undefined }) listTypesPayment: any
     @Prop({ type: Object, default: undefined }) currency?: any
+    @Prop({
+      type: Boolean,
+      default: false
+    }) isLoaded!: boolean
+
     public conevertion = 0
+    public loginCovertion = false
+    public labelTypesPayment: any[] = []
 
     // Computed properties
     get typesPayment() {
@@ -27,10 +36,11 @@ export default class TypeCollection extends Vue {
       return this.$store.getters[Namespaces.Payments + '/' + 'getConvertionPayment']
     }
 
-    @Watch('listTypesPayment')
-    handleListTypesPayment(value: any) {
-      if (value && this.typesPayment.length <= 1) {
-        this.tenderTypeDisplaye(value)
+    // Hooks
+    created() {
+      this.convertingPaymentMethods()
+      if (isEmptyValue(this.labelTypesPayment)) {
+        this.tenderTypeDisplaye(this.listTypesPayment)
       }
     }
 
@@ -39,17 +49,45 @@ export default class TypeCollection extends Vue {
 
     formatPrice = formatPrice
 
+    convertingPaymentMethods() {
+      const currencyUuid = this.isAddTypePay!.find(pay => pay.currencyUuid !== this.currency.uuid)
+      if (!isEmptyValue(currencyUuid)) {
+        requestGetConversionRate({
+          conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
+          currencyFromUuid: this.currency.uuid,
+          currencyToUuid: currencyUuid.currencyUuid
+        })
+          .then(response => {
+            this.isAddTypePay!.forEach(element => {
+              if (element.currencyUuid !== this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].priceList.currency.uuid) {
+                element.amountConvertion = element.amount / response.divideRate!
+                element.currencyConvertion = response.currencyTo
+              } else {
+                element.currencyConvertion = {}
+              }
+            })
+            this.$store.commit(Namespaces.Payments + '/' + 'setListPayments', {
+              payments: this.isAddTypePay
+            })
+          })
+          .catch(error => {
+            console.warn(`conversion: ${error.message}. Code: ${error.code}.`)
+          })
+      }
+      this.loginCovertion = true
+    }
+
     tenderTypeDisplaye(value: Partial<IFieldData>) {
-      if (value.reference) {
+      if (!isEmptyValue(value.reference)) {
         const tenderType = value.reference
-        if (tenderType) {
+        if (!isEmptyValue(tenderType)) {
           this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
-            tableName: tenderType.tableName,
-            query: tenderType.query,
+            tableName: tenderType!.tableName,
+            query: tenderType!.query,
             filters: []
           })
             .then(response => {
-              this.$store.dispatch(Namespaces.Payments + '/' + 'tenderTypeDisplaye', response)
+              this.labelTypesPayment = response
             })
         }
       }
@@ -105,9 +143,5 @@ export default class TypeCollection extends Vue {
         orderUuid,
         paymentUuid
       })
-    }
-
-    amountConvertion(payment: any) {
-      return payment.aount * this.conevertionAmount.multiplyRate
     }
 }

@@ -147,31 +147,6 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   // Watchers
-  @Watch('currencyUuid')
-  handleCurrencyUuid(value: string) {
-    if (!isEmptyValue(value) && !isEmptyValue(this.currentPoint)) {
-      this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
-        conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
-        currencyFromUuid: this.currencyPoint.uuid,
-        currencyToUuid: value
-      })
-    }
-  }
-
-  @Watch('converCurrency')
-  handleConverCurrency(value: any) {
-    if (!isEmptyValue(value) && !isEmptyValue(this.currentPoint)) {
-      this.$store.dispatch(Namespaces.Payments + '/' + 'conversionMultiplyRate', {
-        containerUuid: 'Order',
-        conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
-        currencyFromUuid: this.currencyPoint.uuid,
-        currencyToUuid: value
-      })
-    } else {
-      this.$store.commit(Namespaces.Payments + '/' + 'currencyMultiplyRate', 1)
-    }
-  }
-
   @Watch('namePointOfSales')
   handleNamePointOfSalesChange(value: IPointOfSalesData | undefined) {
     if (!isEmptyValue(value)) {
@@ -212,7 +187,9 @@ export default class Order extends Mixins(MixinOrderLine) {
     })
       .catch(() => undefined)
       .finally(() => {
-        this.$store.commit(Namespaces.Payments + '/' + 'setListPayments', [])
+        this.$store.commit(Namespaces.Payments + '/' + 'setListPayments', {
+          payments: []
+        })
         const { templateBusinessPartner } = this.currentPoint!
 
         this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
@@ -263,9 +240,6 @@ export default class Order extends Mixins(MixinOrderLine) {
     if (!isEmptyValue(this.$route.query.action)) {
       this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', { orderUuid: this.$route.query.action })
     }
-    // setTimeout(() => {
-    //   // this.currencyDisplaye()
-    // }, 1500)
   }
 
   open() : void {
@@ -273,34 +247,4 @@ export default class Order extends Mixins(MixinOrderLine) {
       this.seeConversion = true
     }
   }
-
-  // tenderTypeDisplaye() {
-  //   if (this.fieldsList && this.fieldsList.length) {
-  //     const tenderType = this.fieldsList[5].reference
-  //     if (tenderType) {
-  //       this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
-  //         tableName: tenderType.tableName,
-  //         query: tenderType.query
-  //       })
-  //         .then(response => {
-  //           this.$store.dispatch(Namespaces.Payments + '/' + 'tenderTypeDisplaye', response)
-  //         })
-  //     }
-  //   }
-  // }
-
-  // currencyDisplaye() {
-  //   if (this.fieldsList && this.fieldsList.length) {
-  //     const currency = this.fieldsList[4].reference
-  //     if (currency) {
-  //       this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
-  //         tableName: currency.tableName,
-  //         query: currency.query
-  //       })
-  //         .then(response => {
-  //           this.$store.dispatch(Namespaces.Payments + '/' + 'currencyDisplaye', response)
-  //         })
-  //     }
-  //   }
-  // }
 }

@@ -6,6 +6,7 @@ import { ICalculatorObject } from './type'
 
 import buttons from './buttons'
 import Template from './template.vue'
+import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 
 @Component({
   name: 'FieldCalc',
@@ -96,6 +97,13 @@ export default class FieldCalc extends Vue {
         isSendToServer,
         isSendCallout,
         isChangedOldValue
+      }
+      if (this.fieldAttributes.panelType === PanelContextType.Form) {
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
+          containerUuid: this.fieldAttributes.containerUuid,
+          columnName: this.fieldAttributes.columnName,
+          value: newValue
+        })
       }
       this.$store.dispatch(Namespaces.Panel + '/' + 'notifyFieldChange', {
         ...sendParameters

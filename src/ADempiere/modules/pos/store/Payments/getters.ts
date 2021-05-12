@@ -20,7 +20,10 @@ export const getters: PaymentsGetterTree = {
   getDivideRateCollection: (state: PaymentsState): number => {
     return state.divideRateCollection
   },
-  getListPayments: (state: PaymentsState): IPaymentsData[] => {
+  getListPayments: (state: PaymentsState): {
+    payments: IPaymentsData[]
+    isLoaded: boolean
+  } => {
     return state.listPayments
   },
   getListsPaymentTypes: (state: PaymentsState): any[] => {
@@ -31,5 +34,8 @@ export const getters: PaymentsGetterTree = {
   },
   getConvertionPayment: (state: PaymentsState) => {
     return state.convertion
+  },
+  getFieldCuerrency: (state: PaymentsState) => {
+    return state.fieldCurrency
   }
 }

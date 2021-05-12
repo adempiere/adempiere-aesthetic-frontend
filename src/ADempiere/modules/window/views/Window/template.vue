@@ -197,7 +197,7 @@
                     <SplitArea v-show="isShowedTabsChildren" :size="50">
                       <el-header
                         v-if="isShowedTabsChildren && !isEmptyValue(windowMetadata.tabsListChildren)"
-                        style="height: auto; padding-right: 35px !important; padding-bottom: 33px;"
+                        style="height: auto; padding-right: 10px !important; padding-bottom: 33px;"
                       >
                         <div class="w-33">
                           <div class="center">

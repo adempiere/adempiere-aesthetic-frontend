@@ -6,7 +6,10 @@ export const state: PaymentsState = {
   divideRate: 1,
   multiplyRateCollection: 1,
   divideRateCollection: 1,
-  listPayments: [],
+  listPayments: {
+    payments: [],
+    isLoaded: false
+  },
   tenderTypeDisplaye: [
     {
       tenderTypeCode: 0,
@@ -14,5 +17,6 @@ export const state: PaymentsState = {
     }
   ],
   currency: [],
-  convertion: {}
+  convertion: {},
+  fieldCurrency: {}
 }
