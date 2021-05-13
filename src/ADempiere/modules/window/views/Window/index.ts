@@ -20,6 +20,7 @@ import { IRecordSelectionData } from '@/ADempiere/modules/persistence'
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import RightPanel from '@/ADempiere/modules/window/components/RightPanel'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
+import RecordAccess from '@/ADempiere/modules/privateAccess/components/RecordAccess'
 
 Component.registerHooks([
   'beforeRouteEnter',
@@ -47,7 +48,8 @@ C2.registerHooks([
     WorkflowStatusBar,
     SplitPane,
     ModalDialog,
-    RightPanel
+    RightPanel,
+    RecordAccess
   }
 })
 export default class WindowView extends Vue {
@@ -89,6 +91,10 @@ export default class WindowView extends Vue {
           break
       }
       return component
+    }
+
+    get showRecordAccess(): boolean {
+      return this.$store.getters[Namespaces.ContextMenu + '/' + 'getShowRecordAccess']
     }
 
     get isNewRecord(): boolean {

@@ -13,7 +13,9 @@
     <div
       v-if="panelType !== 'From'"
     >
-      <record-access />
+      <record-access
+      v-if="showRecordAccess"
+      />
       <sequence-order
         v-if="modalMetadata.isSortTab"
         key="order"

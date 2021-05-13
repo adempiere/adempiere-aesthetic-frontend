@@ -16,5 +16,6 @@ export const state : ContextMenuState = {
     documentActionsList: [],
     recordId: undefined,
     recordUuid: undefined
-  }
+  },
+  recordAccess: false
 }

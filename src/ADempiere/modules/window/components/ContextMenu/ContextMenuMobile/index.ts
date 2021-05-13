@@ -1,9 +1,9 @@
-import { Component, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import Template from './template.vue'
 import MixinContextMenu from '../MixinContextMenu'
-import { IContextActionData, RecordAccessAction, WindowDefinitionAction, WindowProcessAsociatedAction, WindowTabAssociatedAction } from '../../../WindowType'
+import { IContextActionData } from '../../../WindowType'
 import VueI18n from 'vue-i18n'
-import { ProcessDefinitionAction } from '@/ADempiere/modules/dictionary'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 @Component({
   name: 'ContextMenuMobile',
@@ -79,6 +79,10 @@ export default class ContextMenuMobile extends Mixins(MixinContextMenu) {
   clickRunAction(action: string | IContextActionData) {
     if (action === 'refreshData') {
       this.refreshData()
+    } else if (typeof action !== 'string' && action.action === 'recordAccess') {
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', true)
+      this.runAction(action)
     } else {
       if (typeof action !== 'string') {
         this.runAction(action)
