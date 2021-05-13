@@ -10,6 +10,7 @@ import {
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Route } from 'vue-router'
 import router from '@/router'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 type PointOfSalesActionContext = ActionContext<PointOfSalesState, IRootState>
 type PointOfSalesActionTree = ActionTree<PointOfSalesState, IRootState>
@@ -24,47 +25,23 @@ export const actions: PointOfSalesActionTree = {
     posToSet = null
   ) {
     const userUuid: string = context.rootState.user.userUuid
-
+    let pos: IPointOfSalesData | undefined, listPos: IPointOfSalesData[]
     requestListPointOfSales({
       userUuid
     })
       .then((response: IListPointOfSalesResponse) => {
-        // TODO: Add organization
-        context.commit('setPontOfSales', {
-          ...response,
-          userUuid
-        })
-
-        const posList: IPointOfSalesData[] = response.list
-        const getterPos: string = context.getters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
-        let pos: IPointOfSalesData | undefined
-        if (posList) {
-          if (getterPos) {
-            pos = posList.find(
-              (itemPOS: IPointOfSalesData) =>
-                itemPOS.uuid === getterPos
-            )
-          }
-
-          // match with route.query.pos
-          if (!pos && posToSet) {
-            pos = posList.find(
-              (itemPOS: IPointOfSalesData) =>
-                itemPOS.id === posToSet
-            )
-          }
-
-          // set first element in array list
-          if (!pos) {
-            pos = posList[0]
-          }
+        listPos = response.list
+        if (!isEmptyValue(posToSet)) {
+          pos = listPos.find((itemPOS) => itemPOS.id === parseInt(posToSet))
         }
-        if (!pos) {
-          pos = undefined
+        if (isEmptyValue(pos) && isEmptyValue(posToSet)) {
+          pos = listPos.find(itemPOS => itemPOS.salesRepresentative.uuid === userUuid)
         }
-        if (pos && pos.uuid !== getterPos) {
-          context.dispatch('setCurrentPOS', pos)
+        if (isEmptyValue(pos)) {
+          pos = listPos[0]
         }
+        context.commit('listPointOfSales', listPos)
+        context.dispatch('setCurrentPOS', pos)
       })
       .catch(error => {
         console.warn(
@@ -81,10 +58,9 @@ export const actions: PointOfSalesActionTree = {
     context: PointOfSalesActionContext,
     posToSet: IPointOfSalesData
   ) {
-    context.commit('setCurrentPOS', posToSet)
-
+    context.commit('currentPointOfSales', posToSet)
+    const currentPOS: IPointOfSalesData = posToSet
     const oldRoute: Route = context.rootState.route
-
     router.push({
       name: oldRoute.name!,
       params: {
@@ -99,9 +75,14 @@ export const actions: PointOfSalesActionTree = {
       () => {})
 
     context.commit(Namespaces.KeyLayout + '/' + 'setIsReloadKeyLayout', undefined, { root: true })
-    context.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice', undefined, { root: true })
+    context.commit(Namespaces.ProductPrice + '/' + 'setIsReloadProductPrice', undefined, { root: true })
     context.commit(Namespaces.Order + '/' + 'setIsReloadListOrders', undefined, { root: true })
     context.commit('setShowPOSKeyLayout', false)
-    context.dispatch(Namespaces.Payments + '/' + 'deleteAllCollectBox', undefined, { root: true })
+    context.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
+      posUuid: currentPOS.uuid
+    }, { root: true })
+    context.dispatch(Namespaces.ProductPrice + '/' + 'listProductPriceFromServer', {
+      currentPOS
+    }, { root: true })
   }
 }

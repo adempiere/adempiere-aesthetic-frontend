@@ -47,7 +47,7 @@ export default class KeyLayout extends Vue {
     }
 
     get getKeyLayout() {
-      return this.$store.getters[Namespaces.KeyLayout + '/' + 'getKeyLayout']
+      return this.$store.getters[Namespaces.PointOfSales + '/' + 'getKeyLayout']
     }
 
     get getKeyList(): any[] | undefined {

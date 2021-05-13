@@ -265,6 +265,7 @@ export interface PointOfSalesState {
     showPOSCollection: boolean
     pointOfSales: IPOSData
     currentPOS: Partial<IPointOfSalesData>
+    listPointOfSales: any
 }
 
 // Collection Module
@@ -293,14 +294,15 @@ export interface IKeyLayoutDataExtended extends IKeyLayoutData {
 }
 
 export interface KeyLayoutState {
-    keyLayout: {
+    keyLayout: Partial<
+    {
         isLoaded: boolean
         isReload: boolean
         recordCount: number
         nextPageToken?: string
         uuid?: string
         orderList?: any[]
-    }
+    }>
 }
 
 export interface IListOrderItemData {
