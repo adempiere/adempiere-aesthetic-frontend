@@ -45,7 +45,7 @@ export default class ProductInfo extends Mixins(MixinField) {
     }
 
     get currentPos() {
-      return this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+      return this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales
     }
 
     get keyShortcuts() {

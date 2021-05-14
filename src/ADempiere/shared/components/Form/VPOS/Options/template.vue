@@ -221,7 +221,7 @@
                 </p>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
-                    v-for="item in sellingPointsList"
+                    v-for="item in listPointOfSales"
                     :key="item.uuid"
                     :command="item"
                   >

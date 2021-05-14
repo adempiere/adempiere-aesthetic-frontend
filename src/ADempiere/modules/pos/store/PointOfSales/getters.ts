@@ -1,7 +1,7 @@
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
-import { IOrderData, PointOfSalesState } from '../../POSType'
+import { ICurrentOrderData, IOrderData, IPOSAttributesData, PointOfSalesState } from '../../POSType'
 
 type PointOfSalesGetterTree = GetterTree<PointOfSalesState, IRootState>
 
@@ -33,18 +33,20 @@ export const getters: PointOfSalesGetterTree = {
    * List Payment Order
    * Lst Order
    */
-  posAttributes: (state: PointOfSalesState, getters, rootState) => {
+  posAttributes: (state: PointOfSalesState, getters, rootState): IPOSAttributesData => {
+    // Assign Types
+    const currentOrder: ICurrentOrderData = {
+      ...rootState.orderModule.order,
+      lineOrder: rootState.orderLinesModule.listOrderLine,
+      listPayments: rootState.paymentsModule.listPayments,
+      isProcessed: isProcessed(rootState.orderModule.order)
+    }
     return {
       listPointOfSales: state.listPointOfSales,
       currentPointOfSales: {
         ...state.currentPOS,
         listOrder: rootState.orderModule.listOrder,
-        currentOrder: {
-          ...rootState.orderModule.order,
-          lineOrder: rootState.orderLinesModule.listOrderLine,
-          listPayments: rootState.paymentsModule.listPayments,
-          isProcessed: isProcessed(rootState.orderModule.order)
-        }
+        currentOrder: currentOrder
       }
     }
   },

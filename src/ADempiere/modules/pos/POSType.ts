@@ -361,3 +361,19 @@ export interface ListProductPriceState {
     productPrice: IListProductPriceItemData
     searchProduct: string
 }
+
+export type ICurrentOrderData = Partial<IOrderData> & {
+    lineOrder: IOrderLineDataExtended[]
+    listPayments: { payments: IPaymentsData[], isLoaded: boolean }
+    isProcessed: boolean
+}
+
+export type ICurrentPointOfSalesData = Partial<IPointOfSalesData> & {
+    listOrder: IListOrderItemData
+    currentOrder: ICurrentOrderData
+}
+
+export interface IPOSAttributesData {
+    listPointOfSales: any
+    currentPointOfSales: ICurrentPointOfSalesData
+}

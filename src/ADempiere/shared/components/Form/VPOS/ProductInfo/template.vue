@@ -56,16 +56,6 @@
                 </span>
               </span>
             </el-col>
-            <!-- <el-col :span="6">
-              <span class="upc">
-                {{ props.item.product.description }}
-              </span>
-            </el-col> -->
-            <!-- <el-col :span="6">
-              <span class="upc">
-                {{ props.item.quantityAvailable }}
-              </span>
-            </el-col> -->
             <el-col :span="12">
               <span class="price">
                 {{ formatPrice(props.item.priceStandard, props.item.currency.iSOCode) }}
@@ -73,7 +63,6 @@
                 <span class="quantityAvailable">
                   {{ formatQuantity(props.item.quantityAvailable) }}
                 </span>
-                <!-- {{ props.item.currency.curSymbol }} -->
               </span>
             </el-col>
           </el-row>

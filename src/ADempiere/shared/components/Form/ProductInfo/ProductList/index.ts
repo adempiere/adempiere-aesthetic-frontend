@@ -60,7 +60,7 @@ export default class ProductList extends Mixins(MixinForm) {
   }
 
   get currentPoint(): IPointOfSalesData | undefined {
-    return this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+    return this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales
   }
 
   get productPrice(): IListProductPriceItemData {
@@ -89,7 +89,7 @@ export default class ProductList extends Mixins(MixinForm) {
   }
 
   get listPrice(): number {
-    const pos: IPointOfSalesData | undefined = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+    const pos: IPointOfSalesData | undefined = this.currentPoint
     if (!isEmptyValue(pos)) {
       return pos!.priceList.id
     }
@@ -286,7 +286,6 @@ export default class ProductList extends Mixins(MixinForm) {
      * @param {object} PointOfSales
      */
   validatePos(PointOfSales: IPointOfSalesData | undefined): void {
-    console.log(isEmptyValue(PointOfSales), this.isReadyFromGetData)
     if (isEmptyValue(PointOfSales)) {
       const message: string = this.$t('notifications.errorPointOfSale').toString()
       this.$store.commit(Namespaces.ProductPrice + '/' + 'setListProductPrice', {

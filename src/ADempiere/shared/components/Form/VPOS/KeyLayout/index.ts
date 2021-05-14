@@ -2,8 +2,10 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import VueContentLoading from '@/ADempiere/shared/components/ContentLoader'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import {
+  ICurrentPointOfSalesData,
   IOrderLineDataExtended,
-  IPointOfSalesData
+  IPointOfSalesData,
+  IPOSAttributesData
 } from '@/ADempiere/modules/pos'
 import { formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
 import { requestImage } from '@/ADempiere/modules/persistence/PersistenceService/persistence'
@@ -34,16 +36,8 @@ export default class KeyLayout extends Vue {
       return require('@/image/ADempiere/pos/no-image.jpg')
     }
 
-    get currentPoint(): IPointOfSalesData | undefined {
-      return this.$store.getters[
-        Namespaces.PointOfSales + '/' + 'getCurrentPOS'
-      ]
-    }
-
-    get listOrderLine(): IOrderLineDataExtended[] {
-      return this.$store.getters[
-        Namespaces.Order + '/' + 'getPos'
-      ].lineOrder
+    get currentPointOfSales(): ICurrentPointOfSalesData {
+      return (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales
     }
 
     get getKeyLayout() {
@@ -96,7 +90,7 @@ export default class KeyLayout extends Vue {
 
     loadKeyLayout(uuid?: string): void {
       uuid = uuid || undefined
-      const currentPOS: IPointOfSalesData | undefined = this.currentPoint
+      const currentPOS: ICurrentPointOfSalesData | undefined = this.currentPointOfSales
       if (isEmptyValue(currentPOS) || isEmptyValue(currentPOS!.uuid)) {
         this.$message({
           type: 'warning',
@@ -178,14 +172,12 @@ export default class KeyLayout extends Vue {
     }
 
     handleCommand(command: any): void {
-      const point = this.$store.getters[
-        Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid'
-      ].keyLayoutUuid
+      const point = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.uuid
       const toReturn = this.getKeyList!.find(
         keyLayoutItem => keyLayoutItem.subKeyLayoutUuid === point
       )
 
-      let keyLayoutUuid = this.currentPoint!.keyLayoutUuid
+      let keyLayoutUuid = this.currentPointOfSales.keyLayoutUuid
       if (!isEmptyValue(toReturn)) {
         keyLayoutUuid = toReturn.subKeyLayoutUuid
       }

@@ -147,7 +147,7 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
           return row.lineDescription
         }
 
-        const currency = this.currencyPoint.iSOCode
+        const currency = this.pointOfSalesCurrency.iSOCode
         if (columnName === 'CurrentPrice') {
           return this.formatPrice(row.priceActual, currency)
         } else if (columnName === 'QtyOrdered') {

@@ -6,8 +6,10 @@ import fieldListProductPrice from '../fieldList'
 import { IFieldLocation } from '@/ADempiere/shared/components/Field/FieldLocation/fieldList'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import {
+  ICurrentPointOfSalesData,
   IListProductPriceItemData,
-  IPointOfSalesData
+  IPointOfSalesData,
+  IPOSAttributesData
 } from '@/ADempiere/modules/pos'
 import { IProductPriceData } from '@/ADempiere/modules/core/CoreType'
 import { formatPrice } from '@/ADempiere/shared/utils/valueFormat'
@@ -48,10 +50,10 @@ export default class ProductList extends Mixins(MixinForm) {
       ]
     }
 
-    get currentPoint(): IPointOfSalesData | undefined {
-      return this.$store.getters[
-        Namespaces.PointOfSales + '/' + 'getCurrentPOS'
-      ]
+    get currentPointOfSales(): ICurrentPointOfSalesData | undefined {
+      return (this.$store.getters[
+        Namespaces.PointOfSales + '/' + 'posAttributes'
+      ] as IPOSAttributesData).currentPointOfSales
     }
 
     get productPrice(): IListProductPriceItemData {
@@ -89,13 +91,6 @@ export default class ProductList extends Mixins(MixinForm) {
       console.log('isReadyFromGetData change')
       console.log(isToLoad)
       if (isToLoad) {
-        this.loadProductsPricesList()
-      }
-    }
-
-    @Watch('currentPoint')
-    handleCurrentPointChange(value: IPointOfSalesData | undefined) {
-      if (!isEmptyValue(value)) {
         this.loadProductsPricesList()
       }
     }
@@ -180,7 +175,7 @@ export default class ProductList extends Mixins(MixinForm) {
     /**
      * @param {object} PointOfSales
      */
-    validatePos(PointOfSales: IPointOfSalesData | undefined): void {
+    validatePos(PointOfSales: ICurrentPointOfSalesData | undefined): void {
       console.log(isEmptyValue(PointOfSales), this.isReadyFromGetData)
       if (isEmptyValue(PointOfSales)) {
         const message: string = this.$t('notifications.errorPointOfSale').toString()
@@ -204,7 +199,7 @@ export default class ProductList extends Mixins(MixinForm) {
         isLoaded: true
       })
       this.timeOut = setTimeout(() => {
-        this.validatePos(this.currentPoint)
+        this.validatePos(this.currentPointOfSales)
       }, 3000)
     }
 

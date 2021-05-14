@@ -252,7 +252,8 @@ export const actions: OrderActionTree = {
       })
   },
   setOrder(context: OrderActionContext, order: IOrderData) {
-    context.commit(Namespaces.OrderLines + '/' + 'listOrderLinesFromServer', order.uuid, { root: true })
+    context.dispatch(Namespaces.OrderLines + '/' + 'listOrderLinesFromServer', order.uuid, { root: true })
+    context.commit('setOrder', order)
   },
   currentOrder(context: OrderActionContext, findOrder: IOrderData) {
     context.commit('findOrder', findOrder)
