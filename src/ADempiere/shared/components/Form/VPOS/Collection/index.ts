@@ -1,4 +1,4 @@
-import { ICurrencyData } from '@/ADempiere/modules/core'
+import { IConversionRateData, ICurrencyData } from '@/ADempiere/modules/core'
 import { ICurrentOrderData, IOrderData, IPaymentsData, IPointOfSalesData, processOrder } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatDate, formatPrice } from '@/ADempiere/shared/utils/valueFormat'
@@ -10,6 +10,7 @@ import ConvertAmount from './ConvertAmount'
 import fieldListCollection from './fieldListCollection'
 import Template from './template.vue'
 import TypeCollection from './TypeCollection'
+import { FIELDS_DECIMALS } from '@/ADempiere/shared/utils/references'
 
 @Component({
   name: 'Collection',
@@ -192,7 +193,7 @@ export default class Collection extends Mixins(MixinPOS) {
         return missing
       }
       const pending = this.currentOrder.grandTotal! <= this.pay ? 0 : this.currentOrder.grandTotal!
-      return pending / this.convertion
+      return pending
     }
 
     get convertion(): number {
@@ -247,6 +248,15 @@ export default class Collection extends Mixins(MixinPOS) {
       return this.$store.getters[Namespaces.Utils + '/' + 'getUpdatePaymentPos']
     }
 
+    get dateRate(): Partial<IConversionRateData> | undefined {
+      const convertionRate = this.$store.getters[Namespaces.Payments + '/' + 'getConvertionRate'] as Partial<IConversionRateData>[]
+      return convertionRate.find(currency => {
+        if (currency.id === this.typeCurrency) {
+          return currency
+        }
+      })
+    }
+
     get typeCurrency() {
       return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid: this.containerUuid,
@@ -274,13 +284,6 @@ export default class Collection extends Mixins(MixinPOS) {
 
     get multiplyRateCollection() {
       return this.$store.getters[Namespaces.Payments + '/' + 'getMultiplyRateCollection']
-    }
-
-    get converCurrency() {
-      return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
-        containerUuid: 'Collection',
-        columnName: 'C_Currency_ID_UUID'
-      })
     }
 
     get divideRate(): number {
@@ -314,17 +317,14 @@ export default class Collection extends Mixins(MixinPOS) {
 
     @Watch('currencyUuid')
     handleCurrencyUuidChange(value: string) {
-      if (!isEmptyValue(value)) {
+      const convertionRate = this.$store.getters[Namespaces.Payments + '/' + 'getConvertionRate'] as Partial<IConversionRateData>[]
+      const alo = convertionRate.find(currency => {
+        if (currency.uuid === value) {
+          return currency
+        }
+      })
+      if (alo === undefined) {
         this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
-          conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
-          currencyFromUuid: this.pointOfSalesCurrency.uuid,
-          currencyToUuid: value
-        })
-      }
-      if (isEmptyValue(value)) {
-        this.$store.commit(Namespaces.Payments + '/' + 'setFieldCurrency', this.pointOfSalesCurrency)
-        this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
-          containerUuid: 'Collection',
           conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
           currencyFromUuid: this.pointOfSalesCurrency.uuid,
           currencyToUuid: value
@@ -340,21 +340,7 @@ export default class Collection extends Mixins(MixinPOS) {
       this.allPayCurrency = this.pay
     }
 
-    @Watch('converCurrency')
-    handleConverCurrencyChange(value: any) {
-      if (!isEmptyValue(value)) {
-        this.$store.dispatch(Namespaces.Payments + '/' + 'conversionMultiplyRate', {
-          containerUuid: 'Collection',
-          conversionTypeUuid: this.currentPointOfSales,
-          currencyFromUuid: this.pointOfSalesCurrency.uuid,
-          currencyToUuid: value
-        })
-      } else {
-        this.$store.commit(Namespaces.Payments + '/' + 'currencyMultiplyRate', 1)
-      }
-    }
-
-      @Watch('isLoaded')
+    @Watch('isLoaded')
     handleIsLoadedChange(value: boolean) {
       if (value) {
         this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
@@ -365,10 +351,37 @@ export default class Collection extends Mixins(MixinPOS) {
       }
     }
 
-      // Methods
+    @Watch('dateRate')
+    handleDateRateChange(value: any) {
+      if (value && !isEmptyValue(value.amountConvertion)) {
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
+          containerUuid: this.containerUuid,
+          columnName: 'PayAmt',
+          value: this.pending / value.amountConvertion
+        })
+      } else {
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
+          containerUuid: this.containerUuid,
+          columnName: 'PayAmt',
+          value: this.pending
+        })
+      }
+    }
+
+    // Methods
     formatDate = formatDate
 
     formatPrice = formatPrice
+
+    formatNumber(params: { displayType: number, number: number }) {
+      const { number, displayType } = params
+      let fixed = 0
+      // Amount, Costs+Prices, Number
+      if (FIELDS_DECIMALS.includes(displayType)) {
+        fixed = 2
+      }
+      return new Intl.NumberFormat().format(Number(number.toFixed(fixed)))
+    }
 
     sumCash(cash: any[]) {
       let sum = 0
@@ -697,6 +710,8 @@ export default class Collection extends Mixins(MixinPOS) {
 
     // Hooks
     created() {
+      console.log(this.$store.getters.getConvertionRate)
+      this.$store.dispatch(Namespaces.Payments + '/' + 'addRateConvertion', this.pointOfSalesCurrency)
       this.unsubscribe = this.subscribeChanges()
       this.defaultValueCurrency()
     }

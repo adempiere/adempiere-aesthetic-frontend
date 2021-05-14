@@ -74,6 +74,7 @@ export const actions: PointOfSalesActionTree = {
       /* eslint-disable-next-line @typescript-eslint/no-empty-function */
       () => {})
 
+    context.commit(Namespaces.Payments + '/' + 'resetConversionRate', [], { root: true })
     context.commit(Namespaces.KeyLayout + '/' + 'setIsReloadKeyLayout', undefined, { root: true })
     context.commit(Namespaces.ProductPrice + '/' + 'setIsReloadProductPrice', undefined, { root: true })
     context.commit(Namespaces.Order + '/' + 'setIsReloadListOrders', undefined, { root: true })

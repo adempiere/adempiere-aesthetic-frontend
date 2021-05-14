@@ -64,17 +64,29 @@ export const actions: PaymentsActionTree = {
     payment.splice(0)
   },
   conversionDivideRate(context: PaymentsActionContext, params: IGetConversionRateParams) {
+    console.log('conversionDivideRate')
     requestGetConversionRate({
       conversionTypeUuid: params.conversionTypeUuid,
       currencyFromUuid: params.currencyFromUuid,
-      currencyToUuid: params.currencyToUuid
+      currencyToUuid: params.currencyToUuid,
+      conversionDate: params.conversionDate
     })
       .then((response: IConversionRateData | Partial<IConversionRateData>) => {
         context.commit('setFieldCurrency', response.currencyTo)
+        if (!isEmptyValue(response.currencyTo)) {
+          const currency: Partial<IConversionRateData> = {
+            ...response.currencyTo,
+            amountConvertion: response.divideRate
+          }
+          context.dispatch('addRateConvertion', currency)
+        }
         const divideRate: number = isEmptyValue(response.divideRate) ? 1 : response.divideRate!
+        const multiplyRate = isEmptyValue(response.multiplyRate) ? 1 : response.multiplyRate
         if (params.containerUuid === 'Collection') {
+          context.commit('currencyMultiplyRateCollection', multiplyRate)
           context.commit('currencyDivideRateCollection', divideRate)
         } else {
+          context.commit('currencyMultiplyRate', multiplyRate)
           context.commit('currencyDivideRateCollection', divideRate)
         }
       })
@@ -86,6 +98,9 @@ export const actions: PaymentsActionTree = {
           showClose: true
         })
       })
+  },
+  addRateConvertion(context: PaymentsActionContext, currency: Partial<IConversionRateData>) {
+    context.commit('conversionRate', currency)
   },
   conversionMultiplyRate(context: PaymentsActionContext, payload: IGetConversionRateParams) {
     const {
@@ -103,7 +118,7 @@ export const actions: PaymentsActionTree = {
       // conversionDate
     })
       .then((response: IConversionRateData| Partial<IConversionRateData>) => {
-        const multiplyRate: number = (!response.multiplyRate) ? 0 : response.multiplyRate
+        const multiplyRate: number = (!response.multiplyRate) ? 1 : response.multiplyRate
         if (containerUuid === 'Collection') {
           context.commit('currencyMultiplyRateCollection', multiplyRate)
         } else {

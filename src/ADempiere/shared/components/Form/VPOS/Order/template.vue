@@ -235,7 +235,7 @@
                 </b>
               </p>
             </span>
-            <span style="float: right;padding-right: 40px;">
+            <span style="float: right;padding-right: 3%;">
               <p class="total">{{ $t('form.pos.order.order') }}: <b class="order-info">{{ currentOrder.documentNo }}</b></p>
               <p class="total">
                 {{ $t('form.pos.order.date') }}:

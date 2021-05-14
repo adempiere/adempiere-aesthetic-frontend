@@ -162,7 +162,7 @@ export function convertCurrency(currencyToConvert: any): ICurrencyData {
     id: currencyToConvert.id,
     uuid: currencyToConvert.uuid,
     iSOCode: currencyToConvert.iso_code,
-    curSymbol: currencyToConvert.cur_symbol,
+    curSymbol: currencyToConvert.currency_symbol,
     description: currencyToConvert.description,
     standardPrecision: currencyToConvert.standard_precision,
     costingPrecision: currencyToConvert.costing_precision

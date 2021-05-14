@@ -121,30 +121,30 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   // Watchers
-  @Watch('currencyUuid')
-  handleCurrencyUuidChange(value: string) {
-    if (!isEmptyValue(value) && !isEmptyValue(this.currentPointOfSales)) {
-      this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
-        conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
-        currencyFromUuid: this.pointOfSalesCurrency.uuid,
-        currencyToUuid: value
-      })
-    }
-  }
+  // @Watch('currencyUuid')
+  // handleCurrencyUuidChange(value: string) {
+  //   if (!isEmptyValue(value) && !isEmptyValue(this.currentPointOfSales)) {
+  //     this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
+  //       conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
+  //       currencyFromUuid: this.pointOfSalesCurrency.uuid,
+  //       currencyToUuid: value
+  //     })
+  //   }
+  // }
 
-  @Watch('converCurrency')
-  handleConverCurrencyChange(value: any) {
-    if (!isEmptyValue(value) && !isEmptyValue(this.currentPointOfSales)) {
-      this.$store.dispatch(Namespaces.Payments + '/' + 'conversionMultiplyRate', {
-        containerUuid: 'Order',
-        conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
-        currencyFromUuid: this.pointOfSalesCurrency.uuid,
-        currencyToUuid: value
-      })
-    } else {
-      this.$store.commit(Namespaces.Payments + '/' + 'currencyMultiplyRate', 1)
-    }
-  }
+  // @Watch('converCurrency')
+  // handleConverCurrencyChange(value: any) {
+  //   if (!isEmptyValue(value) && !isEmptyValue(this.currentPointOfSales)) {
+  //     this.$store.dispatch(Namespaces.Payments + '/' + 'conversionMultiplyRate', {
+  //       containerUuid: 'Order',
+  //       conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
+  //       currencyFromUuid: this.pointOfSalesCurrency.uuid,
+  //       currencyToUuid: value
+  //     })
+  //   } else {
+  //     this.$store.commit(Namespaces.Payments + '/' + 'currencyMultiplyRate', 1)
+  //   }
+  // }
 
   // Methods
   openCollectionPanel(): void {

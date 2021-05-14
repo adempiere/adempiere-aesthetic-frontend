@@ -1,6 +1,7 @@
 import {
   IBankAccountData,
   IBusinessPartnerData,
+  IConversionRateData,
   IDocumentStatusData,
   IDocumentTypeData,
   IPriceListData,
@@ -283,6 +284,7 @@ export interface PaymentsState {
     fieldCurrency: any
     currency: any[]
     convertion: any
+    convertionRate: Partial<IConversionRateData>[]
 }
 
 // Key Layout Module

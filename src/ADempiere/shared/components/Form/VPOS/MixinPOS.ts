@@ -69,12 +69,16 @@ export default class MixinPOS extends Mixins(MixinForm) {
   get pointOfSalesCurrency(): ICurrencyData | Partial<ICurrencyData> {
     // const currency = this.currentPointOfSales
     if (!isEmptyValue(this.currentPointOfSales.priceList)) {
-      return this.currentPointOfSales.priceList!.currency
+      return {
+        ...this.currentPointOfSales.priceList!.currency,
+        amountConvertion: 1
+      }
     }
     return {
       uuid: '',
       iSOCode: '',
-      curSymbol: ''
+      curSymbol: '',
+      amountConvertion: 1
     }
   }
 

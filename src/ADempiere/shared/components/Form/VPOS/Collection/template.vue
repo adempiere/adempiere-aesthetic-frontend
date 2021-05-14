@@ -41,6 +41,17 @@
                   </el-popover>
                 </b>
               </p>
+               <p class="total">
+                <b>Tasa del Día: </b>
+                <b v-if="!isEmptyValue(dateRate)" style="float: right;">
+                  {{
+                    dateRate.iSOCode
+                  }}
+                  {{
+                    formatConversionCurrenty(dateRate.amountConvertion)
+                  }}
+                </b>
+              </p>
             </div>
             <div
               v-if="isLoaded"

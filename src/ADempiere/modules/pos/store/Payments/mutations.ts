@@ -1,3 +1,4 @@
+import { IConversionRateData } from '@/ADempiere/modules/core'
 import { MutationTree } from 'vuex'
 import { PaymentsState, IPaymentsData } from '../../POSType'
 
@@ -33,5 +34,18 @@ export const mutations: PaymentsMutatiionTree = {
   },
   setFieldCurrency(state: PaymentsState, currency) {
     state.fieldCurrency = currency
+  },
+  conversionRate(state: PaymentsState, currency: Partial<IConversionRateData>) {
+    const listCurrent = state.convertionRate.find(element => {
+      if (element.id === currency.id) {
+        return element
+      }
+    })
+    if (listCurrent === undefined) {
+      state.convertionRate.push(currency)
+    }
+  },
+  resetConversionRate(state: PaymentsState, currency: Partial<IConversionRateData>[]) {
+    state.convertionRate = currency
   }
 }

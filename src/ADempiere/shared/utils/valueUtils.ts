@@ -439,6 +439,19 @@ export function clearVariables() {
   partialValue = ''
 }
 
+export function formatConversionCurrenty(params: number): string {
+  let exponential, expre
+  const number = params.toString()
+  if (params > 0) {
+    if (number.includes('e')) {
+      expre = number.split('-')
+      exponential = params.toFixed(Number(expre[1]))
+      return exponential
+    }
+  }
+  return params.toString()
+}
+
 /**
  * add a tab depending on the status of the document
  * @param {string} tag, document status key

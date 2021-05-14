@@ -1,3 +1,4 @@
+import { IConversionRateData } from '@/ADempiere/modules/core'
 import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
 import { PaymentsState, IPaymentsData } from '../../POSType'
@@ -37,5 +38,8 @@ export const getters: PaymentsGetterTree = {
   },
   getFieldCuerrency: (state: PaymentsState) => {
     return state.fieldCurrency
+  },
+  getConvertionRate: (state: PaymentsState): Partial<IConversionRateData>[] => {
+    return state.convertionRate
   }
 }

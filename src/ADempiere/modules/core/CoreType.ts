@@ -117,6 +117,7 @@ export interface ICurrencyData {
     description: string
     standardPrecision: number
     costingPrecision: number
+    amountConvertion?: number
 }
 
 export interface IConversionRateData {
@@ -129,6 +130,7 @@ export interface IConversionRateData {
     currencyTo: ICurrencyData
     multiplyRate: number
     divideRate: number
+    amountConvertion?: number
 }
 
 export interface ICountryData {
@@ -402,7 +404,7 @@ export interface IGetConversionRateParams {
     currencyFromUuid: string
     currencyToUuid: string
     containerUuid?: string
-    // conversionDate: any
+    conversionDate?: any
 }
 
 // VUEX State

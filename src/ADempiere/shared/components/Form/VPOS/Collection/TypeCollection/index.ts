@@ -60,7 +60,7 @@ export default class TypeCollection extends Mixins(MixinPOS) {
         })
           .then(response => {
             this.isAddTypePay!.forEach(element => {
-              if (element.currencyUuid !== this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].priceList.currency.uuid) {
+              if (element.currencyUuid !== this.pointOfSalesCurrency.uuid) {
                 element.amountConvertion = element.amount / response.divideRate!
                 element.currencyConvertion = response.currencyTo
               } else {
