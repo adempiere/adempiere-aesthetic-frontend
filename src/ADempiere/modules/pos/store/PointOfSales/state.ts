@@ -5,11 +5,11 @@ export const state: PointOfSalesState = {
   showPOSKeyLayout: false,
   showPOSCollection: false,
   currentPOS: {},
+  listPointOfSales: {},
   pointOfSales: {
     isLoaded: false,
     isReload: true,
     recordCount: 0,
-    currentPOS: {},
     nextPageToken: undefined
   }
 }

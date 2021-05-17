@@ -17,6 +17,7 @@ import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import { RouteConfig } from 'vue-router'
 import { IOptionField } from './type'
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
+import VueI18n from 'vue-i18n'
 
 @Component({
   name: 'FieldDefinition',
@@ -39,6 +40,7 @@ export default class FieldDefinition extends Vue {
     public field: any = {}
     public visibleForDesktop = false
     public value: any
+    public triggerMenu = 'click'
 
     // Computed properties
     get labelStyle() {
@@ -47,7 +49,7 @@ export default class FieldDefinition extends Vue {
       } else if (this.field.name.length >= 20) {
         return '50'
       }
-      return '90'
+      return '110'
     }
 
     get isMobile(): boolean {
@@ -415,6 +417,10 @@ export default class FieldDefinition extends Vue {
       ]
     }
 
+    get listOption(): IOptionField[] {
+      return this.optionField.filter(option => option.enabled)
+    }
+
     get permissionRoutes(): RouteConfig[] {
       return this.$store.getters.permission_routes
     }
@@ -439,6 +445,30 @@ export default class FieldDefinition extends Vue {
 
     // Methods
     recursiveTreeSearch = recursiveTreeSearch
+
+    handleOpen(key: any, keyPath: any) {
+      this.triggerMenu = 'hover'
+    }
+
+    handleClose(key: any, keyPath: any) {
+      this.triggerMenu = 'click'
+    }
+
+    handleSelect(key: VueI18n.TranslateResult, keyPath: any) {
+      const option = this.listOption.find(option => option.name === key)
+      if (option?.name.toString() === this.$t('table.ProcessActivity.zoomIn')) {
+        this.redirect({ window: option.fieldAttributes.reference.zoomWindows[0] })
+        return
+      }
+      if (this.isMobile) {
+        this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
+      } else {
+        this.visibleForDesktop = true
+      }
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowPopoverField', true)
+      this.$store.dispatch(Namespaces.ContextMenu + '/' + 'setOptionField', option)
+      this.triggerMenu = 'hover'
+    }
 
     focusField() {
       if (

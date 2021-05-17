@@ -60,11 +60,11 @@ export default class ProductList extends Mixins(MixinForm) {
   }
 
   get currentPoint(): IPointOfSalesData | undefined {
-    return this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+    return this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales
   }
 
   get productPrice(): IListProductPriceItemData {
-    return this.$store.getters[Namespaces.ListProductPrice + '/' + 'getProductPrice']
+    return this.$store.getters[Namespaces.PointOfSales + '/' + 'getProductPrice']
   }
 
   get listWithPrice(): IProductPriceData[] {
@@ -89,7 +89,7 @@ export default class ProductList extends Mixins(MixinForm) {
   }
 
   get listPrice(): number {
-    const pos: IPointOfSalesData | undefined = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+    const pos: IPointOfSalesData | undefined = this.currentPoint
     if (!isEmptyValue(pos)) {
       return pos!.priceList.id
     }
@@ -137,7 +137,7 @@ export default class ProductList extends Mixins(MixinForm) {
   // Hooks
   created() {
     this.unsubscribe = this.subscribeChanges()
-    this.$store.commit(Namespaces.ListProductPrice + '/' + 'setListProductPrice', {
+    this.$store.commit(Namespaces.ProductPrice + '/' + 'setListProductPrice', {
       isLoaded: false
     })
     this.timeOut = setTimeout(() => {
@@ -187,7 +187,7 @@ export default class ProductList extends Mixins(MixinForm) {
         this.loadProductsPricesList()
         break
       case 'closeProductList':
-        this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
+        this.$store.commit(Namespaces.ProductPrice + '/' + 'showListProductPrice', {
           attribute: this.popoverName,
           isShowed: false
         })
@@ -203,20 +203,20 @@ export default class ProductList extends Mixins(MixinForm) {
         }
         break
       case 'options':
-        this.$store.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice')
+        this.$store.commit(Namespaces.ProductPrice + '/' + 'setIsReloadProductPrice')
         break
     }
   }
 
   loadProductsPricesList() {
-    this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo', {})
+    this.$store.dispatch(Namespaces.ProductPrice + '/' + 'listProductPriceFromServerProductInfo', {})
   }
 
   /**
      * @param {number} newPage
      */
   handleChangePage(newPage: number) {
-    this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'setProductPicePageNumber', newPage)
+    this.$store.dispatch(Namespaces.ProductPrice + '/' + 'setProductPicePageNumber', newPage)
   }
 
   findlistProductWithRow(row: any) {
@@ -231,7 +231,7 @@ export default class ProductList extends Mixins(MixinForm) {
       value: row.product.name
     })
     // close popover of list product price
-    this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
+    this.$store.commit(Namespaces.ProductPrice + '/' + 'showListProductPrice', {
       attribute: this.popoverName,
       isShowed: false
     })
@@ -273,9 +273,9 @@ export default class ProductList extends Mixins(MixinForm) {
           mutation.payload.containerUuid === this.metadata.containerUuid) {
         clearTimeout(this.timeOut)
         this.timeOut = setTimeout(() => {
-          this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'updateSearch', mutation.payload.value)
+          this.$store.dispatch(Namespaces.ProductPrice + '/' + 'updateSearch', mutation.payload.value)
           if (this.productPrice.isLoaded) {
-            this.$store.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice')
+            this.$store.commit(Namespaces.ProductPrice + '/' + 'setIsReloadProductPrice')
           }
         }, 1000)
       }
@@ -286,10 +286,9 @@ export default class ProductList extends Mixins(MixinForm) {
      * @param {object} PointOfSales
      */
   validatePos(PointOfSales: IPointOfSalesData | undefined): void {
-    console.log(isEmptyValue(PointOfSales), this.isReadyFromGetData)
     if (isEmptyValue(PointOfSales)) {
       const message: string = this.$t('notifications.errorPointOfSale').toString()
-      this.$store.commit(Namespaces.ListProductPrice + '/' + 'setListProductPrice', {
+      this.$store.commit(Namespaces.ProductPrice + '/' + 'setListProductPrice', {
         isLoaded: true,
         productPricesList: []
       })

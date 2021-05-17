@@ -108,7 +108,7 @@ export default class MixinBusinessPartner extends Mixins(MixinSetBusinessPartner
         }
       })
 
-      valuesToSend.posUuid = <string> this.$store.getters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
+      valuesToSend.posUuid = <string> this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales.uuid
       return valuesToSend
     }
 }

@@ -18,5 +18,6 @@ export const state: PaymentsState = {
   ],
   currency: [],
   convertion: {},
-  fieldCurrency: {}
+  fieldCurrency: {},
+  convertionRate: []
 }

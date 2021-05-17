@@ -1,6 +1,6 @@
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import MixinForm from '../MixinForm'
-import fieldList, { IProductCodeData } from './fieldList'
+import fieldList from './fieldList'
 import Template from './template.vue'
 
 import { requestImage } from '@/ADempiere/modules/persistence/PersistenceService/persistence'
@@ -56,7 +56,7 @@ export default class PriceChecking extends Mixins(MixinForm) {
     }
 
     get currentPoint(): IPointOfSalesData | undefined {
-      return this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+      return this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales
     }
 
     // Methods

@@ -19,7 +19,7 @@ import {
   keyLayoutModule,
   orderModule,
   orderLinesModule,
-  listProductPriceModule
+  productPriceModule
 } from '@/ADempiere/modules/pos'
 import {
   fieldModule,
@@ -78,7 +78,7 @@ export const modules: ModuleTree<IRootState> = {
   keyLayoutModule,
   orderModule,
   orderLinesModule,
-  listProductPriceModule,
+  productPriceModule,
   contextMenuModule,
   panelModule,
   businessDataModule,

@@ -28,7 +28,7 @@ export default class ProductInfo extends Mixins(MixinField) {
 
     set isShowProductsPriceList(isShowed: boolean | undefined) {
       if (!isEmptyValue(this.$route.query.pos)) {
-        this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
+        this.$store.commit(Namespaces.ProductPrice + '/' + 'showListProductPrice', {
           attribute: 'isShowPopoverField',
           isShowed
         })
@@ -36,7 +36,7 @@ export default class ProductInfo extends Mixins(MixinField) {
     }
 
     get listWithPrice(): IProductPriceData[] {
-      const productPrice: IListProductPriceItemData = this.$store.getters[Namespaces.ListProductPrice + '/' + 'getProductPrice']
+      const productPrice: IListProductPriceItemData = this.$store.getters[Namespaces.PointOfSales + '/' + 'getProductPrice']
       const { list } = productPrice
       if (!isEmptyValue(list)) {
         return list!
@@ -45,7 +45,7 @@ export default class ProductInfo extends Mixins(MixinField) {
     }
 
     get currentPos() {
-      return this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+      return this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales
     }
 
     get keyShortcuts() {
@@ -63,7 +63,7 @@ export default class ProductInfo extends Mixins(MixinField) {
       switch (event.srcKey) {
         case 'refreshList':
         case 'refreshList2':
-          this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo')
+          this.$store.dispatch(Namespaces.ProductPrice + '/' + 'listProductPriceFromServerProductInfo')
           break
       }
     }
@@ -94,7 +94,7 @@ export default class ProductInfo extends Mixins(MixinField) {
         if (!results && String(stringToMatch.length > 3)) {
           clearTimeout(this.timeOut)
           this.timeOut = setTimeout(() => {
-            this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServerProductInfo', {
+            this.$store.dispatch(Namespaces.ProductPrice + '/' + 'listProductPriceFromServerProductInfo', {
               containerUuid: 'Products-Price-List-ProductInfo',
               pageNumber: 1,
               searchValue: stringToMatch

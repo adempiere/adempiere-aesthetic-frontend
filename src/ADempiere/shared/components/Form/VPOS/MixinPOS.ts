@@ -1,14 +1,16 @@
 import {
   IBusinessPartnerData,
+  ICurrencyData,
   IProductPriceData,
   requestGetProductPrice as findProduct
 } from '@/ADempiere/modules/core'
 import {
+  ICurrentOrderData,
+  ICurrentPointOfSalesData,
   IListOrderItemData,
   IOrderData,
   IOrderLineData,
   IOrderLineDataExtended,
-  IPointOfSalesData,
   requestCreateOrderLine,
   requestUpdateOrderLine
 } from '@/ADempiere/modules/pos'
@@ -59,77 +61,83 @@ export default class MixinPOS extends Mixins(MixinForm) {
   seeConversion: any
 
   // Computed properties
-  get allOrderLines() {
-    return this.listOrderLine
+  get currentPointOfSales(): ICurrentPointOfSalesData {
+    return this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales
+  }
+
+  // Currency Point Of Sales
+  get pointOfSalesCurrency(): ICurrencyData | Partial<ICurrencyData> {
+    // const currency = this.currentPointOfSales
+    if (!isEmptyValue(this.currentPointOfSales.priceList)) {
+      return {
+        ...this.currentPointOfSales.priceList!.currency,
+        amountConvertion: 1
+      }
+    }
+    return {
+      uuid: '',
+      iSOCode: '',
+      curSymbol: '',
+      amountConvertion: 1
+    }
+  }
+
+  get listPointOfSales() {
+    return this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'].listPointOfSales
+  }
+
+  get ordersList(): IListOrderItemData | IOrderData[] {
+    if (isEmptyValue(this.currentPointOfSales)) {
+      return []
+    }
+    return this.currentPointOfSales.listOrder
+  }
+
+  get currentOrder(): ICurrentOrderData | Partial<ICurrentOrderData> {
+    if (isEmptyValue(this.currentPointOfSales)) {
+      return {
+        documentType: undefined,
+        documentStatus: {
+          value: '',
+          description: '',
+          name: ''
+        },
+        totalLines: 0,
+        grandTotal: 0,
+        salesRepresentative: undefined,
+        businessPartner: {
+          description: '',
+          duns: '',
+          id: 0,
+          lastName: '',
+          naics: '',
+          name: '',
+          taxId: '',
+          uuid: '',
+          value: ''
+        }
+      }
+    }
+    return this.currentPointOfSales.currentOrder
+  }
+
+  get isDisabled(): boolean {
+    return this.currentPointOfSales.currentOrder.isProcessed
   }
 
   get listOrderLine(): IOrderLineDataExtended[] {
-    const orders = this.$store.getters[
-      Namespaces.OrderLines + '/' + 'getListOrderLine'
-    ]
-    console.log(orders)
-    return orders
-  }
-
-  get ordersList(): IOrderData[] {
-    const order: IListOrderItemData = this.$store.getters[
-      Namespaces.Order + '/' + 'getListOrder'
-    ]
-    if (order && order.list) {
-      return order.list
+    if (isEmptyValue(this.currentOrder)) {
+      return []
     }
-    return []
-  }
-
-  get currentOrder(): IOrderData | Partial<IOrderData> {
-    const action = this.$route.query.action
-    console.log('currentOrder req')
-    console.log(action)
-    if (!isEmptyValue(action)) {
-      return this.$store.getters[Namespaces.Order + '/' + 'getOrder']
-    }
-
-    return {
-      documentType: undefined,
-      documentStatus: {
-        value: '',
-        description: '',
-        name: ''
-      },
-      totalLines: 0,
-      grandTotal: 0,
-      salesRepresentative: undefined,
-      businessPartner: {
-        description: '',
-        duns: '',
-        id: 0,
-        lastName: '',
-        naics: '',
-        name: '',
-        taxId: '',
-        uuid: '',
-        value: ''
-      }
-    }
-  }
-
-  get currentPoint(): IPointOfSalesData | undefined {
-    return this.$store.getters[
-      Namespaces.PointOfSales + '/' + 'getCurrentPOS'
-    ]
-  }
-
-  get priceListUuid(): string | undefined {
-    // const currentPOS: IPointOfSalesData | undefined = this.currentPoint
-    const currentPOS = this.currentPoint
-    if (isEmptyValue(currentPOS)) {
-      return undefined
-    }
-    return this.currentPoint!.priceList.uuid
+    return (this.currentOrder as ICurrentOrderData).lineOrder
   }
 
   get getWarehouse() {
     return this.$store.getters[Namespaces.User + '/' + 'getWarehouse']
+  }
+
+  get currentPoint() {
+    return this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales
   }
 
   get isSetTemplateBP(): IBusinessPartnerData | false {
@@ -153,52 +161,31 @@ export default class MixinPOS extends Mixins(MixinForm) {
     return order
   }
 
-  // Watchers
-  @Watch('getOrder')
+    // Watchers
+    @Watch('currentOrder')
   handleGetOrderChange(value: Partial<IOrderData> | undefined) {
-    console.log('EM1')
-    if (!isEmptyValue(value) && value) {
+    if (isEmptyValue(value)) {
+      this.orderLines = []
+      this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
+      this.listOrderLines({})
+    } else {
       this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
         parentUuid: this.parentUuid,
         containerUuid: this.containerUuid,
         attributes: [{
           columnName: 'C_BPartner_ID',
-          value: value.businessPartner!.id
+          value: value!.businessPartner!.id
         },
         {
           columnName: 'DisplayColumn_C_BPartner_ID',
-          value: value.businessPartner!.name
+          value: value!.businessPartner!.name
         },
         {
           columnName: ' C_BPartner_ID_UUID',
-          value: value.businessPartner!.uuid
+          value: value!.businessPartner!.uuid
         }]
 
       })
-    }
-  }
-
-  @Watch('currentOrder')
-  handleCurrentOrderChange(value: any): void {
-    console.log('currentOrder value')
-    console.log(value)
-    if (!value) {
-      this.orderLines = []
-      this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
-      this.listOrderLines({})
-    } else {
-      this.listOrderLines(value)
-    }
-  }
-
-    /**
-     * Used when loading/reloading the app without the order uuid
-     * @param {oject|boolean} bPartnerToSet
-     */
-    @Watch('isSetTemplateBP')
-  handleIsSetTemplateBPChange(bPartnerToSet: boolean | any) {
-    if (bPartnerToSet) {
-      this.setBusinessPartner(bPartnerToSet)
     }
   }
 
@@ -206,13 +193,6 @@ export default class MixinPOS extends Mixins(MixinForm) {
     handleUpdateOrderProcessPos(value: boolean) {
       if (!value && this.$route.query) {
         this.reloadOrder(true)
-      }
-    }
-
-    @Watch('currentPoint')
-    hanldeCurrentPoint(value: IPointOfSalesData | undefined) {
-      if (value) {
-        this.$store.dispatch(Namespaces.PointOfSales + '/' + 'setCurrentPOS', value)
       }
     }
 
@@ -224,7 +204,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
     formatQuantity = formatQuantity
 
     withoutPOSTerminal(): boolean {
-      if (isEmptyValue(this.currentPoint)) {
+      if (isEmptyValue(this.currentPointOfSales)) {
         this.$message({
           type: 'warning',
           message: 'Without POS Terminal',
@@ -257,7 +237,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     updateOrder(update: any): void {
-      if (update.value !== this.getOrder?.businessPartner?.uuid && !isEmptyValue(this.currentPoint)) {
+      if (update.value !== this.currentOrder?.businessPartner?.uuid && !isEmptyValue(this.currentPoint)) {
         this.$store.dispatch(Namespaces.Order + '/' + 'updateOrder', {
           orderUuid: this.$route.query.action,
           posUuid: this.currentPoint?.uuid,
@@ -303,7 +283,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
 
       findProduct({
         searchValue: searchProduct,
-        priceListUuid: this.priceListUuid
+        priceListUuid: this.currentPointOfSales.priceList?.uuid
       })
         .then((productPrice: IProductPriceData) => {
           this.product = productPrice.product
@@ -323,7 +303,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
             value: `${searchProduct}`
           })
 
-          this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
+          this.$store.commit(Namespaces.ProductPrice + '/' + 'showListProductPrice', {
             attribute: 'isShowPopoverField',
             isShowed: true
           })
@@ -348,7 +328,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
       }
       const orderUuid = this.$route.query.action
       if (isEmptyValue(orderUuid)) {
-        const posUuid = this.currentPoint!.uuid
+        const posUuid = this.currentPointOfSales.uuid
 
         let customerUuid: string = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
           containerUuid: this.containerUuid,
@@ -359,7 +339,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
           columnName: 'C_BPartner_ID'
         })
         if (isEmptyValue(customerUuid) || id === 1000006) {
-          customerUuid = this.currentPoint!.templateBusinessPartner.uuid
+          customerUuid = this.currentPointOfSales!.templateBusinessPartner!.uuid
         }
 
         // user session
@@ -367,7 +347,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
         this.$store.dispatch(Namespaces.Order + '/' + 'createOrder', {
           posUuid: posUuid!,
           customerUuid,
-          salesRepresentativeUuid: this.currentPoint?.templateBusinessPartner.uuid
+          salesRepresentativeUuid: this.currentPointOfSales!.templateBusinessPartner!.uuid
         })
           .then((response: Partial<IOrderData>) => {
             this.reloadOrder(true, response.uuid)
@@ -400,14 +380,14 @@ export default class MixinPOS extends Mixins(MixinForm) {
 
     reloadOrder(requery?: any, orderUuid?: string): void {
       if (requery) {
-        if (!orderUuid) {
+        if (isEmptyValue(orderUuid)) {
           orderUuid = this.$route.query.action.toString()
           // if (!orderUuid) {
           //   orderUuid = this.$store.getters[Namespaces.Order + '/' + 'getOrder'].uuid // this.currentOrder.uuid
           // }
         }
 
-        if (orderUuid) {
+        if (!isEmptyValue(orderUuid)) {
           this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', {
             orderUuid
           })
@@ -441,7 +421,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     getOrderTax(currency: any): string | undefined {
-      return this.formatPrice(this.getOrder!.grandTotal! - this.getOrder!.totalLines!, currency
+      return this.formatPrice(this.currentOrder!.grandTotal! - this.currentOrder!.totalLines!, currency
       )
     }
 
@@ -516,7 +496,6 @@ export default class MixinPOS extends Mixins(MixinForm) {
       const { uuid: orderUuid } = params
       console.log(orderUuid)
       if (!isEmptyValue(orderUuid)) {
-        this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLinesFromServer', orderUuid)
         this.orderLines = this.listOrderLine
         this.handleCurrentLineChange(this.currentOrderLine)
       }
@@ -576,14 +555,6 @@ export default class MixinPOS extends Mixins(MixinForm) {
         })
     }
 
-    mas(): void {
-      this.linesTable?.setCurrentRow(this.listOrderLine[1])
-    }
-
-    menos(): void {
-      this.linesTable?.setCurrentRow(this.listOrderLine[0])
-    }
-
     shortcutKeyMethod(event: any): void {
       console.log(event.srcKey)
       switch (event.srcKey) {
@@ -637,35 +608,65 @@ export default class MixinPOS extends Mixins(MixinForm) {
       }
     }
 
-    // Hooks
-    created() {
-      this.getPanel()
+    newOrder() {
+      this.$router.push({
+        params: {
+          ...this.$route.params
+        },
+        query: {
+          pos: (this.currentPointOfSales.id as any)
+        }
+      }).catch(() => {
+      }).finally(() => {
+        this.$store.commit(Namespaces.OrderLines + '/' + 'setListPayments', [])
+        const { templateBusinessPartner } = this.currentPointOfSales
+        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
+          containerUuid: this.metadata.containerUuid,
+          attributes: [{
+            columnName: 'UUID',
+            value: undefined
+          },
+          {
+            columnName: 'ProductValue',
+            value: undefined
+          },
+          {
+            columnName: 'C_BPartner_ID',
+            value: templateBusinessPartner!.id
+          },
+          {
+            columnName: 'DisplayColumn_C_BPartner_ID',
+            value: templateBusinessPartner!.name
+          },
+          {
+            columnName: ' C_BPartner_ID_UUID',
+            value: templateBusinessPartner!.uuid
+          }]
+        })
+        this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', {
+          documentType: {},
+          documentStatus: {
+            value: ''
+          },
+          totalLines: 0,
+          grandTotal: 0,
+          salesRepresentative: {},
+          businessPartner: {
+            value: '',
+            uuid: ''
+          }
+        })
+        this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', false)
+        this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
+      })
     }
 
-    mounted() {
-      if (!isEmptyValue(this.$route.query)) {
-        const orderUuid: string | undefined = this.$route.query.action as string
-        this.reloadOrder(true, orderUuid)
-        if (!isEmptyValue(this.$route.query.pos) && !isEmptyValue(this.allOrderLines) && isEmptyValue(this.$route.query.action)) {
-          this.$router.push({
-            params: {
-              ...this.$route.params
-            },
-            query: {
-              ...this.$route.query,
-              action: this.getOrder?.uuid
-            }
-          }, () => {})
-        }
-      }
+    changePos(posElement: ICurrentPointOfSalesData) {
+      this.$store.dispatch(Namespaces.PointOfSales + '/' + 'setCurrentPOS', posElement)
+      this.newOrder()
     }
 
     beforeMount() {
-      if (!isEmptyValue(this.currentPoint)) {
-        if (!isEmptyValue(this.currentOrder)) {
-          this.listOrderLines(<IOrderData> this.currentOrder)
-        }
-      }
       this.unsubscribe = this.subscribeChanges()
     }
 

@@ -22,11 +22,12 @@ export const actions: ListProductPriceActionTree = {
         containerUuid?: string
         pageNumber?: number
         searchValue: any
+        currentPOS?: IPointOfSalesData
       }): Promise<IListProductPriceResponse> | undefined {
-    const { containerUuid = payload.containerUuid || 'Products-Price-List' } = payload
+    const { containerUuid = payload.containerUuid || 'Products-Price-List', currentPOS } = payload
     let { pageNumber, searchValue } = payload
-    const posUuid: string | undefined = context.rootGetters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
-    if (!posUuid) {
+    const posUuid: string | undefined = isEmptyValue(currentPOS) ? context.rootGetters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales.uuid : currentPOS?.uuid
+    if (isEmptyValue(posUuid)) {
       const message = language.t('notifications.errorPointOfSale').toString()
       showMessage({
         type: 'info',
@@ -38,24 +39,24 @@ export const actions: ListProductPriceActionTree = {
 
     context.commit('setIsReloadProductPrice')
     let pageToken: string, token: string | undefined
-    if (!pageNumber) {
+    if (isEmptyValue(pageNumber)) {
       pageNumber = context.state.productPrice.pageNumber
-      if (!pageNumber) {
+      if (isEmptyValue(pageNumber)) {
         pageNumber = 1
       }
     }
 
     token = context.state.productPrice.token
-    if (token) {
+    if (!isEmptyValue(token)) {
       pageToken = token + '-' + pageNumber
     }
 
-    const { priceList, templateBusinessPartner } = <IPointOfSalesData>context.rootGetters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+    const { priceList, templateBusinessPartner } = <IPointOfSalesData>context.rootGetters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales
     const { uuid: businessPartnerUuid } = templateBusinessPartner
     const { uuid: priceListUuid } = priceList
     const { uuid: warehouseUuid } = context.rootGetters['user/getWarehouse']
 
-    if (!searchValue) {
+    if (isEmptyValue(searchValue)) {
       searchValue = context.rootGetters[Namespaces.FieldValue + '/' + 'getValueOfField']({
         containerUuid,
         columnName: 'ProductValue'
@@ -70,7 +71,7 @@ export const actions: ListProductPriceActionTree = {
         warehouseUuid,
         pageToken
       }).then((responseProductPrice: IListProductPriceResponse) => {
-        if (!token || !pageToken) {
+        if (isEmptyValue(token) || isEmptyValue(pageToken)) {
           token = extractPagingToken(responseProductPrice.nextPageToken)
         }
 
@@ -104,7 +105,7 @@ export const actions: ListProductPriceActionTree = {
       containerUuid = payload.containerUuid || 'Products-Price-List-ProductInfo'
     } = payload
     let { pageNumber, searchValue } = payload
-    const posUuid = context.rootGetters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
+    const posUuid = context.rootGetters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales.uuid
     if (isEmptyValue(posUuid)) {
       const message = 'Sin punto de venta seleccionado'
       showMessage({
@@ -118,7 +119,7 @@ export const actions: ListProductPriceActionTree = {
     let pageToken: string, token: string | undefined
     if (isEmptyValue(pageNumber)) {
       pageNumber = context.state.productPrice.pageNumber
-      if (!pageNumber) {
+      if (isEmptyValue(pageNumber)) {
         pageNumber = 1
       }
 
@@ -128,7 +129,7 @@ export const actions: ListProductPriceActionTree = {
       }
     }
 
-    const getCurrentPOSData: IPointOfSalesData = context.rootGetters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
+    const getCurrentPOSData: IPointOfSalesData = context.rootGetters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales
     const { priceList, templateBusinessPartner } = getCurrentPOSData
     const { uuid: businessPartnerUuid } = templateBusinessPartner
     const { uuid: priceListUuid } = priceList

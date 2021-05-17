@@ -1,6 +1,7 @@
 import {
   IBankAccountData,
   IBusinessPartnerData,
+  IConversionRateData,
   IDocumentStatusData,
   IDocumentTypeData,
   IPriceListData,
@@ -265,6 +266,7 @@ export interface PointOfSalesState {
     showPOSCollection: boolean
     pointOfSales: IPOSData
     currentPOS: Partial<IPointOfSalesData>
+    listPointOfSales: any
 }
 
 // Collection Module
@@ -282,6 +284,7 @@ export interface PaymentsState {
     fieldCurrency: any
     currency: any[]
     convertion: any
+    convertionRate: Partial<IConversionRateData>[]
 }
 
 // Key Layout Module
@@ -293,14 +296,15 @@ export interface IKeyLayoutDataExtended extends IKeyLayoutData {
 }
 
 export interface KeyLayoutState {
-    keyLayout: {
+    keyLayout: Partial<
+    {
         isLoaded: boolean
         isReload: boolean
         recordCount: number
         nextPageToken?: string
         uuid?: string
         orderList?: any[]
-    }
+    }>
 }
 
 export interface IListOrderItemData {
@@ -358,4 +362,20 @@ export interface IListProductPriceItemData {
 export interface ListProductPriceState {
     productPrice: IListProductPriceItemData
     searchProduct: string
+}
+
+export type ICurrentOrderData = Partial<IOrderData> & {
+    lineOrder: IOrderLineDataExtended[]
+    listPayments: { payments: IPaymentsData[], isLoaded: boolean }
+    isProcessed: boolean
+}
+
+export type ICurrentPointOfSalesData = Partial<IPointOfSalesData> & {
+    listOrder: IListOrderItemData
+    currentOrder: ICurrentOrderData
+}
+
+export interface IPOSAttributesData {
+    listPointOfSales: any
+    currentPointOfSales: ICurrentPointOfSalesData
 }

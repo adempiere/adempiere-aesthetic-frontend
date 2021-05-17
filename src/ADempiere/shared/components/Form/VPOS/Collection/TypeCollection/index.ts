@@ -3,14 +3,15 @@ import { IFieldData } from '@/ADempiere/modules/field'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatDate, formatPrice } from '@/ADempiere/shared/utils/valueFormat'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
+import MixinPOS from '../../MixinPOS'
 import Template from './template.vue'
 
 @Component({
   name: 'TypeCollection',
-  mixins: [Template]
+  mixins: [Template, MixinPOS]
 })
-export default class TypeCollection extends Vue {
+export default class TypeCollection extends Mixins(MixinPOS) {
     @Prop({ type: Array, default: undefined }) isAddTypePay?: any[]
     @Prop({ type: Object, default: undefined }) listTypesPayment: any
     @Prop({ type: Object, default: undefined }) currency?: any
@@ -53,13 +54,13 @@ export default class TypeCollection extends Vue {
       const currencyUuid = this.isAddTypePay!.find(pay => pay.currencyUuid !== this.currency.uuid)
       if (!isEmptyValue(currencyUuid)) {
         requestGetConversionRate({
-          conversionTypeUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].conversionTypeUuid,
+          conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid!,
           currencyFromUuid: this.currency.uuid,
           currencyToUuid: currencyUuid.currencyUuid
         })
           .then(response => {
             this.isAddTypePay!.forEach(element => {
-              if (element.currencyUuid !== this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].priceList.currency.uuid) {
+              if (element.currencyUuid !== this.pointOfSalesCurrency.uuid) {
                 element.amountConvertion = element.amount / response.divideRate!
                 element.currencyConvertion = response.currencyTo
               } else {

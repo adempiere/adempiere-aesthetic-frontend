@@ -27,7 +27,7 @@ export default class FieldProductInfo extends Mixins(MixinField) {
 
     set isShowProductsPriceList(isShowed: boolean | undefined) {
       if (this.$route.query.pos) {
-        this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
+        this.$store.commit(Namespaces.ProductPrice + '/' + 'showListProductPrice', {
           attribute: 'isShowPopoverField',
           isShowed
         })
@@ -35,7 +35,7 @@ export default class FieldProductInfo extends Mixins(MixinField) {
     }
 
     get listWithPrice(): IProductPriceData[] {
-      const { productPricesList } = this.$store.getters[Namespaces.ListProductPrice + '/' + 'getProductPrice'].list
+      const { productPricesList } = this.$store.getters[Namespaces.PointOfSales + '/' + 'getProductPrice'].list
       if (productPricesList) {
         return productPricesList
       }
@@ -59,14 +59,14 @@ export default class FieldProductInfo extends Mixins(MixinField) {
       switch (event.srcKey) {
         case 'refreshList':
         case 'refreshList2':
-          this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {
+          this.$store.dispatch(Namespaces.ProductPrice + '/' + 'listProductPriceFromServer', {
             containerUuid: undefined,
             pageNumber: undefined,
             searchValue: undefined
           })
           break
         case 'closeProductList':
-          this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
+          this.$store.commit(Namespaces.ProductPrice + '/' + 'showListProductPrice', {
             attribute: this.popoverName,
             isShowed: false
           })
@@ -103,7 +103,7 @@ export default class FieldProductInfo extends Mixins(MixinField) {
           clearTimeout(this.timeOut)
 
           this.timeOut = setTimeout(() => {
-            this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {
+            this.$store.dispatch(Namespaces.ProductPrice + '/' + 'listProductPriceFromServer', {
               containerUuid: 'Products-Price-List',
               pageNumber: 1,
               searchValue: stringToMatch

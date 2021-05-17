@@ -5,26 +5,17 @@ import { IPointOfSalesData, IPOSData, PointOfSalesState } from '@/ADempiere/modu
 type PointOfSalesMutationTree = MutationTree<PointOfSalesState>
 
 export const mutations: PointOfSalesMutationTree = {
-  resetStatePointOfSales(state: PointOfSalesState) {
-    state = {
-      showPOSOptions: false,
-      showPOSKeyLayout: false,
-      showPOSCollection: false,
-      currentPOS: {},
-      pointOfSales: {
-        isLoaded: false,
-        isReload: true,
-        currentPOS: {},
-        recordCount: 0,
-        nextPageToken: undefined
-      }
-    }
-  },
   setPontOfSales(state: PointOfSalesState, pos: IPOSData) {
     state.pointOfSales = pos
   },
   setCurrentPOS(state: PointOfSalesState, pos: IPointOfSalesData) {
     Vue.set(state.pointOfSales, 'currentPOS', pos)
+  },
+  listPointOfSales(state: PointOfSalesState, listPointOfSales) {
+    state.listPointOfSales = listPointOfSales
+  },
+  currentPointOfSales(state: PointOfSalesState, currentPointOfSales: Partial<IPointOfSalesData>) {
+    state.currentPOS = currentPointOfSales
   },
   setShowPOSOptions(state: PointOfSalesState, isShowedOptions: boolean) {
     state.showPOSOptions = isShowedOptions

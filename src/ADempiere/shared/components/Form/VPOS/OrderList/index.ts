@@ -3,7 +3,7 @@ import MixinForm from '../../MixinForm'
 import CustomPagination from '@/ADempiere/shared/components/Pagination'
 import fieldListOrders from './fieldListOrders'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
-import { IListOrderItemData, IOrderData } from '@/ADempiere/modules/pos'
+import { IListOrderItemData, IOrderData, IPOSAttributesData } from '@/ADempiere/modules/pos'
 import Template from './template.vue'
 import {
   formatDate,
@@ -11,6 +11,7 @@ import {
 } from '@/ADempiere/shared/utils/valueFormat'
 import Field from '@/ADempiere/shared/components/Field'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
+import MixinPOS from '../MixinPOS'
 
 @Component({
   name: 'OrdersList',
@@ -18,9 +19,9 @@ import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
     CustomPagination,
     Field
   },
-  mixins: [MixinForm, Template]
+  mixins: [MixinPOS, Template]
 })
-export default class OrdersList extends Mixins(MixinForm) {
+export default class OrdersList extends Mixins(MixinPOS) {
     @Prop({
       type: Object,
       default: () => {
@@ -55,24 +56,15 @@ export default class OrdersList extends Mixins(MixinForm) {
       return false
     }
 
-    get tableOrder(): IListOrderItemData | Partial<IListOrderItemData> {
-      const table = this.$store.getters[Namespaces.Order + '/' + 'getPos'].listOrder
-      console.log('tableOrder')
-      console.log(table)
-      return table
-    }
-
-    get ordersList(): IOrderData[] {
-      const order = this.tableOrder
-      if (order && !isEmptyValue(order.list)) {
-        return order.list!
-      }
-      return []
-    }
-
     get selectOrder(): IOrderData | null {
       const action = this.$route.query.action
-      const order = this.ordersList.find((item: any) => item.uuid === action)
+      if (!isEmptyValue((this.ordersList as IListOrderItemData).list)) {
+        const order = (this.ordersList as IListOrderItemData).list!.find(item => item.uuid === action)
+        if (!isEmptyValue(order)) {
+          return order!
+        }
+      }
+      const order = (this.ordersList as IListOrderItemData).list?.find((item: any) => item.uuid === action)
       if (!isEmptyValue(order)) {
         return order!
       }
@@ -80,7 +72,7 @@ export default class OrdersList extends Mixins(MixinForm) {
     }
 
     get isReadyFromGetData(): boolean {
-      const { isReload } = <IListOrderItemData> this.tableOrder
+      const { isReload } = <IListOrderItemData> this.ordersList
       return isReload
     }
 
@@ -137,7 +129,7 @@ export default class OrdersList extends Mixins(MixinForm) {
       })
 
       values = this.convertValuesToSend(values)
-      const point = this.$store.getters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
+      const point = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.uuid
       if (!isEmptyValue(point)) {
         this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
           ...values

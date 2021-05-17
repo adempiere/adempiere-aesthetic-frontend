@@ -3,7 +3,7 @@ import Template from './template.vue'
 import ListProductPrice from '@/ADempiere/shared/components/Form/VPOS/ProductInfo/ProductList'
 import OrdersList from '@/ADempiere/shared/components/Form/VPOS/OrderList'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { IListOrderItemData, IListProductPriceItemData, IOrderData, IOrderLineDataExtended, IPointOfSalesData } from '@/ADempiere/modules/pos/POSType'
+import { IListOrderItemData, ListProductPriceState } from '@/ADempiere/modules/pos/POSType'
 import {
   cashClosing, createNewReturnOrder, withdrawal, generateImmediateInvoice, printOrder,
   // requestReverseSalesTransaction,
@@ -16,6 +16,7 @@ import posProcess from '@/ADempiere/shared/utils/Constants/posProcess'
 import MixinOrderLine from '../Order/MixinOrderLine'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
+import MixinPOS from '../MixinPOS'
 
 @Component({
   name: 'Options',
@@ -24,9 +25,9 @@ import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
     OrdersList,
     ModalDialog
   },
-  mixins: [Template, MixinOrderLine]
+  mixins: [Template, MixinOrderLine, MixinPOS]
 })
-export default class Options extends Mixins(MixinOrderLine) {
+export default class Options extends Mixins(MixinOrderLine, MixinPOS) {
     @Prop({
       type: Object,
       default: () => {
@@ -40,13 +41,13 @@ export default class Options extends Mixins(MixinOrderLine) {
 
     // Computed properties
     get isShowProductsPriceList(): boolean {
-      const productPrice: IListProductPriceItemData = this.$store.state.listProductPriceModule.productPrice
-      return productPrice.isShowPopoverMenu!
+      const isShowPopoverMenu: boolean = (this.$store.state[Namespaces.ProductPrice] as ListProductPriceState).productPrice.isShowPopoverMenu!
+      return isShowPopoverMenu
     }
 
     set isShowProductsPriceList(isShowed: boolean) {
       if (!isEmptyValue(this.$route.query.pos)) {
-        this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
+        this.$store.commit(Namespaces.ProductPrice + '/' + 'showListProductPrice', {
           attribute: 'isShowPopoverMenu',
           isShowed
         })
@@ -54,34 +55,13 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     get isShowOrdersList(): boolean {
-      const listOrder: IListOrderItemData = this.$store.getters[Namespaces.Order + '/' + 'getOrder'].listOrder.isShowPopover
-      return listOrder.isShowPopover
+      return (this.ordersList as IListOrderItemData).isShowPopover
     }
 
     set isShowOrdersList(value: boolean) {
       if (!isEmptyValue(this.$route.query.pos)) {
         this.$store.commit(Namespaces.Order + '/' + 'showListOrders', value)
       }
-    }
-
-    get sellingPointsList(): IPointOfSalesData[] {
-      return this.$store.getters[Namespaces.PointOfSales + '/' + 'getSellingPointsList']
-    }
-
-    get currentPOS(): IOrderData | undefined {
-      return this.$store.getters[Namespaces.Order + '/' + 'getPos'].currentOrder
-    }
-
-    get currentPoint(): IPointOfSalesData | undefined {
-      return this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
-    }
-
-    get pointOfSalesId(): number | undefined {
-      const currentPOS = this.currentPOS
-      if (!isEmptyValue(currentPOS)) {
-        return currentPOS!.id
-      }
-      return undefined
     }
 
     get blockOption() {
@@ -102,69 +82,6 @@ export default class Options extends Mixins(MixinOrderLine) {
       return false
     }
 
-    changePos(posElement: IPointOfSalesData): void {
-      this.$store.dispatch(Namespaces.PointOfSales + '/' + 'setCurrentPOS', posElement)
-      this.newOrder()
-    }
-
-    newOrder(): void {
-      const pos: string = String(this.pointOfSalesId) || this.$route.query.pos.toString()
-      this.$router.push({
-        params: {
-          ...this.$route.params
-        },
-        query: {
-          pos
-        }
-      }).catch(error => {
-        console.info(`VPOS/Options component (New Order): ${error.message}`)
-      }).finally(() => {
-        const { templateBusinessPartner } = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
-
-        // TODO: Set order with POS Terminal default values
-        this.$store.commit(Namespaces.Payments + '/' + 'setListPayments', [])
-        this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', {
-          documentType: {},
-          documentStatus: {
-            value: ''
-          },
-          totalLines: 0,
-          grandTotal: 0,
-          salesRepresentative: {},
-          businessPartner: {
-            value: '',
-            uuid: ''
-          }
-        })
-        this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
-        this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', false)
-
-        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
-          containerUuid: this.metadata.containerUuid,
-          attributes: [{
-            key: 'UUID',
-            value: undefined
-          },
-          {
-            key: 'ProductValue',
-            value: undefined
-          },
-          {
-            key: 'C_BPartner_ID',
-            value: templateBusinessPartner.id
-          },
-          {
-            key: 'DisplayColumn_C_BPartner_ID',
-            value: templateBusinessPartner.name
-          },
-          {
-            key: ' C_BPartner_ID_UUID',
-            value: this.$store.getters[Namespaces.User + '/' + 'getUserUuid']
-          }]
-        })
-      })
-    }
-
     printOrder(): void {
       printOrder({
         orderUuid: this.$route.query.action.toString()
@@ -173,15 +90,15 @@ export default class Options extends Mixins(MixinOrderLine) {
 
     generateImmediateInvoice(): void {
       // TODO: Add BPartner
-      const { uuid: posUuid, id: posId } = this.currentPOS!
+      const { uuid: posUuid, id: posId } = this.currentPointOfSales!
       generateImmediateInvoice({
-        posId,
+        posId: posId!,
         posUuid: posUuid!
       })
     }
 
     completePreparedOrder(): void {
-      const posUuid: string | undefined = this.currentPoint!.uuid!
+      const posUuid: string | undefined = this.currentPointOfSales!.uuid!
       this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', true)
       this.$store.dispatch(Namespaces.Utils + '/' + 'updatePaymentPos', true)
       this.$message({
@@ -193,8 +110,8 @@ export default class Options extends Mixins(MixinOrderLine) {
       processOrder({
         posUuid,
         orderUuid: this.$route.query.action as string,
-        createPayments: !isEmptyValue(this.$store.getters[Namespaces.Order + '/' + 'getPos'].listPayments),
-        payments: this.$store.getters[Namespaces.Order + '/' + 'getPos'].listPayments
+        createPayments: !isEmptyValue(this.currentOrder.listPayments),
+        payments: this.currentOrder.listPayments!.payments!
       }).then(response => {
         this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', response.uuid)
         this.$message({
@@ -212,7 +129,7 @@ export default class Options extends Mixins(MixinOrderLine) {
         })
         .finally(() => {
           this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
-            posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+            posUuid: this.currentPointOfSales.uuid
           })
           this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', false)
           this.$store.dispatch(Namespaces.Utils + '/' + 'updatePaymentPos', false)
@@ -225,11 +142,11 @@ export default class Options extends Mixins(MixinOrderLine) {
       const parametersList = [
         {
           key: 'C_Order_ID',
-          value: this.$store.getters[Namespaces.Order + '/' + 'getPos'].currentOrder.id
+          value: this.currentOrder.id
         },
         {
           key: 'Bill_BPartner_ID',
-          value: this.$store.getters[Namespaces.Order + '/' + 'getPos'].currentOrder.businessPartner.id
+          value: this.currentOrder.businessPartner?.id
         },
         {
           key: 'IsCancelled',
@@ -248,10 +165,10 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     withdrawal(): void {
-      const { uuid: posUuid, id: posId } = this.currentPOS!
+      const { uuid: posUuid, id: posId } = this.currentPointOfSales!
       // TODO: Add BParner, C_BankAccount_ID (caja), CashTransferBankAccount_ID, PAY_C_BankAccount_ID
       withdrawal({
-        posId,
+        posId: posId!,
         posUuid: posUuid!
       })
     }
@@ -274,18 +191,20 @@ export default class Options extends Mixins(MixinOrderLine) {
 
     copyOrder() {
       this.processPos = posProcess[1].uuid
-      const posUuid = this.currentPoint?.uuid
+      const posUuid = this.currentPointOfSales?.uuid
 
       const parametersList = [{
-        columnName: 'C_Order_ID',
-        value: this.$store.getters[Namespaces.Order + '/' + 'getOrder'].id
+        key: 'C_Order_ID',
+        value: this.currentPointOfSales
       }]
 
       this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos', parametersList)
+      const salesRepresentative = this.currentPointOfSales.salesRepresentative
+      const customer = (this.currentPointOfSales as any).businessPartner
       requestCreateOrder({
         posUuid: posUuid!,
-        customerUuid: this.currentPOS!.businessPartner.uuid,
-        salesRepresentativeUuid: this.currentPOS!.salesRepresentative.uuid
+        customerUuid: customer!.uuid || '',
+        salesRepresentativeUuid: salesRepresentative!.uuid! || ''
       })
         .then(order => {
           this.$store.dispatch(Namespaces.Order + '/' + 'currentOrder', order)
@@ -327,9 +246,9 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     cashClosing(): void {
-      const { uuid: posUuid, id: posId } = this.currentPOS!
+      const { uuid: posUuid, id: posId } = this.currentPointOfSales!
       cashClosing({
-        posId,
+        posId: posId!,
         posUuid: posUuid!
       })
     }
@@ -340,11 +259,11 @@ export default class Options extends Mixins(MixinOrderLine) {
         posUuid: <string> this.$route.query.action
       })
         .then(response => {
-          this.changePos(this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'])
+          this.changePos(this.currentPointOfSales)
         })
         .finally(() => {
           this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
-            posUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+            posUuid: this.currentPointOfSales.uuid
           })
           this.$message({
             type: 'success',
@@ -356,8 +275,8 @@ export default class Options extends Mixins(MixinOrderLine) {
     }
 
     seeOrderList() {
-      const listOrder: any = this.$store.getters[Namespaces.Order + '/' + 'getPos'].listOrder
-      if (listOrder.recordCount <= 0) {
+      const listOrder: IListOrderItemData = (this.ordersList as IListOrderItemData)
+      if (listOrder.recordCount! <= 0) {
         this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {})
       }
     }

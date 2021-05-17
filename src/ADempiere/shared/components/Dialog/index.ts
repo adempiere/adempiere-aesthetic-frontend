@@ -124,7 +124,7 @@ export default class ModalProcess extends Vue {
           this.$store.dispatch(Namespaces.Process + '/' + 'processPos', {
             action: action,
             parentUuid: this.parentUuid,
-            idProcess: this.$store.getters[Namespaces.Order + '/' + 'getFindOrder'].id,
+            idProcess: this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentOrder.id,
             containerUuid: this.containerUuid,
             panelType: this.panelType, // Determinate if get table name and record id (window) or selection(browser)
             parametersList: this.$store.getters[Namespaces.Utils + '/' + 'getPosParameters']

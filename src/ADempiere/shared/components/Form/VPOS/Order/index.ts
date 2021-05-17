@@ -27,10 +27,6 @@ export default class Order extends Mixins(MixinOrderLine) {
   private showFieldLine = false
 
   // Computed properties
-  get isDisabled(): boolean {
-    return this.$store.getters[Namespaces.Order + '/' + 'getIsProcessed']
-  }
-
   beforeMount() {
     this.fieldsList = fieldListOrders
   }
@@ -71,38 +67,23 @@ export default class Order extends Mixins(MixinOrderLine) {
     return 'padding-left: 0px; padding-right: 0px; padding-top: 2.2%;margin-right: 1%;'
   }
 
-  get namePointOfSales(): IPointOfSalesData | undefined {
-    const currentPOS: IPointOfSalesData | undefined = this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS']
-    if (currentPOS && !isEmptyValue(currentPOS.name)) {
-      return currentPOS
-    }
-    return {
-      name: '',
-      uuid: ''
-    } as IPointOfSalesData
-  }
-
-  get sellingPointsList(): IPointOfSalesData[] {
-    return this.$store.getters[Namespaces.PointOfSales + '/' + 'getSellingPointsList']
-  }
-
   get orderDate(): string | undefined {
     try {
-      if (isEmptyValue(this.getOrder) || !this.getOrder?.dateOrdered || isEmptyValue(this.getOrder!.dateOrdered)) {
+      if (isEmptyValue(this.currentOrder) || !this.currentOrder?.dateOrdered || isEmptyValue(this.currentOrder!.dateOrdered)) {
         const newDate = new Date().toLocaleDateString()
         return this.formatDate(newDate)
       }
-      return this.formatDate(this.getOrder!.dateOrdered)
+      return this.formatDate(this.currentOrder!.dateOrdered)
     } catch (error) {
       return undefined
     }
   }
 
   get getItemQuantity(): number {
-    if (isEmptyValue(this.getOrder)) {
+    if (isEmptyValue(this.currentOrder)) {
       return 0
     }
-    const result: number[] = this.allOrderLines.map(order => {
+    const result: number[] = this.listOrderLine.map(order => {
       return order.quantityOrdered
     })
 
@@ -115,10 +96,10 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   get numberOfLines(): number | undefined {
-    if (isEmptyValue(this.getOrder)) {
+    if (isEmptyValue(this.currentOrder)) {
       return
     }
-    return this.allOrderLines.length
+    return this.listOrderLine.length
   }
 
   get multiplyRate(): number {
@@ -139,34 +120,33 @@ export default class Order extends Mixins(MixinOrderLine) {
     })
   }
 
-  get displayeTypeCurrency(): any {
-    return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
-      containerUuid: this.containerUuid,
-      columnName: 'DisplayColumn_C_Currency_ID'
-    })
-  }
-
   // Watchers
-  @Watch('namePointOfSales')
-  handleNamePointOfSalesChange(value: IPointOfSalesData | undefined) {
-    if (!isEmptyValue(value)) {
-      this.$router.push({
-        query: {
-          pos: (value!.id).toString()
-        }
-      })
-        .catch(
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-          () => {})
-    }
-  }
+  // @Watch('currencyUuid')
+  // handleCurrencyUuidChange(value: string) {
+  //   if (!isEmptyValue(value) && !isEmptyValue(this.currentPointOfSales)) {
+  //     this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
+  //       conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
+  //       currencyFromUuid: this.pointOfSalesCurrency.uuid,
+  //       currencyToUuid: value
+  //     })
+  //   }
+  // }
+
+  // @Watch('converCurrency')
+  // handleConverCurrencyChange(value: any) {
+  //   if (!isEmptyValue(value) && !isEmptyValue(this.currentPointOfSales)) {
+  //     this.$store.dispatch(Namespaces.Payments + '/' + 'conversionMultiplyRate', {
+  //       containerUuid: 'Order',
+  //       conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
+  //       currencyFromUuid: this.pointOfSalesCurrency.uuid,
+  //       currencyToUuid: value
+  //     })
+  //   } else {
+  //     this.$store.commit(Namespaces.Payments + '/' + 'currencyMultiplyRate', 1)
+  //   }
+  // }
 
   // Methods
-  changePos(posElement: IPointOfSalesData) {
-    this.$store.dispatch(Namespaces.PointOfSales + '/' + 'setCurrentPOS', posElement)
-    this.newOrder()
-  }
-
   openCollectionPanel(): void {
     this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', true)
@@ -176,65 +156,7 @@ export default class Order extends Mixins(MixinOrderLine) {
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSOptions', false)
   }
 
-  newOrder(): void {
-    this.$router.push({
-      params: {
-        ...this.$route.params
-      },
-      query: {
-        pos: this.currentPoint!.id.toString()
-      }
-    })
-      .catch(() => undefined)
-      .finally(() => {
-        this.$store.commit(Namespaces.Payments + '/' + 'setListPayments', {
-          payments: []
-        })
-        const { templateBusinessPartner } = this.currentPoint!
-
-        this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
-          containerUuid: this.metadata.containerUuid,
-          attributes: [{
-            key: 'UUID',
-            value: undefined
-          },
-          {
-            key: 'ProductValue',
-            value: undefined
-          },
-          {
-            key: 'C_BPartner_ID',
-            value: templateBusinessPartner.id
-          },
-          {
-            key: 'DisplayColumn_C_BPartner_ID',
-            value: templateBusinessPartner.name
-          },
-          {
-            key: ' C_BPartner_ID_UUID',
-            value: templateBusinessPartner.uuid
-          }]
-        })
-      })
-    this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', {
-      documentType: {},
-      documentStatus: {
-        value: ''
-      },
-      totalLines: 0,
-      grandTotal: 0,
-      salesRepresentative: {},
-      businessPartner: {
-        value: '',
-        uuid: ''
-      }
-    })
-    this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
-  }
-
   mounted() {
-    console.log('all orderlines')
-    console.log(this.allOrderLines)
     console.log('mounted')
     console.log(this.orderLineDefinition)
     if (!isEmptyValue(this.$route.query.action)) {

@@ -38,8 +38,8 @@
     <el-table
       ref="orderTable"
       v-shortkey="shortsKey"
-      v-loading="!tableOrder.isLoaded"
-      :data="ordersList"
+      v-loading="!ordersList.isLoaded"
+      :data="ordersList.list"
       border
       fit
       :highlight-current-row="highlightRow"
@@ -101,8 +101,8 @@
     </el-table>
 
     <custom-pagination
-      :total="tableOrder.recordCount"
-      :current-page="tableOrder.pageNumber"
+      :total="ordersList.recordCount"
+      :current-page="ordersList.pageNumber"
       :handle-change-page="handleChangePage"
     />
   </el-main>

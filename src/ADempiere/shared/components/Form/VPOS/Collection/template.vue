@@ -15,10 +15,10 @@
                     <convert-amount
                       :convert="multiplyRate"
                       :amount="currentOrder.grandTotal"
-                      :currency="currencyPoint"
+                      :currency="pointOfSalesCurrency"
                     />
                     <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;">
-                      {{ formatPrice(currentOrder.grandTotal, currencyPoint.iSOCode) }}
+                      {{ formatPrice(currentOrder.grandTotal, pointOfSalesCurrency.iSOCode) }}
                     </el-button>
                   </el-popover>
                 </b>
@@ -33,12 +33,23 @@
                     <convert-amount
                       :convert="multiplyRate"
                       :amount="pending"
-                      :currency="currencyPoint"
+                      :currency="pointOfSalesCurrency"
                     />
                     <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;">
-                      {{ formatPrice(pending, currencyPoint.iSOCode) }}
+                      {{ formatPrice(pending, pointOfSalesCurrency.iSOCode) }}
                     </el-button>
                   </el-popover>
+                </b>
+              </p>
+               <p class="total">
+                <b>Tasa del Día: </b>
+                <b v-if="!isEmptyValue(dateRate)" style="float: right;">
+                  {{
+                    dateRate.iSOCode
+                  }}
+                  {{
+                    formatConversionCurrenty(dateRate.amountConvertion)
+                  }}
                 </b>
               </p>
             </div>
@@ -58,7 +69,7 @@
                       :key="field.columnName"
                       :metadata-field="field.columnName === 'PayAmt' ? {
                         ...field,
-                        labelCurrency: isEmptyValue($store.getters.getFieldCuerrency) ? currencyPoint : $store.getters.getFieldCuerrency
+                        labelCurrency: isEmptyValue($store.getters['paymentsModule/getFieldCuerrency']) ? pointOfSalesCurrency : $store.getters['paymentsModule/getFieldCuerrency']
                       } : field"
                     />
                   </el-col>
@@ -79,7 +90,7 @@
           <type-collection
           v-if="!updateOrderPaymentPos"
             :is-add-type-pay="listPayments"
-            :currency="currencyPoint"
+            :currency="pointOfSalesCurrency"
             :list-types-payments="fieldsList[2]"
             :is-loaded="isLoadedPayments"
           />
@@ -111,10 +122,10 @@
                       <convert-amount
                         :convert="multiplyRate"
                         :amount="currentOrder.grandTotal"
-                        :currency="currencyPoint"
+                        :currency="pointOfSalesCurrency"
                       />
                       <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;">
-                        {{ formatPrice(currentOrder.grandTotal, currencyPoint.iSOCode) }}
+                        {{ formatPrice(currentOrder.grandTotal, pointOfSalesCurrency.iSOCode) }}
                       </el-button>
                     </el-popover>
                   </b>
@@ -130,10 +141,10 @@
                       <convert-amount
                         :convert="multiplyRate"
                         :amount="pending"
-                        :currency="currencyPoint"
+                        :currency="pointOfSalesCurrency"
                       />
                       <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;">
-                        {{ formatPrice(pending, currencyPoint.iSOCode) }}
+                        {{ formatPrice(pending, pointOfSalesCurrency.iSOCode) }}
                       </el-button>
                     </el-popover>
                   </b>
@@ -149,10 +160,10 @@
                       <convert-amount
                         :convert="multiplyRate"
                         :amount="pay"
-                        :currency="currencyPoint"
+                        :currency="pointOfSalesCurrency"
                       />
                       <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;">
-                        {{ formatPrice(pay, currencyPoint.iSOCode) }}
+                        {{ formatPrice(pay, pointOfSalesCurrency.iSOCode) }}
                       </el-button>
                     </el-popover>
                   </b>
@@ -167,10 +178,10 @@
                       <convert-amount
                         :convert="multiplyRate"
                         :amount="change"
-                        :currency="currencyPoint"
+                        :currency="pointOfSalesCurrency"
                       />
                       <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;">
-                        {{ formatPrice(change, currencyPoint.iSOCode) }}
+                        {{ formatPrice(change, pointOfSalesCurrency.iSOCode) }}
                       </el-button>
                     </el-popover>
                   </b>

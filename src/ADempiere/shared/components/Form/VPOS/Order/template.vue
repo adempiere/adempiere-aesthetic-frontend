@@ -35,11 +35,11 @@
             </el-col>
             <el-col :span="2" :style="isShowedPOSKeyLayout ? 'margin-top: 3.4%;padding: 0px;' : 'padding: 0px;margin-top: 2.4%;'">
               <el-tag
-                v-if="!isEmptyValue(getOrder.documentStatus.value)"
-                :type="tagStatus(getOrder.documentStatus.value)"
+                v-if="!isEmptyValue(currentOrder.documentStatus.value)"
+                :type="tagStatus(currentOrder.documentStatus.value)"
               >
-                <span v-if="!isEmptyValue(getOrder.documentStatus.value)">
-                  {{ getOrder.documentStatus.name }}
+                <span v-if="!isEmptyValue(currentOrder.documentStatus.value)">
+                  {{ currentOrder.documentStatus.name }}
                 </span>
               </el-tag>
             </el-col>
@@ -57,7 +57,7 @@
             <el-table
               ref="linesTable"
               v-shortkey="shortsKey"
-              :data="allOrderLines"
+              :data="listOrderLine"
               border
               style="width: 100%; max-width: 100%; background-color: #FFFFFF; font-size: 14px; overflow: auto; color: #606266;"
               highlight-current-row
@@ -121,7 +121,7 @@
                               <el-col :span="10">
                                 <div style="float: right">
                                   {{ $t('form.productInfo.price') }}:
-                                  <b>{{ formatPrice(currentOrderLine.product.priceStandard, currencyPoint.iSOCode) }}</b>
+                                  <b>{{ formatPrice(currentOrderLine.product.priceStandard, pointOfSalesCurrency.iSOCode) }}</b>
                                   <br>
                                   {{ $t('form.productInfo.taxAmount') }}:
                                   <b>{{ currentOrderLine.taxIndicator }}</b>
@@ -174,9 +174,9 @@
             <div class="keypad">
               <el-button type="primary" icon="el-icon-top" :disabled="isDisabled" @click="arrowTop" />
               <el-button type="primary" icon="el-icon-bottom" :disabled="isDisabled" @click="arrowBottom" />
-              <el-button v-show="isValidForDeleteLine(allOrderLines)" type="danger" icon="el-icon-delete" :disabled="isDisabled" @click="deleteOrderLine(currentOrderLine)" />
+              <el-button v-show="isValidForDeleteLine(listOrderLine)" type="danger" icon="el-icon-delete" :disabled="isDisabled" @click="deleteOrderLine(currentOrderLine)" />
               <el-button
-                v-show="isValidForDeleteLine(allOrderLines)"
+                v-show="isValidForDeleteLine(listOrderLine)"
                 type="success"
                 icon="el-icon-bank-card"
                 @click="openCollectionPanel"
@@ -186,20 +186,20 @@
               <br>
               <p>
                 <el-dropdown
+                  v-if="!isEmptyValue(currentPointOfSales)"
                   trigger="click"
                   style="padding-top: 8px; color: black;"
                   @command="changePos"
                 >
                   <p>
                     <i class="el-icon-mobile-phone" />
-                    {{ $t('form.pos.order.pointSale') }}: <b style="cursor: pointer"> {{ namePointOfSales.name }} </b>
+                    {{ $t('form.pos.order.pointSale') }}: <b style="cursor: pointer"> {{ currentPointOfSales.name }} </b>
                   </p>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item
-                      v-for="item in sellingPointsList"
+                      v-for="item in listPointOfSales"
                       :key="item.uuid"
-                      :command="item"
-                    >
+                      :command="item">
                       {{ item.name }}
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -208,11 +208,11 @@
             </div>
             <span style="float: right;">
               <p class="total">{{ $t('form.pos.order.seller') }}:<b style="float: right;">
-                {{ getOrder.salesRepresentative.name }}
+                {{ currentOrder.salesRepresentative.name }}
               </b></p>
-              <p class="total"> {{ $t('form.pos.order.subTotal') }}:<b class="order-info">{{ formatPrice(getOrder.totalLines, currencyPoint.iSOCode) }}</b></p>
-              <p class="total"> {{ $t('form.pos.order.discount') }}:<b class="order-info">{{ formatPrice(0, currencyPoint.iSOCode) }}</b> </p>
-              <p class="total"> {{ $t('form.pos.order.tax') }}:<b style="float: right;">{{ getOrderTax(currencyPoint.iSOCode) }}</b> </p>
+              <p class="total"> {{ $t('form.pos.order.subTotal') }}:<b class="order-info">{{ formatPrice(currentOrder.totalLines, pointOfSalesCurrency.iSOCode) }}</b></p>
+              <p class="total"> {{ $t('form.pos.order.discount') }}:<b class="order-info">{{ formatPrice(0, pointOfSalesCurrency.iSOCode) }}</b> </p>
+              <p class="total"> {{ $t('form.pos.order.tax') }}:<b style="float: right;">{{ getOrderTax(pointOfSalesCurrency.iSOCode) }}</b> </p>
               <p class="total">
                 <b>
                   {{ $t('form.pos.order.total') }}:
@@ -225,25 +225,25 @@
                     <ConvertAmount
                       v-show="seeConversion"
                       :convert="multiplyRate"
-                      :amount="getOrder.grandTotal"
-                      :currency="currencyPoint"
+                      :amount="currentOrder.grandTotal"
+                      :currency="pointOfSalesCurrency"
                     />
                     <el-button slot="reference" type="text" style="color: #000000;font-weight: 604!important;font-size: 100%;" @click="seeConversion = !seeConversion">
-                      {{ formatPrice(getOrder.grandTotal, currencyPoint.iSOCode) }}
+                      {{ formatPrice(currentOrder.grandTotal, pointOfSalesCurrency.iSOCode) }}
                     </el-button>
                   </el-popover>
                 </b>
               </p>
             </span>
-            <span style="float: right;padding-right: 40px;">
-              <p class="total">{{ $t('form.pos.order.order') }}: <b class="order-info">{{ getOrder.documentNo }}</b></p>
+            <span style="float: right;padding-right: 3%;">
+              <p class="total">{{ $t('form.pos.order.order') }}: <b class="order-info">{{ currentOrder.documentNo }}</b></p>
               <p class="total">
                 {{ $t('form.pos.order.date') }}:
                 <b class="order-info">
                   {{ orderDate }}
                 </b>
               </p>
-              <p class="total">{{ $t('form.pos.order.type') }}:<b class="order-info">{{ getOrder.documentType.name }}</b></p>
+              <p class="total">{{ $t('form.pos.order.type') }}:<b class="order-info">{{ currentOrder.documentType.name }}</b></p>
               <p class="total">
                 {{ $t('form.pos.order.itemQuantity') }}
                 <b class="order-info">

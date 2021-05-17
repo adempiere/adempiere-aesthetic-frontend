@@ -1,4 +1,4 @@
-import { IPointOfSalesData } from '@/ADempiere/modules/pos'
+import { IPointOfSalesData, IPOSAttributesData } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
@@ -47,14 +47,8 @@ export default class VPOS extends Vue {
       ]
     }
 
-    get pointOfSalesId(): number | undefined {
-      const currentPOS: IPointOfSalesData | undefined = this.$store.getters[
-        Namespaces.PointOfSales + '/' + 'getCurrentPOS'
-      ]
-      if (currentPOS && !isEmptyValue(currentPOS.id)) {
-        return currentPOS.id
-      }
-      return undefined
+    get listPointOfSales() {
+      return (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).listPointOfSales
     }
 
     // Watchers
@@ -91,33 +85,12 @@ export default class VPOS extends Vue {
     // Hooks
     created() {
       // load pont of sales list
-      if (
-        isEmptyValue(this.$store.getters[
-          Namespaces.PointOfSales + '/' + 'getSellingPointsList'
-        ])
-      ) {
-        let posToSet
+      if (isEmptyValue(this.listPointOfSales)) {
         // set pos id with query path
-        this.$store.dispatch(Namespaces.PointOfSales + '/' + 'listPointOfSalesFromServer', posToSet)
+        this.$store.dispatch(Namespaces.PointOfSales + '/' + 'listPointOfSalesFromServer', this.$route.query.pos)
       }
 
       this.unsubscribePOSList = this.posListWithOrganization()
-    }
-
-    mounted() {
-      if (isEmptyValue(this.$route.query) || isEmptyValue(this.$route.query.pos)) {
-        this.$router.push(
-          {
-            params: {
-              ...this.$route.params
-            },
-            query: {
-              ...this.$route.query,
-              pos: (this.pointOfSalesId)?.toString()
-            }
-          }, () => {}
-        )
-      }
     }
 
     beforeDestroy() {

@@ -118,7 +118,7 @@ export const actions: OrderActionTree = {
   reloadOrder(context: OrderActionContext, payload: { orderUuid: string }) {
     let { orderUuid } = payload
     if (isEmptyValue(orderUuid)) {
-      orderUuid = context.rootGetters.getOrder.uuid // this.currentOrder.uuid
+      orderUuid = context.rootGetters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales.currentOrder.uuid
     }
     if (!isEmptyValue(orderUuid)) {
       requestGetOrder(orderUuid)
@@ -186,7 +186,7 @@ export const actions: OrderActionTree = {
     const { documentNo, businessPartnerUuid, grandTotal, openAmount, isPaid, isProcessed, isAisleSeller, isInvoiced, dateOrderedFrom, dateOrderedTo, salesRepresentativeUuid } = payload
     let { posUuid = payload.posUuid || undefined } = payload
     if (isEmptyValue(posUuid)) {
-      posUuid = context.rootGetters[Namespaces.PointOfSales + '/' + 'getPointOfSalesUuid']
+      posUuid = context.rootGetters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales.uuid
     }
 
     let { pageNumber, nextPageToken } = context.state.listOrder
@@ -252,6 +252,7 @@ export const actions: OrderActionTree = {
       })
   },
   setOrder(context: OrderActionContext, order: IOrderData) {
+    context.dispatch(Namespaces.OrderLines + '/' + 'listOrderLinesFromServer', order.uuid, { root: true })
     context.commit('setOrder', order)
   },
   currentOrder(context: OrderActionContext, findOrder: IOrderData) {

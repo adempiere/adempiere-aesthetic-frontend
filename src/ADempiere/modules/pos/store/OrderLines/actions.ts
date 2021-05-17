@@ -6,8 +6,10 @@ import {
   IListOrderLinesResponse,
   IOrderLineData,
   IOrderLineDataExtended,
+  IPOSAttributesData,
   OrderLinesState
 } from '../../POSType'
+import { Namespaces } from '@/ADempiere/shared/utils/types'
 
 type OrderLinesActionTree = ActionTree<OrderLinesState, IRootState>
 type OrderLinesActionContext = ActionContext<OrderLinesState, IRootState>
@@ -74,7 +76,7 @@ export const actions: OrderLinesActionTree = {
             lineNetAmount?: number
         }
   ): void {
-    const line: IOrderLineDataExtended[] = context.getters.getListOrderLine
+    const line: IOrderLineDataExtended[] = (context.rootGetters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.currentOrder.lineOrder
     const found: IOrderLineDataExtended[] = line.map(
       (element: IOrderLineDataExtended) => {
         if (element.uuid === params.uuid) {

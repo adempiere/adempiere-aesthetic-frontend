@@ -297,15 +297,16 @@ export function requestGetConversionRate(
     // conversionDate,
     conversionTypeUuid,
     currencyFromUuid,
-    currencyToUuid
+    currencyToUuid,
+    conversionDate
   } = data
   return request({
     url: '/core/get-conversion-rate',
     data: {
       conversion_type_uuid: conversionTypeUuid,
       currency_from_uuid: currencyFromUuid,
-      currency_to_uuid: currencyToUuid
-      // conversion_date: conversionDate
+      currency_to_uuid: currencyToUuid,
+      conversion_date: conversionDate
     }
   })
     .then(conversionRateResponse => {

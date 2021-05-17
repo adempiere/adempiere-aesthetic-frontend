@@ -6,8 +6,10 @@ import fieldListProductPrice from '../fieldList'
 import { IFieldLocation } from '@/ADempiere/shared/components/Field/FieldLocation/fieldList'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import {
+  ICurrentPointOfSalesData,
   IListProductPriceItemData,
-  IPointOfSalesData
+  IPointOfSalesData,
+  IPOSAttributesData
 } from '@/ADempiere/modules/pos'
 import { IProductPriceData } from '@/ADempiere/modules/core/CoreType'
 import { formatPrice } from '@/ADempiere/shared/utils/valueFormat'
@@ -48,15 +50,15 @@ export default class ProductList extends Mixins(MixinForm) {
       ]
     }
 
-    get currentPoint(): IPointOfSalesData | undefined {
-      return this.$store.getters[
-        Namespaces.PointOfSales + '/' + 'getCurrentPOS'
-      ]
+    get currentPointOfSales(): ICurrentPointOfSalesData | undefined {
+      return (this.$store.getters[
+        Namespaces.PointOfSales + '/' + 'posAttributes'
+      ] as IPOSAttributesData).currentPointOfSales
     }
 
     get productPrice(): IListProductPriceItemData {
       const productPrice = this.$store.getters[
-        Namespaces.ListProductPrice + '/' + 'getProductPrice'
+        Namespaces.PointOfSales + '/' + 'getProductPrice'
       ]
       console.log('productPrice')
       console.log(productPrice)
@@ -93,13 +95,6 @@ export default class ProductList extends Mixins(MixinForm) {
       }
     }
 
-    @Watch('currentPoint')
-    handleCurrentPointChange(value: IPointOfSalesData | undefined) {
-      if (!isEmptyValue(value)) {
-        this.loadProductsPricesList()
-      }
-    }
-
     // Methods
     formatPrice = formatPrice
 
@@ -115,7 +110,7 @@ export default class ProductList extends Mixins(MixinForm) {
           break
 
         case 'closeProductList':
-          this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
+          this.$store.commit(Namespaces.ProductPrice + '/' + 'showListProductPrice', {
             attribute: this.popoverName,
             isShowed: false
           })
@@ -124,7 +119,7 @@ export default class ProductList extends Mixins(MixinForm) {
     }
 
     loadProductsPricesList(): void {
-      this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'listProductPriceFromServer', {
+      this.$store.dispatch(Namespaces.ProductPrice + '/' + 'listProductPriceFromServer', {
         containerUuid: undefined,
         pageNumber: undefined,
         searchValue: undefined
@@ -135,7 +130,7 @@ export default class ProductList extends Mixins(MixinForm) {
      * @param {number} newPage
      */
     handleChangePage(newPage: number): void {
-      this.$store.dispatch(Namespaces.ListProductPrice + '/' + 'setProductPicePageNumber', newPage)
+      this.$store.dispatch(Namespaces.ProductPrice + '/' + 'setProductPicePageNumber', newPage)
     }
 
     findlistProductWithRow(row: IProductPriceData): void {
@@ -156,7 +151,7 @@ export default class ProductList extends Mixins(MixinForm) {
       console.log(this.popoverName)
 
       // close popover of list product price
-      this.$store.commit(Namespaces.ListProductPrice + '/' + 'showListProductPrice', {
+      this.$store.commit(Namespaces.ProductPrice + '/' + 'showListProductPrice', {
         attribute: this.popoverName,
         isShowed: false
       })
@@ -171,7 +166,7 @@ export default class ProductList extends Mixins(MixinForm) {
         ) {
           clearTimeout(this.timeOut)
           this.timeOut = setTimeout(() => {
-            this.$store.commit(Namespaces.ListProductPrice + '/' + 'setIsReloadProductPrice')
+            this.$store.commit(Namespaces.ProductPrice + '/' + 'setIsReloadProductPrice')
           }, 1000)
         }
       })
@@ -180,11 +175,11 @@ export default class ProductList extends Mixins(MixinForm) {
     /**
      * @param {object} PointOfSales
      */
-    validatePos(PointOfSales: IPointOfSalesData | undefined): void {
+    validatePos(PointOfSales: ICurrentPointOfSalesData | undefined): void {
       console.log(isEmptyValue(PointOfSales), this.isReadyFromGetData)
       if (isEmptyValue(PointOfSales)) {
         const message: string = this.$t('notifications.errorPointOfSale').toString()
-        this.$store.commit(Namespaces.ListProductPrice + '/' + 'setListProductPrice', {
+        this.$store.commit(Namespaces.ProductPrice + '/' + 'setListProductPrice', {
           isLoaded: true,
           productPricesList: []
         })
@@ -200,11 +195,11 @@ export default class ProductList extends Mixins(MixinForm) {
     // Hooks
     created() {
       this.unsubscribe = this.subscribeChanges()
-      this.$store.commit(Namespaces.ListProductPrice + '/' + 'setListProductPrice', {
+      this.$store.commit(Namespaces.ProductPrice + '/' + 'setListProductPrice', {
         isLoaded: true
       })
       this.timeOut = setTimeout(() => {
-        this.validatePos(this.currentPoint)
+        this.validatePos(this.currentPointOfSales)
       }, 3000)
     }
 
