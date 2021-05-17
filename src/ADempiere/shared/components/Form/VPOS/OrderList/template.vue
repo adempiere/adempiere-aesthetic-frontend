@@ -9,13 +9,13 @@
           Ver Histórico de Órdenes
         </template>
         <el-form
-          v-if="!isEmptyValue(metadataList)"
+          v-if="!isEmptyValue(sortFieldsListOrder)"
           label-position="top"
           label-width="10px"
           @submit.native.prevent="notSubmitForm"
         >
           <template
-            v-for="(field) in metadataList"
+            v-for="(field) in sortFieldsListOrder"
           >
             <Field
               :key="field.columnName"
@@ -26,7 +26,7 @@
         <div
           v-else
           key="form-loading"
-          v-loading="isEmptyValue(metadataList)"
+          v-loading="isEmptyValue(sortFieldsListOrder)"
           :element-loading-text="$t('notifications.loading')"
           element-loading-spinner="el-icon-loading"
           element-loading-background="rgba(255, 255, 255, 0.8)"
@@ -39,7 +39,7 @@
       ref="orderTable"
       v-shortkey="shortsKey"
       v-loading="!ordersList.isLoaded"
-      :data="ordersList.list"
+      :data="sortFieldsListOrder"
       border
       fit
       :highlight-current-row="highlightRow"

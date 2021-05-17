@@ -12,6 +12,7 @@ import {
 import Field from '@/ADempiere/shared/components/Field'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import MixinPOS from '../MixinPOS'
+import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 
 @Component({
   name: 'OrdersList',
@@ -40,6 +41,8 @@ export default class OrdersList extends Mixins(MixinPOS) {
     public activeAccordion = 'query-criteria'
     public timeOut: any = null
     public metadataList: any[] = []
+    panelType = PanelContextType.Form
+    // public panelType: string = 'from'
 
     // Computed properties
     get heightTable(): 500 | 250 {
@@ -81,6 +84,17 @@ export default class OrdersList extends Mixins(MixinPOS) {
         closeOrdersList: ['esc'],
         refreshList: ['f5']
       }
+    }
+
+    get sortFieldsListOrder() {
+      return this.sortfield(this.metadataList)
+    }
+
+    get sortTableOrderList() {
+      if (isEmptyValue((this.ordersList as IListOrderItemData).list)) {
+        return []
+      }
+      return this.sortDate((this.ordersList as IListOrderItemData).list)
     }
 
     // Watcher
@@ -244,6 +258,16 @@ export default class OrdersList extends Mixins(MixinPOS) {
 
     setFieldsList(): void {
       const list: any[] = []
+
+      // Create Panel
+      this.$store.dispatch(Namespaces.Panel + '/' + 'addPanel', {
+        containerUuid: this.metadata.containerUuid,
+        isCustomForm: false,
+        uuid: this.metadata.uuid,
+        panelType: this.metadata.panelType,
+        fieldsList: this.fieldsList
+      })
+
       // Product Code
       this.fieldsList.forEach((element: any) => {
         this.createFieldFromDictionary(element)
@@ -258,5 +282,17 @@ export default class OrdersList extends Mixins(MixinPOS) {
           })
       })
       this.metadataList = list
+    }
+
+    sortDate(listDate: IOrderData[] | undefined) {
+      return listDate?.sort((elementA, elementB) => {
+        return new Date().setTime(new Date(elementB.dateOrdered).getTime()) - new Date().setTime(new Date(elementA.dateOrdered).getTime())
+      })
+    }
+
+    sortfield(field: any[]) {
+      return field.sort((elementA, elementB) => {
+        return elementA.sequence - elementB.sequence
+      })
     }
 }
