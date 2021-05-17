@@ -37,7 +37,6 @@
 <style scoped>
   .el-table {
     background-color: #FFFFFF;
-    cursor: pointer;
   }
   .search_recent {
     width: 50% !important;
@@ -67,5 +66,19 @@
   }
   .action-tag {
     float: right;
+  }
+</style>
+<style>
+  .el-table .cell {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-all;
+    line-height: 23px;
+    padding-left: 10px;
+    padding-right: 10px;
+    cursor: pointer;
   }
 </style>
