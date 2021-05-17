@@ -104,7 +104,7 @@
       </el-dropdown-menu>
     </el-dropdown>
     <!-- menu relations -->
-    <el-dropdown size="mini" @command="clickRelation">
+    <el-dropdown size="mini" trigger="click" @command="clickRelation">
       <el-button type="success" plain>
         {{ $t('components.contextMenuRelations') }}
         <i class="el-icon-arrow-down el-icon--right" />
@@ -119,7 +119,7 @@
             >
               <div class="contents">
                 <div style="margin-right: 5%;margin-top: 10%;">
-                  <svg-icon :icon-class="relation.meta.icon" />
+                  <svg-icon :name="relation.meta.icon" />
                 </div>
                 <div>
                   <span class="contents">
@@ -138,7 +138,7 @@
           </el-scrollbar>
       </el-dropdown-menu>
     </el-dropdown>
-    <el-dropdown size="mini" @command="clickReferences">
+    <el-dropdown size="mini" trigger="click" @command="clickReferences">
       <el-button type="warning" plain :disabled="!(isReferencesContent && isLoadedReferences)">
         {{ $t('components.contextMenuReferences') }}
         <i class="el-icon-arrow-down el-icon--right" />
@@ -200,6 +200,21 @@
     border-right-color: #b3d8ff;
     border-bottom-color: #b3d8ff;
     border-left-color: #000000 !important;
+  }
+   .el-dropdown .el-button-group:hover {
+    background: #1890ff;
+    border-color: #1890ff;
+    color: #FFFFFF;
+  }
+  .el-button-group:hover {
+    background: #1890ff;
+    border-color: #1890ff;
+    color: #FFFFFF;
+  }
+  .el-button-group .el-button--primary:hover {
+    background: #1890ff;
+    border-color: #1890ff;
+    color: #FFFFFF;
   }
 </style>
 
