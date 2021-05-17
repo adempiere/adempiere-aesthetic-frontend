@@ -200,7 +200,7 @@ export default class Options extends Mixins(MixinOrderLine, MixinPOS) {
 
       this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos', parametersList)
       const salesRepresentative = this.currentPointOfSales.salesRepresentative
-      const customer = (this.currentPointOfSales as any).businessPartner
+      const customer = this.currentOrder.businessPartner
       requestCreateOrder({
         posUuid: posUuid!,
         customerUuid: customer!.uuid || '',
