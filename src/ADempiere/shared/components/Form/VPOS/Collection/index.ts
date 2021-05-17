@@ -318,12 +318,12 @@ export default class Collection extends Mixins(MixinPOS) {
     @Watch('currencyUuid')
     handleCurrencyUuidChange(value: string) {
       const convertionRate = this.$store.getters[Namespaces.Payments + '/' + 'getConvertionRate'] as Partial<IConversionRateData>[]
-      const alo = convertionRate.find(currency => {
+      const listCurrency = convertionRate.find(currency => {
         if (currency.uuid === value) {
           return currency
         }
       })
-      if (alo === undefined) {
+      if (listCurrency === undefined) {
         this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
           conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
           currencyFromUuid: this.pointOfSalesCurrency.uuid,
@@ -710,7 +710,6 @@ export default class Collection extends Mixins(MixinPOS) {
 
     // Hooks
     created() {
-      console.log(this.$store.getters.getConvertionRate)
       this.$store.dispatch(Namespaces.Payments + '/' + 'addRateConvertion', this.pointOfSalesCurrency)
       this.unsubscribe = this.subscribeChanges()
       this.defaultValueCurrency()

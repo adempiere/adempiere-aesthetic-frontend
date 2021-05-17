@@ -136,17 +136,10 @@ export default class OrdersList extends Mixins(MixinPOS) {
     }
 
     loadOrdersList() {
-      let values = this.$store.getters[
-        Namespaces.FieldValue + '/' + 'getValuesView'
-      ]({
-        containerUuid: this.metadata.containerUuid
-      })
-
-      values = this.convertValuesToSend(values)
       const point = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.uuid
       if (!isEmptyValue(point)) {
         this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
-          ...values
+          posUuid: point
         })
       }
     }
@@ -204,56 +197,6 @@ export default class OrdersList extends Mixins(MixinPOS) {
         value: row.id
       }]
       this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos', parametersList)
-    }
-
-    convertValuesToSend(values: any[]): IKeyValueObject {
-      const valuesToSend: IKeyValueObject = {}
-
-      values.forEach(element => {
-        const { value, columnName } = element
-
-        if (isEmptyValue(value)) {
-          return
-        }
-
-        switch (columnName) {
-          case 'DocumentNo':
-            valuesToSend.documentNo = value
-            break
-          case 'C_BPartner_ID_UUID':
-            valuesToSend.businessPartnerUuid = value
-            break
-          case 'GrandTotal':
-            valuesToSend.grandTotal = value
-            break
-          case 'OpenAmt':
-            valuesToSend.openAmount = value
-            break
-          case 'IsPaid':
-            valuesToSend.isPaid = value
-            break
-          case 'Processed':
-            valuesToSend.isProcessed = value
-            break
-          case 'IsAisleSeller':
-            valuesToSend.isAisleSeller = value
-            break
-          case 'IsInvoiced':
-            valuesToSend.isInvoiced = value
-            break
-          case 'DateOrderedFrom':
-            valuesToSend.dateOrderedFrom = value
-            break
-          case 'DateOrderedTo':
-            valuesToSend.dateOrderedTo = value
-            break
-          case 'SalesRep_ID_UUID':
-            valuesToSend.salesRepresentativeUuid = value
-            break
-        }
-      })
-
-      return valuesToSend
     }
 
     setFieldsList(): void {

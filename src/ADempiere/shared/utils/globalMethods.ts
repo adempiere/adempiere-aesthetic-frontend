@@ -3,5 +3,6 @@ export {
   tagStatus,
   currencyFind,
   tenderTypeFind,
-  formatConversionCurrenty
+  formatConversionCurrenty,
+  convertValuesToSend
 } from '@/ADempiere/shared/utils/valueUtils'
