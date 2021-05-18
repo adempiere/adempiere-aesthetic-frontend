@@ -169,6 +169,11 @@ export default {
       allWindows: ' and all Windows'
     }
   },
+  grid: {
+    recordAccess: {
+      accessGranted: 'Access granted for roles'
+    }
+  },
   views: {
     browser: 'Smart Browser',
     smartBrowser: 'Smart Browser',
