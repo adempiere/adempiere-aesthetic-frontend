@@ -10,6 +10,7 @@ const fieldListOrders: IFieldLocation[] = [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
+      sequence: 0,
       isMandatory: false
     }
   },
@@ -20,6 +21,7 @@ const fieldListOrders: IFieldLocation[] = [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
+      sequence: 1,
       isMandatory: false
     }
   },
@@ -30,6 +32,7 @@ const fieldListOrders: IFieldLocation[] = [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
+      sequence: 2,
       isMandatory: false
     }
   },
@@ -39,6 +42,7 @@ const fieldListOrders: IFieldLocation[] = [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
+      sequence: 3,
       isMandatory: false
     }
   },
@@ -48,6 +52,7 @@ const fieldListOrders: IFieldLocation[] = [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
+      sequence: 4,
       isMandatory: false
     }
   },
@@ -57,6 +62,7 @@ const fieldListOrders: IFieldLocation[] = [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
+      sequence: 5,
       isMandatory: false
     }
   },
@@ -66,6 +72,7 @@ const fieldListOrders: IFieldLocation[] = [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
+      sequence: 6,
       isMandatory: false
     }
   },
@@ -76,6 +83,7 @@ const fieldListOrders: IFieldLocation[] = [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
+      sequence: 7,
       isMandatory: false
     }
   },
@@ -87,6 +95,7 @@ const fieldListOrders: IFieldLocation[] = [
     overwriteDefinition: {
       columnName: 'DateOrderedFrom',
       size: 8,
+      sequence: 8,
       isMandatory: false
     }
   },
@@ -98,6 +107,7 @@ const fieldListOrders: IFieldLocation[] = [
     overwriteDefinition: {
       columnName: 'DateOrderedTo',
       size: 8,
+      sequence: 9,
       isMandatory: false
     }
   },
@@ -108,6 +118,7 @@ const fieldListOrders: IFieldLocation[] = [
     isFromDictionary: true,
     overwriteDefinition: {
       size: 8,
+      sequence: 10,
       isMandatory: false
     }
   }

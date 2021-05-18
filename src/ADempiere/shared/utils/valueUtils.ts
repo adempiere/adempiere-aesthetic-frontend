@@ -1,6 +1,5 @@
-import { KeyValueData } from '@/ADempiere/modules/persistence'
-import { PanelContextType } from './DictionaryUtils/ContextMenuType'
 import { TABLE_DIRECT, TABLE } from './references'
+import { IKeyValueObject } from './types'
 import { convertStringToBoolean, convertBooleanToString } from './valueFormat'
 
 export function extractPagingToken(token: string): string {
@@ -450,6 +449,60 @@ export function formatConversionCurrenty(params: number): string {
     }
   }
   return params.toString()
+}
+
+/**
+ * convert Values To Send
+ * @param {string, number, boolean, date} values
+ */
+export function convertValuesToSend(values: any[]): IKeyValueObject {
+  const valuesToSend: IKeyValueObject = {}
+
+  values.forEach(element => {
+    const { value, columnName } = element
+
+    if (isEmptyValue(value)) {
+      return
+    }
+
+    switch (columnName) {
+      case 'DocumentNo':
+        valuesToSend.documentNo = value
+        break
+      case 'C_BPartner_ID_UUID':
+        valuesToSend.businessPartnerUuid = value
+        break
+      case 'GrandTotal':
+        valuesToSend.grandTotal = value
+        break
+      case 'OpenAmt':
+        valuesToSend.openAmount = value
+        break
+      case 'IsPaid':
+        valuesToSend.isPaid = value
+        break
+      case 'Processed':
+        valuesToSend.isProcessed = value
+        break
+      case 'IsAisleSeller':
+        valuesToSend.isAisleSeller = value
+        break
+      case 'IsInvoiced':
+        valuesToSend.isInvoiced = value
+        break
+      case 'DateOrderedFrom':
+        valuesToSend.dateOrderedFrom = value
+        break
+      case 'DateOrderedTo':
+        valuesToSend.dateOrderedTo = value
+        break
+      case 'SalesRep_ID_UUID':
+        valuesToSend.salesRepresentativeUuid = value
+        break
+    }
+  })
+
+  return valuesToSend
 }
 
 /**

@@ -8,10 +8,54 @@
       >
         <el-col :key="index" :span="8">
           <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
-            <field
+            <Field
+              v-if="field.columnName === 'PriceEntered'"
               :key="field.columnName"
               :metadata-field="field"
             />
+            <Field
+              v-if="field.columnName === 'QtyEntered'"
+              :key="field.columnName"
+              :metadata-field="field"
+            />
+            <el-popover
+              ref="ping"
+              placement="right"
+              trigger="click"
+            >
+              <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
+                <el-form-item label="Ingrese Ping">
+                  <el-input
+                    v-model="input"
+                    placeholder="Ingrese Ping"
+                    clearable
+                  />
+                </el-form-item>
+              </el-form>
+              <span style="float: right;">
+                <el-button
+                  type="danger"
+                  icon="el-icon-close"
+                  @click="closePing"
+                />
+                <el-button
+                  type="primary"
+                  icon="el-icon-check"
+                />
+                {{
+                  isPosRequiredPin
+                }}
+              </span>
+              <Field
+                v-if="field.columnName === 'Discount'"
+                slot="reference"
+                :key="field.columnName"
+                :metadata-field="{
+                  ...field,
+                  isReadOnly: !isModifyPrice || isPosRequiredPin
+                }"
+              />
+            </el-popover>
           </el-form>
         </el-col>
       </template>

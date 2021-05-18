@@ -12,6 +12,7 @@ import { WindowTabAssociatedAction } from '@/ADempiere/modules/window'
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { isEmptyValue } from '../../utils/valueUtils'
 import { updateAccessRecord } from '@/ADempiere/modules/privateAccess'
+import { IPOSAttributesData } from '@/ADempiere/modules/pos'
 
 @Component({
   name: 'ModalProcess',
@@ -124,7 +125,7 @@ export default class ModalProcess extends Vue {
           this.$store.dispatch(Namespaces.Process + '/' + 'processPos', {
             action: action,
             parentUuid: this.parentUuid,
-            idProcess: this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentOrder.id,
+            idProcess: (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.currentOrder.id,
             containerUuid: this.containerUuid,
             panelType: this.panelType, // Determinate if get table name and record id (window) or selection(browser)
             parametersList: this.$store.getters[Namespaces.Utils + '/' + 'getPosParameters']

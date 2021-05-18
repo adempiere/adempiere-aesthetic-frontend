@@ -101,7 +101,7 @@
         </el-header>
 
         <el-main style="padding: 0px !important; overflow: hidden;">
-          <div v-if="isEmptyValue(activeName) && isParent" :class="{show: showTableSearch}" class="local-search-container">
+          <div v-if="isEmptyValue(activeName) && isMobile && isParent" :class="{show: showTableSearch}" class="local-search-container">
             <svg-icon
             class="search-icon"
             name="search"

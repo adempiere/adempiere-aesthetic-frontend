@@ -33,7 +33,6 @@ const fieldsList: IFieldLocation[] = [
     overwriteDefinition: {
       size: 24,
       sequence: 10,
-      isReadOnly: true,
       handleActionPerformed: true,
       handleContentSelection: true,
       handleActionKeyPerformed: true

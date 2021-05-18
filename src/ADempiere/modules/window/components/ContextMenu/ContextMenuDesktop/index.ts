@@ -136,4 +136,10 @@ export default class ContextMenuDesktop extends Mixins(MixinContextMenu) {
   handleCommand(childs: IContextActionData) {
     this.runAction(childs)
   }
+
+  // Hooks
+  created() {
+    this.generateContextMenu()
+    this.getReferences()
+  }
 }

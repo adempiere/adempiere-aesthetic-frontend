@@ -64,7 +64,6 @@ export const actions: PaymentsActionTree = {
     payment.splice(0)
   },
   conversionDivideRate(context: PaymentsActionContext, params: IGetConversionRateParams) {
-    console.log('conversionDivideRate')
     requestGetConversionRate({
       conversionTypeUuid: params.conversionTypeUuid,
       currencyFromUuid: params.currencyFromUuid,

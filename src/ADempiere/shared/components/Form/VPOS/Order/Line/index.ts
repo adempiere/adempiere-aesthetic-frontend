@@ -7,6 +7,7 @@ import { createFieldFromDictionary, IFieldTemplateData } from '@/ADempiere/share
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import Template from './template.vue'
 import { IFieldLocation } from '@/ADempiere/shared/components/Field/FieldLocation/fieldList'
+import { IPOSAttributesData } from '@/ADempiere/modules/pos'
 
 @Component({
   name: 'FieldLine',
@@ -40,6 +41,25 @@ export default class FieldLine extends Vue {
       private panelType: PanelContextType = PanelContextType.Custom
       private fieldsListLine: IFieldLocation[] = fieldsListLine
       private fieldsList: any[] = []
+      private input = ''
+      private visible = false
+
+      // Computed properties
+      get isModifyPrice(): boolean {
+        const pos = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales
+        if (!isEmptyValue(pos.isModifyPrice)) {
+          return (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.isModifyPrice!
+        }
+        return false
+      }
+
+      get isPosRequiredPin(): boolean {
+        const pos = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales
+        if (!isEmptyValue(pos.isPosRequiredPin)) {
+          return (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.isPosRequiredPin!
+        }
+        return false
+      }
 
       created() {
         console.log('currentLine')
@@ -53,7 +73,6 @@ export default class FieldLine extends Vue {
         if (value && isEmptyValue(this.metadataList) && (this.dataLine.uuid === this.currentLine.uuid)) {
           this.setFieldsList()
           this.metadataList = this.setFieldsList()
-          this.metadataList.sort(this.sortFields)
           this.isLoadedField = true
         }
         if (value) {
@@ -62,7 +81,6 @@ export default class FieldLine extends Vue {
             quantityOrdered: this.currentLine.quantity,
             discount: this.currentLine.discountRate
           })
-          this.metadataList.sort(this.sortFields)
           this.isLoadedField = true
         }
       }
@@ -124,13 +142,8 @@ export default class FieldLine extends Vue {
         }
       }
 
-      sortFields(field: any, nextField: any): 1 | -1 | 0 {
-        if (field.sequence < nextField.sequence) {
-          return 1
-        }
-        if (field.sequence > nextField.sequence) {
-          return -1
-        }
-        return 0
+      closePing() {
+        const popover = this.$refs.ping as Element[]
+        ((this.$refs.ping as Element[])[popover.length - 1] as any).showPopper = false
       }
 }

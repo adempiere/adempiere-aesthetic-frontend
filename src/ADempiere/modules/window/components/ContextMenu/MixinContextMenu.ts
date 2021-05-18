@@ -82,8 +82,6 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     }
 
     get isWithRecord() {
-      console.log('isWithRecord')
-      console.log(this.recordUuid)
       return !isEmptyValue(this.recordUuid) && this.recordUuid !== 'create-new'
     }
 
@@ -315,6 +313,12 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     handleRouteQueryAction(actionValue: string) {
       this.recordUuid = actionValue
       // only requires updating the context menu if it is Window
+      console.log('route.query.action watcher')
+      console.log({
+        ...this.$route.query,
+        actionValue,
+        isWindow: this.isWindow
+      })
       if (this.isWindow) {
         this.generateContextMenu()
         this.getReferences()
@@ -356,11 +360,6 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       this.recordUuid = this.$route.query.action as string
       this.file = this.$store.getters[Namespaces.Process + '/' + 'getProcessResult'].download
       this.downloads = this.$store.getters[Namespaces.Process + '/' + 'getProcessResult'].url
-      this.generateContextMenu()
-    }
-
-    mounted() {
-      this.getReferences()
     }
 
     // Methods
@@ -431,11 +430,19 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     }
 
     getReferences(): void {
+      console.warn('getReferences x')
       if (this.isReferencesContent) {
+        console.log('x1')
         this.references = this.getterReferences
+        // const references = this.getterReferences
+        console.log('references')
+        // console.log(references)
         if (this.references && this.references.length) {
+          // this.references = references
+          console.log('x2')
           this.isLoadedReferences = true
         } else {
+          console.log('x3')
           this.isLoadedReferences = false
           this.$store
             .dispatch(Namespaces.Window + '/' + 'getReferencesListFromServer', {
@@ -556,7 +563,9 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
                     return reportableAction
                   }
                 })
-        this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', processAction)
+        if (processAction) {
+          this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', processAction)
+        }
       }
 
       if (this.isWindow && isEmptyValue(this.actions.find((element: Actionable) => element.action === ActionContextName.RecordAccess))) {

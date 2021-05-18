@@ -1,6 +1,6 @@
 import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
-import { extractPagingToken, isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
+import { convertValuesToSend, extractPagingToken, isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { ActionContext, ActionTree } from 'vuex'
 import { requestCreateOrder, requestCreateOrderLine, requestGetOrder, requestListOrders, requestUpdateOrder } from '../../POSService'
 import { IListOrdersResponse, IOrderData, OrderState } from '../../POSType'
@@ -171,19 +171,7 @@ export const actions: OrderActionTree = {
   },
   listOrdersFromServer(context: OrderActionContext, payload: {
         posUuid?: string
-        documentNo?: number
-        businessPartnerUuid?: string
-        grandTotal: number
-        openAmount?: number
-        isPaid?: boolean
-        isProcessed?: boolean
-        isAisleSeller?: boolean
-        isInvoiced?: boolean
-        dateOrderedFrom?: any
-        dateOrderedTo?: any
-        salesRepresentativeUuid?: string
       }) {
-    const { documentNo, businessPartnerUuid, grandTotal, openAmount, isPaid, isProcessed, isAisleSeller, isInvoiced, dateOrderedFrom, dateOrderedTo, salesRepresentativeUuid } = payload
     let { posUuid = payload.posUuid || undefined } = payload
     if (isEmptyValue(posUuid)) {
       posUuid = context.rootGetters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales.uuid
@@ -197,6 +185,12 @@ export const actions: OrderActionTree = {
     if (!isEmptyValue(nextPageToken)) {
       pageToken = nextPageToken + '-' + pageNumber
     }
+    let values = context.rootGetters[Namespaces.FieldValue + '/' + 'getValuesView']({
+      containerUuid: 'Orders-List'
+    })
+    values = convertValuesToSend(values)
+    const { documentNo, businessPartnerUuid, grandTotal, openAmount, isPaid, isProcessed, isAisleSeller, isInvoiced, dateOrderedFrom, dateOrderedTo, salesRepresentativeUuid } = values
+
     console.log('requestListOrders')
     console.log({
       posUuid,

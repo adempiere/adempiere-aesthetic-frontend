@@ -132,4 +132,10 @@ export default class ContextMenuMobile extends Mixins(MixinContextMenu) {
       return 'font-size: 14px;margin-top: 1.5% !important;margin-left: 2%;margin-bottom: 5%;display: contents;'
     }
   }
+
+  // Hooks
+  created() {
+    this.generateContextMenu()
+    this.getReferences()
+  }
 }
