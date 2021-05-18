@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isListRecord" class="container-submenu-mobile container-context-menu">
+  <div class="container-submenu-mobile container-context-menu">
     <!-- actions or process on container -->
     <el-dropdown
       :hide-on-click="true"
