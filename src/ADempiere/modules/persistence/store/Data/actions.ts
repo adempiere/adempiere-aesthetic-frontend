@@ -31,10 +31,10 @@ import {
 } from '../../PersistenceType'
 import language from '@/ADempiere/shared/lang'
 import {
-  requestGetPrivateAccess,
-  requestLockPrivateAccess,
-  requestUnlockPrivateAccess
-  , IPrivateAccessData
+  getPrivateAccess,
+  lockPrivateAccess,
+  unlockPrivateAccess,
+  IPrivateAccessData
 } from '@/ADempiere/modules/privateAccess'
 import { convertArrayKeyValueToObject } from '@/ADempiere/shared/utils/valueFormat'
 
@@ -1013,7 +1013,7 @@ export const actions: BusinessDataActionTree = {
     parameters: { tableName: string, recordId: number, recordUuid: string }
   ): Promise<void | IPrivateAccessDataExtended> {
     const { tableName, recordId, recordUuid } = parameters
-    return requestGetPrivateAccess({
+    return getPrivateAccess({
       tableName,
       recordId,
       recordUuid
@@ -1044,7 +1044,7 @@ export const actions: BusinessDataActionTree = {
     parameters: { tableName: string, recordId: number, recordUuid: string }
   ): Promise<void | IPrivateAccessDataExtended | undefined> {
     const { tableName, recordUuid, recordId } = parameters
-    return requestLockPrivateAccess({
+    return lockPrivateAccess({
       tableName,
       recordId,
       recordUuid
@@ -1080,7 +1080,7 @@ export const actions: BusinessDataActionTree = {
     parameters: { tableName: string, recordId: number, recordUuid: string }
   ): Promise<void | IPrivateAccessDataExtended | undefined> {
     const { tableName, recordId, recordUuid } = parameters
-    return requestUnlockPrivateAccess({
+    return unlockPrivateAccess({
       tableName,
       recordId,
       recordUuid
