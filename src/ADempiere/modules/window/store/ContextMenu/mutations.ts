@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex'
-import { ContextMenuState, IContextMenuData, IListDocumentAction, IListDocumentStatus } from '@/ADempiere/modules/window/WindowType/VuexType'
+import { ContextMenuState, IContextActionData, IContextMenuData, IListDocumentAction, IListDocumentStatus } from '@/ADempiere/modules/window/WindowType/VuexType'
 import { stat } from 'fs'
 
 type ContextMenuMutationTree = MutationTree<ContextMenuState>
@@ -46,11 +46,16 @@ export const mutations: ContextMenuMutationTree = {
       recordId: undefined,
       recordUuid: undefined
     }
+    state.recordAccess = false
+    state.embedded = {}
   },
   fieldContextMenu(state: ContextMenuState, payload) {
     state.optionField = payload
   },
   setRecordAccess(state: ContextMenuState, recordAccess: boolean) {
     state.recordAccess = recordAccess
+  },
+  attributeEmbedded(state: ContextMenuState, params: IContextActionData) {
+    state.embedded = params
   }
 }
