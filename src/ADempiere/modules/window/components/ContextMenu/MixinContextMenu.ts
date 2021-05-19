@@ -313,12 +313,6 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
     handleRouteQueryAction(actionValue: string) {
       this.recordUuid = actionValue
       // only requires updating the context menu if it is Window
-      console.log('route.query.action watcher')
-      console.log({
-        ...this.$route.query,
-        actionValue,
-        isWindow: this.isWindow
-      })
       if (this.isWindow) {
         this.generateContextMenu()
         this.getReferences()
@@ -569,11 +563,6 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
       }
 
       if (this.isWindow && isEmptyValue(this.actions.find((element: Actionable) => element.action === ActionContextName.RecordAccess))) {
-        this.$store.dispatch(Namespaces.AccessRecord + '/' + 'addAttribute', {
-          tableName: this.tableNameCurrentTab,
-          recordId: this.getCurrentRecord[this.tableNameCurrentTab + '_ID'],
-          recordUuid: this.$route.query.action
-        })
         this.actions.push(this.recordAccess)
       }
 

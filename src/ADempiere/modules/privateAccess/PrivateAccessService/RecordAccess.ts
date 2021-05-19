@@ -16,7 +16,7 @@ export function getRecordAccess(data: {
   tableName: string
   recordId: number
   recordUuid: string
-}): Promise<IRecordAccessDataExtended> {
+}): Promise<Partial<IRecordAccessDataExtended>> {
   const { tableName, recordUuid, recordId } = data
   return new Promise(resolve => {
     request({
@@ -77,7 +77,7 @@ export function setRecordAccess(data: {
  * @returns
  */
 
-function convertRecordAccess(recordAccess: any): IRecordAccessDataExtended {
+function convertRecordAccess(recordAccess: any): Partial<IRecordAccessDataExtended> {
   return {
     tableName: recordAccess.table_name,
     id: recordAccess.id,

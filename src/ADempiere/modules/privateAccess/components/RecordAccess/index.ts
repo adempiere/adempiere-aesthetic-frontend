@@ -1,5 +1,5 @@
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import Template from './template.vue'
 
 @Component({
@@ -7,6 +7,16 @@ import Template from './template.vue'
   mixins: [Template]
 })
 export default class RecordAccess extends Vue {
+  @Prop({
+    type: Object,
+    default: () => {}
+  }) record!: any
+
+  @Prop({
+    type: String,
+    default: undefined
+  }) tableName?: string
+
   get isMobile(): boolean {
     return this.$store.state.app.device === DeviceType.Mobile
   }
