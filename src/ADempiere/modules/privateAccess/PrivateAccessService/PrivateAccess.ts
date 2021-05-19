@@ -1,10 +1,9 @@
 // Get Instance for connection
 import { request } from '@/ADempiere/shared/utils/request'
-import { convertPrivateAccess } from './PrivateAccessConvert'
-import { IPrivateAccessData } from './PrivateAccessType'
+import { IPrivateAccessData } from '@/ADempiere/modules/privateAccess'
 
 // Get private access for a record
-export function requestGetPrivateAccess(data: {
+export function getPrivateAccess(data: {
     tableName: string
     recordId: number
     recordUuid: string
@@ -20,12 +19,16 @@ export function requestGetPrivateAccess(data: {
     }
   })
     .then((responsePrivateAccess: any) => {
-      return convertPrivateAccess(responsePrivateAccess)
+      return {
+        tableName: responsePrivateAccess.table_name,
+        recordId: responsePrivateAccess.record_id,
+        recordUuid: responsePrivateAccess.record_uuid
+      }
     })
 }
 
 // Lock a record for a user
-export function requestLockPrivateAccess(data: {
+export function lockPrivateAccess(data: {
     tableName: string
     recordId: number
     recordUuid: string
@@ -41,12 +44,16 @@ export function requestLockPrivateAccess(data: {
     }
   })
     .then((responsePrivateAccess: any) => {
-      return convertPrivateAccess(responsePrivateAccess)
+      return {
+        tableName: responsePrivateAccess.table_name,
+        recordId: responsePrivateAccess.record_id,
+        recordUuid: responsePrivateAccess.record_uuid
+      }
     })
 }
 
 // Unlock a record from a user
-export function requestUnlockPrivateAccess(data: {
+export function unlockPrivateAccess(data: {
     tableName: string
     recordId: number
     recordUuid: string
@@ -62,7 +69,11 @@ export function requestUnlockPrivateAccess(data: {
     }
   })
     .then((responsePrivateAccess: any) => {
-      return convertPrivateAccess(responsePrivateAccess)
+      return {
+        tableName: responsePrivateAccess.table_name,
+        recordId: responsePrivateAccess.record_id,
+        recordUuid: responsePrivateAccess.record_uuid
+      }
     })
 }
 

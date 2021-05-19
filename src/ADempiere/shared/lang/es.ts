@@ -169,6 +169,11 @@ export default {
       allWindows: ' y todas las Ventanas'
     }
   },
+  grid: {
+    recordAccess: {
+      accessGranted: 'Acceso otorgado a los roles'
+    }
+  },
   views: {
     browser: 'Consulta Inteligente',
     smartBrowser: 'Consulta Inteligente',

@@ -245,4 +245,5 @@ export interface WindowState {
     tabSequenceRecord: any[]
     totalResponse: number
     totalRequest: number
+    recordSelected?: any
 }

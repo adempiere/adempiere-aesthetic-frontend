@@ -61,5 +61,8 @@ export const getters: ContextMenuGetterTree = {
   },
   getShowRecordAccess: (state: ContextMenuState): boolean => {
     return state.recordAccess
+  },
+  getAttributeEmbedded: (state: ContextMenuState): Partial<IContextActionData> => {
+    return state.embedded
   }
 }

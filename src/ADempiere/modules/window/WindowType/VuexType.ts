@@ -68,6 +68,7 @@ export interface ContextMenuState {
     listDocumentStatus: IListDocumentStatus
     listDocumentAction: IListDocumentAction
     recordAccess: boolean
+    embedded: Partial<IContextActionData>
 }
 
 // Chat Entries

@@ -82,6 +82,7 @@ export default class ContextMenuDesktop extends Mixins(MixinContextMenu) {
     } else if (typeof action !== 'string' && action.action === 'recordAccess') {
       this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
       this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', true)
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'attributeEmbedded', action)
       this.runAction(action)
     } else {
       if (typeof action !== 'string') {
