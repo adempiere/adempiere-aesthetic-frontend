@@ -1,4 +1,4 @@
-import { IPrivateAccessData } from '.'
+import { IPrivateAccessData } from './PrivateAccessType'
 
 export function convertPrivateAccess(
   privateAccessToConvert: any

@@ -1,7 +1,6 @@
 // Get Instance for connection
 import { request } from '@/ADempiere/shared/utils/request'
-import { convertPrivateAccess } from './PrivateAccessConvert'
-import { IPrivateAccessData } from './PrivateAccessType'
+import { IPrivateAccessData } from '@/ADempiere/modules/privateAccess'
 
 // Get private access for a record
 export function getPrivateAccess(data: {
