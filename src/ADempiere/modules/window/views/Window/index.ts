@@ -21,6 +21,7 @@ import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import RightPanel from '@/ADempiere/modules/window/components/RightPanel'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import RecordAccess from '@/ADempiere/modules/privateAccess/components/RecordAccess'
+import Embedded from '@/ADempiere/shared/components/Dialog/Embedded'
 
 Component.registerHooks([
   'beforeRouteEnter',
@@ -49,7 +50,8 @@ C2.registerHooks([
     SplitPane,
     ModalDialog,
     RightPanel,
-    RecordAccess
+    RecordAccess,
+    Embedded
   }
 })
 export default class WindowView extends Vue {

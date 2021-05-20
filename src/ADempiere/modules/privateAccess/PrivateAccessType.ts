@@ -24,9 +24,13 @@ export interface IRecordAccessRoleData {
     isExclude: boolean
     isReadOnly: boolean
     isDependentEntities: boolean
-  }
+}
 
-export interface IRecordAccessDataExtended {
+export interface IRecordAccessRoleDataExtended extends IRecordAccessRoleData {
+    isLocked?: boolean
+}
+
+export interface IRecordAccessDataExtended extends IAccessRecordAttribute {
     id: number
     uuid: string
     tableName: string

@@ -1,13 +1,15 @@
 import { IRoleData } from '@/ADempiere/modules/user'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Mixins } from 'vue-property-decorator'
+import { IRecordAccessRoleDataExtended } from '../../../PrivateAccessType'
+import MixinRecordAccess from '../MixinRecordAccess'
 import Template from './template.vue'
 
 @Component({
   name: 'RecordAccessMobile',
-  mixins: [Template]
+  mixins: [Template, MixinRecordAccess]
 })
-export default class RecordAccessMobile extends Vue {
+export default class RecordAccessMobile extends Mixins(MixinRecordAccess) {
   @Prop({
     type: String,
     default: undefined
@@ -39,116 +41,60 @@ export default class RecordAccessMobile extends Vue {
   }) identifiersList?: any[]
 
   // Data
-  private group = 'sequence'
-  private isReadonly = false
-  private isDependentEntities = true
-  private getterDataRecords: IRoleData[] = this.$store.getters[
-    Namespaces.User + '/' + 'getRoles']
+  group = 'sequence'
+  isReadonly = false
+  isDependentEntities = false
+  public labelListInclude: any[] = []
+  public labelListExcludo: any[] = []
 
   // Computed properties
-  get getterListExclude(): string[] {
-    const list: IRoleData[] = this.getterDataRecords.filter(item => item.isPersonalLock === false)
-    return list.map(element => {
-      return element.name
+  get listExclude(): string[] {
+    return this.excludedList.map(element => {
+      return element.roleName
     })
   }
 
-  get getterListInclude(): string[] {
-    const list: IRoleData[] = this.getterDataRecords.filter(item => item.isPersonalLock === true)
-    return list.map(element => {
-      return element.name
+  get listInclude(): string[] {
+    return this.includedList.map(element => {
+      return element.roleName
     })
-  }
-
-  get getIdentifiersList(): any[] | undefined {
-    return this.identifiersList?.filter(item => item.componentPath !== 'FieldSelect')
-  }
-
-  // Hooks
-  created() {
-    const record = this.getterDataRecords.map(record => {
-      return {
-        id: record.id,
-        uuid: record.uuid,
-        IsExclude: record.isPersonalLock,
-        isDependentEntities: this.isDependentEntities,
-        isReadonly: this.isReadonly
-      }
-    })
-    this.$store.dispatch(Namespaces.AccessRecord + '/' + 'changeList', record)
   }
 
   // Methods
-  handleChange(value: IKeyValueObject) {
-    const action: string = Object.keys(value)[0] // get property
-    const element: any = value[action].element
-    const index = this.getterDataRecords.findIndex(role => role.id === element.id)
-    switch (action) {
-      case 'added':
-        this.addItem({
-          index,
-          element
-        })
-        break
-      case 'removed':
-        this.deleteItem({
-          index,
-          element
-        })
-        break
+
+  addListInclude(element: string[]): void {
+    const index: number = this.recordAccess.roles.findIndex(item => {
+      if (element[element.length - 1] === item.roleName) {
+        return item
+      }
+    })
+    if (index >= 0) {
+      this.addItem({
+        index,
+        element: this.recordAccess.roles[index]
+      })
     }
   }
 
-  addListInclude(element: string[]): void {
-    const index = this.getterDataRecords.findIndex(item => element[element.length - 1] === item.uuid)
-    this.getterDataRecords[index].isPersonalLock = true
-  }
-
   addListExclude(element: string[]): void {
-    const index = this.getterDataRecords.findIndex(item => element[element.length - 1] === item.uuid)
-    this.getterDataRecords[index].isPersonalLock = false
-  }
-
-  /**
-   * @param {number} index: the index of the added element
-   * @param {object} element: the added element
-   */
-  addItem(params: {
-    index: number
-    element: IKeyValueObject
-  }) {
-    const { index, element } = params
-    this.getterDataRecords[index].isPersonalLock = !element.isPersonalLock
-  }
-
-  /**
-   * @param {number} index: the index of the element before remove
-   * @param {object} element: the removed element
-   */
-  deleteItem(params: {
-    index: number
-    element: IKeyValueObject
-  }) {
-    const { index, element } = params
-    this.getterDataRecords[index].isPersonalLock = !element.isPersonalLock
-    const record = this.getterDataRecords.map(record => {
-      return {
-        id: record.id,
-        uuid: record.uuid,
-        IsExclude: record.isPersonalLock,
-        isDependentEntities: this.isDependentEntities,
-        isReadonly: this.isReadonly
+    const index: number = this.recordAccess.roles.findIndex(item => {
+      if (element[element.length - 1] === item.roleName) {
+        return item
       }
     })
-    this.$store.dispatch(Namespaces.AccessRecord + '/' + 'changeList', record)
+    if (index >= 0) {
+      this.deleteItem({
+        index,
+        element: this.recordAccess.roles[index]
+      })
+    }
   }
 
-  getOrder(arrayToSort: any[], orderBy?: string) {
-    orderBy = (orderBy) || this.order
-    return arrayToSort.sort((itemA, itemB) => {
-      const itemAObj = itemA as IKeyValueObject
-      const itemBObj = itemB as IKeyValueObject
-      return itemAObj[orderBy!] - itemBObj[orderBy!]
+  SendRecorAccess(list: IRecordAccessRoleDataExtended[]) {
+    list.forEach(element => {
+      element.isReadOnly = this.isReadonly
+      element.isDependentEntities = this.isDependentEntities
     })
+    this.saveRecordAccess(list)
   }
 }
