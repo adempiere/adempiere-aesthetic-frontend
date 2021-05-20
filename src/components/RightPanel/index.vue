@@ -8,9 +8,9 @@
       <div class="showme">
         <div class="rightPanel-background" />
         <div class="rightPanel">
-          <div class="handle-button" :style="{'top': buttonTop+'px','background-color': theme}" @click="show=!show">
+          <!-- <div class="handle-button" :style="{'top': buttonTop+'px','background-color': theme}" @click="show=!show">
             <i :class="show?'el-icon-close':'el-icon-setting'" />
-          </div>
+          </div> -->
           <div class="rightPanel-items">
             <slot />
           </div>
