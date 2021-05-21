@@ -11,7 +11,6 @@ import RecordAccess from '@/ADempiere/modules/privateAccess/components/RecordAcc
 import { WindowTabAssociatedAction } from '@/ADempiere/modules/window'
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { isEmptyValue } from '../../utils/valueUtils'
-import { updateAccessRecord } from '@/ADempiere/modules/privateAccess'
 import { IPOSAttributesData } from '@/ADempiere/modules/pos'
 
 @Component({
@@ -19,8 +18,7 @@ import { IPOSAttributesData } from '@/ADempiere/modules/pos'
   mixins: [Template],
   components: {
     MainPanel,
-    SequenceOrder,
-    RecordAccess
+    SequenceOrder
   }
 })
 export default class ModalProcess extends Vue {
@@ -50,8 +48,8 @@ export default class ModalProcess extends Vue {
     }
 
     get windowRecordSelected(): any {
-      // return this.$store.state.window.recordSelected
-      return this.$store.state.windowModule.currentRecord
+      return this.$store.state.window.recordSelected
+      // return this.$store.state.windowModule.currentRecord
     }
 
     get getterDataRecordsAndSelection(): IRecordSelectionData {
@@ -176,10 +174,6 @@ export default class ModalProcess extends Vue {
             })
           }
         }
-      }
-      if (action.action === undefined) {
-        const list = this.$store.getters[Namespaces.AccessRecord + '/' + 'getListRecordAcces']
-        updateAccessRecord(list)
       }
     }
 }

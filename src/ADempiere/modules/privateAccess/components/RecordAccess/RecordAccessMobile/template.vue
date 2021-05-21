@@ -1,20 +1,20 @@
 <template>
   <div>
     <el-card class="box-card">
-      <div slot="header" class="clearfix">
+      <div slot="header" class="clearfix" style="padding-bottom: 2%;">
         <span>
           {{ $t('data.recordAccess.actions') }}
         </span>
       </div>
-      <div style="margin-bottom: 10%;">
-        <span style="margin-bottom: 10%;">
-          {{ $t('data.recordAccess.hideRecord') }} ({{ labelListExcludo.length }})
+      <div style="margin-bottom: 5%;">
+        <span style="margin-bottom: 5%;">
+          {{ $t('data.recordAccess.availableRoles') }} ({{ labelListExcludo.length }})
         </span>
         <br>
         <el-select
           v-model="labelListExcludo"
           multiple
-          style="margin-top: 5%;"
+          style="margin-top: 2.5%;"
           filterable
           placeholder="Select"
           collapse-tags
@@ -28,22 +28,20 @@
           />
         </el-select>
       </div>
-      <div
-        style="margin-bottom: 10%;"
-      >
+      <div>
         <span
-          style="margin-bottom: 10%;"
+          style="margin-bottom: 5%;"
         >
-          {{ $t('data.recordAccess.recordDisplay') }} ({{ labelListInclude.length }})
+          {{ $t('data.recordAccess.modeMobile.accessRoles') }} ({{ labelListInclude.length }})
         </span>
         <br>
         <el-select
           v-model="labelListInclude"
           multiple
-          style="margin-top: 5%;"
           placeholder="Select"
           filterable
           collapse-tags
+          style="margin-top: 2.5%;"
           @change="addListInclude"
         >
           <el-option
@@ -54,24 +52,87 @@
           />
         </el-select>
       </div>
-      <el-form
-        label-position="top"
-        size="small"
-        class="create-bp"
+      <!-- Roles with Access and Read Only -->
+      <div
+        style="padding-top: 9%;"
       >
-        <el-scrollbar wrap-class="scroll-panel-right-mode-mobile" style="max-height: 200px;">
-          <el-row :gutter="24">
-            <div style="margin-left: 5%;">
-              <p>
-                {{ $t('data.recordAccess.isReadonly') }} <el-switch v-model="isReadonly" />
-              </p>
-              <p>
-                {{ $t('data.recordAccess.isDependentEntities') }} <el-switch v-model="isDependentEntities" />
-              </p>
-            </div>
-          </el-row>
-        </el-scrollbar>
-      </el-form>
+        <span
+          style="margin-bottom: 5%;"
+        >
+          {{ $t('data.recordAccess.modeMobile.accessRolesIsReadonly') }} ({{ listRolesLockReadOnly.length }})
+        </span>
+        <br>
+        <el-select
+          v-model="listRolesLockReadOnly"
+          multiple
+          placeholder="Select"
+          filterable
+          collapse-tags
+          style="margin-top: 2.5%;"
+          @change="addRolesLockReadOnly"
+        >
+          <el-option
+            v-for="item in includedList.filter(element => element.isExclude)"
+            :key="item.roleUuid"
+            :label="item.roleName"
+            :value="item.roleName"
+          />
+        </el-select>
+      </div>
+      <!-- Locked Roles -->
+      <div
+        style="padding-top: 9%;"
+      >
+        <span
+          style="margin-bottom: 5%;"
+        >
+          {{ $t('data.recordAccess.modeMobile.lockedRoles') }} ({{ listRolesLock.length }})
+        </span>
+        <br>
+        <el-select
+          v-model="listRolesLock"
+          multiple
+          placeholder="Select"
+          filterable
+          collapse-tags
+          style="margin-top: 2.5%;"
+          @change="addRolesLock"
+        >
+          <el-option
+            v-for="item in includedList"
+            :key="item.roleUuid"
+            :label="item.roleName"
+            :value="item.roleName"
+          />
+        </el-select>
+      </div>
+      <!-- Locked Roles with Dependent Entities -->
+      <div
+        style="padding-top: 9%;"
+      >
+        <span
+          style="margin-bottom: 5%;"
+        >
+          {{ $t('data.recordAccess.modeMobile.lockedRolesIsDependentEntities') }} ({{ listRolesUnLock.length }})
+        </span>
+        <br>
+        <el-select
+          v-model="listRolesUnLock"
+          multiple
+          placeholder="Select"
+          filterable
+          collapse-tags
+          style="margin-top: 2.5%;"
+          @change="addlockedRolesIsDependentEntities"
+        >
+          <el-option
+            v-for="item in includedList.filter(element => !element.isExclude)"
+            :key="item.roleUuid"
+            :label="item.roleName"
+            :value="item.roleName"
+          />
+        </el-select>
+      </div>
     </el-card>
     <span style="float: right;padding-top: 1%;">
       <el-button
@@ -134,11 +195,24 @@
   }
 </style>
 <style lang="scss">
+  .el-card__header {
+    background: rgba(245, 247, 250, 0.75);
+    padding-top: 18px;
+    padding-right: 20px;
+    padding-bottom: 1%;
+    padding-left: 20px;
+    border-bottom: 1px solid #f5f7fa;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  .el-card__body {
+    padding-top: 2.5%;
+  }
   .scroll-panel-right-mode-mobile {
-      max-height: 200px;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
   .el-scrollbar__bar.is-vertical > div {
     width: 100%;
     transform: translateY(998%);

@@ -54,11 +54,11 @@ export default class Embedded extends Vue {
     return (this.$store.state.app as IAppState).device === DeviceType.Mobile
   }
 
-  get width(): 70 | 80 {
+  get width(): number {
     if (this.isMobile) {
       return 80
     }
-    return 70
+    return 90
   }
 
   get attributeEmbedded(): Partial<IContextActionData> {

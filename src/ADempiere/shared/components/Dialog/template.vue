@@ -1,5 +1,6 @@
 <template>
   <el-dialog
+    v-if="!showRecordAccess"
     :title="modalMetadata.name"
     :visible="isVisibleDialog"
     show-close
@@ -13,9 +14,6 @@
     <div
       v-if="panelType !== 'From'"
     >
-      <record-access
-      v-if="showRecordAccess"
-      />
       <sequence-order
         v-if="modalMetadata.isSortTab"
         key="order"
@@ -37,7 +35,7 @@
         />
       </template>
     </div>
-    <span slot="footer" class="dialog-footer">
+    <span v-if="!showRecordAccess" slot="footer" class="dialog-footer">
       <el-button
         type="danger"
         icon="el-icon-close"

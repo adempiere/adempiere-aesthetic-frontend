@@ -61,7 +61,7 @@ export default class MixinRecordAccess extends Vue {
     // Computed
     get excludedList(): IRecordAccessRoleDataExtended[] {
       if (this.recordAccess.roles) {
-        return this.recordAccess.roles.filter(role => !role.isLocked)
+        return this.recordAccess.roles.filter(role => !role.isRoleConfig)
       } else {
         return []
       }
@@ -73,7 +73,7 @@ export default class MixinRecordAccess extends Vue {
 
     get includedList(): IRecordAccessRoleDataExtended[] {
       if (this.recordAccess.roles) {
-        return this.recordAccess.roles.filter(role => role.isLocked)
+        return this.recordAccess.roles.filter(role => role.isRoleConfig)
       } else {
         return []
       }
@@ -97,13 +97,16 @@ export default class MixinRecordAccess extends Vue {
             access.availableRoles!.forEach(role => {
               this.recordAccess.roles.push({
                 ...role,
-                isLocked: false
+                isRoleConfig: false,
+                isLocked: role.isExclude
               })
             })
             access.currentRoles?.forEach(role => {
-              this.recordAccess.roles.find((availableRole: IRecordAccessRoleDataExtended) => availableRole.roleId === role.roleId)!.isLocked = true
+              this.recordAccess.roles.find((availableRole: IRecordAccessRoleDataExtended) => availableRole.roleId === role.roleId)!.isLocked = role.isExclude
+              this.recordAccess.roles.find(availableRole => availableRole.roleId === role.roleId)!.isRoleConfig = true
               this.recordAccess.roles.find(availableRole => availableRole.roleId === role.roleId)!.isDependentEntities = role.isDependentEntities
               this.recordAccess.roles.find(availableRole => availableRole.roleId === role.roleId)!.isReadOnly = role.isReadOnly
+              this.recordAccess.roles.find(availableRole => availableRole.roleId === role.roleId)!.isExclude = role.isExclude
             })
         })
     }
@@ -138,7 +141,7 @@ export default class MixinRecordAccess extends Vue {
         element: any
       }) {
       const { index, element } = data
-      this.recordAccess.roles[index].isLocked = true
+      this.recordAccess.roles[index].isRoleConfig = true
     }
 
     /**
@@ -150,7 +153,7 @@ export default class MixinRecordAccess extends Vue {
         element: any
       }) {
       const { index, element } = data
-      this.recordAccess.roles[index].isLocked = false
+      this.recordAccess.roles[index].isRoleConfig = false
     }
 
     getOrder(arrayToSort: any[], orderBy = this.order!) {
@@ -179,6 +182,17 @@ export default class MixinRecordAccess extends Vue {
           })
           console.warn(`setPreference error: ${error.message}.`)
         })
+    }
+
+    validateList(list: IRecordAccessRoleDataExtended[]): IRecordAccessRoleDataExtended[] {
+      list.forEach((element: IRecordAccessRoleDataExtended) => {
+        if (element.isExclude) {
+          element.isReadOnly = false
+        } else {
+          element.isDependentEntities = false
+        }
+      })
+      return list
     }
 
     close() {
