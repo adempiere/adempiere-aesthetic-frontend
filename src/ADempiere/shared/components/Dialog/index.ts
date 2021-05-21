@@ -38,7 +38,7 @@ export default class ModalProcess extends Vue {
       if (this.isMobile) {
         return 80
       }
-      return 50
+      return 95
     }
 
     get isVisibleDialog(): boolean {

@@ -4,7 +4,6 @@ import { getRecordAccess, setRecordAccess } from '../../PrivateAccessService/Rec
 import { IRecordAccessDataExtended, IRecordAccessRoleData, IRecordAccessRoleDataExtended } from '../../PrivateAccessType'
 import language from '@/ADempiere/shared/lang'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { IRoleData } from '@/ADempiere/modules/user'
 
 @Component({
   name: 'MixinRecordAccess'
@@ -67,6 +66,10 @@ export default class MixinRecordAccess extends Vue {
         return []
       }
     }
+
+    set excludedList(value: IRecordAccessRoleDataExtended[]) {}
+
+    set includedList(value: IRecordAccessRoleDataExtended[]) {}
 
     get includedList(): IRecordAccessRoleDataExtended[] {
       if (this.recordAccess.roles) {

@@ -59,29 +59,25 @@
               v-for="(element, index) in includedList"
               :key="element.roleUuid"
               class="board-item"
-              style="height: 50%;padding-left: 0px;padding-right: 0px;"
+              style="height: 50%;padding-left: 0px;padding-right: 0px;min-width: 550px;max-width: 100%;"
             >
               <el-table
                 v-if="!isEmptyValue(includedList)"
                 :data="[includedList[index]]"
                 border
                 :show-header="false"
+                style="min-width: 120%;padding-left: 0%;padding-right: 0%;"
               >
                 <el-table-column
                   prop="roleName"
-                  min-width="150"
                 />
-                <el-table-column
-                  fixed="right"
-                >
+                <el-table-column>
                   <template slot-scope="scope">
                     {{ $t('data.recordAccess.isReadonly') }} <el-switch v-model="scope.row.isReadOnly" />
                   </template>
                 </el-table-column>
-                <el-table-column
-                  fixed="right"
-                >
-                  <template slot-scope="scope">
+                <el-table-column>
+                  <template slot-scope="scope" min-width="150">
                     {{ $t('data.recordAccess.isDependentEntities') }} <el-switch v-model="scope.row.isDependentEntities" />
                   </template>
                 </el-table-column>
@@ -149,7 +145,7 @@
   }
 </style>
 <style lang="scss">
-.board-column .board-column-content[data-v-67e5b2d0] {
+  .board-column .board-column-content[data-v-29e430c7] {
     max-height: 350px;
     height: auto;
     overflow: auto;

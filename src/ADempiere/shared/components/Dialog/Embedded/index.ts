@@ -46,6 +46,9 @@ export default class Embedded extends Vue {
     default: undefined
   }) recordId?: any
 
+  // Data
+  public lock = false
+
   // Computed properties
   get isMobile(): boolean {
     return (this.$store.state.app as IAppState).device === DeviceType.Mobile
