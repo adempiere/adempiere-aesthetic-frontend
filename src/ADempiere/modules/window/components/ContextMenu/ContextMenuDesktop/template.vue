@@ -12,9 +12,7 @@
       {{ defaultActionName }}
       <el-dropdown-menu slot="dropdown">
         <el-scrollbar wrap-class="scroll-child">
-          <el-dropdown-item
-            command="refreshData"
-          >
+          <el-dropdown-item command="refreshData">
             <div class="contents">
               <div style="margin-right: 5%;margin-top: 10%;">
                 <i class="el-icon-refresh" style="font-weight: bolder;" />
@@ -25,9 +23,7 @@
                     {{ $t('components.contextMenuRefresh') }}
                   </b>
                 </span>
-                <p
-                  class="description"
-                >
+                <p class="description">
                   {{ $t('data.noDescription') }}
                 </p>
               </div>
@@ -43,21 +39,16 @@
               <div style="margin-right: 5%;margin-top: 10%;">
                 <i :class="iconAction(action)" style="font-weight: bolder;" />
               </div>
-                <el-dropdown
-                v-if="!isEmptyValue(action.childs)">
+              <el-dropdown v-if="!isEmptyValue(action.childs)">
                 <span class="contents">
                   <b class="label">
                     {{ action.name }}
                   </b>
                 </span>
-                <p
-                  class="description"
-                >
+                <p class="description">
                   {{ $t('data.noDescription') }}
                 </p>
-                <el-dropdown-menu
-                  slot="dropdown"
-                  @command="handleCommand">
+                <el-dropdown-menu slot="dropdown" @command="handleCommand">
                   <el-dropdown-item
                     v-for="(childs, key) in action.childs"
                     :key="key"
@@ -75,26 +66,36 @@
                     >
                       {{ childs.description }}
                     </p>
-                    <p
-                      v-else
-                      class="description"
-                    >
+                    <p v-else class="description">
                       {{ $t('data.noDescription') }}
                     </p>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-              <div
-                v-else
-              >
+              <div v-else>
                 <span class="contents">
                   <b class="label">
                     {{ action.name }}
                   </b>
                 </span>
-                <p
-                  class="description"
-                >
+                <p class="description">
+                  {{ $t('data.noDescription') }}
+                </p>
+              </div>
+            </div>
+          </el-dropdown-item>
+          <el-dropdown-item command="shareLink" :divided="true">
+            <div class="contents">
+              <div style="margin-right: 5%;margin-top: 10%;">
+                <i class="el-icon-copy-document" style="font-weight: bolder;" />
+              </div>
+              <div>
+                <span class="contents">
+                  <b class="label">
+                    {{ $t('components.contextMenuShareLink') }}
+                  </b>
+                </span>
+                <p class="description">
                   {{ $t('data.noDescription') }}
                 </p>
               </div>
@@ -110,36 +111,38 @@
         <i class="el-icon-arrow-down el-icon--right" />
       </el-button>
       <el-dropdown-menu slot="dropdown">
-      <el-scrollbar wrap-class="scroll-child">
-            <el-dropdown-item
-              v-for="(relation, index) in relationsList"
-              :key="index"
-              :command="relation"
-              :divided="true"
-            >
-              <div class="contents">
-                <div style="margin-right: 5%;margin-top: 10%;">
-                  <svg-icon :name="relation.meta.icon" />
-                </div>
-                <div>
-                  <span class="contents">
-                    <b class="label">
-                      {{ relation.meta.title }}
-                    </b>
-                  </span>
-                  <p
-                    class="description"
-                  >
-                    {{ relation.meta.description }}
-                  </p>
-                </div>
+        <el-scrollbar wrap-class="scroll-child">
+          <el-dropdown-item
+            v-for="(relation, index) in relationsList"
+            :key="index"
+            :command="relation"
+            :divided="true"
+          >
+            <div class="contents">
+              <div style="margin-right: 5%;margin-top: 10%;">
+                <svg-icon :name="relation.meta.icon" />
               </div>
-            </el-dropdown-item>
-          </el-scrollbar>
+              <div>
+                <span class="contents">
+                  <b class="label">
+                    {{ relation.meta.title }}
+                  </b>
+                </span>
+                <p class="description">
+                  {{ relation.meta.description }}
+                </p>
+              </div>
+            </div>
+          </el-dropdown-item>
+        </el-scrollbar>
       </el-dropdown-menu>
     </el-dropdown>
     <el-dropdown size="mini" trigger="click" @command="clickReferences">
-      <el-button type="warning" plain :disabled="!(isReferencesContent && isLoadedReferences)">
+      <el-button
+        type="warning"
+        plain
+        :disabled="!(isReferencesContent && isLoadedReferences)"
+      >
         {{ $t('components.contextMenuReferences') }}
         <i class="el-icon-arrow-down el-icon--right" />
       </el-button>
@@ -158,9 +161,7 @@
                     {{ reference.displayName }}
                   </b>
                 </span>
-                <p
-                  class="description"
-                >
+                <p class="description">
                   {{ $t('data.noDescription') }}
                 </p>
               </div>
@@ -173,106 +174,106 @@
 </template>
 
 <style>
-  .el-dropdown-menu--medium .el-dropdown-menu__item {
-    line-height: 17px;
-    padding: 0 17px;
-    display: grid;
-    font-size: 14px;
-  }
-  .el-dropdown-menu--medium .el-dropdown-menu__item {
-    line-height: 17px;
-    padding: 0 17px;
-    display: grid;
-    font-size: 14px;
-  }
-  .el-button-group > .el-button:not(:last-child) {
-    margin-right: -1px;
-    color: #409eff;
-    background: #ecf5ff;
-    border-color: #b3d8ff;
-  }
-  .el-button-group .el-button--primary:last-child {
-    margin-right: 1px;
-    color: #409eff;
-    background: #e6f1fd;
-    border-color: #b3d8ff;
-    border-top-color: #b3d8ff;
-    border-right-color: #b3d8ff;
-    border-bottom-color: #b3d8ff;
-    border-left-color: #000000 !important;
-  }
-   .el-dropdown .el-button-group:hover {
-    background: #1890ff;
-    border-color: #1890ff;
-    color: #FFFFFF;
-  }
-  .el-button-group:hover {
-    background: #1890ff;
-    border-color: #1890ff;
-    color: #FFFFFF;
-  }
-  .el-button-group .el-button--primary:hover {
-    background: #1890ff;
-    border-color: #1890ff;
-    color: #FFFFFF;
-  }
+.el-dropdown-menu--medium .el-dropdown-menu__item {
+  line-height: 17px;
+  padding: 0 17px;
+  display: grid;
+  font-size: 14px;
+}
+.el-dropdown-menu--medium .el-dropdown-menu__item {
+  line-height: 17px;
+  padding: 0 17px;
+  display: grid;
+  font-size: 14px;
+}
+.el-button-group > .el-button:not(:last-child) {
+  margin-right: -1px;
+  color: #409eff;
+  background: #ecf5ff;
+  border-color: #b3d8ff;
+}
+.el-button-group .el-button--primary:last-child {
+  margin-right: 1px;
+  color: #409eff;
+  background: #e6f1fd;
+  border-color: #b3d8ff;
+  border-top-color: #b3d8ff;
+  border-right-color: #b3d8ff;
+  border-bottom-color: #b3d8ff;
+  border-left-color: #000000 !important;
+}
+.el-dropdown .el-button-group:hover {
+  background: #1890ff;
+  border-color: #1890ff;
+  color: #ffffff;
+}
+.el-button-group:hover {
+  background: #1890ff;
+  border-color: #1890ff;
+  color: #ffffff;
+}
+.el-button-group .el-button--primary:hover {
+  background: #1890ff;
+  border-color: #1890ff;
+  color: #ffffff;
+}
 </style>
 
 <style scoped>
-  .el-tree-node__children {
-    overflow: hidden;
-    background-color: transparent;
-    max-width: 99%;
-    overflow: auto;
-  }
-  .el-dropdown .el-button-group {
-    display: flex;
-  }
-  .el-dropdown-menu {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10;
-    padding: 10px 0;
-    margin: 0px 0;
-    background-color: #FFFFFF;
-    border: 1px solid #e6ebf5;
-    border-radius: 4px;
-    -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    max-height: 300px;
-    max-width: 220px;
-    overflow: hidden;
-  }
-  .el-dropdown-menu--mini .el-dropdown-menu__item {
-    line-height: 14px;
-    padding: 0px 15px;
-    font-size: 10px;
-  }
-  .el-dropdown-menu__item--divided {
-    position: relative;
-    /* margin-top: 6px; */
-    border-top: 1px solid #e6ebf5;
-  }
-  .svg-icon {
-    width: 1em;
-    height: 2em;
-    vertical-align: -0.15em;
-    fill: currentColor;
-    overflow: hidden;
-  }
-  .label {
-    font-size: 14px;
-    margin-top: 0% !important;
-    margin-left: 0px;
-    text-align: initial;
-  }
-  .description {
-    margin: 0px;
-    font-size: 12px;
-    text-align: initial;
-  }
-  .contents {
-    display: inline-flex;
-  }
+.el-tree-node__children {
+  overflow: hidden;
+  background-color: transparent;
+  max-width: 99%;
+  overflow: auto;
+}
+.el-dropdown .el-button-group {
+  display: flex;
+}
+.el-dropdown-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  padding: 10px 0;
+  margin: 0px 0;
+  background-color: #ffffff;
+  border: 1px solid #e6ebf5;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  max-height: 300px;
+  max-width: 220px;
+  overflow: hidden;
+}
+.el-dropdown-menu--mini .el-dropdown-menu__item {
+  line-height: 14px;
+  padding: 0px 15px;
+  font-size: 10px;
+}
+.el-dropdown-menu__item--divided {
+  position: relative;
+  /* margin-top: 6px; */
+  border-top: 1px solid #e6ebf5;
+}
+.svg-icon {
+  width: 1em;
+  height: 2em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+.label {
+  font-size: 14px;
+  margin-top: 0% !important;
+  margin-left: 0px;
+  text-align: initial;
+}
+.description {
+  margin: 0px;
+  font-size: 12px;
+  text-align: initial;
+}
+.contents {
+  display: inline-flex;
+}
 </style>

@@ -315,6 +315,7 @@
       />
         <component
           :is="componentRender"
+          v-if="!showRecordAccess"
           :field-attributes="contextMenuField.fieldAttributes"
           :source-field="contextMenuField.fieldAttributes"
           :record-uuid="contextMenuField.fieldAttributes.recordUuid"

@@ -56,6 +56,28 @@
             </div>
           </div>
         </el-dropdown-item>
+         <el-dropdown-item
+          command="shareLink"
+          :divided="true"
+        >
+          <div class="contents">
+            <div style="margin-right: 5%;margin-top: 10%;">
+              <i class="el-icon-copy-document" style="font-weight: bolder;" />
+            </div>
+            <div>
+              <span class="contents">
+                <b class="label">
+                  {{ $t('components.contextMenuShareLink') }}
+                </b>
+              </span>
+              <p
+                class="description"
+              >
+                {{ $t('data.noDescription') }}
+              </p>
+            </div>
+          </div>
+        </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
     <!-- menu relations -->

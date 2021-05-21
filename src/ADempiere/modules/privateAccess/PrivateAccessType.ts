@@ -28,6 +28,7 @@ export interface IRecordAccessRoleData {
 
 export interface IRecordAccessRoleDataExtended extends IRecordAccessRoleData {
     isLocked?: boolean
+    isRoleConfig?: boolean
 }
 
 export interface IRecordAccessDataExtended extends IAccessRecordAttribute {

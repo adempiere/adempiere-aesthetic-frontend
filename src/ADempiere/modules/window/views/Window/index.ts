@@ -298,7 +298,7 @@ export default class WindowView extends Vue {
         } = this.$store.getters[Namespaces.ContainerInfo + '/' + 'getRecordLogs']
 
       const changeLog: IEntityLogData[] = recordLogs.entityLogs
-      if (!changeLog) {
+      if (isEmptyValue(changeLog)) {
         return changeLog
       }
       // TODO: Verify it, parse date value
@@ -311,7 +311,7 @@ export default class WindowView extends Vue {
     }
 
     get getIsChangeLog(): boolean {
-      if (!this.gettersListRecordLogs) {
+      if (isEmptyValue(this.gettersListRecordLogs)) {
         return false
       }
       return true
@@ -321,7 +321,7 @@ export default class WindowView extends Vue {
       const workflowLogs: IWorkflowProcessData[] = this.$store.getters[
         Namespaces.ContainerInfo + '/' + 'getNodeWorkflow'
       ]
-      if (!workflowLogs) {
+      if (isEmptyValue(workflowLogs)) {
         return false
       }
       return true
@@ -362,7 +362,7 @@ export default class WindowView extends Vue {
           return record.UUID === action
         })
       }
-      return this.currentRecord
+      return undefined
     }
 
     get recordId() {
@@ -385,7 +385,7 @@ export default class WindowView extends Vue {
 
     get isDocumentTab(): boolean {
       const panel = this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](this.windowMetadata.currentTabUuid)
-      if (panel) {
+      if (!isEmptyValue(panel)) {
         return panel.isDocument
       }
 
@@ -397,7 +397,7 @@ export default class WindowView extends Vue {
         this.windowMetadata.currentTabUuid
       )
       if (
-        panel &&
+        !isEmptyValue(panel) &&
             this.isDocumentTab &&
             !this.isNewRecord
       ) {
@@ -457,8 +457,8 @@ export default class WindowView extends Vue {
       const panelRight: HTMLElement | null = document.getElementById(
         'PanelRight'
       )
-      if (panelRight) {
-        const widthPanel: number = panelRight.clientWidth - 350
+      if (!isEmptyValue(panelRight)) {
+        const widthPanel: number = panelRight!.clientWidth - 350
         this.$store.commit(Namespaces.WindowDefinition + '/' + 'setPanelRight', String(widthPanel))
       }
     }
@@ -529,7 +529,7 @@ export default class WindowView extends Vue {
       }
 
       const record = this.currentRecord
-      let recordId = ''
+      let recordId = 0
       if (!isEmptyValue(record)) {
         recordId = record[tableName + '_ID']
       }
@@ -616,11 +616,16 @@ export default class WindowView extends Vue {
       }
       this.isLoaded = true
       const record = this.currentRecord
+      const tableName = this.getTableName
+      let recordId = 0
+      if (!isEmptyValue(record)) {
+        recordId = record[tableName + '_ID']
+      }
       if (this.isDocumentTab) {
         this.$store.dispatch(Namespaces.ContextMenu + '/' + 'listDocumentStatus', {
-          tableName: this.getTableName,
+          tableName,
           recordUuid: this.$route.query.action,
-          recordId: (record) ? record[this.getTableName + '_ID'] : undefined
+          recordId
         })
       }
     }
