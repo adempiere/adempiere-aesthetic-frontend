@@ -1,6 +1,6 @@
 import { ID, INTEGER } from '@/ADempiere/shared/utils/references'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
-import { calculationValue, clearVariables } from '@/ADempiere/shared/utils/valueUtils'
+import { calculationValue, clearVariables, isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
 import { ICalculatorObject } from './type'
 
@@ -112,6 +112,16 @@ export default class FieldCalc extends Vue {
           clearVariables()
           this.$children[0].$props.visible = true
           this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
+          if (!isEmptyValue(this.$route.query.fieldColumnName)) {
+            this.$router.push({
+              name: this.$route.name!,
+              query: {
+                ...this.$route.query,
+                typeAction: '',
+                fieldColumnName: ''
+              }
+            }, () => {})
+          }
         })
     }
 

@@ -13,11 +13,11 @@ import {
   ISizeData
 } from '../../utils/references'
 import { Namespaces } from '../../utils/types'
-import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
+import { isEmptyValue, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import { RouteConfig } from 'vue-router'
 import { IOptionField } from './type'
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
-import VueI18n from 'vue-i18n'
+import VueI18n, { TranslateResult } from 'vue-i18n'
 
 @Component({
   name: 'FieldDefinition',
@@ -41,6 +41,9 @@ export default class FieldDefinition extends Vue {
     public visibleForDesktop = false
     public value: any
     public triggerMenu = 'click'
+    public showPopoverPath = false
+    public timeOut?: NodeJS.Timeout
+    public optionColumnName?: string
 
     // Computed properties
     get labelStyle() {
@@ -66,7 +69,9 @@ export default class FieldDefinition extends Vue {
 
     get optionFieldFComponentRender() {
       let component
-      switch (this.contextMenuField.name) {
+      const option: IOptionField | undefined = this.optionField.find((option: IOptionField) => (this.$route.query.typeAction as string) === option.name)
+      const nameComponent: TranslateResult = isEmptyValue(option) ? (this.contextMenuField.name as TranslateResult) : (this.$route.query.typeAction as TranslateResult)
+      switch (nameComponent) {
         case this.$t('field.info'):
           component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/ContextInfo')
           break
@@ -433,6 +438,28 @@ export default class FieldDefinition extends Vue {
       })
     }
 
+    get openOptionField(): boolean {
+      const option: IOptionField | undefined = this.optionField.find(option => this.$route.query.typeAction === option.name)
+      if (!isEmptyValue(this.$route.query) && option) {
+        return true
+      }
+      return false
+    }
+
+    set openOptionField(value: boolean) {
+      if (!value) {
+        this.showPopoverPath = false
+        this.$router.push({
+          name: this.$route.name!,
+          query: {
+            ...this.$route.query,
+            typeAction: '',
+            fieldColumnName: ''
+          }
+        }, () => {})
+      }
+    }
+
     @Watch('metadataField')
     handleMetaadataFieldChange(value: any) {
       this.field = value
@@ -441,6 +468,13 @@ export default class FieldDefinition extends Vue {
     @Watch('panelContextMenu')
     handlePanelContextMenu(value: boolean) {
       this.visibleForDesktop = false
+    }
+
+    @Watch('openOptionField')
+    handleOpenOptionFieldChange(value: boolean) {
+      if (!value) {
+        this.showPopoverPath = false
+      }
     }
 
     // Methods
@@ -464,6 +498,14 @@ export default class FieldDefinition extends Vue {
         this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
       } else {
         this.visibleForDesktop = true
+        this.$router.push({
+          name: this.$route.name!,
+          query: {
+            ...this.$route.query,
+            typeAction: key.toString(),
+            fieldColumnName: this.field.columnName
+          }
+        }, () => {})
       }
       this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowPopoverField', true)
       this.$store.dispatch(Namespaces.ContextMenu + '/' + 'setOptionField', option)
@@ -527,6 +569,10 @@ export default class FieldDefinition extends Vue {
 
     // Hooks
     created() {
+      this.optionColumnName = this.$route.query.fieldColumnName as string
+      this.timeOut = setTimeout(() => {
+        this.showPopoverPath = true
+      }, 2000)
       // assined field with prop
       this.field = this.metadataField
       if (this.field.isCustomField && !this.field.componentPath) {

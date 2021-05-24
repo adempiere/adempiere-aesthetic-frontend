@@ -124,6 +124,16 @@ export default class Preference extends Mixins(MixinForm) {
       // this.$children[0].$props.visible = false
       (this.$children[0] as any).visible = false
       this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
+      if (!isEmptyValue(this.$route.query.fieldColumnName)) {
+        this.$router.push({
+          name: this.$route.name!,
+          query: {
+            ...this.$route.query,
+            typeAction: '',
+            fieldColumnName: ''
+          }
+        }, () => {})
+      }
     }
 
     remove(): void {

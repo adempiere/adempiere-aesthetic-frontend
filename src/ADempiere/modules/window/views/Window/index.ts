@@ -263,7 +263,7 @@ export default class WindowView extends Vue {
     }
 
     get isShowedTabsChildren(): boolean {
-      if (this.windowMetadata && this.windowMetadata.isShowedTabsChildren) {
+      if (this.windowMetadata && this.windowMetadata.isShowedTabsChildren && isEmptyValue(this.$route.query.typeAction)) {
         return this.windowMetadata.isShowedTabsChildren
       }
       return false
