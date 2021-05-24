@@ -25,7 +25,6 @@
             size="medium"
             style="width: 100%;"
             filterable
-            @change="getTranslation"
           >
             <!-- <el-option
               key="blank-option"
@@ -41,17 +40,35 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          :label="$t('field.container.codeTranslation')"
+          :label="$t('field.codeTranslation') + fieldAttributes.name"
           :required="true"
         >
           <el-input
             v-model="translatedValue"
             :disabled="isEmptyValue(langValue)"
-            @change="changeTranslationValue"
           />
         </el-form-item>
       </el-form>
     </div>
+    <br>
+    <el-row>
+      <el-col :span="24">
+        <samp style="float: right; padding-right: 10px;">
+          <el-button
+            type="danger"
+            class="custom-button-address-location"
+            icon="el-icon-close"
+            @click="close()"
+          />
+          <el-button
+            type="primary"
+            class="custom-button-address-location"
+            icon="el-icon-check"
+            @click="changeTranslationValue(translatedValue)"
+          />
+        </samp>
+      </el-col>
+    </el-row>
   </el-card>
 </template>
 

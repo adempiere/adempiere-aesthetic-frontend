@@ -35,7 +35,7 @@ export default class FieldTranslated extends Vue {
       const values: IKeyValueObject<IValueData>[] = this.$store.getters[Namespaces.Language + '/' + 'getTranslationByLanguage']({
         containerUuid: this.fieldAttributes.containerUuid,
         language: this.langValue,
-        recordUuid: this.recordUuid
+        recordUuid: this.fieldAttributes.recordUuid
       })
       if (!values) {
         return undefined
@@ -62,7 +62,7 @@ export default class FieldTranslated extends Vue {
       this.isLoading = true
       this.$store.dispatch(Namespaces.Language + '/' + 'getTranslationsFromServer', {
         containerUuid: this.fieldAttributes.containerUuid,
-        recordUuid: this.recordUuid,
+        recordUuid: this.fieldAttributes.recordUuid,
         tableName: this.fieldAttributes.tableName,
         language: this.langValue
       })
@@ -82,12 +82,20 @@ export default class FieldTranslated extends Vue {
         containerUuid: this.fieldAttributes.containerUuid,
         language: this.langValue,
         columnName: this.fieldAttributes.columnName,
+        recordUuid: this.fieldAttributes.recordUuid,
         value
       })
+      this.close()
+    }
+
+    close() {
+      (this.$children[0] as any).visible = false
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
     }
 
     // Hooks
     created() {
+      this.getTranslation()
       const langMatch: ILanguageData | undefined = this.languageList.find((itemLanguage: ILanguageData) => {
         return itemLanguage.languageISO === getLocale()
       })

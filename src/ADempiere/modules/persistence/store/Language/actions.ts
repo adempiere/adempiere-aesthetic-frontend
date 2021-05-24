@@ -111,7 +111,7 @@ export const actions: LanguageActionTree = {
           return
         }
 
-        const { values, uuid } = translationResponse.list[0]
+        const { values, uuid, language } = translationResponse.list[0]
         context.dispatch('setTranslation', {
           containerUuid,
           tableName,
@@ -139,10 +139,11 @@ export const actions: LanguageActionTree = {
             containerUuid: string
             language: string
             columnName: string
+            recordUuid: string
             value: IValueData
         }
   ) {
-    const { containerUuid, language, columnName, value } = payload
+    const { containerUuid, language, columnName, value, recordUuid: uuid } = payload
     return new Promise(resolve => {
       const translationData:
                 | ITranslationDataExtended
@@ -167,9 +168,9 @@ export const actions: LanguageActionTree = {
         return value
       }
       // IKeyValueObject<IValueData>[]
-      requestUpdateEntity({
+      return requestUpdateEntity({
         tableName: `${translationData!.tableName}_Trl`, // '_Trl' is suffix for translation tables
-        uuid: translationSelected!.uuid,
+        uuid,
         attributes: [
           {
             key: columnName,
@@ -187,6 +188,7 @@ export const actions: LanguageActionTree = {
             newValues
           })
           resolve(newValues)
+          return newValues
         })
         .catch((error: any) => {
           console.warn(
