@@ -47,7 +47,9 @@ export const mutations: ContextMenuMutationTree = {
       recordUuid: undefined
     }
     state.recordAccess = false
-    state.embedded = {}
+    state.embedded = {
+      name: ''
+    }
   },
   fieldContextMenu(state: ContextMenuState, payload) {
     state.optionField = payload

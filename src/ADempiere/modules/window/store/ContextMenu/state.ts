@@ -18,5 +18,7 @@ export const state : ContextMenuState = {
     recordUuid: undefined
   },
   recordAccess: false,
-  embedded: {}
+  embedded: {
+    name: ''
+  }
 }

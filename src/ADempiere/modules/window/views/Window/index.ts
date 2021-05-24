@@ -11,7 +11,7 @@ import WorkflowLogs from '../../components/ContainerInfo/WorkflowLogs'
 import WorkflowStatusBar from '@/ADempiere/shared/components/WorkflowStatusBar'
 import SplitPane from 'vue-splitpane'
 import ModalDialog from '@/ADempiere/shared/components/Dialog'
-import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
+import { ActionContextName, PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
 import { Route } from 'vue-router'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IWindowDataExtended } from '@/ADempiere/modules/dictionary'
@@ -439,9 +439,19 @@ export default class WindowView extends Vue {
       }
     }
 
+    @Watch('getRecord')
+    handleGetRecordChange(value: any) {
+      if (!isEmptyValue(this.windowMetadata.currentTab?.tableName) && !isEmptyValue(value) && (!isEmptyValue(this.$route.query) && this.$route.query.typeAction === ActionContextName.RecordAccess)) {
+        this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', true)
+      }
+    }
+
     // Hooks
     created() {
       this.windowUuid = this.$route.meta.uuid
+      if (!isEmptyValue(this.currentRecord) && (!isEmptyValue(this.$route.query) && this.$route.query.typeAction === ActionContextName.RecordAccess)) {
+        this.$store.commit('setRecordAccess', true)
+      }
       this.getWindow()
       if (this.isShowedRecordNavigation) {
         this.handleResize()

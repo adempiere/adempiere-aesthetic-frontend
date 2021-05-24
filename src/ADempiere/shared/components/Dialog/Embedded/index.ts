@@ -46,6 +46,11 @@ export default class Embedded extends Vue {
     default: undefined
   }) recordId?: any
 
+  @Prop({
+    type: String,
+    default: undefined
+  }) visible?: string
+
   // Data
   public lock = false
 
@@ -95,6 +100,13 @@ export default class Embedded extends Vue {
         name: ''
       }
     })
+    this.$router.push({
+      name: this.$route.name!,
+      query: {
+        ...this.$route.query,
+        typeAction: ''
+      }
+    }, () => {})
     this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', false)
   }
 
