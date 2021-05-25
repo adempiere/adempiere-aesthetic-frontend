@@ -47,7 +47,6 @@
                     placement="top"
                     trigger="click"
                     style="padding: 0px;"
-                    :hide="visibleForDesktop"
                   >
                     <component
                       :is="optionFieldFComponentRender"
@@ -129,8 +128,8 @@
                       <div v-if="option.name !== $t('language')" style="margin-right: 5%;padding-top: 3%;">
                         <i :class="option.icon" style="font-weight: bolder;" />
                       </div>
-                      <div v-else style="margin-right: 5%">
-                        <svg-icon :icon-class="option.icon" style="margin-right: 5px;" />
+                      <div v-else style="margin-right: 5%; padding-left: 8%;">
+                        <svg-icon :name="option.icon" :icon-class="option.icon" style="margin-right: 5px;" />
                       </div>
                       <div>
                         <span class="contents">
@@ -161,6 +160,21 @@
             </el-submenu>
           </el-menu>
         </template>
+        <el-popover
+          v-if="openOptionField && !isEmptyValue(optionColumnName) && (optionColumnName === field.columnName) && showPopoverPath"
+          v-model="openOptionField"
+          placement="top-start"
+          width="400"
+          trigger="click"
+        >
+          <component
+            :is="optionFieldFComponentRender"
+            :field-attributes="fieldAttributes"
+            :source-field="fieldAttributes"
+            :field-value="valueField"
+          />
+          <el-button slot="reference" type="text" :disabled="true" @click="openOptionField = !openOptionField" />
+        </el-popover>
         <component
           :is="componentRender"
           :ref="field.columnName"
@@ -266,6 +280,9 @@
 </style>
 
 <style lang="scss">
+  .el-popover {
+      position: fixed;
+  }
   .custom-tittle-popover {
     font-size: 14px;
     font-weight: bold;

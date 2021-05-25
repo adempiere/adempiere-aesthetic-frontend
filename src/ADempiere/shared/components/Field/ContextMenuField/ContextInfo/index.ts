@@ -1,5 +1,5 @@
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
+import { isEmptyValue, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
 import Template from './template.vue'
@@ -59,5 +59,15 @@ export default class FieldContextInfo extends Vue {
         })
       }
       this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
+      if (!isEmptyValue(this.$route.query.fieldColumnName)) {
+        this.$router.push({
+          name: this.$route.name!,
+          query: {
+            ...this.$route.query,
+            typeAction: '',
+            fieldColumnName: ''
+          }
+        }, () => {})
+      }
     }
 }

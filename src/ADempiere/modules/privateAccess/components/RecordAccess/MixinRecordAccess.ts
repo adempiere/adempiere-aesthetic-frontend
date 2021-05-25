@@ -200,6 +200,13 @@ export default class MixinRecordAccess extends Vue {
         type: 'window',
         action: undefined
       })
+      this.$router.push({
+        name: this.$route.name!,
+        query: {
+          ...this.$route.query,
+          typeAction: ''
+        }
+      }, () => {})
       this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', false)
       this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
     }

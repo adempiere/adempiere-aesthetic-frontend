@@ -68,25 +68,29 @@ export default class Preference extends Mixins(MixinForm) {
       }
       //  Create Message
       let expl: string = language.t('components.preference.for').toString()//  components.preference.for
-      if (forCurrentClient.value && forCurrentOrganization && forCurrentOrganization.value) {
-        expl = expl.concat(language.t('components.preference.clientAndOrganization').toString())//  components.preference.clientAndOrganization
-      } else if (forCurrentClient.value && forCurrentOrganization && !forCurrentOrganization.value) {
-        expl = expl.concat(language.t('components.preference.allOrganizationOfClient').toString())//  components.preference.allOrganizationOfClient
-      } else if (!forCurrentClient.value && forCurrentOrganization && forCurrentOrganization.value) {
-        forCurrentOrganization.value = false
-        expl = expl.concat(language.t('components.preference.entireSystem').toString())//  components.preference.entireSystem
-      } else {
-        expl = expl.concat(language.t('components.preference.entireSystem').toString())//  components.preference.entireSystem
+      if (forCurrentOrganization && forCurrentClient) {
+        if (forCurrentClient.value && forCurrentOrganization.value) {
+          expl = expl.concat(language.t('components.preference.clientAndOrganization').toString())//  components.preference.clientAndOrganization
+        } else if (forCurrentClient.value && !forCurrentOrganization.value) {
+          expl = expl.concat(language.t('components.preference.allOrganizationOfClient').toString())//  components.preference.allOrganizationOfClient
+        } else if (!forCurrentClient.value && forCurrentOrganization.value) {
+          forCurrentOrganization.value = false
+          expl = expl.concat(language.t('components.preference.entireSystem').toString())//  components.preference.entireSystem
+        } else {
+          expl = expl.concat(language.t('components.preference.entireSystem').toString())//  components.preference.entireSystem
+        }
       }
-      if (forCurrentUser && forCurrentUser.value) {
-        expl = expl.concat(language.t('components.preference.thisUser').toString())//  components.preference.thisUser
-      } else {
-        expl = expl.concat(language.t('components.preference.allUsers').toString())//  components.preference.allUsers
-      }
-      if (forCurrentContainer && forCurrentContainer.value) {
-        expl = expl.concat(language.t('components.preference.thisWindow').toString())//  components.preference.thisWindow
-      } else {
-        expl = expl.concat(language.t('components.preference.allWindows').toString())//  components.preference.allWindows
+      if (forCurrentUser && forCurrentContainer) {
+        if (forCurrentUser.value) {
+          expl = expl.concat(language.t('components.preference.thisUser').toString())//  components.preference.thisUser
+        } else {
+          expl = expl.concat(language.t('components.preference.allUsers').toString())//  components.preference.allUsers
+        }
+        if (forCurrentContainer.value) {
+          expl = expl.concat(language.t('components.preference.thisWindow').toString())//  components.preference.thisWindow
+        } else {
+          expl = expl.concat(language.t('components.preference.allWindows').toString())//  components.preference.allWindows
+        }
       }
       return expl
     }
@@ -120,6 +124,16 @@ export default class Preference extends Mixins(MixinForm) {
       // this.$children[0].$props.visible = false
       (this.$children[0] as any).visible = false
       this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
+      if (!isEmptyValue(this.$route.query.fieldColumnName)) {
+        this.$router.push({
+          name: this.$route.name!,
+          query: {
+            ...this.$route.query,
+            typeAction: '',
+            fieldColumnName: ''
+          }
+        }, () => {})
+      }
     }
 
     remove(): void {
