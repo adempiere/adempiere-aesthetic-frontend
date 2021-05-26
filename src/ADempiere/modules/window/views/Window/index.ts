@@ -91,6 +91,9 @@ export default class WindowView extends Vue {
         case this.$t('field.preference'):
           component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Preference')
           break
+        case this.$t('field.logsField'):
+          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/ChangeLogs')
+          break
       }
       return component
     }
@@ -441,6 +444,13 @@ export default class WindowView extends Vue {
 
     @Watch('getRecord')
     handleGetRecordChange(value: any) {
+      if (value && this.getTableName && this.recordId && isEmptyValue(this.gettersListRecordLogs)) {
+        this.$store.dispatch(Namespaces.ContainerInfo + '/' + 'listRecordLogs', {
+          tableName: this.getTableName,
+          recordId: this.recordId,
+          recordUuid: value.UUID
+        })
+      }
       if (!isEmptyValue(this.windowMetadata.currentTab?.tableName) && !isEmptyValue(value) && (!isEmptyValue(this.$route.query) && this.$route.query.typeAction === ActionContextName.RecordAccess)) {
         this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', true)
       }
@@ -657,11 +667,27 @@ export default class WindowView extends Vue {
     }
 
     handleChangeShowedTabChildren(isShowedChilds: any): void {
+      console.log('click button')
+      console.log(isShowedChilds)
+      console.log('data to send')
+      console.log({
+        parentUuid: this.windowUuid, // act as parentUuid
+        window: this.windowMetadata,
+        attributeName: 'isShowedTabsChildren',
+        attributeValue: isShowedChilds
+      })
+      console.warn({
+        isShowedTabsChildren: this.isShowedTabsChildren
+      })
+
       this.$store.dispatch(Namespaces.WindowDefinition + '/' + 'changeWindowAttribute', {
         parentUuid: this.windowUuid, // act as parentUuid
         window: this.windowMetadata,
         attributeName: 'isShowedTabsChildren',
         attributeValue: isShowedChilds
+      })
+      console.warn({
+        isShowedTabsChildren2: this.isShowedTabsChildren
       })
     }
 }

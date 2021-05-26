@@ -84,6 +84,9 @@ export default class FieldDefinition extends Vue {
         case this.$t('field.preference'):
           component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Preference')
           break
+        case this.$t('field.logsField'):
+          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/ChangeLogs')
+          break
       }
       return component
     }
@@ -390,18 +393,21 @@ export default class FieldDefinition extends Vue {
           name: this.$t('field.info'),
           enabled: true,
           fieldAttributes: this.fieldAttributes,
+          svg: false,
           icon: 'el-icon-info'
         },
         {
           name: this.$t('table.ProcessActivity.zoomIn'),
           enabled: this.isContextInfo,
           fieldAttributes: this.fieldAttributes,
+          svg: false,
           icon: 'el-icon-files'
         },
         {
           name: this.$t('language'),
           enabled: this.field.isTranslatedField,
           fieldAttributes: this.fieldAttributes,
+          svg: true,
           icon: 'language'
         },
         {
@@ -410,6 +416,7 @@ export default class FieldDefinition extends Vue {
           fieldAttributes: this.fieldAttributes,
           recordDataFields: this.recordDataFields,
           valueField: this.valueField,
+          svg: false,
           icon: 'el-icon-s-operation'
         },
         {
@@ -417,7 +424,16 @@ export default class FieldDefinition extends Vue {
           enabled: true,
           fieldAttributes: this.fieldAttributes,
           valueField: this.valueField,
+          svg: false,
           icon: 'el-icon-notebook-2'
+        },
+        {
+          name: this.$t('field.logsField'),
+          enabled: true,
+          fieldAttributes: this.fieldAttributes,
+          valueField: this.valueField,
+          svg: true,
+          icon: 'tree-table'
         }
       ]
     }

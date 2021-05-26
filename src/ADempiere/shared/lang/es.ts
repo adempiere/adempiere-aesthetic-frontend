@@ -300,6 +300,9 @@ export default {
     calculator: 'Calculadora',
     preference: 'Preferencia',
     codeTranslation: 'Traduccion de ',
+    logsField: 'Bitácora de Cambios',
+    contextInfo: 'Información del Contexto',
+    logsFieldEmpty: 'El campo no tiene cambios aún',
     container: {
       help: 'Ayuda',
       description: 'Descripción'

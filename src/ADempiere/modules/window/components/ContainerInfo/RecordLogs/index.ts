@@ -1,7 +1,8 @@
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Vue, Component } from 'vue-property-decorator'
-import { IEntityLogData } from '../../../WindowType'
+import { IEntityLogData, IEntityLogDataExtended } from '../../../WindowType'
 import MixinInfo from '../mixinInfo'
 import Template from './template.vue'
 
@@ -35,8 +36,26 @@ export default class RecordLogs extends Vue {
       return 'panel'
     }
 
-    get gettersListRecordLogs(): IEntityLogData[] {
-      return this.$store.getters[Namespaces.ContainerInfo + '/' + 'getRecordLogs'].entityLogs
+    get gettersListRecordLogs(): IEntityLogDataExtended[] {
+      const log: IEntityLogData[] = (this.$store.getters[Namespaces.ContainerInfo + '/' + 'getRecordLogs'].entityLogs as IEntityLogData[])
+      if (log) {
+        return log.map((element: IEntityLogData) => {
+          let type: string
+          if (!isEmptyValue(element.changeLogsList[0].newDisplayValue) && isEmptyValue(element.changeLogsList[0].oldDisplayValue)) {
+            type = 'success'
+          } else if (isEmptyValue(element.changeLogsList[0].newDisplayValue) && !isEmptyValue(element.changeLogsList[0].oldDisplayValue)) {
+            type = 'danger'
+          } else {
+            type = 'primary'
+          }
+          return {
+            ...element,
+            columnName: element.changeLogsList[0].columnName,
+            type
+          }
+        })
+      }
+      return []
     }
 
     get getIsChangeLog(): boolean {
@@ -47,6 +66,10 @@ export default class RecordLogs extends Vue {
     }
 
     // Methods
+    sortSequence(itemA: IEntityLogDataExtended, itemB: IEntityLogDataExtended): number {
+      return new Date().setTime(new Date(itemB.logDate).getTime()) - new Date().setTime(new Date(itemA.logDate).getTime())
+    }
+
     showKey(key: number, index: number) {
       if (key === this.currentKey && index === this.typeAction) {
         this.currentKey = 1000

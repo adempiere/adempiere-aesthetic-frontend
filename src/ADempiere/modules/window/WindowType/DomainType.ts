@@ -97,6 +97,16 @@ export enum EventType {
     STATE_CHANGED = 2
 }
 
+export interface IChangeLogData {
+    columnName: string
+    displayColumnName: string
+    oldValue: string
+    newValue: string
+    oldDisplayValue: string
+    newDisplayValue: string
+    description: string
+}
+
 export interface IEntityLogData {
     logId: number
     id: number
@@ -109,17 +119,12 @@ export interface IEntityLogData {
     eventType: EntityEventType
     eventTypeName: string
     logDate: number
-    changeLogsList: IEntityLogData
+    changeLogsList: IChangeLogData[]
 }
 
-export interface IChangeLogData {
+export interface IEntityLogDataExtended extends IEntityLogData {
     columnName: string
-    displayColumnName: string
-    oldValue: string
-    newValue: string
-    oldDisplayValue: string
-    newDisplayValue: string
-    description: string
+    type: string
 }
 
 export interface IEntityChatData {
