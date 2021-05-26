@@ -44,6 +44,7 @@ export default class FieldDefinition extends Vue {
     public showPopoverPath = false
     public timeOut?: NodeJS.Timeout
     public optionColumnName?: string
+    public visibleFields: boolean[] = []
 
     // Computed properties
     get labelStyle() {
@@ -585,6 +586,9 @@ export default class FieldDefinition extends Vue {
 
     // Hooks
     created() {
+      this.listOption.map(() => {
+        this.visibleFields.push(false)
+      })
       this.optionColumnName = this.$route.query.fieldColumnName as string
       this.timeOut = setTimeout(() => {
         this.showPopoverPath = true

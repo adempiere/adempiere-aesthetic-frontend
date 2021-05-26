@@ -1,6 +1,6 @@
 import preferenceFields from './preferenceFields'
 import { setPreference, deletePreference } from '@/ADempiere/modules/field/FieldService/preference'
-import { createFieldFromDictionary, IFieldTemplateData } from '@/ADempiere/shared/utils/lookupFactory'
+import { IFieldTemplateData } from '@/ADempiere/shared/utils/lookupFactory'
 import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
 import { IFieldLocation } from '../../FieldLocation/fieldList'
 import language from '@/lang'
@@ -9,6 +9,7 @@ import Template from './template.vue'
 import MixinForm from '../../../Form/MixinForm'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import MixinContextMenuField from '../MixinContextMenuField'
 
 type IPreferenceMetadataItem = IFieldTemplateData & { containerUuid?: string }
 
@@ -16,7 +17,7 @@ type IPreferenceMetadataItem = IFieldTemplateData & { containerUuid?: string }
   name: 'Preference',
   mixins: [Template, MixinForm]
 })
-export default class Preference extends Mixins(MixinForm) {
+export default class Preference extends Mixins(MixinForm, MixinContextMenuField) {
     @Prop({
       type: [Object],
       required: true,

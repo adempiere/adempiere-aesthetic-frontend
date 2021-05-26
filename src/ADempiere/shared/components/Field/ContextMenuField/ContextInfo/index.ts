@@ -1,14 +1,15 @@
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { isEmptyValue, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
+import MixinContextMenuField from '../MixinContextMenuField'
 import Template from './template.vue'
 
 @Component({
   name: 'FieldContextInfo',
   mixins: [Template]
 })
-export default class FieldContextInfo extends Vue {
+export default class FieldContextInfo extends Mixins(MixinContextMenuField) {
     @Prop({ type: Object, required: true }) fieldAttributes!: any
     @Prop({ type: [Number, String, Boolean, Array, Object, Date], default: undefined }) fieldValue?: [Number, String, Boolean, any[], Object, Date]
     // eslint-disable-next-line
