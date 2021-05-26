@@ -1,18 +1,19 @@
 import { ID, INTEGER } from '@/ADempiere/shared/utils/references'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { calculationValue, clearVariables, isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
-import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import { ICalculatorObject } from './type'
 
 import buttons from './buttons'
 import Template from './template.vue'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
+import MixinContextMenuField from '../MixinContextMenuField'
 
 @Component({
   name: 'FieldCalc',
   mixins: [Template]
 })
-export default class FieldCalc extends Vue {
+export default class FieldCalc extends Mixins(MixinContextMenuField) {
     @Prop({ type: Object, required: true }) fieldAttributes!: any
     @Ref() readonly calculatorInput!: HTMLElement
     @Prop({ type: Number, default: undefined }) fieldValue?: number

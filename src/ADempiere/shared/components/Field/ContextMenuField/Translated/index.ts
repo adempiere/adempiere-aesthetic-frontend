@@ -1,14 +1,15 @@
 import Template from './template.vue'
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { ILanguageData, IValueData } from '@/ADempiere/modules/core'
 import { getLocale } from '@/ADempiere/shared/lang/index'
+import MixinContextMenuField from '../MixinContextMenuField'
 
 @Component({
   name: 'FieldTranslated',
   mixins: [Template]
 })
-export default class FieldTranslated extends Vue {
+export default class FieldTranslated extends Mixins(MixinContextMenuField) {
     @Prop({ type: Object, required: true }) fieldAttributes!: any
     @Prop({ type: String, default: undefined }) recordUuid?: string
     public langValue?: string = ''

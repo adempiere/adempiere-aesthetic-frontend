@@ -7,11 +7,11 @@
       <el-scrollbar :wrap-class="classIsMobilePanel">
         <el-timeline>
           <el-timeline-item
-            v-for="(listLogs, key) in gettersListRecordLogs"
-            :key="key"
+            v-for="(listLogs, key) in gettersListRecordLogs.sort(sortSequence)"
+            :key="listLogs.logId"
+            :type="listLogs.type"
             :timestamp="translateDate(listLogs.logDate)"
             placement="top"
-            color="#008fd3"
           >
             <el-card shadow="hover" class="clearfix">
               <div>
@@ -71,6 +71,6 @@
     height: 57vh;
   }
   .panel {
-    height: 100vh;
+    height: 75vh;
   }
 </style>

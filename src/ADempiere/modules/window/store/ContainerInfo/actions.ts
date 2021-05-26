@@ -3,6 +3,7 @@ import { IResponseList } from '@/ADempiere/shared/utils/types'
 import { ActionContext, ActionTree } from 'vuex'
 import { requestListEntityLogs, requestListWorkflows, requestListWorkflowsLogs } from '../../WindowService'
 import { ContainerInfoState, IListEntityLogsResponse, IListWorkflowsResponse, IWorkflowProcessData } from '../../WindowType'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 type ContainerInfoActionContext = ActionContext<ContainerInfoState, IRootState>
 type ContainerInfoActionTree = ActionTree<ContainerInfoState, IRootState>
@@ -18,6 +19,9 @@ export const actions: ContainerInfoActionTree = {
     } = payload
     const pageSize = 0
     const pageToken = '0'
+    if (isEmptyValue(tableName) && (isEmptyValue(recordId) || isEmptyValue(recordUuid))) {
+      return
+    }
     return requestListEntityLogs({
       tableName,
       recordId,

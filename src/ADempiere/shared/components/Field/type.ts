@@ -6,5 +6,6 @@ export interface IOptionField {
   fieldAttributes: any
   icon: string
   recordDataFields?: any
+  svg?: boolean
   valueField?: any
 }
