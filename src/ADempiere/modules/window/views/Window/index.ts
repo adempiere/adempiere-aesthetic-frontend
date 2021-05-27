@@ -99,6 +99,10 @@ export default class WindowView extends Vue {
     }
 
     get showRecordAccess(): boolean {
+      if (this.$route.query.typeAction === 'recordAccess') {
+        this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
+        return true
+      }
       return this.$store.getters[Namespaces.ContextMenu + '/' + 'getShowRecordAccess']
     }
 

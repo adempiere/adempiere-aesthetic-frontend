@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import { ContextMenuState, IContextActionData, IContextMenuData, IListDocumentAction, IListDocumentStatus } from '@/ADempiere/modules/window/WindowType/VuexType'
-import { stat } from 'fs'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 type ContextMenuMutationTree = MutationTree<ContextMenuState>
 
@@ -23,8 +23,11 @@ export const mutations: ContextMenuMutationTree = {
     state.listDocumentStatus.defaultDocumentAction = payload.defaultDocumentAction
     state.listDocumentStatus.recordUuid = payload.recordUuid
   },
-  changeShowRigthPanel(state: ContextMenuState) {
-    state.isShowRightPanel = !state.isShowRightPanel
+  changeShowRigthPanel(state: ContextMenuState, params: boolean) {
+    if (isEmptyValue(params)) {
+      state.isShowRightPanel = !state.isShowRightPanel
+    }
+    state.isShowRightPanel = params
   },
   changeShowPopoverField(state: ContextMenuState) {
     state.isShowPopoverField = !state.isShowPopoverField
