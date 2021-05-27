@@ -786,7 +786,7 @@ export default class MixinContextMenu extends Mixins(MixinRelations) {
             recordUuid: this.recordUuid,
             panelType: this.panelType,
             isNewRecord: defaultAction.action === ActionContextName.SetDefaultValues,
-            tableName: this.$route.params.tableName,
+            tableName: this.tableName,
             recordId: this.getCurrentRecord[this.tableNameCurrentTab + '_ID']
           }, { root: true })
             .then(response => {
