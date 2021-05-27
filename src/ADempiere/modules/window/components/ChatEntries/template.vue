@@ -11,7 +11,7 @@
       >
         {{ $t('window.containerInfo.notes') }}
       </span>
-      <el-scrollbar wrap-class="scroll-window-log-chat">
+      <el-scrollbar wrap-class="scroll-child" style="height: 100%;">
         <el-timeline>
           <el-timeline-item
             v-for="(chats, key) in chatList"
@@ -87,5 +87,9 @@
     max-height: 35px !important;
     padding: 10px 20px !important;
   }
+  .el-card__body {
+    padding: 20px;
+    height: 100%;
+}
 }
 </style>

@@ -454,6 +454,22 @@ export default class WindowView extends Vue {
       if (!isEmptyValue(this.windowMetadata.currentTab?.tableName) && !isEmptyValue(value) && (!isEmptyValue(this.$route.query) && this.$route.query.typeAction === ActionContextName.RecordAccess)) {
         this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', true)
       }
+      if (!isEmptyValue(this.windowMetadata?.currentTab?.tableName) && !isEmptyValue(value) && this.isMobile) {
+        const posibleActions = ['listWorkflowLogs', 'listRecordLogs']
+        if (posibleActions.includes(this.activeInfo)) {
+          this.$store.dispatch(Namespaces.ContainerInfo + '/' + this.activeInfo, {
+            tableName: this.getTableName,
+            recordId: this.recordId,
+            recordUuid: value.UUID
+          })
+        } else {
+          this.$store.dispatch(Namespaces.ChatEntries + '/' + this.activeInfo, {
+            tableName: this.getTableName,
+            recordId: this.recordId,
+            recordUuid: value.UUID
+          })
+        }
+      }
     }
 
     // Hooks
