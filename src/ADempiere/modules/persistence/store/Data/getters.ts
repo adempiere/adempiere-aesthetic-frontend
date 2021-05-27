@@ -47,10 +47,11 @@ export const getters: BusinessDataGetterTree = {
     return getters.getDataRecordAndSelection(containerUuid).pageNumber
   },
   getContextInfoField: (state: BusinessDataState) => (contextInfoUuid: string, sqlStatement: string): IContextInfoValuesExtends | undefined => {
-    return state.contextInfoField.find(
-      info =>
-        info.contextInfoUuid === contextInfoUuid &&
-                info.sqlStatement === sqlStatement
+    return state.contextInfoField.find((info: IContextInfoValuesExtends) => {
+      if ((info.contextInfoUuid === contextInfoUuid) && (info.sqlStatement === sqlStatement)) {
+        return info
+      }
+    }
     )
   },
   getRecordPrivateAccess: (state: BusinessDataState) => (tableName: string, recordId: number): Partial<IPrivateAccessDataExtended> | undefined => {

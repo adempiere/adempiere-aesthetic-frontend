@@ -75,7 +75,7 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
             this.edit = true
             break
           //
-          case 'informacion':
+          case 'Información':
             break
         }
       }

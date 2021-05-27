@@ -9,6 +9,9 @@
       </div>
       <el-scrollbar wrap-class="scroll-child">
         <el-form ref="form" label-position="top" label-width="120px" style="overflow: auto;" @submit.native.prevent="notSubmitForm">
+          <el-form-item v-if="!isEmptyValue(messageText)" :label="$t('field.contextInfo')">
+            {{ messageText }}
+          </el-form-item>
           <el-form-item :label="$t('field.container.description')">
             {{ fieldAttributes.description }}
           </el-form-item>

@@ -296,7 +296,7 @@ export default {
   },
   field: {
     field: 'Campo',
-    info: 'Informacion',
+    info: 'Información',
     calculator: 'Calculadora',
     preference: 'Preferencia',
     codeTranslation: 'Traduccion de ',

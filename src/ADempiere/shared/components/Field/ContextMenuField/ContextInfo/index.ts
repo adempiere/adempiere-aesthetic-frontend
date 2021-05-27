@@ -1,3 +1,5 @@
+import { IContextInfoValuesExtends } from '@/ADempiere/modules/persistence'
+import { parseContext } from '@/ADempiere/shared/utils/contextUtils'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { isEmptyValue, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
@@ -19,6 +21,17 @@ export default class FieldContextInfo extends Mixins(MixinContextMenuField) {
     // Computed properties
     get permissionRoutes(): RouteConfig[] {
       return this.$store.getters.permission_routes
+    }
+
+    get messageText(): string {
+      if (!isEmptyValue(this.fieldAttributes.contextInfo.sqlStatement)) {
+        const contextInfo: IContextInfoValuesExtends | undefined = this.$store.getters[Namespaces.BusinessData + '/' + 'getContextInfoField'](this.fieldAttributes.contextInfo.uuid, this.fieldAttributes.contextInfo.sqlStatement)
+        if (isEmptyValue(contextInfo)) {
+          return ''
+        }
+        return contextInfo!.messageText
+      }
+      return ''
     }
 
     // Watcher
@@ -69,6 +82,23 @@ export default class FieldContextInfo extends Mixins(MixinContextMenuField) {
             fieldColumnName: ''
           }
         }, () => {})
+      }
+    }
+
+    // Hooks
+    created() {
+      if (isEmptyValue(this.messageText)) {
+        const sqlParse = parseContext({
+          parentUuid: this.fieldAttributes.parentUuid,
+          containerUuid: this.fieldAttributes.containerUuid,
+          value: this.fieldAttributes.contextInfo.sqlStatement,
+          isBooleanToString: true
+        })
+        this.$store.dispatch(Namespaces.BusinessData + '/' + 'getContextInfoValueFromServer', {
+          contextInfoId: this.fieldAttributes.contextInfo.id,
+          contextInfoUuid: this.fieldAttributes.contextInfo.uuid,
+          sqlStatement: sqlParse.value
+        })
       }
     }
 }
