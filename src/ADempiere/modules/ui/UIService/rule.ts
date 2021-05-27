@@ -16,7 +16,7 @@ export function runCallOutRequest(data: ICallOutParams): Promise<ICallOutData> {
   } = data
 
   return request({
-    url: '/ui/run-callout',
+    url: '/user-interface/window/run-callout',
     method: 'POST',
     data: {
       table_name: tableName,

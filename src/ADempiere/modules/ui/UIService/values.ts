@@ -34,9 +34,9 @@ export function requestLookup(data: ILookupParams): Promise<ILookupItemData> {
     ]
   }
   return request({
-    url: '/ui/get-lookup-item',
-    method: 'POST',
-    data: {
+    url: '/user-interface/window/lookup-item',
+    method: 'GET',
+    params: {
       table_name: tableName,
       query: directQuery,
       filters
@@ -82,15 +82,13 @@ export function requestLookupList(
   }
 
   return request({
-    url: '/ui/list-lookup-items',
-    method: 'POST',
-    data: {
+    url: '/user-interface/window/lookup-items',
+    method: 'GET',
+    params: {
       table_name: tableName,
       query,
       where_clause: whereClause,
-      filters
-    },
-    params: {
+      filters,
       // Page Data
       pageToken,
       pageSize
@@ -127,21 +125,21 @@ export function requestReferencesList(
     pageToken
   } = data
   return request({
-    url: '/ui/list-references',
-    method: 'POST',
-    data: {
+    url: '/user-interface/window/references',
+    method: 'GET',
+    params: {
       id: recordId,
       uuid: recordUuid,
       window_uuid: windowUuid,
-      table_name: tableName
-    },
-    params: {
+      table_name: tableName,
       // Page Data
-      pageToken,
-      pageSize
+      pageToken: pageToken,
+      pageSize: pageSize
     }
   })
     .then((referencesListResposnse: any) => {
+      // console.log('referencesListResponse')
+      // console.log(referencesListResposnse)
       return convertReferencesList(referencesListResposnse)
     })
 }
@@ -149,9 +147,9 @@ export function requestReferencesList(
 // Get default value for a field
 export function requestDefaultValue(query: any): Promise<IValueData> {
   return request({
-    url: '/ui/get-default-value',
-    method: 'POST',
-    data: {
+    url: '/user-interface/window/default-value',
+    method: 'GET',
+    params: {
       query
     }
   })
@@ -172,9 +170,9 @@ export function requestGetContextInfoValue(
 ): Promise<IContextInfoValuesResponse> {
   const { query, uuid, id } = data
   return request({
-    url: '/ui/get-context-info-value',
-    method: 'POST',
-    data: {
+    url: '/user-interface/window/context-info-value',
+    method: 'GET',
+    params: {
       query,
       uuid,
       id

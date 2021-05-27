@@ -21,14 +21,12 @@ export function requestListRecentItems(
 ): Promise<IRecentItemResponseData> {
   const { userUuid, roleUuid, pageToken, pageSize } = data
   return request({
-    url: '/logs/list-recent-items',
-    method: 'POST',
-    data: {
+    url: '/dashboard/addons/user/recent-items',
+    method: 'GET',
+    params: {
       user_uuid: userUuid,
       role_uuid: roleUuid,
-      current_session: true
-    },
-    params: {
+      current_session: true,
       // Page Data
       pageToken,
       pageSize
@@ -44,13 +42,11 @@ export function getFavoritesFromServer(
 ): Promise<IFavoriresFromServerResponse> {
   const { userId, userUuid, pageToken, pageSize } = data
   return request({
-    url: '/dashboard/list-favorites',
-    method: 'POST',
-    data: {
-      user_id: userId,
-      user_uuid: userUuid
-    },
+    url: '/dashboard/addons/user/favorites',
+    method: 'GET',
     params: {
+      user_id: userId,
+      user_uuid: userUuid,
       // Page Data
       pageToken,
       pageSize
@@ -75,15 +71,13 @@ export function getPendingDocumentsFromServer(
 ): Promise<IPendingDocumentsFromServerResponse> {
   const { userId, userUuid, roleId, roleUuid, pageToken, pageSize } = data
   return request({
-    url: '/dashboard/list-pending-documents',
+    url: '/dashboard/addons/tasks/pending-documents',
     method: 'POST',
-    data: {
+    params: {
       user_id: userId,
       user_uuid: userUuid,
       role_id: roleId,
-      role_uuid: roleUuid
-    },
-    params: {
+      role_uuid: roleUuid,
       // Page Data
       pageToken,
       pageSize
@@ -108,13 +102,11 @@ export function requestListDashboards(
 ): Promise<IListDashboardsResponse> {
   const { roleId, roleUuid, pageToken, pageSize } = data
   return request({
-    url: '/dashboard/list-dashboards',
-    method: 'POST',
-    data: {
-      role_id: roleId,
-      role_uuid: roleUuid
-    },
+    url: '/dashboard/dashboards',
+    method: 'GET',
     params: {
+      role_id: roleId,
+      role_uuid: roleUuid,
       // Page Data
       pageToken,
       pageSize

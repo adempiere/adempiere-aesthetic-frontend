@@ -12,7 +12,7 @@ export const setPreference = (data: {
 }): any => {
   const { parentUuid, attribute, value, isForCurrentClient, isForCurrentContainer, isForCurrentOrganization, isForCurrentUser } = data
   return request({
-    url: '/ui/set-preference',
+    url: '/user-interface/component/preference/set-preference',
     method: 'POST',
     data: {
       container_uuid: parentUuid,
@@ -36,7 +36,7 @@ export const deletePreference = (data: {
 }) :Promise<any> => {
   const { parentUuid, attribute, isForCurrentClient, isForCurrentContainer, isForCurrentOrganization, isForCurrentUser } = data
   return request({
-    url: '/ui/delete-preference',
+    url: '/user-interface/component/preference/delete-preference',
     method: 'POST',
     data: {
       container_uuid: parentUuid,

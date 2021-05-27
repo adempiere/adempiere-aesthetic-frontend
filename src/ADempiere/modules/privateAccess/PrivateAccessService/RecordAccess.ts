@@ -20,7 +20,7 @@ export function getRecordAccess(data: {
   const { tableName, recordUuid, recordId } = data
   return new Promise(resolve => {
     request({
-      url: '/ui/record-access',
+      url: '/user-interface/component/record-access/record-access',
       method: 'get',
       params: {
         table_name: tableName,
@@ -48,7 +48,7 @@ export function setRecordAccess(data: {
 }) {
   const { recordId, recordUuid, tableName, recordAccesses } = data
   return request({
-    url: '/ui/set-record-access',
+    url: '/user-interface/component/record-access/set-record-access',
     method: 'post',
     data: {
       table_name: tableName,
