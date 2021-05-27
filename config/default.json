@@ -5,11 +5,11 @@
   },
   "adempiere": {
     "api": {
-      "url": "http://localhost:8085/adempiere-api",
+      "url": "http://localhost:8085/api/adempiere/",
       "timeout": 10000
     },
     "images": {
-      "url": "http://localhost:8085/adempiere-api/img"
+      "url": "http://localhost:8085/adempiere-api/img/"
     }
   }
 }

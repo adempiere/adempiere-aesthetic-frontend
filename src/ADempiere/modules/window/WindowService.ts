@@ -16,14 +16,12 @@ export function requestListEntityLogs(
 ): Promise<IListEntityLogsResponse> {
   const { tableName, recordId, recordUuid, pageToken, pageSize } = data
   return request({
-    url: '/logs/list-entity-logs',
-    method: 'POST',
-    data: {
+    url: '/user/log/entity-logs',
+    method: 'GET',
+    params: {
       table_name: tableName,
       id: recordId,
-      uuid: recordUuid
-    },
-    params: {
+      uuid: recordUuid,
       // Page Data
       pageToken,
       pageSize
@@ -46,14 +44,12 @@ export function requestListEntityLogs(
 export function requestListWorkflowsLogs(data: IWorkflowExtendedParams): Promise<IResponseList<IWorkflowProcessData>> {
   const { tableName, recordUuid, recordId, pageSize, pageToken } = data
   return request({
-    url: '/logs/list-workflow-logs',
-    method: 'POST',
-    data: {
+    url: '/user/log/workflow-logs',
+    method: 'GET',
+    params: {
       table_name: tableName,
       id: recordId,
-      uuid: recordUuid
-    },
-    params: {
+      uuid: recordUuid,
       // Page Data
       pageToken,
       pageSize
@@ -78,12 +74,10 @@ export function requestListWorkflows(
 ): Promise<IListWorkflowsResponse> {
   const { tableName, pageToken, pageSize } = data
   return request({
-    url: '/workflow/list-workflow',
-    method: 'POST',
-    data: {
-      table_name: tableName
-    },
+    url: '/user/log/workflow-logs',
+    method: 'GET',
     params: {
+      table_name: tableName,
       // Page Data
       pageToken,
       pageSize
@@ -114,14 +108,12 @@ export function requestListEntityChats(
 ): Promise<IListEntityChatsResponse> {
   const { tableName, recordId, recordUuid, pageSize, pageToken } = data
   return request({
-    url: '/logs/list-entity-chats',
-    method: 'POST',
-    data: {
+    url: '/user/log/entity-chats',
+    method: 'GET',
+    params: {
       table_name: tableName,
       id: recordId,
-      uuid: recordUuid
-    },
-    params: {
+      uuid: recordUuid,
       // Page Data
       pageToken,
       pageSize
@@ -146,12 +138,10 @@ export function requestListChatsEntries(
   const { id, uuid, pageToken, pageSize } = data
   return request({
     url: '/logs/list-chat-entries',
-    method: 'POST',
-    data: {
-      id,
-      uuid
-    },
+    method: 'GET',
     params: {
+      id,
+      uuid,
       // Page Data
       pageToken,
       pageSize
@@ -181,7 +171,7 @@ export function requestCreateChatEntry(
 ): Promise<IChatEntryData> {
   const { tableName, recordUuid, recordId, comment } = data
   return request({
-    url: '/ui/create-chat-entry',
+    url: '/user-interface/component/notes/create-chat-entry',
     method: 'POST',
     data: {
       table_name: tableName,
@@ -218,15 +208,13 @@ export function requestListDocumentStatuses(
     pageToken
   } = data
   return request({
-    url: '/workflow/list-document-statuses',
-    method: 'POST',
-    data: {
+    url: '/workflow/document-statuses',
+    method: 'GET',
+    params: {
       id: recordId,
       uuid: recordUuid,
       table_name: tableName,
-      document_status: documentStatus
-    },
-    params: {
+      document_status: documentStatus,
       // Page Data
       pageToken,
       pageSize
@@ -255,16 +243,14 @@ export function requestListDocumentActions(
     pageSize
   } = data
   return request({
-    url: '/workflow/list-document-actions',
-    method: 'POST',
+    url: '/workflow/document-actions',
+    method: 'GET',
     data: {
       id: recordId,
       uuid: recordUuid,
       table_name: tableName,
       document_action: documentAction,
-      document_status: documentStatus
-    },
-    params: {
+      document_status: documentStatus,
       // Page Data
       pageToken,
       pageSize

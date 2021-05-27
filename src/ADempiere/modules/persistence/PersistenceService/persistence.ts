@@ -2,7 +2,7 @@
 import {
   request
 } from '@/ADempiere/shared/utils/request'
-import { IRequestImageData } from '@/ADempiere/shared/utils/types'
+import { IConfigData, IRequestImageData } from '@/ADempiere/shared/utils/types'
 import { getImagePath } from '@/ADempiere/shared/utils/resource'
 import {
   convertEntity,
@@ -25,6 +25,10 @@ import {
 import { AxiosPromise } from 'axios'
 import { EventEmitter } from 'events'
 import { IValueData } from '../../core'
+import { getConfig } from '@/ADempiere/shared/utils/config'
+
+// Default parameters
+const config: IConfigData = getConfig()
 
 /**
  * Create entity
@@ -47,7 +51,7 @@ export function requestCreateEntity(
   // )
 
   return request({
-    url: '/data/create',
+    url: '/common/api/create',
     method: 'POST',
     data: {
       table_name: tableName,
@@ -72,7 +76,7 @@ export function requestUpdateEntity(data: IEntityData): Promise<IEntityData> {
   // )
 
   return request({
-    url: '/data/update',
+    url: '/common/api/update',
     method: 'POST',
     data: {
       table_name: tableName,
@@ -89,7 +93,7 @@ export function requestUpdateEntity(data: IEntityData): Promise<IEntityData> {
 export function requestDeleteEntity(data: IDeleteEntityParams): Promise<any> {
   const { uuid, id, tableName } = data
   return request({
-    url: '/data/delete',
+    url: '/common/api/delete',
     method: 'POST',
     data: {
       table_name: tableName,
@@ -106,7 +110,7 @@ export function rollbackEntity(
 ): Promise<IEntityData> {
   const { tableName, id, uuid, eventType } = data
   return request({
-    url: '/data/rollback-entity',
+    url: '/common/api/rollback-entity',
     method: 'POST',
     data: {
       table_name: tableName,
@@ -126,7 +130,7 @@ export function requestGetEntity(
 ): Promise<IEntityData> {
   const { id, uuid, tableName } = data
   return request({
-    url: '/data/entity',
+    url: '/common/api/entity',
     method: 'get',
     params: {
       table_name: tableName,
@@ -169,9 +173,9 @@ export function requestListEntities(
   }
 
   return request({
-    url: '/data/list',
-    method: 'POST',
-    data: {
+    url: '/common/api/entites',
+    method: 'GET',
+    params: {
       table_name: tableName,
       // DSL Query
       filters,
@@ -180,9 +184,7 @@ export function requestListEntities(
       query,
       where_clause: whereClause,
       order_by_clause: orderByClause,
-      limit
-    },
-    params: {
+      limit,
       // Page Data
       pageToken,
       pageSize
@@ -198,14 +200,12 @@ export function requestTranslations(
 ): Promise<ITranslationResponseData> {
   const { tableName, language, uuid, id, pageSize, pageToken } = data
   return request({
-    url: '/ui/list-translations',
-    method: 'POST',
-    data: {
+    url: '/user-interface/component/translation/translations',
+    method: 'GET',
+    params: {
       table_name: tableName,
       id,
-      uuid
-    },
-    params: {
+      uuid,
       language,
       // Page Data
       pageToken,
@@ -260,6 +260,7 @@ export function requestImage(data: IRequestImageData): AxiosPromise<any> {
   return request({
     url: urn,
     method: 'get',
-    responseType: 'arraybuffer'
+    responseType: 'arraybuffer',
+    baseURL: config.adempiere.images.url
   })
 }

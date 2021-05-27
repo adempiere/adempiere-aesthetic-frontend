@@ -42,9 +42,9 @@ export function requestGetProductPrice(
     validFrom
   } = data
   return request({
-    url: '/pos/get-product-price',
-    method: 'POST',
-    data: {
+    url: '/form/addons/point-of-sales/product-price',
+    method: 'GET',
+    params: {
       search_value: searchValue,
       upc,
       value,
@@ -66,8 +66,8 @@ export function requestOrganizationsList(
 ): Promise<IOrganizationsListResponse> {
   const { roleId, roleUuid, pageSize, pageToken } = data
   return request({
-    url: '/core/list-organizations',
-    method: 'POST',
+    url: '/common/organizations',
+    method: 'GET',
     data: {
       role_id: roleId,
       role_uuid: roleUuid
@@ -96,8 +96,8 @@ export function requestWarehousesList(
 ): Promise<IWarehousesListResponse> {
   const { organizationId, organizationUuid, pageToken, pageSize } = data
   return request({
-    url: '/core/list-warehouses',
-    method: 'POST',
+    url: '/common/warehouses',
+    method: 'GET',
     data: {
       organization_id: organizationId,
       organization_uuid: organizationUuid
@@ -122,7 +122,7 @@ export function requestGetCountryDefinition(
 ): Promise<ICountryData> {
   const { id, uuid } = data
   return request({
-    url: '/core/country',
+    url: '/common/country',
     method: 'get',
     params: {
       id,
@@ -139,8 +139,8 @@ export function requestLanguagesList(
 ): Promise<ILanguajesListResponse> {
   const { pageToken, pageSize } = data
   return request({
-    url: '/core/list-languages',
-    method: 'POST',
+    url: '/common/languages',
+    method: 'GET',
     params: {
       pageToken,
       pageSize
@@ -188,7 +188,7 @@ export function requestCreateBusinessPartner(
     posUuid
   } = data
   return request({
-    url: '/core/create-business-partner',
+    url: '/common/create-business-partner',
     method: 'POST',
     data: {
       value,
@@ -226,7 +226,7 @@ export function requestGetBusinessPartner(
 ): Promise<IBusinessPartnerData> {
   const { searchValue } = data
   return request({
-    url: '/core/get-business-partner',
+    url: '/common/business-partner',
     method: 'get',
     params: {
       search_value: searchValue
@@ -252,8 +252,8 @@ export function requestListBusinessPartner(
     pageToken
   } = data
   return request({
-    url: '/core/list-business-partner',
-    method: 'POST',
+    url: '/common/business-partners',
+    method: 'GET',
     data: {
       search_value: searchValue,
       value,
@@ -301,7 +301,8 @@ export function requestGetConversionRate(
     conversionDate
   } = data
   return request({
-    url: '/core/get-conversion-rate',
+    url: '/common/conversion-rate',
+    method: 'GET',
     data: {
       conversion_type_uuid: conversionTypeUuid,
       currency_from_uuid: currencyFromUuid,

@@ -37,7 +37,7 @@ export function requestRunProcess(
     }
   })
   return request({
-    url: '/data/process',
+    url: '/common/api/process',
     method: 'POST',
     data: {
       process_uuid: uuid,
@@ -62,16 +62,14 @@ export function requestListProcessesLogs(
   requestData: IProcessListData
 ): Promise<IProcessLogListData> {
   return request({
-    url: '/logs/list-process-logs',
-    method: 'POST',
-    data: {
+    url: '/user/log/process-logs',
+    method: 'GET',
+    params: {
       instance_uuid: requestData.instanceUuid,
       user_uuid: requestData.userUuid,
       table_name: requestData.tableName,
       id: requestData.recordId,
-      uuid: requestData.recordUuid
-    },
-    params: {
+      uuid: requestData.recordUuid,
       page_size: requestData.pageSize,
       page_token: requestData.pageToken
     }

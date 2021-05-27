@@ -28,13 +28,11 @@ export function requestListReportsViews(
 ): Promise<IReportsViewResponse> {
   const { tableName, processUuid, pageToken, pageSize } = data
   return request({
-    url: '/ui/list-report-views',
-    method: 'POST',
-    data: {
-      table_name: tableName,
-      process_uuid: processUuid
-    },
+    url: '/user-interface/process/report-views',
+    method: 'GET',
     params: {
+      table_name: tableName,
+      process_uuid: processUuid,
       page_token: pageToken,
       page_size: pageSize
     }
@@ -58,14 +56,12 @@ export function requestListPrintFormats(
 ): Promise<IListPrintsFormatsData> {
   const { tableName, processUuid, reportViewUuid, pageToken, pageSize } = data
   return request({
-    url: '/ui/list-print-formats',
-    method: 'POST',
-    data: {
+    url: '/user-interface/process/print-formats',
+    method: 'GET',
+    params: {
       table_name: tableName,
       report_view_uuid: reportViewUuid,
-      process_uuid: processUuid
-    },
-    params: {
+      process_uuid: processUuid,
       page_token: pageToken,
       page_size: pageSize
     }
@@ -81,12 +77,10 @@ export function requestListDrillTables(
 ): any /* Promise<IReportDrillTableResponse> */ {
   const { tableName, pageToken, pageSize } = data
   return request({
-    url: '/ui/list-drill-tables',
-    method: 'POST',
-    data: {
-      table_name: tableName
-    },
+    url: '/user-interface/process/drill-tables',
+    method: 'GET',
     params: {
+      table_name: tableName,
       page_token: pageToken,
       page_size: pageSize
     }
@@ -108,9 +102,9 @@ export function requestGetReportOutput(
   data: IListReportOutputRequest
 ): Promise<IReportOutputData> {
   return request({
-    url: '/ui/get-report-output',
-    method: 'POST',
-    data: {
+    url: '/user-interface/process/report-output',
+    method: 'GET',
+    params: {
       table_name: data.tableName,
       // reference
       print_format_uuid: data.printFormatUuid,

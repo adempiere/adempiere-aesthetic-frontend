@@ -10,9 +10,9 @@ export function getPrivateAccess(data: {
   }): Promise<IPrivateAccessData> {
   const { tableName, recordUuid, recordId } = data
   return request({
-    url: '/ui/get-private-access',
-    method: 'POST',
-    data: {
+    url: '/user-interface/component/private-access/private-access',
+    method: 'GET',
+    params: {
       table_name: tableName,
       id: recordId,
       uuid: recordUuid
@@ -35,7 +35,7 @@ export function lockPrivateAccess(data: {
   }): Promise<IPrivateAccessData> {
   const { tableName, recordUuid, recordId } = data
   return request({
-    url: '/ui/lock-private-access',
+    url: '/user-interface/component/private-access/lock-private-access',
     method: 'POST',
     data: {
       table_name: tableName,
@@ -60,7 +60,7 @@ export function unlockPrivateAccess(data: {
   }): Promise<IPrivateAccessData> {
   const { tableName, recordUuid, recordId } = data
   return request({
-    url: '/ui/unlock-private-access',
+    url: '/user-interface/component/private-access/unlock-private-access',
     method: 'POST',
     data: {
       table_name: tableName,
