@@ -591,7 +591,16 @@ export default class FieldDefinition extends Vue {
       })
       this.optionColumnName = this.$route.query.fieldColumnName as string
       this.timeOut = setTimeout(() => {
-        this.showPopoverPath = true
+        if (this.isMobile && this.optionColumnName === this.field.columnName) {
+          this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
+          this.$store.dispatch(Namespaces.ContextMenu + '/' + 'setOptionField', {
+            fieldAttributes: this.fieldAttributes,
+            name: this.$route.query.typeAction,
+            valueField: this.valueField
+          })
+        } else {
+          this.showPopoverPath = true
+        }
       }, 2000)
       // assined field with prop
       this.field = this.metadataField

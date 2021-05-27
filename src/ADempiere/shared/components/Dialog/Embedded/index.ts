@@ -71,6 +71,9 @@ export default class Embedded extends Vue {
   }
 
   get isVisibleDialog(): boolean {
+    if (this.isMobile) {
+      return false
+    }
     return (this.$store.state[Namespaces.Process] as ProcessState).isVisibleDialog
   }
 
@@ -82,7 +85,10 @@ export default class Embedded extends Vue {
     return (this.$store.state[Namespaces.Window] as WindowState).recordSelected
   }
 
-  get getterDataRecordsAndSelection(): IRecordSelectionData {
+  get getterDataRecordsAndSelection(): IRecordSelectionData | boolean {
+    if (this.isMobile) {
+      return false
+    }
     return this.$store.getters[Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'](this.containerUuid)
   }
 
