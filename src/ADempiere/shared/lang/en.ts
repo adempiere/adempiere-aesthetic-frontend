@@ -355,7 +355,8 @@ export default {
       isReadonly: 'Reading Only',
       isDependentEntities: 'Dependent Entities',
       isLock: 'Block',
-      isUnlock: 'Unblock'
+      isUnlock: 'Unblock',
+      isError: 'Error on '
     },
     selectionRequired: 'You must select a record',
     undo: 'Undo',
