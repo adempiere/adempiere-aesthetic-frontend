@@ -88,10 +88,8 @@ export default class TabParent extends Mixins(MixinTab) {
 
     // Methods
     lockRecord() {
-      this.lock = !this.lock
       const tableName = this.windowMetadata.firstTab.tableName
       const action = this.lock ? 'lockRecord' : 'unlockRecord'
-      const message = !this.lock ? 'lockRecord' : 'unlockRecord'
       this.$store.dispatch(Namespaces.BusinessData + '/' + action, {
         tableName,
         recordId: this.record[tableName + '_ID'],
@@ -100,14 +98,14 @@ export default class TabParent extends Mixins(MixinTab) {
         .then(() => {
           this.$message({
             type: 'success',
-            message: this.$t('data.' + message).toString(),
+            message: this.$t('data.notification' + action).toString(),
             showClose: true
           })
         })
         .catch(() => {
           this.$message({
             type: 'error',
-            message: this.$t('data.isError').toString() + this.$t('data.' + message).toString(),
+            message: this.$t('data.isError').toString() + this.$t('data.' + action),
             showClose: true
           })
         })

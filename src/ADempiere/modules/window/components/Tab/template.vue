@@ -17,7 +17,9 @@
               <i :class="lock ? 'el-icon-unlock' : 'el-icon-lock'" style="font-size: 15px;color: black;" />
             </el-button>
           </el-tooltip>
-          {{ tabAttributes.name }}
+          <span :style="lock ? 'color: #1890ff;': 'color: red;'">
+            {{ tabAttributes.name }}
+          </span>
         </span>
         <span v-else slot="label">
           {{ tabAttributes.name }}

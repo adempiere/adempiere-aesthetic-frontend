@@ -335,7 +335,11 @@ export default {
     },
     selectionRequired: 'Debe seleccionar un registro',
     undo: 'Deshacer',
-    unlockRecord: 'Registro Desbloqueado'
+    unlockRecord: 'Desbloquear Registro',
+    notification: {
+      lockRecord: 'El Registro fue Bloqueado',
+      unlockRecord: 'El Registro fue Desbloqueado'
+    }
   },
   sequence: {
     available: 'Disponibles',
