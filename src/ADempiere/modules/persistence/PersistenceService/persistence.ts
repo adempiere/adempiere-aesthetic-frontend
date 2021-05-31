@@ -195,7 +195,7 @@ export function requestListEntities(
     })
 }
 
-export function requestTranslations(
+export function getTranslations(
   data: ITranslationRequestParams
 ): Promise<ITranslationResponseData> {
   const { tableName, language, uuid, id, pageSize, pageToken } = data
