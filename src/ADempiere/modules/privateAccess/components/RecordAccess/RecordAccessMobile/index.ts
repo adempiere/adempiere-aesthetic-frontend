@@ -179,10 +179,6 @@ export default class RecordAccessMobile extends Mixins(MixinRecordAccess) {
   }
 
   SendRecorAccess(list: IRecordAccessRoleDataExtended[]) {
-    // list.forEach(element => {
-    //   element.isReadOnly = this.isReadonly
-    //   element.isDependentEntities = this.isDependentEntities
-    // })
     this.saveRecordAccess(list)
   }
 }

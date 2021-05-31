@@ -1,3 +1,4 @@
+import { IPrivateAccessDataExtended } from '@/ADempiere/modules/persistence'
 import MainPanel from '@/ADempiere/shared/components/Panel'
 import { parseContext } from '@/ADempiere/shared/utils/contextUtils'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
@@ -70,7 +71,46 @@ export default class TabParent extends Mixins(MixinTab) {
       this.setCurrentTab()
     }
 
+    @Watch('record')
+    handleRecordChange(value: any) {
+      const tableName = this.windowMetadata.firstTab.tableName
+      if (value) {
+        this.$store.dispatch(Namespaces.BusinessData + '/' + 'getPrivateAccessFromServer', {
+          tableName,
+          recordId: this.record[tableName + '_ID'],
+          recordUuid: this.record.UUID
+        })
+          .then((privateAccessResponse: IPrivateAccessDataExtended) => {
+            this.lock = privateAccessResponse.isLocked
+          })
+      }
+    }
+
     // Methods
+    lockRecord() {
+      const tableName = this.windowMetadata.firstTab.tableName
+      const action = this.lock ? 'lockRecord' : 'unlockRecord'
+      this.$store.dispatch(Namespaces.BusinessData + '/' + action, {
+        tableName,
+        recordId: this.record[tableName + '_ID'],
+        recordUuid: this.record.UUID
+      })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: this.$t('data.notification' + action).toString(),
+            showClose: true
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'error',
+            message: this.$t('data.isError').toString() + this.$t('data.' + action),
+            showClose: true
+          })
+        })
+    }
+
     setCurrentTab(): void {
       this.$store.dispatch(Namespaces.WindowDefinition + '/' + 'setCurrentTab', {
         parentUuid: this.windowUuid,

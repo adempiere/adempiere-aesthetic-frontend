@@ -47,6 +47,18 @@ export default class RightPanel extends Vue {
       }
     }
 
+    closePanel() {
+      this.$router.push({
+        name: this.$route.name!,
+        query: {
+          ...this.$route.query,
+          typeAction: ''
+        }
+      }, () => {})
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
+      this.isShowRightPanel = !this.isShowRightPanel
+    }
+
     insertToBody(): void {
       const elx: ChildNode = this.rightMenu!
       const body: HTMLBodyElement = document.querySelector('body')!

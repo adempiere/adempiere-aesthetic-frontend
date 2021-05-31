@@ -99,6 +99,10 @@ export default class WindowView extends Vue {
     }
 
     get showRecordAccess(): boolean {
+      if (this.$route.query.typeAction === 'recordAccess') {
+        this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
+        return true
+      }
       return this.$store.getters[Namespaces.ContextMenu + '/' + 'getShowRecordAccess']
     }
 
@@ -266,10 +270,7 @@ export default class WindowView extends Vue {
     }
 
     get isShowedTabsChildren(): boolean {
-      if (this.windowMetadata && this.windowMetadata.isShowedTabsChildren && isEmptyValue(this.$route.query.typeAction)) {
-        return this.windowMetadata.isShowedTabsChildren
-      }
-      return false
+      return this.windowMetadata.isShowedTabsChildren!
     }
 
     get isShowedRecordNavigation(): boolean {
@@ -453,6 +454,22 @@ export default class WindowView extends Vue {
       }
       if (!isEmptyValue(this.windowMetadata.currentTab?.tableName) && !isEmptyValue(value) && (!isEmptyValue(this.$route.query) && this.$route.query.typeAction === ActionContextName.RecordAccess)) {
         this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', true)
+      }
+      if (!isEmptyValue(this.windowMetadata?.currentTab?.tableName) && !isEmptyValue(value) && this.isMobile) {
+        const posibleActions = ['listWorkflowLogs', 'listRecordLogs']
+        if (posibleActions.includes(this.activeInfo)) {
+          this.$store.dispatch(Namespaces.ContainerInfo + '/' + this.activeInfo, {
+            tableName: this.getTableName,
+            recordId: this.recordId,
+            recordUuid: value.UUID
+          })
+        } else {
+          this.$store.dispatch(Namespaces.ChatEntries + '/' + this.activeInfo, {
+            tableName: this.getTableName,
+            recordId: this.recordId,
+            recordUuid: value.UUID
+          })
+        }
       }
     }
 

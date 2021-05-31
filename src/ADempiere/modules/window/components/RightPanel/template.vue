@@ -11,7 +11,7 @@
           <div
             class="handle-button"
             :style="{'top': buttonTop+'px','background-color': theme}"
-            @click="isShowRightPanel=!isShowRightPanel"
+            @click="closePanel"
           >
             <i :class="icon" style="color: white;" />
           </div>

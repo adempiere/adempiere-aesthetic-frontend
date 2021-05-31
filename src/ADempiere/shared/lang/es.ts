@@ -296,7 +296,7 @@ export default {
   },
   field: {
     field: 'Campo',
-    info: 'Informacion',
+    info: 'Información',
     calculator: 'Calculadora',
     preference: 'Preferencia',
     codeTranslation: 'Traduccion de ',
@@ -315,7 +315,7 @@ export default {
     deleteRecordSuccessful: 'Registro eliminado exitosamente',
     deleteRecordError: 'Error al eliminar el regitro',
     exportRecord: 'Exportar Registro',
-    lockRecord: 'Bloquear Registro',
+    lockRecord: 'Registro Bloqueado',
     noDescription: 'Sin Descripción',
     recordAccess: {
       modeMobile: {
@@ -330,11 +330,16 @@ export default {
       isReadonly: 'Solo  Lectura',
       isDependentEntities: 'Entidades Dependientes',
       isLock: 'Bloquear',
-      isUnlock: 'Desbloquear'
+      isUnlock: 'Desbloquear',
+      isError: 'Error al '
     },
     selectionRequired: 'Debe seleccionar un registro',
     undo: 'Deshacer',
-    unlockRecord: 'Desbloquear Registro'
+    unlockRecord: 'Desbloquear Registro',
+    notification: {
+      lockRecord: 'El Registro fue Bloqueado',
+      unlockRecord: 'El Registro fue Desbloqueado'
+    }
   },
   sequence: {
     available: 'Disponibles',

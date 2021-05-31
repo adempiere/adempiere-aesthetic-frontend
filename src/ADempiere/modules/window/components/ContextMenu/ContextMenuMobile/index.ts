@@ -82,8 +82,15 @@ export default class ContextMenuMobile extends Mixins(MixinContextMenu) {
     } else if (action === 'shareLink') {
       this.setShareLink()
     } else if (typeof action !== 'string' && action.action === 'recordAccess') {
-      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
       this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', true)
+      this.$router.push({
+        name: this.$route.name!,
+        query: {
+          ...this.$route.query,
+          typeAction: action.action
+        }
+      }, () => {})
       this.runAction(action)
     } else {
       if (typeof action !== 'string') {

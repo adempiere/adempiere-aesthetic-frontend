@@ -85,10 +85,11 @@
                           :window-uuid="windowUuid"
                           :window-metadata="windowMetadata"
                           :tabs-list="windowMetadata.tabsListParent"
+                          :record="currentRecord"
                           class="tab-window"
                         />
                         <div v-if="isMobile">
-                          <el-card class="box-card">
+                          <el-card class="box-card" style="height: 90vh">
                             <el-tabs v-model="activeInfo" @tab-click="handleClick">
                               <el-tab-pane
                                 name="listChatEntries"

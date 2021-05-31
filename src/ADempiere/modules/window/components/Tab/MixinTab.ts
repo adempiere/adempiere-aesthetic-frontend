@@ -11,6 +11,11 @@ export default class MixinTab extends Vue {
     // eslint-disable-next-line
     @Prop({ type: Object, default: () => {} }) windowMetadata: any
     @Prop({ type: Array, default: () => [] }) tabsList!: any[]
+    @Prop({
+      type: Object,
+      default: () => {}
+    }) record: any
+
     public tabUuid = ''
     public panelType: PanelContextType = PanelContextType.Window
 
