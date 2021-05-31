@@ -90,7 +90,7 @@
                         />
                         <div v-if="isMobile">
                           <el-card class="box-card" style="height: 90vh">
-                            <el-tabs v-model="activeInfo" @tab-click="handleClick">
+                            <el-tabs v-model="activeInfo" :stretch="true" @tab-click="handleClick">
                               <el-tab-pane
                                 name="listChatEntries"
                               >
@@ -98,7 +98,7 @@
                                   <i class="el-icon-s-comment" />
                                   {{ $t('window.containerInfo.notes') }}
                                 </span>
-                                <chat-entries
+                                <list-chat-entry
                                   :table-name="this.getTableName"
                                   :record-id="this.recordId"
                                 />
@@ -309,14 +309,20 @@
       <right-panel
         v-if="panelContextMenu && isMobile"
       >
+      <ChatEntries
+          v-if="contextMenuField.name === $t('data.addNote')"
+          :table-name="getTableName"
+          :record-id="recordId"
+          :right-panel="true"
+      />
       <RecordAccess
-      v-if="showRecordAccess"
+      v-else-if="showRecordAccess && contextMenuField.name !== $t('data.addNote')"
       :table-name="getTableName"
       :record="getRecord"
       />
         <component
           :is="componentRender"
-          v-if="!showRecordAccess"
+          v-else-if="!showRecordAccess && contextMenuField.name !== $t('data.addNote')"
           :field-attributes="contextMenuField.fieldAttributes"
           :source-field="contextMenuField.fieldAttributes"
           :record-uuid="contextMenuField.fieldAttributes.recordUuid"

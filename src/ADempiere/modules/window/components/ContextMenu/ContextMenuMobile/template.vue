@@ -32,6 +32,28 @@
             </div>
           </div>
         </el-dropdown-item>
+         <el-dropdown-item
+          :command="this.$t('data.addNote')"
+          :divided="true"
+        >
+          <div class="contents">
+            <div style="margin-right: 5%;margin-top: 10%;">
+              <i class="el-icon-notebook-2" style="font-weight: bolder;" />
+            </div>
+            <div>
+              <span class="contents">
+                <b class="label">
+                  {{ $t('data.addNote') }}
+                </b>
+              </span>
+              <p
+                class="description"
+              >
+                {{ $t('data.descriptionNote') }}
+              </p>
+            </div>
+          </div>
+        </el-dropdown-item>
         <el-dropdown-item
           v-for="(action, index) in actions"
           :key="index"
