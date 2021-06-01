@@ -11,6 +11,7 @@ export interface DecorableCss {
 }
 
 export interface IProductCodeData {
+    columnName?: string
     elementColumnName: string
     isFromDictionary: boolean
     value?: string
@@ -21,6 +22,7 @@ const productCode: IProductCodeData[] = [
   // Product Code
   {
     elementColumnName: 'ProductValue',
+    columnName: 'ProductValue',
     isFromDictionary: true,
     overwriteDefinition: {
       size: 24,

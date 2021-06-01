@@ -21,13 +21,17 @@ export function request(requestValues: AxiosRequestConfig): Promise<any> {
   }
   requestValues.params.token = getToken()
   requestValues.params.language = getLocale() || 'en_US'
-  // console.warn('send request')
-  // console.warn({
-  //   ...requestValues
-  // })
-  return new Promise(resolve => {
-    requestAPI(requestValues).then(response => {
-      resolve(response)
-    })
+  console.warn('send request')
+  console.warn({
+    ...requestValues
+  })
+  return new Promise((resolve, reject) => {
+    requestAPI(requestValues)
+      .then(response => {
+        resolve(response)
+      })
+      .catch(response => {
+        reject(response)
+      })
   })
 }

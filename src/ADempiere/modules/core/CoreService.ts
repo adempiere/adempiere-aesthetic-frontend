@@ -27,6 +27,7 @@ import {
   IWarehousesListParams,
   IWarehousesListResponse
 } from './CoreType'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 // List Point of sales
 export function requestGetProductPrice(
@@ -42,7 +43,7 @@ export function requestGetProductPrice(
     validFrom
   } = data
   return request({
-    url: '/form/addons/point-of-sales/get-product-price',
+    url: '/form/addons/point-of-sales/product-price',
     method: 'GET',
     params: {
       search_value: searchValue,
@@ -56,6 +57,9 @@ export function requestGetProductPrice(
     }
   })
     .then(productPriceResponse => {
+      if (isEmptyValue(productPriceResponse)) {
+        return productPriceResponse
+      }
       return convertProductPrice(productPriceResponse)
     })
 }
