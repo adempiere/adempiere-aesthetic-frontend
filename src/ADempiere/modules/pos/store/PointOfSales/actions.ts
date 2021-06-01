@@ -59,7 +59,6 @@ export const actions: PointOfSalesActionTree = {
     posToSet: IPointOfSalesData
   ) {
     context.commit('currentPointOfSales', posToSet)
-    const currentPOS: IPointOfSalesData = posToSet
     const oldRoute: Route = context.rootState.route
     router.push({
       name: oldRoute.name!,
@@ -79,11 +78,5 @@ export const actions: PointOfSalesActionTree = {
     context.commit(Namespaces.ProductPrice + '/' + 'setIsReloadProductPrice', undefined, { root: true })
     context.commit(Namespaces.Order + '/' + 'setIsReloadListOrders', undefined, { root: true })
     context.commit('setShowPOSKeyLayout', false)
-    context.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
-      posUuid: currentPOS.uuid
-    }, { root: true })
-    context.dispatch(Namespaces.ProductPrice + '/' + 'listProductPriceFromServer', {
-      currentPOS
-    }, { root: true })
   }
 }
