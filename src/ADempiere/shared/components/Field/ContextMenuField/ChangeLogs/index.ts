@@ -5,15 +5,14 @@ import {
 } from '@/ADempiere/modules/window'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
-import { Component, Mixins, Prop } from 'vue-property-decorator'
-import MixinContextMenuField from '../MixinContextMenuField'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import Template from './template.vue'
 
 @Component({
   name: 'FieldChangeLogs',
   mixins: [Template]
 })
-export default class FieldChangeLogs extends Mixins(MixinContextMenuField) {
+export default class FieldChangeLogs extends Vue {
   @Prop({
     type: Object,
     required: true

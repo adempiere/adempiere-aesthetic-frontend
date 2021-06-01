@@ -2,6 +2,7 @@
 <el-card
     v-if="!isEmptyValue(metadataList)"
     class="box-card"
+    style="padding: 1%;"
   >
     <div slot="header" class="clearfix">
       <span>

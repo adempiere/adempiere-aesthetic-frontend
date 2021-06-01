@@ -1,19 +1,18 @@
 import { ID, INTEGER } from '@/ADempiere/shared/utils/references'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { calculationValue, clearVariables, isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
-import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop, Ref, Watch } from 'vue-property-decorator'
 import { ICalculatorObject } from './type'
 
 import buttons from './buttons'
 import Template from './template.vue'
 import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
-import MixinContextMenuField from '../MixinContextMenuField'
 
 @Component({
   name: 'FieldCalc',
   mixins: [Template]
 })
-export default class FieldCalc extends Mixins(MixinContextMenuField) {
+export default class FieldCalc extends Vue {
     @Prop({ type: Object, required: true }) fieldAttributes!: any
     @Ref() readonly calculatorInput!: HTMLElement
     @Prop({ type: Number, default: undefined }) fieldValue?: number
@@ -113,6 +112,7 @@ export default class FieldCalc extends Mixins(MixinContextMenuField) {
           clearVariables()
           this.$children[0].$props.visible = true
           this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
+          this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowOptionField', false)
           if (!isEmptyValue(this.$route.query.fieldColumnName)) {
             this.$router.push({
               name: this.$route.name!,

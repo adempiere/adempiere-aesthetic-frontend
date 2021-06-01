@@ -114,8 +114,7 @@
                   width="400"
                   trigger="click"
                   style="padding: 0px;"
-                  :hide="visibleForDesktop"
-                  v-model="visibleFields[key]"
+                  @hide="closePopover"
                 >
                   <component
                     :is="optionFieldFComponentRender"
@@ -123,7 +122,6 @@
                     :field-attributes="contextMenuField.fieldAttributes"
                     :source-field="contextMenuField.fieldAttributes"
                     :field-value="contextMenuField.valueField"
-                    :visible="visibleFields[key]"
                   />
                   <el-button slot="reference" type="text" style="color: #606266;">
                     <div class="contents">

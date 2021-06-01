@@ -1,15 +1,14 @@
 import Template from './template.vue'
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { ILanguageData, IValueData } from '@/ADempiere/modules/core'
 import { getLocale } from '@/ADempiere/shared/lang/index'
-import MixinContextMenuField from '../MixinContextMenuField'
 
 @Component({
   name: 'FieldTranslated',
   mixins: [Template]
 })
-export default class FieldTranslated extends Mixins(MixinContextMenuField) {
+export default class FieldTranslated extends Vue {
     @Prop({ type: Object, required: true }) fieldAttributes!: any
     @Prop({ type: String, default: undefined }) recordUuid?: string
     public langValue?: string = ''
@@ -92,6 +91,7 @@ export default class FieldTranslated extends Mixins(MixinContextMenuField) {
     close() {
       (this.$children[0] as any).visible = false
       this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowOptionField', false)
     }
 
     // Hooks
