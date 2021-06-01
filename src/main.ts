@@ -26,9 +26,11 @@ import * as filters from '@/filters'
 import { sync } from 'vuex-router-sync'
 import Cookies from 'js-cookie'
 import * as globalMethods from '@/ADempiere/shared/utils/globalMethods'
+import VueCompositionAPI from '@vue/composition-api'
 
 const methods: any = globalMethods
 
+Vue.use(VueCompositionAPI)
 Vue.use(VMarkdown)
 Vue.use(VueShortkey)
 Vue.use(VueSplit)
