@@ -98,11 +98,9 @@ export function requestWarehousesList(
   return request({
     url: '/common/warehouses',
     method: 'GET',
-    data: {
-      organization_id: organizationId,
-      organization_uuid: organizationUuid
-    },
     params: {
+      organization_id: organizationId,
+      organization_uuid: organizationUuid,
       // Page Data
       pageToken,
       pageSize

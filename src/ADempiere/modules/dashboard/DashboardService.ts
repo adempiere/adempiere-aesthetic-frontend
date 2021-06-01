@@ -72,7 +72,7 @@ export function getPendingDocumentsFromServer(
   const { userId, userUuid, roleId, roleUuid, pageToken, pageSize } = data
   return request({
     url: '/dashboard/addons/tasks/pending-documents',
-    method: 'POST',
+    method: 'GET',
     params: {
       user_id: userId,
       user_uuid: userUuid,
