@@ -19,26 +19,10 @@
             class="content-collapse"
             :style="!(metadata.fieldsList) ? 'height: max-content !important;' : ''"
           >
-            <h3 class="warn-content text-center">
-              <el-popover
-                v-if="(metadata.help)"
-                ref="helpTitle"
-                placement="top-start"
-                :title="formTitle"
-                width="400"
-                trigger="hover"
-              >
-                <div v-html="metadata.help" />
-              </el-popover>
-              <el-button
-                v-popover:helpTitle
-                type="text"
-                class="custom-title text-center"
-              >
-                {{ formTitle }}
-              </el-button>
-            </h3>
-
+          <title-and-help
+              :name="metadata.name"
+              :help="metadata.help"
+            />
             <!-- emulated component form -->
             <div class="wrapper">
               <el-form

@@ -4,12 +4,14 @@ import MixinForm from '../../components/Form/MixinForm'
 import { Namespaces } from '../../utils/types'
 import fieldList from './fieldList'
 import Template from './template.vue'
+import TitleAndHelp from '@/ADempiere/shared/components/TitleAndHelp'
 
 @Component({
   name: 'TestView',
   mixins: [Template, MixinForm],
   components: {
-    ContextMenu
+    ContextMenu,
+    TitleAndHelp
   }
 })
 export default class TestView extends Mixins(MixinForm) {
@@ -29,11 +31,6 @@ export default class TestView extends Mixins(MixinForm) {
     isCustomForm = true
     // eslint-disable-next-line
     unsubscribe: Function = () => {}
-
-    // Computed properties
-    get formTitle(): string {
-      return this.metadata.name || this.$route.meta.title
-    }
 
     // Methods
     subscribeChanges() {

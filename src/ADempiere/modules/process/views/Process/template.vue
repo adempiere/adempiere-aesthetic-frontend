@@ -20,25 +20,10 @@
       <el-row :gutter="20">
         <el-col :span="24">
           <el-card class="content-collapse">
-            <h3 v-show="(processTitle)" class="warn-content text-center">
-              <el-popover
-                v-if="(processMetadata.help)"
-                ref="helpTitle"
-                placement="top-start"
-                :title="processTitle"
-                width="400"
-                trigger="hover"
-              >
-                <div v-html="processMetadata.help" />
-              </el-popover>
-              <el-button
-                v-popover:helpTitle
-                type="text"
-                class="custom-title text-center"
-              >
-                {{ processMetadata.name }}
-              </el-button>
-            </h3>
+            <title-and-help
+              :name="processMetadata.name"
+              :help="processMetadata.help"
+            />
             <main-panel
               :position-tab="processMetadata.accesLevel"
               :container-uuid="processUuid"
@@ -74,10 +59,5 @@
   .el-card {
     width: 100% !important;
     height: 100% !important;
-  }
-  .sticky-submenu {
-    position: absolute !important;
-    right: 0;
-    top: 0;
   }
 </style>

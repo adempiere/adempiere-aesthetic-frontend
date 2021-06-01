@@ -1,12 +1,14 @@
 import { Component, Vue } from 'vue-property-decorator'
 import DropdownMenu from '@/ADempiere/shared/components/DropdownMenu'
 import Template from './template.vue'
+import TitleAndHelp from '@/ADempiere/shared/components/TitleAndHelp'
 
 @Component({
   name: 'Summary',
   mixins: [Template],
   components: {
-    DropdownMenu
+    DropdownMenu,
+    TitleAndHelp
   }
 })
 export default class Summary extends Vue {

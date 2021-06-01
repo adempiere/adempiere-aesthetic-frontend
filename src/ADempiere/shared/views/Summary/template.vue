@@ -1,14 +1,9 @@
 <template>
   <div v-if="isIndex" key="sumary" class="app-container">
-    <el-popover
-      v-if="($route.meta.description)"
-      ref="routeDescription"
-      placement="top"
-      width="400"
-      trigger="hover"
-      :content="$route.meta.description"
+    <title-and-help
+      :name="$route.meta.title"
+      :help="$route.meta.description"
     />
-    <h3 v-popover:routeDescription class="description">{{ $route.meta.title }}</h3>
     <el-row :gutter="10">
       <template v-if="optionList">
         <template v-for="(item, key) in optionList">

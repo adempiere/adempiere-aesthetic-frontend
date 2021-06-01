@@ -27,33 +27,17 @@
             class="content-collapse"
             :style="!(formMetadata.fieldsList) ? 'height: 100% !important;' : ''"
           >
-            <h3 v-if="isShowTitleForm" class="warn-content text-center">
-              <el-popover
-                v-if="(formMetadata.help)"
-                ref="helpTitle"
-                placement="top-start"
-                :title="formTitle"
-                width="400"
-                trigger="hover"
-              >
-                <div v-html="formMetadata.help" />
-              </el-popover>
+              <title-and-help
+              v-if="isShowTitleForm"
+              :name="formName"
+              :help="formMetadata.help">
               <el-button
-                v-popover:helpTitle
-                type="text"
-                class="custom-title text-center"
-              >
-                {{ formTitle }}
-              </el-button>
-              <el-button
-                v-if="isShowTitleForm"
                 type="text"
                 style="float: right"
                 :circle="true"
                 icon="el-icon-arrow-up"
-                @click="changeDisplatedTitle"
-              />
-            </h3>
+                @click="changeDisplatedTitle" />
+            </title-and-help>
             <el-button
               v-if="!isShowTitleForm"
               type="text"
@@ -65,8 +49,8 @@
             <form-panel
               :metadata="{
                 ...formMetadata,
-                fileName: fromFileName,
-                title: formTitle
+                fileName: formFileName,
+                title: formName
               }"
             />
           </el-card>

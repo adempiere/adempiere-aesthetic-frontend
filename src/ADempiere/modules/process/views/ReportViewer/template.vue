@@ -15,25 +15,11 @@
         <el-row type="flex" style="min-height: inherit;">
             <el-col :span="24">
                 <div class="content">
-                    <h3 class="text-center" style="margin: 0 !important;">
-                        <el-popover
-                            v-if="(processMetadata.help)"
-                            ref="helpTitle"
-                            placement="top-start"
-                            :title="reportTitle"
-                            width="400"
-                            trigger="hover"
-                        >
-                            <div v-html="processMetadata.help" />
-                        </el-popover>
-                        <el-button
-                            v-popover:helpTitle
-                            type="text"
-                            class="custom-title"
-                        >
-                            {{ reportTitle }}
-                        </el-button>
-                    </h3>
+                    <title-and-help
+                    style="margin: 0 !important;"
+                    :name="processMetadata.name"
+                    :help="processMetadata.help"
+                    />
                     <iframe
                         v-if="reportFormat === 'pdf'"
                         key="report-content-pdf"

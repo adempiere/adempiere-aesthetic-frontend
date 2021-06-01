@@ -9,6 +9,7 @@ import { IBrowserDataExtended } from '@/ADempiere/modules/dictionary'
 import { IRecordSelectionData } from '../../PersistenceType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
+import TitleAndHelp from '@/ADempiere/shared/components/TitleAndHelp'
 
 @Component({
   name: 'BrowserView',
@@ -17,7 +18,8 @@ import { DeviceType } from '@/ADempiere/modules/app/AppType'
     MainPanel,
     DataTable,
     ContextMenu,
-    ModalDialog
+    ModalDialog,
+    TitleAndHelp
   }
 })
 export default class BrowserView extends Vue {
@@ -37,10 +39,6 @@ export default class BrowserView extends Vue {
       return this.$store.getters[Namespaces.BrowserDefinition + '/' + 'getBrowser'](this.browserUuid)
     }
 
-    get browserTitle(): string {
-      return this.browserMetadata.name || this.$route.meta.title
-    }
-
     get isLoadedRecords(): boolean {
       const recordAndSelection: IRecordSelectionData = this.$store.getters[Namespaces.BusinessData + '/' + 'getDataRecordAndSelection'](
         this.browserUuid
@@ -53,24 +51,6 @@ export default class BrowserView extends Vue {
         return false
       }
       return !this.$store.getters[Namespaces.Panel + '/' + 'isNotReadyForSubmit'](this.browserUuid)
-    }
-
-    get isMobile(): boolean {
-      return this.$store.state.app.device === DeviceType.Mobile
-    }
-
-    get cssClassTitle(): 'custom-title-mobile' | 'custom-title' {
-      if (this.isMobile) {
-        return 'custom-title-mobile'
-      }
-      return 'custom-title'
-    }
-
-    get cssClassHelp(): 'content-help-mobile' | 'content-help' {
-      if (this.isMobile) {
-        return 'content-help-mobile'
-      }
-      return 'content-help'
     }
 
     get isShowedCriteria(): boolean {

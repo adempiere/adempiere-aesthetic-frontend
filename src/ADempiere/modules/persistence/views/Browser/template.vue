@@ -20,26 +20,12 @@
       />
       <div class="w-33">
         <div class="center">
-          <el-button
-            v-popover:helpTitle
-            type="text"
-            :class="cssClassTitle + ' warn-content text-center'"
-          >
-            {{ browserTitle }}
-          </el-button>
+          <TitleAndHelp
+            :name="browserMetadata.name"
+            :help="browserMetadata.help"
+          />
         </div>
       </div>
-      <el-popover
-        v-if="(browserMetadata.help)"
-        ref="helpTitle"
-        placement="top-start"
-        :title="browserTitle"
-        :class="cssClassHelp"
-        width="400"
-        trigger="hover"
-      >
-        <div v-html="browserMetadata.help" />
-      </el-popover>
     </el-header>
     <el-main>
 
@@ -109,12 +95,6 @@
     height: 40px;
   }
 
-  .content-help {
-    padding-left: 15px !important;
-  }
-  .content-help-mobile {
-    padding-left: 15px !important;
-  }
   .center{
     text-align: center;
   }
