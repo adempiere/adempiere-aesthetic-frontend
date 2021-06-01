@@ -71,7 +71,7 @@
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.8)"
-    class="loading-browser"
+    class="view-loading"
   />
 </template>
 
@@ -81,15 +81,6 @@
   }
 </style>
 <style scoped>
-  .view-base {
-    height: 100%;
-    min-height: calc(100vh - 84px);
-  }
-
-  .loading-browser {
-    padding: 100px 100px;
-    height: 100%;
-  }
 
   .el-main {
     display: block;
@@ -117,29 +108,11 @@
   .menu {
     height: 40px;
   }
-  .title {
-    color: #000000;
-    text-size-adjust: 20px;
-    font-size: 100%;
-    font-weight: 605!important;
-    /* left: 50%; */
-  }
-  .title-mobile {
-    text-align: center;
-    color: #000000;
-    text-size-adjust: 20px;
-    font-size: 100%;
-    font-weight: 605!important;
-    /* left: 50%; */
-  }
+
   .content-help {
-    width: 100%;
-    height: 100%;
     padding-left: 15px !important;
   }
   .content-help-mobile {
-    width: 50%;
-    height: 50%;
     padding-left: 15px !important;
   }
   .center{

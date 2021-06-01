@@ -41,7 +41,7 @@
               <el-button
                 v-popover:helpTitle
                 type="text"
-                class="title text-center"
+                class="custom-title text-center"
               >
                 {{ formTitle }}
               </el-button>
@@ -106,8 +106,7 @@
     height: 100%!important;
   }
   .view-base {
-    height: 100%;
-    min-height: calc(100vh - 84px);
+    /** Add this rule to view base */
     overflow: hidden;
   }
 
@@ -117,40 +116,14 @@
     overflow: hidden;
   }
 
-  .view-loading {
-    padding: 100px 100px;
-    height: 100%;
-  }
-
-  .title, .custom-title {
-    color: #000;
-    text-size-adjust: 20px;
-    font-size: 100%;
-    font-weight: 605 !important;
-    /* left: 50%; */
-  }
-
   .w-33 {
     width: 100%;
     background-color: transparent;
   }
 
-  .warn-content {
-    margin: 0px 0px !important;
-    padding-top: 0px !important;
-  }
-  .content-help {
-    width: 100%;
-    height: 200%;
-    padding-left: 39px !important;
-  }
   .el-card {
     width: 100% !important;
     height: 100% !important;
-  }
-  .content-collapse {
-    padding-left: 20 px !important;
-    padding-top: 50 px !important;
   }
 
   .center{

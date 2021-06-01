@@ -4,44 +4,8 @@
   />
 </template>
 
-<style scoped>
-  a, a:focus, a:hover {
-    cursor: pointer;
-    color: inherit;
-    text-decoration: none;
-    color: #409EFF;
-  }
-  .el-popover {
-    position: absolute;
-    background: #FFFFFF;
-    overflow: auto;
-    min-width: 84px;
-    border-radius: 4px;
-    border: 1px solid #e6ebf5;
-    padding: 12px;
-    max-height: 174px;
-    z-index: 2000;
-    color: #606266;
-    line-height: 1.4;
-    text-align: justify;
-    max-width: 600px;
-    font-size: 14px;
-    -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    word-break: break-all;
-  }
-  .loading-div {
-    padding: 100px 100px;
-    height: 100%;
-  }
-  .actions {
-    float: right
-  }
-  .el-dropdown-link {
-    cursor: pointer;
-    color: #409EFF;
-  }
-</style>
+<style lang="scss" scoped src="./styles/processActivityStyle.scss"></style>
+
 <style>
   .popover-scroll {
     max-height: 200px !important;

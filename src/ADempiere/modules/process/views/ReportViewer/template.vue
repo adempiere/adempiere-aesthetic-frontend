@@ -29,7 +29,7 @@
                         <el-button
                             v-popover:helpTitle
                             type="text"
-                            class="title"
+                            class="custom-title"
                         >
                             {{ reportTitle }}
                         </el-button>
@@ -80,22 +80,11 @@
         :element-loading-text="$t('notifications.loading')"
         element-loading-spinner="el-icon-loading"
         element-loading-background="rgba(255, 255, 255, 0.8)"
-        class="loading-report-viewer"
+        class="view-loading"
     />
 </template>
 
 <style lang="scss" scoped>
-.loading-report-viewer {
-    padding: 100px 100px;
-    height: 100%;
-}
-
-.title {
-    color: #000000;
-    text-size-adjust: 20px;
-    font-size: 100%;
-    font-weight: 605 !important;
-}
 .content {
     width: 100%;
     height: 100%;

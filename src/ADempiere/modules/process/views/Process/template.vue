@@ -34,7 +34,7 @@
               <el-button
                 v-popover:helpTitle
                 type="text"
-                class="title text-center"
+                class="custom-title text-center"
               >
                 {{ processMetadata.name }}
               </el-button>
@@ -58,7 +58,7 @@
     :element-loading-text="$t('notifications.loading')"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.8)"
-    class="loading-process"
+    class="view-loading"
   />
 </template>
 
@@ -71,31 +71,6 @@
   }
 </style>
 <style scoped >
-  .view-base {
-    height: 100%;
-    min-height: calc(100vh - 84px);
-  }
-
-  .loading-process {
-    padding: 100px 100px;
-    height: 100%;
-  }
-
-  .title {
-    color: #000000;
-    text-size-adjust: 20px;
-    font-size: 100%;
-    font-weight: 605!important;
-  }
-  .warn-content {
-    margin: 0px 0px !important;
-    padding-top: 0px !important;
-  }
-  .content-help {
-    width: 100%;
-    height: 100%;
-    padding-left: 39px !important;
-  }
   .el-card {
     width: 100% !important;
     height: 100% !important;
@@ -104,9 +79,5 @@
     position: absolute !important;
     right: 0;
     top: 0;
-  }
-  .content-collapse {
-    padding-left: 20 px !important;
-    padding-top: 50 px !important;
   }
 </style>

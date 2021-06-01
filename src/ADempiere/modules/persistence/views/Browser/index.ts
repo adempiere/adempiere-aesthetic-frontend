@@ -59,11 +59,11 @@ export default class BrowserView extends Vue {
       return this.$store.state.app.device === DeviceType.Mobile
     }
 
-    get cssClassTitle(): 'title-mobile' | 'title' {
+    get cssClassTitle(): 'custom-title-mobile' | 'custom-title' {
       if (this.isMobile) {
-        return 'title-mobile'
+        return 'custom-title-mobile'
       }
-      return 'title'
+      return 'custom-title'
     }
 
     get cssClassHelp(): 'content-help-mobile' | 'content-help' {

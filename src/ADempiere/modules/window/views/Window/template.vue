@@ -337,7 +337,7 @@
     v-loading="!isLoaded"
     :element-loading-text="$t('notifications.loading')"
     element-loading-background="rgba(255, 255, 255, 0.8)"
-    class="loading-window"
+    class="view-loading"
   />
 </template>
 
