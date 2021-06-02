@@ -92,7 +92,7 @@
               </template>
             </el-dropdown-menu>
           </el-dropdown>
-          <el-menu v-else class="el-menu-demo" mode="horizontal" :unique-opened="true" style="z-index: 0" :menu-trigger="triggerMenu" @open="handleOpen" @close="handleClose" @select="handleSelect">
+          <el-menu v-else-if="field.panelType !== 'form' && !isMobile" class="el-menu-demo" mode="horizontal" :unique-opened="true" style="z-index: 0" :menu-trigger="triggerMenu" @open="handleOpen" @close="handleClose" @select="handleSelect">
             <el-submenu index="menu">
               <template slot="title">
                 <div :style="isMobile ? 'display: flex;width: auto;' : 'display: block;'">
@@ -159,6 +159,9 @@
               </el-menu-item>
             </el-submenu>
           </el-menu>
+          <span v-else>
+            {{ field.name }}
+          </span>
         </template>
         <el-popover
           v-if="openOptionField && !isEmptyValue(optionColumnName) && (optionColumnName === field.columnName) && showPopoverPath"

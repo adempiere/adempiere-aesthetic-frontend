@@ -8,7 +8,7 @@ import ConvertAmount from '@/ADempiere/shared/components/Form/VPOS/Collection/Co
 import Template from './template.vue'
 import FieldLine from '@/ADempiere/shared/components/Form/VPOS/Order/Line'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
-import { ICurrentOrderData, ICurrentPointOfSalesData, IOrderLineDataExtended, IPOSAttributesData } from '@/ADempiere/modules/pos'
+import { ICurrentOrderData, ICurrentPointOfSalesData, IOrderLineDataExtended, IPOSAttributesData, OrderLinesState } from '@/ADempiere/modules/pos'
 import { ICurrencyData } from '@/ADempiere/modules/core'
 
 @Component({
@@ -125,6 +125,11 @@ export default class Order extends Mixins(MixinOrderLine) {
 
   get isDisabled(): boolean {
     return this.currentPointOfSales.currentOrder.isProcessed
+  }
+
+  get currentLineorder() {
+    console.log((this.$store.state[Namespaces.OrderLines] as OrderLinesState).line)
+    return (this.$store.state[Namespaces.OrderLines] as OrderLinesState).line
   }
 
   get listOrderLine(): IOrderLineDataExtended[] {

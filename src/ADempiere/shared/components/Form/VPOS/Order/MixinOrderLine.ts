@@ -60,8 +60,8 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
 
       formatQuantity = formatQuantity
 
-      changeLine(command: string) {
-        switch (command) {
+      changeLine(command: any) {
+        switch (command.option) {
           case 'Eliminar':
             // this.deleteOrderLine()
             break
@@ -72,6 +72,7 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
               quantityOrdered: this.currentOrderLine.quantityOrdered,
               discount: this.currentOrderLine.discount
             })
+            this.currentOrderLine.uuid = command.uui
             this.edit = true
             break
           //
@@ -90,22 +91,33 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
         switch (line.columnName) {
           case 'QtyEntered':
             quantity = line.value
+            price = line.line.price
+            discountRate = line.line.discountRate
             break
           case 'PriceEntered':
             price = line.value
+            quantity = line.line.quantity
+            discountRate = line.line.discountRate
             break
           case 'Discount':
             discountRate = line.value
+            price = line.line.price
+            quantity = line.line.quantity
             break
         }
 
         requestUpdateOrderLine({
-          orderLineUuid: this.currentOrderLine.uuid,
+          orderLineUuid: line.line.uuid,
           quantity,
           price,
           discountRate
         })
           .then((response: IOrderLineData) => {
+            this.fillOrderLineQuantities({
+              currentPrice: response.price,
+              quantityOrdered: response.quantity,
+              discount: response.discountRate
+            })
             this.fillOrderLine(response)
             this.reloadOrder(true)
           })
@@ -153,7 +165,7 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
         } else if (columnName === 'QtyOrdered') {
           return this.formatQuantity(row.quantityOrdered)
         } else if (columnName === 'Discount') {
-          return this.formatPercent(row.discount)
+          return this.formatPercent(row.discount / 100)
         } else if (columnName === 'GrandTotal') {
           return this.formatPrice(row.grandTotal, currency)
         }
@@ -165,25 +177,25 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
         discount: number
       }) {
         const { currentPrice, quantityOrdered, discount } = params
-        const containerUuid = this.formUuid
+        // const containerUuid = this.formUuid
         //  Editable fields
         if (quantityOrdered) {
           this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
-            containerUuid,
+            containerUuid: 'line',
             columnName: 'QtyEntered',
             value: quantityOrdered
           })
         }
         if (currentPrice) {
           this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
-            containerUuid,
+            containerUuid: 'line',
             columnName: 'PriceEntered',
             value: currentPrice
           })
         }
         if (discount) {
           this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
-            containerUuid,
+            containerUuid: 'line',
             columnName: 'Discount',
             value: discount
           })

@@ -342,6 +342,7 @@ export interface IOrderLineDataExtended extends IOrderLineData {
 
 export interface OrderLinesState {
     listOrderLine: IOrderLineDataExtended[]
+    line: any
 }
 
 export interface IListProductPriceItemData {

@@ -43,20 +43,23 @@ export default class FieldLine extends Vue {
       private fieldsList: any[] = []
       private input = ''
       private visible = false
+      private columnNameVisible = ''
+      private validatePing = false
+      private unsubscribe: Function = () => {}
 
       // Computed properties
       get isModifyPrice(): boolean {
         const pos = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales
         if (!isEmptyValue(pos.isModifyPrice)) {
-          return (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.isModifyPrice!
+          return pos.isModifyPrice!
         }
         return false
       }
 
       get isPosRequiredPin(): boolean {
         const pos = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales
-        if (!isEmptyValue(pos.isPosRequiredPin)) {
-          return (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.isPosRequiredPin!
+        if (!isEmptyValue(pos.isPosRequiredPin) && !this.validatePing) {
+          return pos.isPosRequiredPin!
         }
         return false
       }
@@ -64,6 +67,14 @@ export default class FieldLine extends Vue {
       created() {
         console.log('currentLine')
         console.log(this.currentLine)
+      }
+
+      beforeMount() {
+        this.unsubscribe = this.subscribeChanges()
+      }
+
+      beforeDestroy() {
+        this.unsubscribe()
       }
 
       // Watchers
@@ -145,5 +156,19 @@ export default class FieldLine extends Vue {
       closePing() {
         const popover = this.$refs.ping as Element[]
         ((this.$refs.ping as Element[])[popover.length - 1] as any).showPopper = false
+      }
+
+      checkclosePing() {
+        this.validatePing = true
+        this.closePing()
+      }
+
+      subscribeChanges() {
+        return this.$store.subscribe((mutation, state) => {
+          if (mutation.type === Namespaces.Event + '/' + 'addFocusGained' && this.isPosRequiredPin) {
+            this.columnNameVisible = mutation.payload.columnName
+            this.visible = true
+          }
+        })
       }
 }

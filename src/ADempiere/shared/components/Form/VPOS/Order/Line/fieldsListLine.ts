@@ -11,6 +11,7 @@ const fieldsList: IFieldLocation[] = [
       isReadOnly: true,
       handleActionPerformed: true,
       handleContentSelection: true,
+      handleFocusGained: true,
       handleActionKeyPerformed: true
     }
   },
@@ -35,6 +36,7 @@ const fieldsList: IFieldLocation[] = [
       sequence: 10,
       handleActionPerformed: true,
       handleContentSelection: true,
+      handleFocusGained: true,
       handleActionKeyPerformed: true
     }
   }

@@ -11,7 +11,10 @@
             <Field
               v-if="field.columnName === 'PriceEntered'"
               :key="field.columnName"
-              :metadata-field="field"
+              :metadata-field="{
+                ...field,
+                isReadOnly: !isModifyPrice
+              }"
             />
             <Field
               v-if="field.columnName === 'QtyEntered'"
@@ -19,8 +22,10 @@
               :metadata-field="field"
             />
             <el-popover
+              v-if="columnNameVisible === field.columnName"
               ref="ping"
               placement="right"
+              v-model="visible"
               trigger="click"
             >
               <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
@@ -41,21 +46,23 @@
                 <el-button
                   type="primary"
                   icon="el-icon-check"
+                  @click="checkclosePing"
                 />
-                {{
-                  isPosRequiredPin
-                }}
               </span>
-              <Field
+              <el-button
+              slot="reference"
+              type="text"
+              disabled
+              @click="visible = !visible" />
+            </el-popover>
+            <Field
                 v-if="field.columnName === 'Discount'"
-                slot="reference"
                 :key="field.columnName"
                 :metadata-field="{
                   ...field,
-                  isReadOnly: !isModifyPrice || isPosRequiredPin
+                  isReadOnly: !isModifyPrice
                 }"
               />
-            </el-popover>
           </el-form>
         </el-col>
       </template>

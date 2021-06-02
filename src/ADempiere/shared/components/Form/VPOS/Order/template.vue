@@ -90,8 +90,13 @@
                       <i class="el-icon-arrow-down el-icon--right" />
                     </span>
                     <el-dropdown-menu slot="dropdown" style="padding-bottom: 0px;">
-                      <el-dropdown-item :command="scope.row">
+                      <el-dropdown-item
+                      :command="{
+                        ...scope.row,
+                        option: $t('form.productInfo.productInformation')
+                      }">
                         <el-popover
+                          v-if="!isEmptyValue(currentLineOrder)"
                           placement="right"
                           trigger="click"
                           :title="$t('form.productInfo.productInformation')"
@@ -114,20 +119,20 @@
                                 </div>
                               </el-col>
                               <el-col :span="10">
-                                {{ $t('form.productInfo.code') }}: <b>{{ currentOrderLine.product.value }}</b><br>
-                                {{ $t('form.productInfo.name') }}: <b>{{ currentOrderLine.product.name }}</b><br>
-                                {{ $t('form.productInfo.description') }}: <b>{{ currentOrderLine.product.description }}</b><br>
+                                {{ $t('form.productInfo.code') }}: <b>{{ currentLineOrder.product.value }}</b><br>
+                                {{ $t('form.productInfo.name') }}: <b>{{ currentLineOrder.product.name }}</b><br>
+                                {{ $t('form.productInfo.description') }}: <b>{{ currentLineOrder.product.description }}</b><br>
                               </el-col>
                               <el-col :span="10">
                                 <div style="float: right">
                                   {{ $t('form.productInfo.price') }}:
-                                  <b>{{ formatPrice(currentOrderLine.product.priceStandard, pointOfSalesCurrency.iSOCode) }}</b>
+                                  <b>{{ formatPrice(currentLineOrder.product.priceStandard, pointOfSalesCurrency.iSOCode) }}</b>
                                   <br>
                                   {{ $t('form.productInfo.taxAmount') }}:
-                                  <b>{{ currentOrderLine.taxIndicator }}</b>
+                                  <b>{{ currentLineOrder.taxIndicator }}</b>
                                   <br>
                                   {{ $t('form.productInfo.quantityAvailable') }}:
-                                  <b>{{ formatQuantity(currentOrderLine.quantityOrdered) }}</b>
+                                  <b>{{ formatQuantity(currentLineOrder.quantityOrdered) }}</b>
                                 </div>
                               </el-col>
                             </el-row>
@@ -137,7 +142,11 @@
                           </el-button>
                         </el-popover>
                       </el-dropdown-item>
-                      <el-dropdown-item :command="$t('form.pos.tableProduct.editQuantities')">
+                      <el-dropdown-item
+                      :command="{
+                        ...scope.row,
+                        option: $t('form.pos.tableProduct.editQuantities')
+                      }">
                         <el-popover
                           placement="right"
                           trigger="click"
