@@ -21,8 +21,9 @@ export function getPrivateAccess(data: {
     .then((responsePrivateAccess: any) => {
       return {
         tableName: responsePrivateAccess.table_name,
-        recordId: responsePrivateAccess.record_id,
-        recordUuid: responsePrivateAccess.record_uuid
+        recordId: responsePrivateAccess.id,
+        recordUuid: responsePrivateAccess.uuid,
+        isLocked: responsePrivateAccess.is_locked
       }
     })
 }

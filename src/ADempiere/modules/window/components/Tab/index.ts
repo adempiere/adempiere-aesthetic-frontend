@@ -89,7 +89,7 @@ export default class TabParent extends Mixins(MixinTab) {
     // Methods
     lockRecord() {
       const tableName = this.windowMetadata.firstTab.tableName
-      const action = this.lock ? 'lockRecord' : 'unlockRecord'
+      const action = this.lock ? 'unlockRecord' : 'lockRecord'
       this.$store.dispatch(Namespaces.BusinessData + '/' + action, {
         tableName,
         recordId: this.record[tableName + '_ID'],
@@ -108,6 +108,16 @@ export default class TabParent extends Mixins(MixinTab) {
             message: this.$t('data.isError').toString() + this.$t('data.' + action),
             showClose: true
           })
+        })
+        .finally(() => {
+          this.$store.dispatch(Namespaces.BusinessData + '/' + 'getPrivateAccessFromServer', {
+            tableName,
+            recordId: this.record[tableName + '_ID'],
+            recordUuid: this.record.UUID
+          })
+            .then(privateAccessResponse => {
+              this.lock = privateAccessResponse.isLocked
+            })
         })
     }
 

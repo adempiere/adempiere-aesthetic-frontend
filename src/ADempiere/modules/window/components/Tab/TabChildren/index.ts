@@ -64,7 +64,6 @@ export default class TabChildren extends Mixins(MixinTab) {
     // Current TabChildren
     @Watch('currentTabChild')
     handleCurrentTabChildChange(newValue: any, oldValue: any) {
-      console.log('TabChild change')
       if (newValue !== oldValue) {
         this.$router.push(
           {

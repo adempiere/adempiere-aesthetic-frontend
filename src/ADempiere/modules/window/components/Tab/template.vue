@@ -14,10 +14,10 @@
        <span v-if="key === 0" slot="label">
           <el-tooltip v-if="key === 0" :content="lock ? $t('data.lockRecord') : $t('data.unlockRecord')" placement="top">
             <el-button type="text" @click="lockRecord()">
-              <i :class="lock ? 'el-icon-unlock' : 'el-icon-lock'" style="font-size: 15px;color: black;" />
+              <i :class="!lock ? 'el-icon-unlock' : 'el-icon-lock'" style="font-size: 15px;color: black;" />
             </el-button>
           </el-tooltip>
-          <span :style="lock ? 'color: #1890ff;': 'color: red;'">
+          <span :style="!lock ? 'color: #1890ff;': 'color: red;'">
             {{ tabAttributes.name }}
           </span>
         </span>
