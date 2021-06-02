@@ -7,7 +7,7 @@ import { createFieldFromDictionary, IFieldTemplateData } from '@/ADempiere/share
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import Template from './template.vue'
 import { IFieldLocation } from '@/ADempiere/shared/components/Field/FieldLocation/fieldList'
-import { IPOSAttributesData } from '@/ADempiere/modules/pos'
+import { IPOSAttributesData, OrderLinesState } from '@/ADempiere/modules/pos'
 
 @Component({
   name: 'FieldLine',
@@ -80,9 +80,7 @@ export default class FieldLine extends Vue {
       // Watchers
       @Watch('showField')
       handleShowFieldChange(value: boolean) {
-        console.log('showFieldChange')
-        if (value && isEmptyValue(this.metadataList) && (this.dataLine.uuid === this.currentLine.uuid)) {
-          this.setFieldsList()
+        if (value && isEmptyValue(this.metadataList) && (this.dataLine.uuid === (this.$store.state[Namespaces.OrderLines] as OrderLinesState).line.uuid)) {
           this.metadataList = this.setFieldsList()
           this.isLoadedField = true
         }

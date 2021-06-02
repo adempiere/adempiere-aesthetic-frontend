@@ -1,5 +1,5 @@
 import { ICurrencyData } from '@/ADempiere/modules/core/CoreType'
-import { IOrderLineData, requestDeleteOrderLine, requestUpdateOrderLine } from '@/ADempiere/modules/pos'
+import { IOrderLineData, IPOSAttributesData, requestDeleteOrderLine, requestUpdateOrderLine } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatPercent, formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
@@ -15,27 +15,32 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
       lineDescription: {
         columnName: 'LineDescription',
         label: this.$t('form.pos.tableProduct.product').toString(),
-        isNumeric: false
+        isNumeric: false,
+        size: '380'
       },
       currentPrice: {
         columnName: 'CurrentPrice',
         label: this.$t('form.productInfo.price').toString(),
-        isNumeric: true
+        isNumeric: true,
+        size: 'auto'
       },
       quantityOrdered: {
         columnName: 'QtyOrdered',
         label: this.$t('form.pos.tableProduct.quantity').toString(),
-        isNumeric: true
+        isNumeric: true,
+        size: '100px'
       },
       discount: {
         columnName: 'Discount',
         label: '% ' + this.$t('form.pos.order.discount').toString(),
-        isNumeric: true
+        isNumeric: true,
+        size: '110px'
       },
       grandTotal: {
         columnName: 'GrandTotal',
         label: 'Total',
-        isNumeric: true
+        isNumeric: true,
+        size: 'auto'
       }
     }
 
@@ -82,11 +87,7 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
       }
 
       updateOrderLine(line: any) {
-        let {
-          currentPrice: price,
-          discount: discountRate,
-          quantityOrdered: quantity
-        } = this.currentOrderLine
+        let quantity, price, discountRate
 
         switch (line.columnName) {
           case 'QtyEntered':
@@ -119,7 +120,10 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
               discount: response.discountRate
             })
             this.fillOrderLine(response)
-            this.reloadOrder(true)
+            this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', {
+              orderUuid: (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.currentOrder.uuid
+            })
+            this.$store.dispatch(Namespaces.OrderLines + '/' + 'currentLine', response)
           })
           .catch(error => {
             console.error(error.message)
@@ -136,7 +140,9 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
           orderLineUuid: lineSelection.uuid
         })
           .then(() => {
-            this.reloadOrder(true)
+            this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', {
+              orderUuid: (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.currentOrder.uuid
+            })
           })
           .catch(error => {
             console.error(error.message)
@@ -169,6 +175,10 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
         } else if (columnName === 'GrandTotal') {
           return this.formatPrice(row.grandTotal, currency)
         }
+      }
+
+      productPrice(price: number, discount: number): number {
+        return price / discount * 100
       }
 
       fillOrderLineQuantities(params: {

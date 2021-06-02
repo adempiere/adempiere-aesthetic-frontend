@@ -127,9 +127,9 @@ export default class Order extends Mixins(MixinOrderLine) {
     return this.currentPointOfSales.currentOrder.isProcessed
   }
 
-  get currentLineorder() {
-    console.log((this.$store.state[Namespaces.OrderLines] as OrderLinesState).line)
-    return (this.$store.state[Namespaces.OrderLines] as OrderLinesState).line
+  get currentLineOrder() {
+    const line = (this.$store.state[Namespaces.OrderLines] as OrderLinesState).line
+    return line
   }
 
   get listOrderLine(): IOrderLineDataExtended[] {
@@ -300,6 +300,11 @@ export default class Order extends Mixins(MixinOrderLine) {
       (this.$refs.linesTable as any).setCurrentRow(this.listOrderLine[this.currentTable])
       this.currentOrderLine = this.listOrderLine[this.currentTable]
     }
+  }
+
+  showEditLine(line: any) {
+    this.$store.commit(Namespaces.OrderLines + '/' + 'setLine', line)
+    this.showFieldLine = !this.showFieldLine
   }
 
   arrowBottom() {
