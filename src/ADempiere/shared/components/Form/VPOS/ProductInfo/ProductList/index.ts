@@ -1,14 +1,12 @@
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import MixinForm from '../../../MixinForm'
 import Template from './template.vue'
 import CustomPagination from '@/ADempiere/shared/components/Pagination'
 import fieldListProductPrice from '../fieldList'
-import { IFieldLocation } from '@/ADempiere/shared/components/Field/FieldLocation/fieldList'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import {
   ICurrentPointOfSalesData,
   IListProductPriceItemData,
-  IPointOfSalesData,
   IPOSAttributesData
 } from '@/ADempiere/modules/pos'
 import { IProductPriceData } from '@/ADempiere/modules/core/CoreType'
@@ -83,16 +81,6 @@ export default class ProductList extends Mixins(MixinForm) {
     get isReadyFromGetData(): boolean {
       const { isLoaded, isReload } = this.productPrice
       return (!isLoaded || isReload) // && this.isShowProductsPriceList
-    }
-
-    // Watchers
-    @Watch('isReadyFromGetData')
-    hanldeIsReadyFromGetDataChange(isToLoad: boolean) {
-      console.log('isReadyFromGetData change')
-      console.log(isToLoad)
-      if (isToLoad) {
-        this.loadProductsPricesList()
-      }
     }
 
     // Methods

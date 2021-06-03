@@ -1,7 +1,7 @@
-import { IConversionRateData, ICurrencyData } from '@/ADempiere/modules/core'
-import { ICurrentOrderData, IOrderData, IPaymentsData, IPointOfSalesData, processOrder } from '@/ADempiere/modules/pos'
+import { IConversionRateData } from '@/ADempiere/modules/core'
+import { IPaymentsData, processOrder } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { formatDate, formatPrice } from '@/ADempiere/shared/utils/valueFormat'
+import { formatPrice } from '@/ADempiere/shared/utils/valueFormat'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { IFieldLocation } from '../../../Field/FieldLocation/fieldList'
@@ -327,6 +327,7 @@ export default class Collection extends Mixins(MixinPOS) {
         this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
           conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
           currencyFromUuid: this.pointOfSalesCurrency.uuid,
+          conversionDate: this.formatDateCollection(new Date()),
           currencyToUuid: value
         })
       }
@@ -369,7 +370,18 @@ export default class Collection extends Mixins(MixinPOS) {
     }
 
     // Methods
-    formatDate = formatDate
+    formatDateCollection(date: Date): string {
+      let month: string = '' + (date.getMonth() + 1)
+      let day: string = '' + date.getDate()
+      const year: number = date.getFullYear()
+      if (month.length < 2) {
+        month = '0' + month
+      }
+      if (day.length < 2) {
+        day = '0' + day
+      }
+      return [year, month, day].join('-')
+    }
 
     formatPrice = formatPrice
 

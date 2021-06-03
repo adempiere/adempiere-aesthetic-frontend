@@ -56,7 +56,7 @@ export const getters: PointOfSalesGetterTree = {
    * Search Product
    */
   getProductPrice: (state, getters, rootState) => {
-    if (isEmptyValue(rootState.productPriceModule.productPrice) || !rootState.productPriceModule.productPrice.isLoaded) {
+    if (isEmptyValue(rootState.productPriceModule.productPrice)) {
       return {
         ...withoutResponse,
         productPricesList: []
