@@ -9,12 +9,14 @@ import Template from './template.vue'
 import { reportFormatsList } from '@/ADempiere/shared/utils/exportUtil'
 import ModalDialog from '@/ADempiere/shared/components/Dialog'
 import ContextMenu from '@/ADempiere/modules/window/components/ContextMenu'
+import TitleAndHelp from '@/ADempiere/shared/components/TitleAndHelp'
 
 @Component({
   name: 'ReportViewer',
   components: {
     ModalDialog,
-    ContextMenu
+    ContextMenu,
+    TitleAndHelp
   },
   mixins: [Template]
 })
@@ -37,10 +39,6 @@ export default class ReportViewer extends Vue {
       return this.$store.getters[
         Namespaces.ProcessDefinition + '/' + 'getProcessById'
       ](this.$route.params.processId)
-    }
-
-    get reportTitle(): string {
-      return this.processMetadata.name || this.$route.meta.title
     }
 
     get url(): string {

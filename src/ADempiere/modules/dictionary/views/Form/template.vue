@@ -27,33 +27,17 @@
             class="content-collapse"
             :style="!(formMetadata.fieldsList) ? 'height: 100% !important;' : ''"
           >
-            <h3 v-if="isShowTitleForm" class="warn-content text-center">
-              <el-popover
-                v-if="(formMetadata.help)"
-                ref="helpTitle"
-                placement="top-start"
-                :title="formTitle"
-                width="400"
-                trigger="hover"
-              >
-                <div v-html="formMetadata.help" />
-              </el-popover>
+              <title-and-help
+              v-if="isShowTitleForm"
+              :name="formName"
+              :help="formMetadata.help">
               <el-button
-                v-popover:helpTitle
-                type="text"
-                class="title text-center"
-              >
-                {{ formTitle }}
-              </el-button>
-              <el-button
-                v-if="isShowTitleForm"
                 type="text"
                 style="float: right"
                 :circle="true"
                 icon="el-icon-arrow-up"
-                @click="changeDisplatedTitle"
-              />
-            </h3>
+                @click="changeDisplatedTitle" />
+            </title-and-help>
             <el-button
               v-if="!isShowTitleForm"
               type="text"
@@ -65,8 +49,8 @@
             <form-panel
               :metadata="{
                 ...formMetadata,
-                fileName: fromFileName,
-                title: formTitle
+                fileName: formFileName,
+                title: formName
               }"
             />
           </el-card>
@@ -106,8 +90,7 @@
     height: 100%!important;
   }
   .view-base {
-    height: 100%;
-    min-height: calc(100vh - 84px);
+    /** Add this rule to view base */
     overflow: hidden;
   }
 
@@ -117,40 +100,14 @@
     overflow: hidden;
   }
 
-  .view-loading {
-    padding: 100px 100px;
-    height: 100%;
-  }
-
-  .title, .custom-title {
-    color: #000;
-    text-size-adjust: 20px;
-    font-size: 100%;
-    font-weight: 605 !important;
-    /* left: 50%; */
-  }
-
   .w-33 {
     width: 100%;
     background-color: transparent;
   }
 
-  .warn-content {
-    margin: 0px 0px !important;
-    padding-top: 0px !important;
-  }
-  .content-help {
-    width: 100%;
-    height: 200%;
-    padding-left: 39px !important;
-  }
   .el-card {
     width: 100% !important;
     height: 100% !important;
-  }
-  .content-collapse {
-    padding-left: 20 px !important;
-    padding-top: 50 px !important;
   }
 
   .center{

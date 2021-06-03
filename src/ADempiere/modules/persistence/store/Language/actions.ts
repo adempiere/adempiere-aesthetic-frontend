@@ -4,7 +4,7 @@ import {
   ITranslationData,
   LanguageState,
   ITranslationDataExtended,
-  requestTranslations,
+  getTranslations,
   ITranslationResponseData,
   requestUpdateEntity
 } from '@/ADempiere/modules/persistence'
@@ -99,7 +99,7 @@ export const actions: LanguageActionTree = {
       language,
       containerUuid
     } = payload
-    return requestTranslations({
+    return getTranslations({
       uuid: recordUuid,
       id: recordId,
       tableName,

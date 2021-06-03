@@ -138,8 +138,8 @@ aside {
   background: #008fd3;
 }
 .close-info {
-  top: 40%;
-  position: absolute;
+  float: left;
+  padding-top: 50%;
 }
 .close-info-mobile {
   top: 29%;
@@ -158,8 +158,4 @@ aside {
 }
 .vertical-panes > .pane ~ .pane {
   border-left: 1px solid #ccc;
-}
-.loading-window {
-  padding: 100px 100px;
-  height: 100%;
 }

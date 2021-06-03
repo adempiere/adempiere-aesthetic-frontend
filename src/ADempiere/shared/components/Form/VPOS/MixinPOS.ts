@@ -11,6 +11,7 @@ import {
   IOrderData,
   IOrderLineData,
   IOrderLineDataExtended,
+  OrderLinesState,
   requestCreateOrderLine,
   requestUpdateOrderLine
 } from '@/ADempiere/modules/pos'
@@ -37,21 +38,24 @@ export default class MixinPOS extends Mixins(MixinForm) {
     public product: any = {}
 
     public currentTable = 0
-    public currentOrderLine: any = {
-      product: {
-        value: 0,
-        name: '',
-        description: '',
-        priceStandard: 0
-      },
-      taxIndicator: 0,
-      quantityOrdered: 0
-    }
 
     public orderLines: any[] = []
     public products: any = {
       uuid: '',
       quantityAvailable: 0
+    }
+
+    // Partial<IOrderLineDataExtended>
+    public currentOrderLine: any = {
+      product: {
+        value: (0 as any),
+        name: '',
+        description: '',
+        priceStandard: 0
+      },
+      taxIndicator: (0 as any),
+      quantityOrdered: 0,
+      uuid: ''
     }
 
     public edit = false
@@ -141,13 +145,13 @@ export default class MixinPOS extends Mixins(MixinForm) {
   }
 
   get isSetTemplateBP(): IBusinessPartnerData | false {
-    const currentPOS = this.currentPoint
+    const currentPOS = this.currentPointOfSales
     if (
       currentPOS &&
-            currentPOS.templateBusinessPartner &&
-            !this.$route.query.action
+            !isEmptyValue(currentPOS.templateBusinessPartner) &&
+            isEmptyValue(this.$route.query.action)
     ) {
-      return currentPOS.templateBusinessPartner
+      return currentPOS.templateBusinessPartner!
     }
     return false
   }
@@ -237,10 +241,10 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     updateOrder(update: any): void {
-      if (update.value !== this.currentOrder?.businessPartner?.uuid && !isEmptyValue(this.currentPoint)) {
+      if (!isEmptyValue(update.value) && update.value !== this.currentOrder?.businessPartner?.uuid && !isEmptyValue(this.currentPointOfSales)) {
         this.$store.dispatch(Namespaces.Order + '/' + 'updateOrder', {
           orderUuid: this.$route.query.action,
-          posUuid: this.currentPoint?.uuid,
+          posUuid: this.currentPointOfSales?.uuid,
           customerUuid: update.value
         })
       }
@@ -366,7 +370,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
                   this.createOrderLine(response.uuid!)
                 }
                 this.$store.dispatch(Namespaces.Order + '/' + 'listOrdersFromServer', {
-                  posUuid: this.currentPoint?.uuid // this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
+                  posUuid: this.currentPointOfSales?.uuid // this.$store.getters[Namespaces.PointOfSales + '/' + 'getCurrentPOS'].uuid
                 })
               })
               .catch((error) => {
@@ -442,7 +446,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
             case 'QtyEntered':
             case 'PriceEntered':
             case 'Discount':
-              if (this.currentOrderLine) {
+              if (!isEmptyValue((this.$store.state[Namespaces.OrderLines] as OrderLinesState).line)) {
                 this.updateOrderLine(mutation.payload)
               }
               break
@@ -455,8 +459,8 @@ export default class MixinPOS extends Mixins(MixinForm) {
 
             case 'C_BPartner_ID_UUID': {
               const bPartnerValue = mutation.payload.value
-              if (this.currentPoint) {
-                const bPartnerPOS = this.currentPoint!.templateBusinessPartner.uuid
+              if (!isEmptyValue(this.currentPointOfSales)) {
+                const bPartnerPOS = this.currentPointOfSales.templateBusinessPartner!.uuid
                 // Does not send values to server, when empty values are set or
                 // if BPartner set equal to BPartner POS template
                 if (!bPartnerValue || bPartnerValue === bPartnerPOS) {
@@ -506,7 +510,8 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     handleCurrentLineChange(rowLine: any) {
-      if (rowLine) {
+      if (!isEmptyValue(rowLine)) {
+        this.$store.dispatch(Namespaces.OrderLines + '/' + 'currentLine', rowLine)
         this.currentOrderLine = rowLine
         this.currentTable = this.listOrderLine.findIndex(item => item.uuid === rowLine.uuid)
         if (!this.currentOrderLine && this.listOrderLine) {

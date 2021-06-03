@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card" style="padding: 1%;">
     <div slot="header" class="clearfix">
       <span>
         {{ $t('field.field') }}

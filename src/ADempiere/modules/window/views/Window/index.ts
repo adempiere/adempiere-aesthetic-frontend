@@ -22,6 +22,7 @@ import RightPanel from '@/ADempiere/modules/window/components/RightPanel'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import RecordAccess from '@/ADempiere/modules/privateAccess/components/RecordAccess'
 import Embedded from '@/ADempiere/shared/components/Dialog/Embedded'
+import ListChatEntry from '@/ADempiere/modules/window/components/ChatEntries/ListChatEntry'
 
 Component.registerHooks([
   'beforeRouteEnter',
@@ -44,6 +45,7 @@ C2.registerHooks([
     ContextMenu,
     DataTable,
     ChatEntries,
+    ListChatEntry,
     RecordLogs,
     WorkflowLogs,
     WorkflowStatusBar,

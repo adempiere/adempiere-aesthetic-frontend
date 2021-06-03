@@ -6,6 +6,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { IFormDataExtended } from '../../DictionaryType'
 import Template from './template.vue'
 import ModalDialog from '@/ADempiere/shared/components/Dialog'
+import TitleAndHelp from '@/ADempiere/shared/components/TitleAndHelp'
 
 @Component({
   name: 'FormView',
@@ -13,7 +14,8 @@ import ModalDialog from '@/ADempiere/shared/components/Dialog'
   components: {
     ContextMenu,
     FormPanel,
-    ModalDialog
+    ModalDialog,
+    TitleAndHelp
   }
 })
 export default class FormView extends Vue {
@@ -23,16 +25,16 @@ export default class FormView extends Vue {
     public panelType: PanelContextType = PanelContextType.Form
 
     // Computed properties
-    get formTitle(): string {
+    get formName(): string {
       if (this.$route.meta.title === 'PriceChecking') {
         return this.$t('route.PriceChecking').toString()
       } else if (this.$route.meta.title === 'ProductInfo') {
         return this.$t('route.ProductInfo').toString()
       }
-      return this.formMetadata.name || this.$route.meta.title
+      return this.formMetadata.name!
     }
 
-    get fromFileName() {
+    get formFileName() {
       return this.formMetadata.fileName || this.$route.meta.title
     }
 

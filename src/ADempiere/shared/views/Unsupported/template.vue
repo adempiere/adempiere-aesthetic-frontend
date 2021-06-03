@@ -1,10 +1,18 @@
 <template>
   <div class="wscn-http404-container">
-    <div class="unsupported">
-      <div class="unsupported__oops">{{ $t('views.unsupportedSorry') }}</div>
-      <div class="unsupported__headline">{{ $t('views.unsupportedHeadline') }}</div>
-      <div class="unsupported__info">{{ $t('views.unsupportedInfo') }}</div>
-      <el-button type="primary" round @click="redirect">{{ $t('views.unsupportedButton') }}</el-button>
+     <div class="unsupported">
+      <div class="unsupported__oops">
+        {{ $t('views.unsupportedSorry') }}
+      </div>
+      <div class="unsupported__headline">
+        {{ $t('views.unsupportedHeadline') }}
+      </div>
+      <div class="unsupported__info">
+        {{ $t('views.unsupportedInfo') }}
+      </div>
+      <el-button type="primary" round @click="redirect">
+        {{ $t('views.unsupportedButton') }}
+      </el-button>
     </div>
   </div>
 </template>

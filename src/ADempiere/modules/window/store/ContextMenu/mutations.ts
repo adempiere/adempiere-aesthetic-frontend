@@ -29,6 +29,9 @@ export const mutations: ContextMenuMutationTree = {
     }
     state.isShowRightPanel = params
   },
+  changeShowOptionField(state: ContextMenuState, isShowOptionField: boolean) {
+    state.isShowOptionField = isShowOptionField
+  },
   changeShowPopoverField(state: ContextMenuState) {
     state.isShowPopoverField = !state.isShowPopoverField
   },

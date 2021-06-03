@@ -92,7 +92,7 @@
               </template>
             </el-dropdown-menu>
           </el-dropdown>
-          <el-menu v-else class="el-menu-demo" mode="horizontal" :unique-opened="true" style="z-index: 0" :menu-trigger="triggerMenu" @open="handleOpen" @close="handleClose" @select="handleSelect">
+          <el-menu v-else-if="field.panelType !== 'form' && !isMobile" class="el-menu-demo" mode="horizontal" :unique-opened="true" style="z-index: 0" :menu-trigger="triggerMenu" @open="handleOpen" @close="handleClose" @select="handleSelect">
             <el-submenu index="menu">
               <template slot="title">
                 <div :style="isMobile ? 'display: flex;width: auto;' : 'display: block;'">
@@ -114,8 +114,7 @@
                   width="400"
                   trigger="click"
                   style="padding: 0px;"
-                  :hide="visibleForDesktop"
-                  v-model="visibleFields[key]"
+                  @hide="closePopover"
                 >
                   <component
                     :is="optionFieldFComponentRender"
@@ -123,7 +122,6 @@
                     :field-attributes="contextMenuField.fieldAttributes"
                     :source-field="contextMenuField.fieldAttributes"
                     :field-value="contextMenuField.valueField"
-                    :visible="visibleFields[key]"
                   />
                   <el-button slot="reference" type="text" style="color: #606266;">
                     <div class="contents">
@@ -161,6 +159,9 @@
               </el-menu-item>
             </el-submenu>
           </el-menu>
+          <span v-else>
+            {{ field.name }}
+          </span>
         </template>
         <el-popover
           v-if="openOptionField && !isEmptyValue(optionColumnName) && (optionColumnName === field.columnName) && showPopoverPath"

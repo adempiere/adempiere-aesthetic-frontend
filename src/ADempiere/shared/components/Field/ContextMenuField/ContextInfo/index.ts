@@ -2,16 +2,15 @@ import { IContextInfoValuesExtends } from '@/ADempiere/modules/persistence'
 import { parseContext } from '@/ADempiere/shared/utils/contextUtils'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { isEmptyValue, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
-import MixinContextMenuField from '../MixinContextMenuField'
 import Template from './template.vue'
 
 @Component({
   name: 'FieldContextInfo',
   mixins: [Template]
 })
-export default class FieldContextInfo extends Mixins(MixinContextMenuField) {
+export default class FieldContextInfo extends Vue {
     @Prop({ type: Object, required: true }) fieldAttributes!: any
     @Prop({ type: [Number, String, Boolean, Array, Object, Date], default: undefined }) fieldValue?: [Number, String, Boolean, any[], Object, Date]
     // eslint-disable-next-line
@@ -87,7 +86,7 @@ export default class FieldContextInfo extends Mixins(MixinContextMenuField) {
 
     // Hooks
     created() {
-      if (isEmptyValue(this.messageText)) {
+      if (!isEmptyValue(this.fieldAttributes.contextInfo.sqlStatement)) {
         const sqlParse = parseContext({
           parentUuid: this.fieldAttributes.parentUuid,
           containerUuid: this.fieldAttributes.containerUuid,

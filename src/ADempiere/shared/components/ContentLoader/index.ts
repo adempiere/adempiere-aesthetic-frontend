@@ -1,4 +1,4 @@
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import { ContentLoader as ViewContentLoader } from 'vue-content-loader'
 import Template from './template.vue'
 

@@ -70,7 +70,7 @@
                 :key="key"
                 :column-key="valueOrder.columnName"
                 :label="valueOrder.label"
-                :width="valueOrder.isNumeric ? 'auto' : '380'"
+                :width="!valueOrder.isNumeric ? valueOrder.size : valueOrder.size"
                 :align="valueOrder.isNumeric ? 'right' : 'left'"
               >
                 <template slot-scope="scope">
@@ -80,91 +80,68 @@
                 </template>
               </el-table-column>
               <el-table-column
-                label=""
-                width="120"
+                :label="$t('form.pos.tableProduct.options')"
+                width="180"
               >
                 <template slot-scope="scope">
-                  <el-dropdown trigger="click" @command="changeLine">
-                    <span class="el-dropdown-link">
-                      {{ $t('form.pos.tableProduct.options') }}
-                      <i class="el-icon-arrow-down el-icon--right" />
-                    </span>
-                    <el-dropdown-menu slot="dropdown" style="padding-bottom: 0px;">
-                      <el-dropdown-item :command="scope.row">
-                        <el-popover
-                          placement="right"
-                          trigger="click"
-                          :title="$t('form.productInfo.productInformation')"
-                        >
-                          <el-form
-                            label-position="top"
-                            label-width="60px"
-                            style="float: right; display: flex; line-height: 30px;"
-                          >
-                            <el-row :gutter="24">
-                              <el-col :span="4">
-                                <div>
-                                  <el-avatar shape="square" :size="100" src="https://#" @error="true">
-                                    <el-image>
-                                      <div slot="error" class="image-slot">
-                                        <i class="el-icon-picture-outline" />
-                                      </div>
-                                    </el-image>
-                                  </el-avatar>
+                  <el-popover
+                    v-if="!isEmptyValue(listOrderLine)"
+                    placement="right"
+                    trigger="click"
+                    :title="$t('form.productInfo.productInformation')"
+                  >
+                    <el-form
+                      label-position="top"
+                      style="float: right; display: flex; line-height: 30px;"
+                    >
+                      <el-row :gutter="24">
+                        <el-col :span="4">
+                          <div>
+                            <el-avatar shape="square" :size="100" src="https://#" @error="true">
+                              <el-image>
+                                <div slot="error" class="image-slot">
+                                  <i class="el-icon-picture-outline" />
                                 </div>
-                              </el-col>
-                              <el-col :span="10">
-                                {{ $t('form.productInfo.code') }}: <b>{{ currentOrderLine.product.value }}</b><br>
-                                {{ $t('form.productInfo.name') }}: <b>{{ currentOrderLine.product.name }}</b><br>
-                                {{ $t('form.productInfo.description') }}: <b>{{ currentOrderLine.product.description }}</b><br>
-                              </el-col>
-                              <el-col :span="10">
-                                <div style="float: right">
-                                  {{ $t('form.productInfo.price') }}:
-                                  <b>{{ formatPrice(currentOrderLine.product.priceStandard, pointOfSalesCurrency.iSOCode) }}</b>
-                                  <br>
-                                  {{ $t('form.productInfo.taxAmount') }}:
-                                  <b>{{ currentOrderLine.taxIndicator }}</b>
-                                  <br>
-                                  {{ $t('form.productInfo.quantityAvailable') }}:
-                                  <b>{{ formatQuantity(currentOrderLine.quantityOrdered) }}</b>
-                                </div>
-                              </el-col>
-                            </el-row>
-                          </el-form>
-                          <el-button slot="reference" type="text" style="display: flex;width: 110%;padding-bottom: 5%;padding-top: 5%;">
-                            <i class="el-icon-info" /> {{ $t('form.productInfo.productInformation') }}
-                          </el-button>
-                        </el-popover>
-                      </el-dropdown-item>
-                      <el-dropdown-item :command="$t('form.pos.tableProduct.editQuantities')">
-                        <el-popover
-                          placement="right"
-                          trigger="click"
-                          :title="$t('form.pos.tableProduct.editQuantities')"
-                          width="600"
-                          @hide="showFieldLine = false"
-                        >
-                          <FieldLine
-                            :data-line="scope.row"
-                            :show-field="showFieldLine"
-                            :current-line="currentOrderLine"
-                          />
-                          <el-button
-                            slot="reference"
-                            type="text"
-                            :disabled="isDisabled"
-                            @click="showFieldLine = !showFieldLine"
-                          >
-                            <i class="el-icon-edit" /> {{ $t('form.pos.tableProduct.editQuantities') }}
-                          </el-button>
-                        </el-popover>
-                      </el-dropdown-item>
-                      <el-button type="danger" icon="el-icon-delete" class="delete-buttom" :disabled="isDisabled" plain @click="deleteOrderLine(scope.row)">
-                        {{ $t('form.pos.tableProduct.remove') }}
-                      </el-button>
-                    </el-dropdown-menu>
-                  </el-dropdown>
+                                                              </el-image>
+                            </el-avatar>
+                          </div>
+                        </el-col>
+                        <el-col :span="10">
+                          {{ $t('form.productInfo.code') }}: <b>{{ scope.row.product.value }}</b><br>
+                          {{ $t('form.productInfo.name') }}: <b>{{ scope.row.product.name }}</b><br>
+                          {{ $t('form.productInfo.description') }}: <b>{{ scope.row.product.description }}</b><br>
+                        </el-col>
+                        <el-col :span="10">
+                          <div style="float: right">
+                            {{ $t('form.productInfo.price') }}:
+                            <b>{{ formatPrice(scope.row.product.priceStandard, pointOfSalesCurrency.iSOCode) }}</b>
+                            <br>
+                            {{ $t('form.productInfo.taxAmount') }}:
+                            <b>{{ scope.row.taxIndicator }}</b>
+                            <br>
+                            {{ $t('form.productInfo.quantityAvailable') }}:
+                            <b>{{ formatQuantity(scope.row.quantityOrdered) }}</b>
+                          </div>
+                        </el-col>
+                      </el-row>
+                    </el-form>
+                    <el-button slot="reference" type="primary" icon="el-icon-info" size="mini" style="margin-right: 3%;" />
+                  </el-popover>
+                  <el-popover
+                    placement="right"
+                    trigger="click"
+                    :title="$t('form.pos.tableProduct.editQuantities')"
+                    width="600"
+                    @hide="showFieldLine = false"
+                  >
+                    <field-line
+                      :data-line="scope.row"
+                      :show-field="showFieldLine"
+                      :current-line="currentLineOrder"
+                    />
+                    <el-button slot="reference" type="success" icon="el-icon-edit" size="mini" style="margin-right: 3%;" @click="showEditLine(scope.row)" />
+                  </el-popover>
+                  <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteOrderLine(scope.row)" />
                 </template>
               </el-table-column>
             </el-table>

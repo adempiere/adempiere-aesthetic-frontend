@@ -32,6 +32,28 @@
             </div>
           </div>
         </el-dropdown-item>
+         <el-dropdown-item
+          :command="this.$t('data.addNote')"
+          :divided="true"
+        >
+          <div class="contents">
+            <div style="margin-right: 5%;margin-top: 10%;">
+              <i class="el-icon-notebook-2" style="font-weight: bolder;" />
+            </div>
+            <div>
+              <span class="contents">
+                <b class="label">
+                  {{ $t('data.addNote') }}
+                </b>
+              </span>
+              <p
+                class="description"
+              >
+                {{ $t('data.descriptionNote') }}
+              </p>
+            </div>
+          </div>
+        </el-dropdown-item>
         <el-dropdown-item
           v-for="(action, index) in actions"
           :key="index"
@@ -161,61 +183,9 @@
   }
 </style>
 
-<style scoped>
-  .el-tree-node__children {
-    overflow: hidden;
-    background-color: transparent;
-    max-width: 99%;
-    overflow: auto;
-  }
-  .el-dropdown .el-button-group {
-    display: flex;
-  }
-  .el-dropdown-menu {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10;
-    padding: 10px 0;
-    margin: 5px 0;
-    background-color: #FFFFFF;
-    border: 1px solid #e6ebf5;
-    border-radius: 4px;
-    -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+<style lang="scss" scoped src='../style/contextMenuStyleScoped.scss'>
+   .el-dropdown-menu {
     max-height: 250px;
-    max-width: 220px;
     overflow: auto;
-  }
-  .el-dropdown-menu--mini .el-dropdown-menu__item {
-    line-height: 14px;
-    padding: 0px 15px;
-    font-size: 10px;
-  }
-  .el-dropdown-menu__item--divided {
-    position: relative;
-    /* margin-top: 6px; */
-    border-top: 1px solid #e6ebf5;
-  }
-  .svg-icon {
-    width: 1em;
-    height: 2em;
-    vertical-align: -0.15em;
-    fill: currentColor;
-    overflow: hidden;
-  }
-  .label {
-    font-size: 14px;
-    margin-top: 0% !important;
-    margin-left: 0px;
-    text-align: initial;
-  }
-  .description {
-    margin: 0px;
-    font-size: 12px;
-    text-align: initial;
-  }
-  .contents {
-    display: inline-flex;
   }
 </style>

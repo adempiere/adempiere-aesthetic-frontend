@@ -1019,18 +1019,9 @@ export const actions: BusinessDataActionTree = {
       recordUuid
     })
       .then((privateAccessResponse: IPrivateAccessData) => {
-        // TODO: Evaluate uuid record
-        if (privateAccessResponse.tableName) {
-          return {
-            isLocked: false,
-            tableName,
-            recordId,
-            recordUuid
-          }
-        }
         return {
           ...privateAccessResponse,
-          isLocked: true
+          isLocked: privateAccessResponse.isLocked!
         }
       })
       .catch(error => {

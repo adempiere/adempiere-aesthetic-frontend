@@ -18,6 +18,7 @@ import { RouteConfig } from 'vue-router'
 import { IOptionField } from './type'
 import { DeviceType } from '@/ADempiere/modules/app/AppType'
 import VueI18n, { TranslateResult } from 'vue-i18n'
+import { ContextMenuState } from '@/ADempiere/modules/window'
 
 @Component({
   name: 'FieldDefinition',
@@ -47,6 +48,10 @@ export default class FieldDefinition extends Vue {
     public visibleFields: boolean[] = []
 
     // Computed properties
+    get showPanelFieldOption(): boolean {
+      return (this.$store.state[Namespaces.ContextMenu] as ContextMenuState).isShowOptionField
+    }
+
     get labelStyle() {
       if (this.field.name.length >= 25) {
         return '35'
@@ -514,6 +519,7 @@ export default class FieldDefinition extends Vue {
       if (this.isMobile) {
         this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
       } else {
+        this.$store.commit(Namespaces.ContextMenu + '/' + 'schangeShowOptionField', true)
         this.visibleForDesktop = true
         this.$router.push({
           name: this.$route.name!,
@@ -527,6 +533,17 @@ export default class FieldDefinition extends Vue {
       this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowPopoverField', true)
       this.$store.dispatch(Namespaces.ContextMenu + '/' + 'setOptionField', option)
       this.triggerMenu = 'hover'
+    }
+
+    closePopover() {
+      this.$router.push({
+        name: this.$route.name!,
+        query: {
+          ...this.$route.query,
+          typeAction: '',
+          fieldColumnName: ''
+        }
+      }, () => {})
     }
 
     focusField() {
@@ -546,8 +563,6 @@ export default class FieldDefinition extends Vue {
         this.redirect({ window: command.fieldAttributes.reference.zoomWindows[0] })
         return
       }
-      console.log('handleCommand')
-      console.log(command)
       if (this.isMobile) {
         this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
       } else {

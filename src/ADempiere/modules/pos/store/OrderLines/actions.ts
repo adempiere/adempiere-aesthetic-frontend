@@ -112,5 +112,8 @@ export const actions: OrderLinesActionTree = {
       }
     )
     context.commit('setListOrderLine', found)
+  },
+  currentLine(context: OrderLinesActionContext, currentLine) {
+    context.commit('setLine', currentLine)
   }
 }

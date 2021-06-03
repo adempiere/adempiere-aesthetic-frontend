@@ -1,57 +1,10 @@
 <template>
-  <div>
-    <el-card
-      v-if="isNote"
-      class="box-card chat-entries-list-card"
-      :style="{'height': getHeightPanelBottom + 'vh'}"
-    >
-      <span
-        slot="header"
-        class="clearfix chat-entries-card-title"
-      >
-        {{ $t('window.containerInfo.notes') }}
-      </span>
-      <el-scrollbar wrap-class="scroll-child" style="height: 100%;">
-        <el-timeline>
-          <el-timeline-item
-            v-for="(chats, key) in chatList"
-            :key="key"
-            :timestamp="translateDate(chats.logDate)"
-            placement="top"
-          >
-            <el-card shadow="hover">
-              <div v-markdown="chats.characterData" />
-            </el-card>
-          </el-timeline-item>
-        </el-timeline>
-      </el-scrollbar>
-    </el-card>
-
-    <el-card
-      class="box-card chat-entry-create-card"
-    >
-      <span slot="header" class="clearfix chat-entries-card-title">
-        {{ $t('window.containerInfo.logWorkflow.addNote') }}
-      </span>
-      <el-scrollbar>
-        <input-chat />
-
-        <el-button
-          icon="el-icon-check"
-          style="float: right;"
-          type="primary"
-          circle
-          @click="sendComment()"
-        />
-        <el-button
-          icon="el-icon-close"
-          style="float: right;margin-right: 1%;"
-          type="danger"
-          @click="clear()"
-        />
-      </el-scrollbar>
-    </el-card>
-  </div>
+   <component
+    :is="templateDevice"
+    :right-panel="rightPanel"
+    :table-name="tableName"
+    :record-id="recordId"
+  />
 </template>
 
 <style lang="scss">

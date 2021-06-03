@@ -11,7 +11,11 @@
             <Field
               v-if="field.columnName === 'PriceEntered'"
               :key="field.columnName"
-              :metadata-field="field"
+              :ref="field.columnName"
+              :metadata-field="{
+                ...field,
+                isReadOnly: !isModifyPrice
+              }"
             />
             <Field
               v-if="field.columnName === 'QtyEntered'"
@@ -19,15 +23,17 @@
               :metadata-field="field"
             />
             <el-popover
+              v-if="columnNameVisible === field.columnName && visible"
               ref="ping"
               placement="right"
+              v-model="visible"
               trigger="click"
             >
               <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
-                <el-form-item label="Ingrese Ping">
+                <el-form-item :label="$t('form.pos.tableProduct.pin')">
                   <el-input
-                    v-model="input"
-                    placeholder="Ingrese Ping"
+                    v-model="pin"
+                    :placeholder="$t('form.pos.tableProduct.pin')"
                     clearable
                   />
                 </el-form-item>
@@ -41,21 +47,23 @@
                 <el-button
                   type="primary"
                   icon="el-icon-check"
+                  @click="checkclosePin(pin, field.columnName)"
                 />
-                {{
-                  isPosRequiredPin
-                }}
               </span>
-              <Field
+              <el-button
+              slot="reference"
+              type="text"
+              disabled />
+            </el-popover>
+            <Field
                 v-if="field.columnName === 'Discount'"
-                slot="reference"
+                :ref="field.columnName"
                 :key="field.columnName"
                 :metadata-field="{
                   ...field,
-                  isReadOnly: !isModifyPrice || isPosRequiredPin
+                  isReadOnly: !isModifyPrice
                 }"
               />
-            </el-popover>
           </el-form>
         </el-col>
       </template>

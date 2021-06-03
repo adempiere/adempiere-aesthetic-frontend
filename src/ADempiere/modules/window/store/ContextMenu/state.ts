@@ -2,6 +2,7 @@ import { ContextMenuState } from '@/ADempiere/modules/window/WindowType/VuexType
 
 export const state : ContextMenuState = {
   isShowRightPanel: false,
+  isShowOptionField: true,
   isShowPopoverField: false,
   optionField: {},
   contextMenu: [],

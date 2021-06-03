@@ -84,14 +84,12 @@ export default class ContextMenuMobile extends Mixins(MixinContextMenu) {
     } else if (typeof action !== 'string' && action.action === 'recordAccess') {
       this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
       this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', true)
-      this.$router.push({
-        name: this.$route.name!,
-        query: {
-          ...this.$route.query,
-          typeAction: action.action
-        }
-      }, () => {})
       this.runAction(action)
+    } else if (typeof action === 'string' && action === this.$t('data.addNote')) {
+      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
+      this.$store.dispatch(Namespaces.ContextMenu + '/' + 'setOptionField', {
+        name: this.$t('data.addNote')
+      })
     } else {
       if (typeof action !== 'string') {
         this.runAction(action)

@@ -1,14 +1,15 @@
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import BusinessPartner from '@/ADempiere/shared/components/Form/VPOS/BusinessPartner'
 import ProductInfo from '@/ADempiere/shared/components/Form/VPOS/ProductInfo'
 import MixinOrderLine from './MixinOrderLine'
 import fieldListOrders from './fieldListOrders'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { IPointOfSalesData } from '@/ADempiere/modules/pos'
 import ConvertAmount from '@/ADempiere/shared/components/Form/VPOS/Collection/ConvertAmount/index'
 import Template from './template.vue'
 import FieldLine from '@/ADempiere/shared/components/Form/VPOS/Order/Line'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
+import { ICurrentOrderData, ICurrentPointOfSalesData, IOrderLineDataExtended, IPOSAttributesData, OrderLinesState } from '@/ADempiere/modules/pos'
+import { ICurrencyData } from '@/ADempiere/modules/core'
 
 @Component({
   name: 'Order',
@@ -49,6 +50,93 @@ export default class Order extends Mixins(MixinOrderLine) {
     return {
       popoverConvet: ['ctrl', 'x']
     }
+  }
+
+  get currentPointOfSales() {
+    return (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales
+  }
+
+  // Currency Point Of Sales
+  get pointOfSalesCurrency(): Partial<ICurrencyData> {
+    // const currency = this.currentPointOfSales
+    if (!isEmptyValue(this.currentPointOfSales.priceList)) {
+      return {
+        ...this.currentPointOfSales.priceList!.currency,
+        amountConvertion: 1
+      }
+    }
+    return {
+      uuid: '',
+      iSOCode: '',
+      curSymbol: '',
+      amountConvertion: 1
+    }
+  }
+
+  get listPontOfSales() {
+    return (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).listPointOfSales
+  }
+
+  get ordersList() {
+    if (isEmptyValue(this.currentPointOfSales)) {
+      return []
+    }
+    return this.currentPointOfSales.listOrder
+  }
+
+  get currentOrder(): Partial<ICurrentOrderData> {
+    if (isEmptyValue(this.currentPointOfSales)) {
+      return {
+        documentType: {
+          description: '',
+          id: 0,
+          name: '',
+          printName: '',
+          uuid: ''
+        },
+        documentStatus: {
+          description: '',
+          name: '',
+          value: ''
+        },
+        totalLines: 0,
+        grandTotal: 0,
+        salesRepresentative: {
+          description: '',
+          id: 0,
+          name: '',
+          uuid: ''
+        },
+        businessPartner: {
+          description: '',
+          duns: '',
+          id: 0,
+          lastName: '',
+          naics: '',
+          name: '',
+          taxId: '',
+          value: '',
+          uuid: ''
+        }
+      }
+    }
+    return this.currentPointOfSales.currentOrder
+  }
+
+  get isDisabled(): boolean {
+    return this.currentPointOfSales.currentOrder.isProcessed
+  }
+
+  get currentLineOrder() {
+    const line = (this.$store.state[Namespaces.OrderLines] as OrderLinesState).line
+    return line
+  }
+
+  get listOrderLine(): IOrderLineDataExtended[] {
+    if (isEmptyValue(this.currentOrder)) {
+      return []
+    }
+    return (this.currentOrder as ICurrentOrderData).lineOrder
   }
 
   get isShowedPOSKeyLayout(): boolean {
@@ -120,32 +208,6 @@ export default class Order extends Mixins(MixinOrderLine) {
     })
   }
 
-  // Watchers
-  // @Watch('currencyUuid')
-  // handleCurrencyUuidChange(value: string) {
-  //   if (!isEmptyValue(value) && !isEmptyValue(this.currentPointOfSales)) {
-  //     this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
-  //       conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
-  //       currencyFromUuid: this.pointOfSalesCurrency.uuid,
-  //       currencyToUuid: value
-  //     })
-  //   }
-  // }
-
-  // @Watch('converCurrency')
-  // handleConverCurrencyChange(value: any) {
-  //   if (!isEmptyValue(value) && !isEmptyValue(this.currentPointOfSales)) {
-  //     this.$store.dispatch(Namespaces.Payments + '/' + 'conversionMultiplyRate', {
-  //       containerUuid: 'Order',
-  //       conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
-  //       currencyFromUuid: this.pointOfSalesCurrency.uuid,
-  //       currencyToUuid: value
-  //     })
-  //   } else {
-  //     this.$store.commit(Namespaces.Payments + '/' + 'currencyMultiplyRate', 1)
-  //   }
-  // }
-
   // Methods
   openCollectionPanel(): void {
     this.isShowedPOSKeyLayout = !this.isShowedPOSKeyLayout
@@ -167,6 +229,90 @@ export default class Order extends Mixins(MixinOrderLine) {
   open() : void {
     if (!this.seeConversion) {
       this.seeConversion = true
+    }
+  }
+
+  getOrderTax(currency: any): string | undefined {
+    return this.formatPrice(this.currentOrder.grandTotal! - this.currentOrder.totalLines!, currency)
+  }
+
+  newOrder() {
+    this.$router.push({
+      params: {
+        ...this.$route.params
+      },
+      query: {
+        pos: (this.currentPointOfSales.id as any)
+      }
+    }).catch(() => {
+    }).finally(() => {
+      this.$store.commit(Namespaces.Payments + '/' + 'setListPayments', [])
+      const { templateBusinessPartner } = this.currentPointOfSales
+      this.$store.commit(Namespaces.FieldValue + '/' + 'updateValuesOfContainer', {
+        containerUuid: this.metadata.containerUuid,
+        attributes: [{
+          columnName: 'UUID',
+          value: undefined
+        },
+        {
+          columnName: 'ProductValue',
+          value: undefined
+        },
+        {
+          columnName: 'C_BPartner_ID',
+          value: templateBusinessPartner?.id
+        },
+        {
+          columnName: 'DisplayColumn_C_BPartner_ID',
+          value: templateBusinessPartner?.name
+        },
+        {
+          columnName: ' C_BPartner_ID_UUID',
+          value: templateBusinessPartner?.uuid
+        }]
+      })
+      this.$store.dispatch(Namespaces.Order + '/' + 'setOrder', {
+        documentType: {},
+        documentStatus: {
+          value: ''
+        },
+        totalLines: 0,
+        grandTotal: 0,
+        salesRepresentative: {},
+        businessPartner: {
+          value: '',
+          uuid: ''
+        }
+      })
+      this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', false)
+      this.$store.dispatch(Namespaces.OrderLines + '/' + 'listOrderLine', [])
+    })
+  }
+
+  changePos(posElement: ICurrentPointOfSalesData) {
+    this.$store.dispatch(Namespaces.PointOfSales + '/' + 'setCurrentPOS', posElement)
+    this.newOrder()
+  }
+
+  arrowTop() {
+    if (this.currentTable > 0) {
+      this.currentTable--
+      (this.$refs.linesTable as any).setCurrentRow(this.listOrderLine[this.currentTable])
+      this.currentOrderLine = this.listOrderLine[this.currentTable]
+    }
+  }
+
+  showEditLine(line: any) {
+    this.$store.commit(Namespaces.OrderLines + '/' + 'setLine', line)
+    this.showFieldLine = !this.showFieldLine
+  }
+
+  arrowBottom() {
+    const top = this.listOrderLine.length - 1
+    if (this.currentTable < top) {
+      this.currentTable++
+      (this.$refs.linesTable as any).setCurrentRow(this.listOrderLine[this.currentTable])
+      this.currentOrderLine = this.listOrderLine[this.currentTable]
     }
   }
 }

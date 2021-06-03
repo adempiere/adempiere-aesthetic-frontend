@@ -6,8 +6,9 @@ import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { createFieldFromDictionary, IFieldTemplateData } from '@/ADempiere/shared/utils/lookupFactory'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import Template from './template.vue'
+import { validatePin } from '@/ADempiere/modules/pos/POSService'
 import { IFieldLocation } from '@/ADempiere/shared/components/Field/FieldLocation/fieldList'
-import { IPOSAttributesData } from '@/ADempiere/modules/pos'
+import { ICurrentPointOfSalesData, IPOSAttributesData, OrderLinesState } from '@/ADempiere/modules/pos'
 
 @Component({
   name: 'FieldLine',
@@ -41,22 +42,32 @@ export default class FieldLine extends Vue {
       private panelType: PanelContextType = PanelContextType.Custom
       private fieldsListLine: IFieldLocation[] = fieldsListLine
       private fieldsList: any[] = []
-      private input = ''
+      private pin = ''
       private visible = false
+      private columnNameVisible = ''
+      private unsubscribe: Function = () => {}
 
       // Computed properties
       get isModifyPrice(): boolean {
         const pos = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales
         if (!isEmptyValue(pos.isModifyPrice)) {
-          return (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.isModifyPrice!
+          return pos.isModifyPrice!
         }
         return false
       }
 
+      get currentPointOfSales(): ICurrentPointOfSalesData {
+        return (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales
+      }
+
+      get validatePin() {
+        return (this.$store.state[Namespaces.OrderLines] as OrderLinesState).validatePin
+      }
+
       get isPosRequiredPin(): boolean {
         const pos = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales
-        if (!isEmptyValue(pos.isPosRequiredPin)) {
-          return (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.isPosRequiredPin!
+        if (!isEmptyValue(pos.isPosRequiredPin) && !this.validatePin) {
+          return pos.isPosRequiredPin!
         }
         return false
       }
@@ -66,12 +77,19 @@ export default class FieldLine extends Vue {
         console.log(this.currentLine)
       }
 
+      beforeMount() {
+        this.unsubscribe = this.subscribeChanges()
+      }
+
+      beforeDestroy() {
+        this.unsubscribe()
+      }
+
       // Watchers
       @Watch('showField')
       handleShowFieldChange(value: boolean) {
-        console.log('showFieldChange')
-        if (value && isEmptyValue(this.metadataList) && (this.dataLine.uuid === this.currentLine.uuid)) {
-          this.setFieldsList()
+        this.visible = false
+        if (value && isEmptyValue(this.metadataList) && (this.dataLine.uuid === (this.$store.state[Namespaces.OrderLines] as OrderLinesState).line.uuid)) {
           this.metadataList = this.setFieldsList()
           this.isLoadedField = true
         }
@@ -145,5 +163,37 @@ export default class FieldLine extends Vue {
       closePing() {
         const popover = this.$refs.ping as Element[]
         ((this.$refs.ping as Element[])[popover.length - 1] as any).showPopper = false
+        this.visible = false
+      }
+
+      checkclosePing() {
+        validatePin({
+          posUuid: this.currentPointOfSales.uuid!,
+          pin: this.pin
+        })
+          .then(response => {
+            this.$store.commit('pin', true)
+            this.pin = ''
+          })
+          .catch(error => {
+            console.error(error.message)
+            this.$message({
+              type: 'error',
+              message: error.message,
+              showClose: true
+            })
+            this.pin = ''
+          })
+        this.closePing()
+      }
+
+      subscribeChanges() {
+        return this.$store.subscribe((mutation, state) => {
+          if (mutation.type === Namespaces.Event + '/' + 'addFocusGained' && this.isPosRequiredPin &&
+          (mutation.payload.columnName === 'PriceEntered' || mutation.payload.columnName === 'Discount')) {
+            this.columnNameVisible = mutation.payload.columnName
+            this.visible = true
+          }
+        })
       }
 }

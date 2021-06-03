@@ -15,25 +15,11 @@
         <el-row type="flex" style="min-height: inherit;">
             <el-col :span="24">
                 <div class="content">
-                    <h3 class="text-center" style="margin: 0 !important;">
-                        <el-popover
-                            v-if="(processMetadata.help)"
-                            ref="helpTitle"
-                            placement="top-start"
-                            :title="reportTitle"
-                            width="400"
-                            trigger="hover"
-                        >
-                            <div v-html="processMetadata.help" />
-                        </el-popover>
-                        <el-button
-                            v-popover:helpTitle
-                            type="text"
-                            class="title"
-                        >
-                            {{ reportTitle }}
-                        </el-button>
-                    </h3>
+                    <title-and-help
+                    style="margin: 0 !important;"
+                    :name="processMetadata.name"
+                    :help="processMetadata.help"
+                    />
                     <iframe
                         v-if="reportFormat === 'pdf'"
                         key="report-content-pdf"
@@ -80,22 +66,11 @@
         :element-loading-text="$t('notifications.loading')"
         element-loading-spinner="el-icon-loading"
         element-loading-background="rgba(255, 255, 255, 0.8)"
-        class="loading-report-viewer"
+        class="view-loading"
     />
 </template>
 
 <style lang="scss" scoped>
-.loading-report-viewer {
-    padding: 100px 100px;
-    height: 100%;
-}
-
-.title {
-    color: #000000;
-    text-size-adjust: 20px;
-    font-size: 100%;
-    font-weight: 605 !important;
-}
 .content {
     width: 100%;
     height: 100%;

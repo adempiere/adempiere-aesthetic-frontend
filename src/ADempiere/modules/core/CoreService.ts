@@ -27,6 +27,7 @@ import {
   IWarehousesListParams,
   IWarehousesListResponse
 } from './CoreType'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 // List Point of sales
 export function requestGetProductPrice(
@@ -56,6 +57,9 @@ export function requestGetProductPrice(
     }
   })
     .then(productPriceResponse => {
+      if (isEmptyValue(productPriceResponse)) {
+        return productPriceResponse
+      }
       return convertProductPrice(productPriceResponse)
     })
 }
@@ -98,11 +102,9 @@ export function requestWarehousesList(
   return request({
     url: '/common/warehouses',
     method: 'GET',
-    data: {
-      organization_id: organizationId,
-      organization_uuid: organizationUuid
-    },
     params: {
+      organization_id: organizationId,
+      organization_uuid: organizationUuid,
       // Page Data
       pageToken,
       pageSize

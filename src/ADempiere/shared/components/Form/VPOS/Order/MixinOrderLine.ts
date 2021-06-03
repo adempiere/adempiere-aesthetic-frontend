@@ -1,5 +1,5 @@
 import { ICurrencyData } from '@/ADempiere/modules/core/CoreType'
-import { IOrderLineData, requestDeleteOrderLine, requestUpdateOrderLine } from '@/ADempiere/modules/pos'
+import { IOrderLineData, IPOSAttributesData, OrderLinesState, requestDeleteOrderLine, requestUpdateOrderLine } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatPercent, formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
@@ -15,27 +15,32 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
       lineDescription: {
         columnName: 'LineDescription',
         label: this.$t('form.pos.tableProduct.product').toString(),
-        isNumeric: false
+        isNumeric: false,
+        size: '380'
       },
       currentPrice: {
         columnName: 'CurrentPrice',
         label: this.$t('form.productInfo.price').toString(),
-        isNumeric: true
+        isNumeric: true,
+        size: 'auto'
       },
       quantityOrdered: {
         columnName: 'QtyOrdered',
         label: this.$t('form.pos.tableProduct.quantity').toString(),
-        isNumeric: true
+        isNumeric: true,
+        size: '100px'
       },
       discount: {
         columnName: 'Discount',
         label: '% ' + this.$t('form.pos.order.discount').toString(),
-        isNumeric: true
+        isNumeric: true,
+        size: '110px'
       },
       grandTotal: {
         columnName: 'GrandTotal',
         label: 'Total',
-        isNumeric: true
+        isNumeric: true,
+        size: 'auto'
       }
     }
 
@@ -60,8 +65,8 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
 
       formatQuantity = formatQuantity
 
-      changeLine(command: string) {
-        switch (command) {
+      changeLine(command: any) {
+        switch (command.option) {
           case 'Eliminar':
             // this.deleteOrderLine()
             break
@@ -72,6 +77,7 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
               quantityOrdered: this.currentOrderLine.quantityOrdered,
               discount: this.currentOrderLine.discount
             })
+            this.currentOrderLine.uuid = command.uui
             this.edit = true
             break
           //
@@ -81,33 +87,45 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
       }
 
       updateOrderLine(line: any) {
-        let {
-          currentPrice: price,
-          discount: discountRate,
-          quantityOrdered: quantity
-        } = this.currentOrderLine
+        let quantity, price, discountRate
+        const currentLine = (this.$store.state[Namespaces.OrderLines] as OrderLinesState).line
 
         switch (line.columnName) {
           case 'QtyEntered':
             quantity = line.value
+            price = currentLine.price
+            discountRate = currentLine.discountRate
             break
           case 'PriceEntered':
             price = line.value
+            quantity = currentLine.quantity
+            discountRate = currentLine.discountRate
             break
           case 'Discount':
             discountRate = line.value
+            price = currentLine.price
+            quantity = currentLine.quantity
             break
         }
 
         requestUpdateOrderLine({
-          orderLineUuid: this.currentOrderLine.uuid,
+          orderLineUuid: currentLine.uuid,
           quantity,
           price,
           discountRate
         })
           .then((response: IOrderLineData) => {
+            this.fillOrderLineQuantities({
+              currentPrice: response.price,
+              quantityOrdered: response.quantity,
+              discount: response.discountRate
+            })
+            this.$store.commit(Namespaces.OrderLines + '/' + 'pin', false)
             this.fillOrderLine(response)
-            this.reloadOrder(true)
+            this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', {
+              orderUuid: (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.currentOrder.uuid
+            })
+            this.$store.dispatch(Namespaces.OrderLines + '/' + 'currentLine', response)
           })
           .catch(error => {
             console.error(error.message)
@@ -124,7 +142,9 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
           orderLineUuid: lineSelection.uuid
         })
           .then(() => {
-            this.reloadOrder(true)
+            this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', {
+              orderUuid: (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.currentOrder.uuid
+            })
           })
           .catch(error => {
             console.error(error.message)
@@ -153,10 +173,14 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
         } else if (columnName === 'QtyOrdered') {
           return this.formatQuantity(row.quantityOrdered)
         } else if (columnName === 'Discount') {
-          return this.formatPercent(row.discount)
+          return this.formatPercent(row.discount / 100)
         } else if (columnName === 'GrandTotal') {
           return this.formatPrice(row.grandTotal, currency)
         }
+      }
+
+      productPrice(price: number, discount: number): number {
+        return price / discount * 100
       }
 
       fillOrderLineQuantities(params: {
@@ -165,25 +189,25 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
         discount: number
       }) {
         const { currentPrice, quantityOrdered, discount } = params
-        const containerUuid = this.formUuid
+        // const containerUuid = this.formUuid
         //  Editable fields
         if (quantityOrdered) {
           this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
-            containerUuid,
+            containerUuid: 'line',
             columnName: 'QtyEntered',
             value: quantityOrdered
           })
         }
         if (currentPrice) {
           this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
-            containerUuid,
+            containerUuid: 'line',
             columnName: 'PriceEntered',
             value: currentPrice
           })
         }
         if (discount) {
           this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
-            containerUuid,
+            containerUuid: 'line',
             columnName: 'Discount',
             value: discount
           })

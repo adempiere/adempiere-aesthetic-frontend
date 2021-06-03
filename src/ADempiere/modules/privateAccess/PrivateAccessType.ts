@@ -2,6 +2,7 @@ export interface IPrivateAccessData {
     tableName: string
     recordId: number
     recordUuid: string
+    isLocked?: boolean
 }
 
 export interface IAccessRecordAttribute {

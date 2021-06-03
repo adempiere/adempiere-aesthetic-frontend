@@ -9,7 +9,6 @@ import Template from './template.vue'
 import MixinForm from '../../../Form/MixinForm'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import MixinContextMenuField from '../MixinContextMenuField'
 
 type IPreferenceMetadataItem = IFieldTemplateData & { containerUuid?: string }
 
@@ -17,7 +16,7 @@ type IPreferenceMetadataItem = IFieldTemplateData & { containerUuid?: string }
   name: 'Preference',
   mixins: [Template, MixinForm]
 })
-export default class Preference extends Mixins(MixinForm, MixinContextMenuField) {
+export default class Preference extends Mixins(MixinForm) {
     @Prop({
       type: [Object],
       required: true,
@@ -123,8 +122,6 @@ export default class Preference extends Mixins(MixinForm, MixinContextMenuField)
 
     close() {
       // this.$children[0].$props.visible = false
-      (this.$children[0] as any).visible = false
-      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
       if (!isEmptyValue(this.$route.query.fieldColumnName)) {
         this.$router.push({
           name: this.$route.name!,
@@ -134,6 +131,10 @@ export default class Preference extends Mixins(MixinForm, MixinContextMenuField)
             fieldColumnName: ''
           }
         }, () => {})
+        const children = (this.$children[0] as any)
+        children.visible = false
+        this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', false)
+        this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowOptionField', false)
       }
     }
 
