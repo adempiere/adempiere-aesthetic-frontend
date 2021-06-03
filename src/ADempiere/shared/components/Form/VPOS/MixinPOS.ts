@@ -446,11 +446,8 @@ export default class MixinPOS extends Mixins(MixinForm) {
             case 'QtyEntered':
             case 'PriceEntered':
             case 'Discount':
-              if (!isEmptyValue(this.currentOrderLine)) {
-                this.updateOrderLine({
-                  ...mutation.payload,
-                  line: (this.$store.state[Namespaces.OrderLines] as OrderLinesState).line
-                })
+              if (!isEmptyValue((this.$store.state[Namespaces.OrderLines] as OrderLinesState).line)) {
+                this.updateOrderLine(mutation.payload)
               }
               break
           }
@@ -513,8 +510,8 @@ export default class MixinPOS extends Mixins(MixinForm) {
     }
 
     handleCurrentLineChange(rowLine: any) {
-      this.$store.dispatch(Namespaces.OrderLines + '/' + 'currentLine', rowLine)
       if (!isEmptyValue(rowLine)) {
+        this.$store.dispatch(Namespaces.OrderLines + '/' + 'currentLine', rowLine)
         this.currentOrderLine = rowLine
         this.currentTable = this.listOrderLine.findIndex(item => item.uuid === rowLine.uuid)
         if (!this.currentOrderLine && this.listOrderLine) {

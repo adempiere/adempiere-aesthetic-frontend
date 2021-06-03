@@ -9,5 +9,8 @@ export const mutations: OrderLinesMutationTree = {
   },
   setLine(state: OrderLinesState, line) {
     state.line = line
+  },
+  pin(state: OrderLinesState, pin: boolean) {
+    state.validatePin = pin
   }
 }

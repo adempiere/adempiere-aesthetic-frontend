@@ -1,5 +1,5 @@
 import { ICurrencyData } from '@/ADempiere/modules/core/CoreType'
-import { IOrderLineData, IPOSAttributesData, requestDeleteOrderLine, requestUpdateOrderLine } from '@/ADempiere/modules/pos'
+import { IOrderLineData, IPOSAttributesData, OrderLinesState, requestDeleteOrderLine, requestUpdateOrderLine } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatPercent, formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
@@ -88,27 +88,28 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
 
       updateOrderLine(line: any) {
         let quantity, price, discountRate
+        const currentLine = (this.$store.state[Namespaces.OrderLines] as OrderLinesState).line
 
         switch (line.columnName) {
           case 'QtyEntered':
             quantity = line.value
-            price = line.line.price
-            discountRate = line.line.discountRate
+            price = currentLine.price
+            discountRate = currentLine.discountRate
             break
           case 'PriceEntered':
             price = line.value
-            quantity = line.line.quantity
-            discountRate = line.line.discountRate
+            quantity = currentLine.quantity
+            discountRate = currentLine.discountRate
             break
           case 'Discount':
             discountRate = line.value
-            price = line.line.price
-            quantity = line.line.quantity
+            price = currentLine.price
+            quantity = currentLine.quantity
             break
         }
 
         requestUpdateOrderLine({
-          orderLineUuid: line.line.uuid,
+          orderLineUuid: currentLine.uuid,
           quantity,
           price,
           discountRate
@@ -119,6 +120,7 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
               quantityOrdered: response.quantity,
               discount: response.discountRate
             })
+            this.$store.commit(Namespaces.OrderLines + '/' + 'pin', false)
             this.fillOrderLine(response)
             this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', {
               orderUuid: (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.currentOrder.uuid

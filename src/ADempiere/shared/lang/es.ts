@@ -407,6 +407,7 @@ export default {
         quantity: 'Cantidad',
         options: 'Opciones',
         editQuantities: 'Editar Cantidades',
+        pin: 'Ingrese Pin',
         remove: 'Eliminar'
       },
       order: {
