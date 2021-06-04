@@ -1,3 +1,4 @@
+import { camelizeObjectKeys } from '@/ADempiere/shared/utils/transformObject'
 import {
   IProductPriceData,
   IContextInfoData,
@@ -170,34 +171,15 @@ export function convertCurrency(currencyToConvert: any): ICurrencyData {
 }
 
 export function convertBusinessPartner(
-  businessPartnerToConvert: any
+  businessPartner: any
 ): IBusinessPartnerData {
-  const { id, uuid, name, description } = businessPartnerToConvert
-
-  return {
-    uuid,
-    id,
-    value: businessPartnerToConvert.value,
-    taxId: businessPartnerToConvert.tax_id,
-    duns: businessPartnerToConvert.duns,
-    naics: businessPartnerToConvert.naics,
-    name,
-    lastName: businessPartnerToConvert.last_name,
-    description
-  }
+  return camelizeObjectKeys(businessPartner) as IBusinessPartnerData
 }
 
 export function convertSalesRepresentative(
-  salesRepresentativeToConvert: any
+  salesRepresentative: any
 ): ISalesRepresentativeData {
-  const { uuid, id, name, description } = salesRepresentativeToConvert
-
-  return {
-    uuid,
-    id,
-    name,
-    description
-  }
+  return (camelizeObjectKeys(salesRepresentative) as ISalesRepresentativeData)
 }
 
 export function convertBankAccount(
@@ -246,15 +228,9 @@ export function convertDocumentType(
 }
 
 export function convertDocumentStatus(
-  documentStatusToConvert: any
+  documentStatus: any
 ): IDocumentStatusData {
-  const { name, description } = documentStatusToConvert
-
-  return {
-    name,
-    description,
-    value: documentStatusToConvert.value
-  }
+  return camelizeObjectKeys(documentStatus) as IDocumentStatusData
 }
 
 export function convertPriceList(priceListToConvert: any): IPriceListData {

@@ -8,6 +8,7 @@ import {
   convertProduct,
   convertTaxRate
 } from '@/ADempiere/modules/core'
+import { camelizeObjectKeys } from '@/ADempiere/shared/utils/transformObject'
 import {
   IPointOfSalesData,
   IOrderData,
@@ -46,21 +47,13 @@ export function convertPointOfSales(posToConvert: any): IPointOfSalesData {
   }
 }
 
-export function convertOrder(orderToConvert: any): IOrderData {
-  return {
-    uuid: orderToConvert.uuid,
-    id: orderToConvert.id,
-    documentNo: orderToConvert.document_no,
-    documentType: convertDocumentType(orderToConvert.document_type),
-    salesRepresentative: convertSalesRepresentative(
-      orderToConvert.sales_representative
-    ),
-    documentStatus: convertDocumentStatus(orderToConvert.document_status),
-    totalLines: orderToConvert.total_lines,
-    grandTotal: orderToConvert.grand_total,
-    dateOrdered: orderToConvert.date_ordered,
-    businessPartner: convertBusinessPartner(orderToConvert.business_partner)
-  }
+export function convertOrder(order: any): IOrderData {
+  const convertedOrder = (camelizeObjectKeys(order) as Partial<IOrderData>)
+  convertedOrder.documentType = convertDocumentType(order.document_type)
+  convertedOrder.salesRepresentative = convertSalesRepresentative(order.sales_representative)
+  convertedOrder.documentStatus = convertDocumentStatus(order.document_status)
+  convertedOrder.businessPartner = convertBusinessPartner(order.business_partner)
+  return (convertedOrder as IOrderData)
 }
 
 export function convertOrderLine(orderLineToConvert: any): IOrderLineData {
