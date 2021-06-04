@@ -58,8 +58,6 @@ export default class ProductList extends Mixins(MixinForm) {
       const productPrice = this.$store.getters[
         Namespaces.PointOfSales + '/' + 'getProductPrice'
       ]
-      console.log('productPrice')
-      console.log(productPrice)
       return productPrice
     }
 

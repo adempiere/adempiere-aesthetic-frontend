@@ -335,11 +335,11 @@ export default class MixinPOS extends Mixins(MixinForm) {
         const posUuid = this.currentPointOfSales.uuid
 
         let customerUuid: string = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
-          containerUuid: this.containerUuid,
+          containerUuid: this.metadata.containerUuid,
           columnName: 'C_BPartner_ID_UUID'
         })
         const id = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
-          containerUuid: this.containerUuid,
+          containerUuid: this.metadata.containerUuid,
           columnName: 'C_BPartner_ID'
         })
         if (isEmptyValue(customerUuid) || id === 1000006) {
@@ -463,7 +463,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
                 const bPartnerPOS = this.currentPointOfSales.templateBusinessPartner!.uuid
                 // Does not send values to server, when empty values are set or
                 // if BPartner set equal to BPartner POS template
-                if (!bPartnerValue || bPartnerValue === bPartnerPOS) {
+                if (isEmptyValue(bPartnerValue) || bPartnerValue === bPartnerPOS) {
                   break
                 }
               }
