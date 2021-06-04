@@ -43,6 +43,12 @@ export interface IResponseList<T> {
     list: T[]
 }
 
+export interface IValuesImageData {
+    identifier: string
+    value: string
+    isLoaded: boolean
+}
+
 export enum Namespaces {
     // Root
     App = 'app',

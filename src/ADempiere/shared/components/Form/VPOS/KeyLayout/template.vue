@@ -30,27 +30,19 @@
             <el-col :key="key" :span="size">
               <el-card
                 :body-style="{padding: '0px'}"
-                :data="getImage(keyValue.resourceReference)"
                 shadow="always"
               >
                 <span>
                   <p style="padding-left: 10px; font-size: 12px; color: #0e2ea4">
                     <b>{{ keyValue.name }}</b>
                   </p>
-                  <!--
-                  <b style="padding-left: 10px; font-size: 10px; color: #359e43">
-                    Available
-                  </b>
-                  -->
                 </span>
                 <div @click="setKeyActionToOrderLine(keyValue)">
                   <el-image
-                    v-if="getDefaultImage(keyValue)"
                     :src="getImageFromSource(keyValue)"
                     class="key-layout"
                     fit="contain"
                   />
-                  <vue-content-loading v-else :width="300" :height="300" />
                 </div>
                 <div class="footer-product">
                   <p class="quantity">

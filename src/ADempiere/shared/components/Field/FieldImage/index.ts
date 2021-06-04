@@ -5,6 +5,7 @@ import { getResource, updateResource } from '@/ADempiere/modules/field/FieldServ
 import { KeyValueData } from '@/ADempiere/modules/persistence'
 import { IValueData } from '@/ADempiere/modules/core'
 import { MessageType } from 'element-ui/types/message'
+import { IValuesImageData } from '@/ADempiere/shared/utils/types'
 
 @Component({
   name: 'FieldImage',
@@ -13,11 +14,7 @@ import { MessageType } from 'element-ui/types/message'
 export default class FieldImage extends Mixins(MixinField) {
   @Prop({ type: Array, default: () => [] }) binary!: KeyValueData<IValueData>[]
   // Data
-  private valuesImage: {
-    identifier: string
-    value: string
-    isLoaded: boolean
-  }[] = [{
+  private valuesImage: IValuesImageData[] = [{
     identifier: 'undefined',
     value: '',
     isLoaded: true
