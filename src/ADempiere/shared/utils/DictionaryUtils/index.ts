@@ -133,7 +133,7 @@ export function evalutateTypeField(
     return component!
   }
 
-  return component!.valueType
+  return component!.componentPath
 }
 
 /**
@@ -238,6 +238,16 @@ export function generateField(data: {
     isTranslatedField = false
     parsedDefaultValue = undefined
     parsedDefaultValueTo = undefined
+
+    evaluatedLogics = {
+      isDisplayedFromLogic: true,
+      isMandatoryFromLogic: false,
+      isReadOnlyFromLogic: false
+    }
+    fieldToGenerate.isDisplayed = true
+    fieldToGenerate.isReadOnly = false
+    // Is mandatory to showed available filter fields
+    fieldToGenerate.isMandatory = false
 
     // set field operators list
     isComparisonField = ![
