@@ -1,7 +1,7 @@
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
-import { ICurrentOrderData, IOrderData, IPOSAttributesData, PointOfSalesState } from '../../POSType'
+import { ICurrentOrderData, IKeyLayoutOrWithoutResponse, IOrderData, IPOSAttributesData, PointOfSalesState } from '../../POSType'
 
 type PointOfSalesGetterTree = GetterTree<PointOfSalesState, IRootState>
 
@@ -76,7 +76,7 @@ export const getters: PointOfSalesGetterTree = {
   getShowCollectionPos: (state: PointOfSalesState): boolean => {
     return state.showPOSCollection
   },
-  getKeyLayout: (state, getters, rootState) => {
+  getKeyLayout: (state, getters, rootState): IKeyLayoutOrWithoutResponse => {
     if (isEmptyValue(rootState.keyLayoutModule.keyLayout)) {
       return {
         ...withoutResponse,
