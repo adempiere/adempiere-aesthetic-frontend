@@ -2,6 +2,7 @@ import { IProductPriceData } from '@/ADempiere/modules/core'
 import { IListProductPriceItemData } from '@/ADempiere/modules/pos/POSType'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import MixinField from '../../../Field/Mixin/MixinField'
 import ProductInfoList from './ProductList'
@@ -35,9 +36,9 @@ export default class FieldProductInfo extends Mixins(MixinField) {
     }
 
     get listWithPrice(): IProductPriceData[] {
-      const { productPricesList } = this.$store.getters[Namespaces.PointOfSales + '/' + 'getProductPrice'].list
-      if (productPricesList) {
-        return productPricesList
+      const { list: productPricesList } = (this.$store.getters[Namespaces.PointOfSales + '/' + 'getProductPrice'] as IListProductPriceItemData)
+      if (!isEmptyValue(productPricesList)) {
+        return productPricesList!
       }
       return []
     }
@@ -75,14 +76,14 @@ export default class FieldProductInfo extends Mixins(MixinField) {
     }
 
     localSearch(stringToMatch: string, callBack: Function) {
-      if (!(stringToMatch)) {
+      if (isEmptyValue(stringToMatch)) {
         // not show list
         callBack([])
         return
       }
 
       let results = this.listWithPrice
-      if (stringToMatch) {
+      if (!isEmptyValue(stringToMatch)) {
         const parsedValue = stringToMatch.toLowerCase().trim()
 
         results = results.filter(rowProduct => {
@@ -99,7 +100,7 @@ export default class FieldProductInfo extends Mixins(MixinField) {
         })
 
         // Remote search
-        if (!(results) && String(stringToMatch.length > 3)) {
+        if (isEmptyValue(results) && String(stringToMatch.length > 3)) {
           clearTimeout(this.timeOut)
 
           this.timeOut = setTimeout(() => {
@@ -111,7 +112,7 @@ export default class FieldProductInfo extends Mixins(MixinField) {
               .then(() => {
                 const recordsList = this.listWithPrice
 
-                if (!(recordsList)) {
+                if (isEmptyValue(recordsList)) {
                   this.$message({
                     message: 'Sin resultados coincidentes con la busqueda',
                     type: 'info',

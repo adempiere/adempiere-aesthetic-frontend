@@ -1,8 +1,10 @@
 import { IBusinessPartnerData, requestGetBusinessPartner } from '@/ADempiere/modules/core'
+import { IPOSAttributesData } from '@/ADempiere/modules/pos'
 import { IKeyValueObject, Namespaces } from '@/ADempiere/shared/utils/types'
 import { trimPercentage } from '@/ADempiere/shared/utils/valueFormat'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { ElMessageOptions } from 'element-ui/types/message'
-import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import BusinessPartnerCreate from './BusinessPartnerCreate'
 import BusinessPartnersList from './BusinessPartnersList'
 import MixinSearchBPartnerList from './MixinSearchBPartnerList'
@@ -56,15 +58,19 @@ export default class FieldBusinessPartner extends Mixins(MixinSetBusinessPartner
       })
     }
 
-    get displayedValue() {
-      return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
-        containerUuid: this.parentMetadata.containerUuid,
-        // DisplayColumn_'ColumnName'
-        columnName: 'DisplayColumn_C_BPartner_ID' // this.parentMetadata.displayColumnName
-      })
+    get displayedValue(): string {
+      const busineesPartner: string = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.currentOrder.businessPartner!.name
+      if (isEmptyValue(busineesPartner)) {
+        return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+          containerUuid: this.parentMetadata.containerUuid,
+          // DisplayColumn_'ColumnName'
+          columnName: 'DisplayColumn_C_BPartner_ID' // this.parentMetadata.displayColumnName
+        })
+      }
+      return busineesPartner
     }
 
-    set displayedValue(value: any) {
+    set displayedValue(value: string) {
       this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
         containerUuid: this.parentMetadata.containerUuid,
         // DisplayColumn_'ColumnName'

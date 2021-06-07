@@ -10,6 +10,7 @@ import {
   OrderLinesState
 } from '../../POSType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 type OrderLinesActionTree = ActionTree<OrderLinesState, IRootState>
 type OrderLinesActionContext = ActionContext<OrderLinesState, IRootState>
@@ -22,6 +23,9 @@ export const actions: OrderLinesActionTree = {
     context: OrderLinesActionContext,
     orderUuid: string
   ): void {
+    if (isEmptyValue(orderUuid)) {
+      return
+    }
     requestListOrderLines({
       orderUuid
     })
