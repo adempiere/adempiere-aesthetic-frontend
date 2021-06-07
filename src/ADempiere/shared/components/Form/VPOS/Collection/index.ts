@@ -305,6 +305,10 @@ export default class Collection extends Mixins(MixinPOS) {
       return true
     }
 
+    get fieldsPaymentType(): IFieldLocation {
+      return this.fieldsList[2]
+    }
+
     // Watchers
     @Watch('pending')
     handlePendingChange(value: number) {
@@ -366,6 +370,17 @@ export default class Collection extends Mixins(MixinPOS) {
           columnName: 'PayAmt',
           value: this.pending
         })
+      }
+    }
+
+    @Watch('fieldsPaymentType')
+    handleFieldsPaymentType(value: IFieldLocation) {
+      const displayPaymentType = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        containerUuid: 'Collection',
+        columnName: 'DisplayColumn_PaymentType'
+      })
+      if (!isEmptyValue(value.reference) && isEmptyValue(displayPaymentType)) {
+        value.reference.directQuery = value.reference.query
       }
     }
 
