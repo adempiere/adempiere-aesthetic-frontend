@@ -59,15 +59,11 @@ export default class FieldBusinessPartner extends Mixins(MixinSetBusinessPartner
     }
 
     get displayedValue(): string {
-      const busineesPartner: string = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.currentOrder.businessPartner!.name
-      if (isEmptyValue(busineesPartner)) {
-        return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
-          containerUuid: this.parentMetadata.containerUuid,
-          // DisplayColumn_'ColumnName'
-          columnName: 'DisplayColumn_C_BPartner_ID' // this.parentMetadata.displayColumnName
-        })
-      }
-      return busineesPartner
+      return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        containerUuid: this.parentMetadata.containerUuid,
+        // DisplayColumn_'ColumnName'
+        columnName: 'DisplayColumn_C_BPartner_ID' // this.parentMetadata.displayColumnName
+      })
     }
 
     set displayedValue(value: string) {

@@ -351,7 +351,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
         this.$store.dispatch(Namespaces.Order + '/' + 'createOrder', {
           posUuid: posUuid!,
           customerUuid,
-          salesRepresentativeUuid: this.currentPointOfSales!.templateBusinessPartner!.uuid
+          salesRepresentativeUuid: this.currentPointOfSales!.salesRepresentative!.uuid
         })
           .then((response: Partial<IOrderData>) => {
             this.reloadOrder(true, response.uuid)
