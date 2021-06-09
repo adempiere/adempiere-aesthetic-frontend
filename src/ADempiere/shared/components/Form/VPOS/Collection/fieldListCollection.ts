@@ -35,8 +35,8 @@ const fieldListCollection: IFieldLocation[] = [
   // TenderType
   {
     tableName,
-    columnName: 'TenderType',
     elementColumnName: 'TenderType',
+    columnName: 'TenderType',
     isFromDictionary: true,
     overwriteDefinition: {
       defaultValue: 'X',

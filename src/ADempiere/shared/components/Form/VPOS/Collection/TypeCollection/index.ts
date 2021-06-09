@@ -15,10 +15,6 @@ export default class TypeCollection extends Mixins(MixinPOS) {
     @Prop({ type: Array, default: undefined }) isAddTypePay?: any[]
     @Prop({ type: Object, default: undefined }) listTypesPayment: any
     @Prop({ type: Object, default: undefined }) currency?: any
-    @Prop({
-      type: Boolean,
-      default: false
-    }) isLoaded!: boolean
 
     public conevertion = 0
     public loginCovertion = false

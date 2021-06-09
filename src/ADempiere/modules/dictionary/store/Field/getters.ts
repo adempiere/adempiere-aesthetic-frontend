@@ -26,7 +26,13 @@ export const getters: FieldGetter = {
   getFieldFromElementColumnName: (state: FieldState) => (
     elementColumnName: string
   ) => {
+    console.log('getFieldFromElementColumnName')
+    console.log(elementColumnName)
     return state.fieldsList.find(fieldItem => {
+      if (fieldItem.elementColumnName === elementColumnName) {
+        console.log('encontrado')
+        console.log(fieldItem)
+      }
       return fieldItem.elementColumnName === elementColumnName
     })
   },
