@@ -8,10 +8,8 @@
       <span>
         {{ $t('components.preference.title') }}
         <b>
-          {{ sourceField.name }}
-          {{
-            fieldValue
-          }}
+          {{ fieldAttributes.name }}
+          {{ fieldValue }}
         </b>
       </span>
     </div>
@@ -27,7 +25,7 @@
       >
         <el-form-item>
           <p slot="label">
-            {{ sourceField.name }}: {{ fieldValue }}
+            {{ fieldAttributes.name }}: {{ fieldValue }}
           </p>
         </el-form-item>
       </el-form>

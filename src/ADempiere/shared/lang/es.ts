@@ -290,6 +290,7 @@ export default {
         addNote: 'Agregar Nota'
       }
     },
+    documentStatus: 'Estatus del Documento',
     callout: {
       error: 'Error En Callout'
     }
@@ -349,6 +350,7 @@ export default {
     sequence: 'Secuencia'
   },
   operators: {
+    compareSearch: 'Comparar la Búsqueda',
     operator: 'Operador de comparación',
     EQUAL: 'Igual a "="',
     NOT_EQUAL: 'Diferente a "<>"',

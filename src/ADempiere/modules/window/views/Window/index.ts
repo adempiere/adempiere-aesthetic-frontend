@@ -91,10 +91,13 @@ export default class WindowView extends Vue {
           component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Calculator')
           break
         case this.$t('field.preference'):
-          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Preference')
+          component = () => import('@/ADempiere/shared/components/Field/FieldOptions/Preference')
           break
         case this.$t('field.logsField'):
           component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/ChangeLogs')
+          break
+        case this.$t('operators.operator'):
+          component = () => import('@/ADempiere/shared/components/Field/FieldOptions/OperatorComparison')
           break
       }
       return component

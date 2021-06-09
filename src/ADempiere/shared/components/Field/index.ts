@@ -1,7 +1,5 @@
 import Template from './template.vue'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
-import DocumentStatus from './Popover/DocumentStatus'
-import OperatorComparison from './Popover/OperatorComparison'
 import {
   evalutateTypeField,
   fieldIsDisplayed
@@ -14,17 +12,13 @@ import {
 } from '../../utils/references'
 import { Namespaces } from '../../utils/types'
 import { isEmptyValue, recursiveTreeSearch } from '@/ADempiere/shared/utils/valueUtils'
-import { RouteConfig } from 'vue-router'
-import { IOptionField } from './type'
-import { DeviceType } from '@/ADempiere/modules/app/AppType'
-import VueI18n, { TranslateResult } from 'vue-i18n'
-import { ContextMenuState } from '@/ADempiere/modules/window'
+import { DeviceType, IAppState } from '@/ADempiere/modules/app/AppType'
+import FieldOptions from './FieldOptions'
 
 @Component({
   name: 'FieldDefinition',
   components: {
-    DocumentStatus,
-    OperatorComparison
+    FieldOptions
   },
   mixins: [Template]
 })
@@ -39,70 +33,25 @@ export default class FieldDefinition extends Vue {
     @Prop({ type: Boolean, default: false }) inTable?: boolean
     @Prop({ type: Boolean, default: false }) isAdvancedQuery?: boolean
     public field: any = {}
-    public visibleForDesktop = false
-    public value: any
-    public triggerMenu = 'click'
-    public showPopoverPath = false
-    public timeOut?: NodeJS.Timeout
-    public optionColumnName?: string
-    public visibleFields: boolean[] = []
+    // public visibleForDesktop = false
+    // public value: any
+    // public triggerMenu = 'click'
+    // public showPopoverPath = false
+    // public timeOut?: NodeJS.Timeout
+    // public optionColumnName?: string
+    // public visibleFields: boolean[] = []
 
     // Computed properties
-    get showPanelFieldOption(): boolean {
-      return (this.$store.state[Namespaces.ContextMenu] as ContextMenuState).isShowOptionField
-    }
-
-    get labelStyle() {
-      if (this.field.name.length >= 25) {
-        return '35'
-      } else if (this.field.name.length >= 20) {
-        return '50'
-      }
-      return '110'
-    }
-
     get isMobile(): boolean {
-      return this.$store.state.app.device === DeviceType.Mobile
-    }
-
-    get contextMenuField() {
-      return this.$store.getters[Namespaces.ContextMenu + '/' + 'getFieldContextMenu']
-    }
-
-    get panelContextMenu(): boolean {
-      return this.$store.state.contextMenuModule.isShowRightPanel
-    }
-
-    get optionFieldFComponentRender() {
-      let component
-      const option: IOptionField | undefined = this.optionField.find((option: IOptionField) => (this.$route.query.typeAction as string) === option.name)
-      const nameComponent: TranslateResult = isEmptyValue(option) ? (this.contextMenuField.name as TranslateResult) : (this.$route.query.typeAction as TranslateResult)
-      switch (nameComponent) {
-        case this.$t('field.info'):
-          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/ContextInfo')
-          break
-        case this.$t('language'):
-          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Translated')
-          break
-        case this.$t('field.calculator'):
-          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Calculator')
-          break
-        case this.$t('field.preference'):
-          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Preference')
-          break
-        case this.$t('field.logsField'):
-          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/ChangeLogs')
-          break
-      }
-      return component
+      return (this.$store.state.app as IAppState).device === DeviceType.Mobile
     }
 
     // load the component that is indicated in the attributes of received property
     get componentRender() {
-      if (!(this.field.componentPath || !this.field.isSupported)) {
+      if (isEmptyValue(this.field.componentPath || !this.field.isSupported)) {
         return () => import('@/ADempiere/shared/components/Field/FieldText')
       }
-      if (this.isSelectCreated!) {
+      if (this.isSelectCreated) {
         return () => import('@/ADempiere/shared/components/Field/FieldSelectMultiple')
       }
 
@@ -170,6 +119,7 @@ export default class FieldDefinition extends Vue {
       return {
         ...this.field,
         inTable: this.inTable,
+        isPanelWindow: this.isPanelWindow,
         isAdvancedQuery: this.isAdvancedQuery,
         // DOM properties
         required: this.isMandatory,
@@ -232,7 +182,7 @@ export default class FieldDefinition extends Vue {
         // TODO: Evaluate record uuid without route.action
         // edit mode is diferent to create new
         if (this.inTable) {
-          isWithRecord = this.field.recordUuid
+          isWithRecord = !isEmptyValue(this.field.recordUuid)
         }
 
         return (
@@ -289,7 +239,7 @@ export default class FieldDefinition extends Vue {
         // set field size property
         sizeField = this.field.size
       }
-      if (!sizeField) {
+      if (isEmptyValue(sizeField)) {
         // set default size
         sizeField = DEFAULT_SIZE
       }
@@ -338,20 +288,20 @@ export default class FieldDefinition extends Vue {
           return <ISizeData>newSizes
         } else if (this.inGroup && this.getWidth >= 992) {
           newSizes = {
-            xs: sizeField.xs,
-            sm: sizeField.sm * 2
+            xs: sizeField!.xs,
+            sm: sizeField!.sm * 2
           }
           if (this.getWidth <= 1199) {
-            newSizes.md = sizeField.md
+            newSizes.md = sizeField!.md
           } else {
-            newSizes.md = sizeField.md! * 2
+            newSizes.md = sizeField!.md! * 2
           }
           if (this.field.groupAssigned !== '') {
-            newSizes.lg = sizeField.lg! * 2
-            newSizes.xl = sizeField.xl! * 2
+            newSizes.lg = sizeField!.lg! * 2
+            newSizes.xl = sizeField!.xl! * 2
           } else {
-            newSizes.lg = sizeField.lg
-            newSizes.xl = sizeField.xl
+            newSizes.lg = sizeField!.lg
+            newSizes.xl = sizeField!.xl
           }
           return <ISizeData>newSizes
         }
@@ -360,191 +310,13 @@ export default class FieldDefinition extends Vue {
       return <ISizeData>sizeField
     }
 
-    get processOrderUuid(): any[] {
-      return this.$store.getters[Namespaces.Utils + '' + 'getOrders']
-    }
-
-    get isDocuemntStatus(): boolean {
-      if (
-        this.isPanelWindow &&
-            !this.isAdvancedQuery
-      ) {
-        if (
-          this.field.columnName === 'DocStatus' &&
-                this.processOrderUuid
-        ) {
-          return true
-        }
-      }
-      return false
-    }
-
-    get isContextInfo(): boolean {
-      if (!this.isPanelWindow) {
-        return false
-      }
-      return (
-        Boolean(
-          this.field.contextInfo && this.field.contextInfo.isActive
-        ) ||
-            Boolean(
-              this.field.reference && this.field.reference.zoomWindows.length
-            )
-      )
-    }
-
-    get optionField(): IOptionField[] {
-      return [
-        {
-          name: this.$t('field.info'),
-          enabled: true,
-          fieldAttributes: this.fieldAttributes,
-          svg: false,
-          icon: 'el-icon-info'
-        },
-        {
-          name: this.$t('table.ProcessActivity.zoomIn'),
-          enabled: this.isContextInfo,
-          fieldAttributes: this.fieldAttributes,
-          svg: false,
-          icon: 'el-icon-files'
-        },
-        {
-          name: this.$t('language'),
-          enabled: this.field.isTranslatedField,
-          fieldAttributes: this.fieldAttributes,
-          svg: true,
-          icon: 'language'
-        },
-        {
-          name: this.$t('field.calculator'),
-          enabled: this.field.isNumericField,
-          fieldAttributes: this.fieldAttributes,
-          recordDataFields: this.recordDataFields,
-          valueField: this.valueField,
-          svg: false,
-          icon: 'el-icon-s-operation'
-        },
-        {
-          name: this.$t('field.preference'),
-          enabled: true,
-          fieldAttributes: this.fieldAttributes,
-          valueField: this.valueField,
-          svg: false,
-          icon: 'el-icon-notebook-2'
-        },
-        {
-          name: this.$t('field.logsField'),
-          enabled: true,
-          fieldAttributes: this.fieldAttributes,
-          valueField: this.valueField,
-          svg: true,
-          icon: 'tree-table'
-        }
-      ]
-    }
-
-    get listOption(): IOptionField[] {
-      return this.optionField.filter(option => option.enabled)
-    }
-
-    get permissionRoutes(): RouteConfig[] {
-      return this.$store.getters.permission_routes
-    }
-
-    get valueField() {
-      return this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
-        parentUuid: this.fieldAttributes.parentUuid,
-        containerUuid: this.fieldAttributes.containerUuid,
-        columnName: this.fieldAttributes.columnName
-      })
-    }
-
-    get openOptionField(): boolean {
-      const option: IOptionField | undefined = this.optionField.find(option => this.$route.query.typeAction === option.name)
-      if (!isEmptyValue(this.$route.query) && option) {
-        return true
-      }
-      return false
-    }
-
-    set openOptionField(value: boolean) {
-      if (!value) {
-        this.showPopoverPath = false
-        this.$router.push({
-          name: this.$route.name!,
-          query: {
-            ...this.$route.query,
-            typeAction: '',
-            fieldColumnName: ''
-          }
-        }, () => {})
-      }
-    }
-
     @Watch('metadataField')
     handleMetaadataFieldChange(value: any) {
       this.field = value
     }
 
-    @Watch('panelContextMenu')
-    handlePanelContextMenu(value: boolean) {
-      this.visibleForDesktop = false
-    }
-
-    @Watch('openOptionField')
-    handleOpenOptionFieldChange(value: boolean) {
-      if (!value) {
-        this.showPopoverPath = false
-      }
-    }
-
     // Methods
     recursiveTreeSearch = recursiveTreeSearch
-
-    handleOpen(key: any, keyPath: any) {
-      this.triggerMenu = 'hover'
-    }
-
-    handleClose(key: any, keyPath: any) {
-      this.triggerMenu = 'click'
-    }
-
-    handleSelect(key: VueI18n.TranslateResult, keyPath: any) {
-      const option = this.listOption.find(option => option.name === key)
-      if (option?.name.toString() === this.$t('table.ProcessActivity.zoomIn')) {
-        this.redirect({ window: option.fieldAttributes.reference.zoomWindows[0] })
-        return
-      }
-      if (this.isMobile) {
-        this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
-      } else {
-        this.$store.commit(Namespaces.ContextMenu + '/' + 'schangeShowOptionField', true)
-        this.visibleForDesktop = true
-        this.$router.push({
-          name: this.$route.name!,
-          query: {
-            ...this.$route.query,
-            typeAction: key.toString(),
-            fieldColumnName: this.field.columnName
-          }
-        }, () => {})
-      }
-      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowPopoverField', true)
-      this.$store.dispatch(Namespaces.ContextMenu + '/' + 'setOptionField', option)
-      this.triggerMenu = 'hover'
-    }
-
-    closePopover() {
-      this.$router.push({
-        name: this.$route.name!,
-        query: {
-          ...this.$route.query,
-          typeAction: '',
-          fieldColumnName: ''
-        }
-      }, () => {})
-    }
 
     focusField() {
       if (
@@ -557,73 +329,15 @@ export default class FieldDefinition extends Vue {
       }
     }
 
-    handleCommand(command: any): void {
-      this.$store.commit(Namespaces.ContextMenu + '/' + 'setRecordAccess', false)
-      if (command.name === this.$t('table.ProcessActivity.zoomIn')) {
-        this.redirect({ window: command.fieldAttributes.reference.zoomWindows[0] })
-        return
-      }
-      if (this.isMobile) {
-        this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
-      } else {
-        this.visibleForDesktop = true
-      }
-      this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowPopoverField', true)
-      this.$store.dispatch(Namespaces.ContextMenu + '/' + 'setOptionField', command)
-    }
-
-    redirect(params: { window: any }) {
-      const { window } = params
-      const viewSearch = recursiveTreeSearch({
-        treeData: this.permissionRoutes,
-        attributeValue: window.uuid,
-        attributeName: 'meta',
-        secondAttribute: 'uuid',
-        attributeChilds: 'children'
-      })
-      if (viewSearch) {
-        this.$router.push({
-          name: viewSearch.name,
-          query: {
-            action: 'advancedQuery',
-            tabParent: (0).toString(),
-            [this.fieldAttributes.columnName]: this.value
-          }
-        }, () => {})
-      } else {
-        this.$message({
-          type: 'error',
-          showClose: true,
-          message: this.$t('notifications.noRoleAccess').toString()
-        })
-      }
-    }
-
     // Hooks
     created() {
-      this.listOption.map(() => {
-        this.visibleFields.push(false)
-      })
-      this.optionColumnName = this.$route.query.fieldColumnName as string
-      this.timeOut = setTimeout(() => {
-        if (this.isMobile && this.optionColumnName === this.field.columnName) {
-          this.$store.commit(Namespaces.ContextMenu + '/' + 'changeShowRigthPanel', true)
-          this.$store.dispatch(Namespaces.ContextMenu + '/' + 'setOptionField', {
-            fieldAttributes: this.fieldAttributes,
-            name: this.$route.query.typeAction,
-            valueField: this.valueField
-          })
-        } else {
-          this.showPopoverPath = true
-        }
-      }, 2000)
       // assined field with prop
       this.field = this.metadataField
       if (this.field.isCustomField && !this.field.componentPath) {
         let componentReference: Partial<IFieldReferencesType> = <
                 IFieldReferencesType
             >evalutateTypeField(this.field.displayType)
-        if (!componentReference) {
+        if (isEmptyValue(componentReference)) {
           componentReference = {
             componentPath: 'FieldText'
           }

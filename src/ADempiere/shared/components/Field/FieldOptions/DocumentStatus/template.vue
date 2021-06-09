@@ -1,6 +1,6 @@
 <template>
   <el-popover
-    v-if="(field.columnName === 'DocStatus') && (processOrderUuid)"
+    v-if="(fieldAttributes.columnName === 'DocStatus') && (processOrderUuid)"
     placement="right"
     width="400"
     trigger="click"
@@ -19,10 +19,10 @@
       />
     </el-select>
     <el-tag
-      v-if="!(valueActionDocument)"
-      :type="tagStatus(field.value)"
+      v-if="isEmptyValue(valueActionDocument)"
+      :type="tagStatus(fieldAttributes.value)"
     >
-      {{ field.displayColumn }}
+      {{ fieldAttributes.displayColumn }}
     </el-tag>
     <el-tag
       v-else
@@ -30,7 +30,7 @@
     >
       {{ labelDocumentActions }}
     </el-tag>
-    <p v-if="!(valueActionDocument)"> {{ field.description }} </p>
+    <p v-if="isEmptyValue(valueActionDocument)"> {{ fieldAttributes.description }} </p>
     <p v-else> {{ descriptionDocumentActions }} </p>
     <el-button
       slot="reference"

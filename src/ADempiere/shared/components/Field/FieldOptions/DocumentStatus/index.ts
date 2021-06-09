@@ -11,7 +11,7 @@ import Template from './template.vue'
   mixins: [Template]
 })
 export default class FieldDocumentStatus extends Vue {
-    @Prop({ type: Object, required: true }) field!: any
+    @Prop({ type: Object, required: true }) fieldAttributes!: any
     public valueActionDocument = ''
 
     // Computed properties
@@ -75,8 +75,8 @@ export default class FieldDocumentStatus extends Vue {
 
     documentActionChange(value: any): void {
       // this.$store.dispatch('notifyFieldChange', {
-      //   parentUuid: this.field.parentUuid,
-      //   containerUuid: this.field.containerUuid,
+      //   parentUuid: this.fieldAttributes.parentUuid,
+      //   containerUuid: this.fieldAttributes.containerUuid,
       //   columnName: 'DocAction',
       //   isSendToServer: true,
       //   newValue: value
@@ -93,13 +93,13 @@ export default class FieldDocumentStatus extends Vue {
         recordId: this.$route.params.recordId,
         recordUuid: this.$route.query.action,
         parametersList: [{
-          columnName: this.field.columnName,
+          columnName: this.fieldAttributes.columnName,
           value: this.valueActionDocument
         }],
         isActionDocument: true,
-        parentUuid: this.field.parentUuid,
-        panelType: <PanelContextType> this.field.panelType,
-        containerUuid: this.field.containerUuid // determinate if get table name and record id (window) or selection (browser)
+        parentUuid: this.fieldAttributes.parentUuid,
+        panelType: <PanelContextType> this.fieldAttributes.panelType,
+        containerUuid: this.fieldAttributes.containerUuid // determinate if get table name and record id (window) or selection (browser)
       })
       this.valueActionDocument = ''
     }
