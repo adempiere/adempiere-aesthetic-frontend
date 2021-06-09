@@ -50,6 +50,7 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
     public visible: boolean = this.getShowContextMenuTable
     public searchTable = '' // text from search
     public defaultMaxPagination = 50
+    public searchTableChildren = '' // text from search
     // const activeName = []
     // TODO: Manage attribute with vuex store in window module
     // if (this.isParent && this.$route.query.action && this.$route.query.action === 'advancedQuery') {
@@ -65,6 +66,9 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
 
     public uuidCurrentRecordSelected = ''
     public showTableSearch = false
+    public searchColumnName: (string | undefined)[] = []
+    public recordsSearchTable: any[] = []
+    public recordsSearchTableChildren: any[] = []
 
     // Computed properties
     get isShowedContextMenu() {
@@ -270,6 +274,15 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
         return this.currentTable
       }
       return this.currentTable + 1
+    }
+
+    get allRecordsData() {
+      if (this.isParent && !isEmptyValue(this.searchTable)) {
+        return this.recordsSearchTable
+      } else if (!this.isParent && !isEmptyValue(this.searchTableChildren)) {
+        return this.recordsSearchTableChildren
+      }
+      return this.recordsData
     }
 
       // Watchers
@@ -656,21 +669,54 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
         })
       }
 
-      filterResult() {
-        const data: any[] = this.recordsData.filter(rowItem => {
-          if (this.searchTable.trim().length) {
-            let find = false
-            Object.keys(rowItem).forEach(key => {
-              if (String(rowItem[key]).toLowerCase().includes(String(this.searchTable).toLowerCase())) {
-                find = true
-                return find
-              }
-            })
-            return find
+      // filterResult() {
+      //   const data: any[] = this.recordsData.filter(rowItem => {
+      //     if (this.searchTable.trim().length) {
+      //       let find = false
+      //       Object.keys(rowItem).forEach(key => {
+      //         if (String(rowItem[key]).toLowerCase().includes(String(this.searchTable).toLowerCase())) {
+      //           find = true
+      //           return find
+      //         }
+      //       })
+      //       return find
+      //     }
+      //     return true
+      //   })
+      //   return data
+      // }
+
+      filterResult(value: string) {
+        const selectionColumn: IFieldDataExtendedUtils[] = this.fieldsList.filter(element => element.isSelectionColumn)
+        this.searchColumnName = selectionColumn.map((element: IFieldDataExtendedUtils) => {
+          if (element.isSelectionColumn) {
+            return element.columnName
           }
-          return true
         })
-        return data
+        if (this.isParent) {
+          this.searchTable = value
+        } else {
+          this.searchTableChildren = value
+        }
+        const result = this.getterDataRecordsAndSelection.record.filter(record => {
+          let list
+          this.searchColumnName.forEach(validate => {
+            if ((typeof record[validate!] !== 'boolean' && !isEmptyValue(record[validate!])) || !isEmptyValue(record['DisplayColumn_' + validate])) {
+              const SearchColumns = typeof record[validate!] === 'number' ? record['DisplayColumn_' + validate] : record[validate!]
+              if (SearchColumns.includes(value)) {
+                list = record
+              }
+            }
+          })
+          return list
+        })
+        if (this.isParent) {
+          this.searchTable = value
+          this.recordsSearchTable = result
+        } else {
+          this.searchTableChildren = value
+          this.recordsSearchTableChildren = result
+        }
       }
 
       /**
