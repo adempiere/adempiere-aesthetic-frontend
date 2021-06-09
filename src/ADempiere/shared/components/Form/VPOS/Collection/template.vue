@@ -41,7 +41,7 @@
                   </el-popover>
                 </b>
               </p>
-               <p class="total">
+              <p class="total">
                 <b>Tasa del Día: </b>
                 <b v-if="!isEmptyValue(dateRate)" style="float: right;">
                   {{
@@ -65,11 +65,11 @@
               >
                 <el-row>
                   <el-col v-for="(field, index) in fieldsList" :key="index" :span="8">
-                    <FieldDefinition
+                    <field-definition
                       :key="field.columnName"
                       :metadata-field="field.columnName === 'PayAmt' ? {
                         ...field,
-                        labelCurrency: isEmptyValue($store.getters['paymentsModule/getFieldCuerrency']) ? pointOfSalesCurrency : $store.getters['paymentsModule/getFieldCuerrency']
+                        labelCurrency: isEmptyValue($store.getters['paymentsModule/' + 'getFieldCuerrency']) ? pointOfSalesCurrency : $store.getters['paymentsModule/' + 'getFieldCuerrency']
                       } : field"
                     />
                   </el-col>
@@ -81,18 +81,17 @@
             <el-button type="danger" icon="el-icon-close" @click="exit" />
             <el-button type="info" icon="el-icon-minus" :disabled="isDisabled" @click="undoPatment" />
             <el-button type="primary" :disabled="validPay || addPay || isDisabled" icon="el-icon-plus" @click="addCollectToList(paymentBox)" />
-            <el-button type="success" :disabled="validateCompleteCollection || isDisabled" icon="el-icon-shopping-cart-full"
-            @click="completePreparedOrder(listPayments)"
-            />
+            <el-button type="success" :disabled="validateCompleteCollection || isDisabled" icon="el-icon-shopping-cart-full" @click="completePreparedOrder(listPayments)" />
           </samp>
         </el-header>
         <el-main style="padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px;">
           <type-collection
-          v-if="!updateOrderPaymentPos"
+            v-if="!updateOrderPaymentPos"
             :is-add-type-pay="listPayments"
             :currency="pointOfSalesCurrency"
-            :list-types-payments="fieldsList[2]"
+            :list-types-payment="fieldsList[2]"
             :is-loaded="isLoadedPayments"
+            :list-payment-type="fieldsPaymentType"
           />
           <div
             v-else
@@ -103,7 +102,6 @@
             element-loading-background="rgba(255, 255, 255, 0.8)"
             class="view-loading"
           />
-
         </el-main>
 
         <el-footer height="auto" style="padding-left: 0px; padding-right: 0px;">

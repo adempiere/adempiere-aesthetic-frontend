@@ -695,6 +695,8 @@ export const actions: PanelActionTree = {
     fieldsList: IFieldDataExtendedUtils[]
   }) {
     let { field, fieldsList } = params
+    console.warn('changeDependentFieldsList')
+    console.warn(field)
     if (isEmptyValue(field.dependentFieldsList)) {
       // breaks if there are no field dependencies
       return

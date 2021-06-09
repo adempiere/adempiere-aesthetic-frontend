@@ -37,30 +37,29 @@
                       </el-button>
 
                       <el-button
-                        v-if="(value.paymentDate)"
+                        v-if="!isEmptyValue(value.paymentDate)"
                         type="text"
                         class="button"
                         style="color: rgb(50, 54, 58); font-size: 13px; text-align: left; float: unset; padding-top: 5px;"
                       >
                         {{ formatDate(value.paymentDate) }}
                       </el-button>
-
                       <div
-                      v-if="loginConvertion"
-                      slot="header"
-                      class="clearfix"
-                      style="padding-bottom: 20px;"
+                        v-if="loginCovertion"
+                        slot="header"
+                        class="clearfix"
+                        style="padding-bottom: 20px;"
                       >
-                      <p class="total">
-                        <b style="float: right;">
-                          {{ formatPrice(value.amount, currency.iSOCode) }}
-                        </b>
-                      </p>
-                      <br>
-                      <p v-if="!isEmptyValue(value.currencyConvertion)" class="total">
-                        <b style="float: right;">
-                          {{ formatPrice(value.amountConvertion, value.currencyConvertion.iSOCode) }}
-                        </b>
+                        <p class="total">
+                          <b style="float: right;">
+                            {{ formatPrice(value.amount, currency.iSOCode) }}
+                          </b>
+                        </p>
+                        <br>
+                        <p v-if="!isEmptyValue(value.currencyConvertion)" class="total">
+                          <b style="float: right;">
+                            {{ formatPrice(value.amountConvertion, value.currencyConvertion.iSOCode) }}
+                          </b>
                         </p>
                       </div>
                     </div>

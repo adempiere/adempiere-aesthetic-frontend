@@ -51,10 +51,12 @@ export default class Collection extends Mixins(MixinPOS) {
 
       if (this.pay === this.currentOrder.grandTotal!) {
         collection = false
-      } else if (validation || this.checked) {
-        collection = false
       } else {
-        collection = true
+        if (validation || this.checked) {
+          collection = false
+        } else {
+          collection = true
+        }
       }
       return collection
     }
@@ -98,7 +100,7 @@ export default class Collection extends Mixins(MixinPOS) {
       const payment = this.listPayments.filter((pay: any) => {
         return pay.isVisible
       })
-      if (!payment) {
+      if (isEmptyValue(payment)) {
         return []
       }
       return payment
@@ -164,7 +166,7 @@ export default class Collection extends Mixins(MixinPOS) {
         }
         return 0
       })
-      if (cashAmt && cashAmt.length) {
+      if (!isEmptyValue(cashAmt)) {
         return cashAmt.reduce((accumulator, currentValue) => accumulator + currentValue)
       }
       return 0
@@ -177,7 +179,7 @@ export default class Collection extends Mixins(MixinPOS) {
         }
         return 0
       })
-      if (cashAmt) {
+      if (!isEmptyValue(cashAmt)) {
         return cashAmt.reduce((accumulator, currentValue) => accumulator + currentValue)
       }
       return 0
@@ -210,7 +212,7 @@ export default class Collection extends Mixins(MixinPOS) {
         containerUuid,
         columnName: 'PayAmt'
       })
-      if (!fieldsEmpty && amount > 0) {
+      if (isEmptyValue(fieldsEmpty) && amount > 0) {
         return false
       }
       return true
@@ -225,7 +227,7 @@ export default class Collection extends Mixins(MixinPOS) {
         fieldsList: fieldLogic,
         isValidate: true
       })
-      return !!(fieldsEmpty.length)
+      return !isEmptyValue(fieldsEmpty)
     }
 
     get change(): number {
@@ -305,6 +307,10 @@ export default class Collection extends Mixins(MixinPOS) {
       return true
     }
 
+    get fieldsPaymentType(): IFieldLocation {
+      return this.fieldsList[2]
+    }
+
     // Watchers
     @Watch('pending')
     handlePendingChange(value: number) {
@@ -369,6 +375,17 @@ export default class Collection extends Mixins(MixinPOS) {
       }
     }
 
+    @Watch('fieldsPaymentType')
+    handleFieldsPaymentType(value: IFieldLocation) {
+      const displayPaymentType = this.$store.getters[Namespaces.FieldValue + '/' + 'getValueOfField']({
+        containerUuid: 'Collection',
+        columnName: 'DisplayColumn_PaymentType'
+      })
+      if (!isEmptyValue(value.reference) && isEmptyValue(displayPaymentType)) {
+        value.reference.directQuery = value.reference.query
+      }
+    }
+
     // Methods
     formatDateCollection(date: Date): string {
       let month: string = '' + (date.getMonth() + 1)
@@ -409,40 +426,6 @@ export default class Collection extends Mixins(MixinPOS) {
       event.preventDefault()
       return false
     }
-
-    // displayTenderType(type: string) {
-    //   let label = ''
-    //   switch (type) {
-    //     case 'A':
-    //       label = 'Depósito directo'
-    //       break
-    //     case 'C':
-    //       label = 'Tarjeta de crédito'
-    //       break
-    //     case 'D':
-    //       label = 'Débito directo'
-    //       break
-    //     case 'K':
-    //       label = 'Cheque'
-    //       break
-    //     case 'M':
-    //       label = 'Nota de crédito'
-    //       break
-    //     case 'P':
-    //       label = 'Pago móvil interbancario'
-    //       break
-    //     case 'T':
-    //       label = 'Cuenta'
-    //       break
-    //     case 'X':
-    //       label = 'Efectivo'
-    //       break
-    //     case 'Z':
-    //       label = 'Zelle'
-    //       break
-    //   }
-    //   return label
-    // }
 
     addCollectToList(): void {
       const containerUuid = this.containerUuid
@@ -511,7 +494,7 @@ export default class Collection extends Mixins(MixinPOS) {
       // const listLocal = this.$store.getters.getPaymentBox
       const posUuid = this.currentPointOfSales.uuid
       const orderUuid = this.$route.query.action
-      this.$store.dispatch('uploadOrdersToServer', { listPaymentsLocal, posUuid, orderUuid })
+      this.$store.dispatch(Namespaces.Payments + '/' + 'uploadOrdersToServer', { listPaymentsLocal, posUuid, orderUuid })
     }
 
     addCollect(): void {
@@ -584,24 +567,24 @@ export default class Collection extends Mixins(MixinPOS) {
     }
 
     getPriceApplyingDiscount(price?: number, discount?: number): number {
-      if (!price) {
+      if (isEmptyValue(price)) {
         price = 0
       }
-      if (!discount) {
+      if (isEmptyValue(discount)) {
         discount = 0
       }
-      return price - discount * price / 100
+      return price! - discount! * price! / 100
     }
 
     getDiscountByPriceEntered(unitPrice: number, priceEntereded: number): number {
-      if (!unitPrice) {
+      if (isEmptyValue(unitPrice)) {
         unitPrice = 0
       }
-      if (!priceEntereded) {
+      if (isEmptyValue(priceEntereded)) {
         priceEntereded = 0
       }
       const discount: number = 100 - priceEntereded * 100 / unitPrice
-      if (!discount || discount === -Infinity) {
+      if (isEmptyValue(discount) || discount === -Infinity) {
         return 0
       }
       return discount

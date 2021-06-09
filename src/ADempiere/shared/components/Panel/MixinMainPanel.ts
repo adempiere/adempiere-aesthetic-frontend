@@ -9,7 +9,7 @@ import { Namespaces } from '../../utils/types'
 import { convertObjectToKeyValue } from '../../utils/valueFormat'
 import { isEmptyValue, parsedValueComponent } from '../../utils/valueUtils'
 import FieldDefinition from '../Field'
-import FilterFields from './FilterFields'
+import FilterFields from '@/ADempiere/shared/components/FilterFields'
 import { LOG_COLUMNS_NAME_LIST } from '@/ADempiere/shared/utils/dataUtils'
 
 @Component({

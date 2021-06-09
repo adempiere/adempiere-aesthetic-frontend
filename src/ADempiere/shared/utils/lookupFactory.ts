@@ -19,6 +19,7 @@ import { PanelContextType } from './DictionaryUtils/ContextMenuType'
 import store from '@/ADempiere/shared/store'
 import { IFieldDataExtended } from '@/ADempiere/modules/dictionary'
 import { Namespaces } from './types'
+import { isEmptyValue } from './valueUtils'
 
 export interface IOverwriteDefinitionData extends IAdditionalAttributesData {
     isShowedFromUser: boolean
@@ -388,7 +389,13 @@ export function createFieldFromDictionary(params: {
     valueToMatch = columnName
   }
 
-  if (!field) {
+  if (columnName === 'TenderType') {
+    console.warn('TenderType xxx')
+    console.warn(field)
+    console.warn(valueToMatch!)
+  }
+
+  if (isEmptyValue(field)) {
     return new Promise<IFieldTemplateData>(resolve => {
       store.dispatch(Namespaces.Field + '/' + 'getFieldFromServer', {
         uuid,

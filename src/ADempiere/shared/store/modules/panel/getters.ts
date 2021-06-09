@@ -632,23 +632,21 @@ export const getters: PanelGetterTree = {
   getFieldsListNotMandatory: (state: PanelState, getters) => (params: { containerUuid: string, isEvaluateShowed?: boolean}): IFieldDataExtendedUtils[] => {
     const { containerUuid, isEvaluateShowed = params.isEvaluateShowed || true } = params
     // all optionals (not mandatory) fields
-    const fieldsList: any[] = getters.getFieldsListFromPanel(containerUuid)
-    const notMandatoryFields = fieldsList.filter((fieldItem: IFieldDataExtendedUtils) => {
+    const fieldsList: IFieldDataExtendedUtils[] = getters.getFieldsListFromPanel(containerUuid)
+
+    return fieldsList.filter(fieldItem => {
       const isMandatory: boolean = fieldItem.isMandatory || fieldItem.isMandatoryFromLogic
-      if (!isMandatory) {
-        if (isEvaluateShowed) {
-          const fieldIsDisplayedRes = fieldIsDisplayed({
-            panelType: fieldItem.panelType,
-            isActive: fieldItem.isActive,
-            isDisplayed: fieldItem.isDisplayed,
-            isDisplayedFromLogic: fieldItem.isDisplayedFromLogic,
-            isQueryCriteria: fieldItem.isQueryCriteria
-          })
-          return fieldIsDisplayedRes
-        }
-        return !isMandatory
+      if (isMandatory) {
+        return false
       }
+      const isButtonField: boolean = fieldItem.componentPath === 'FieldButton'
+      if (isButtonField) {
+        return false
+      }
+      if (isEvaluateShowed) {
+        return fieldIsDisplayed(fieldItem)
+      }
+      return true
     })
-    return notMandatoryFields
   }
 }

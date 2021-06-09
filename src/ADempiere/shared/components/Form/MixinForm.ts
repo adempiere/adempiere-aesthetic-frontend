@@ -61,7 +61,7 @@ export default class MixinForm extends Vue {
 
     async getPanel() {
       const panel = this.getterPanel
-      if (panel) {
+      if (!isEmptyValue(panel)) {
         this.fieldsList = panel.fieldsList
         this.isLoaded = true
         this.panelMetadata = panel
@@ -119,7 +119,7 @@ export default class MixinForm extends Vue {
             if (fieldElement.isFromDictionary) {
               // set sequence
               if (fieldElement.overwriteDefinition) {
-                if (!fieldElement.overwriteDefinition.sequence) {
+                if (isEmptyValue(fieldElement.overwriteDefinition.sequence)) {
                   fieldElement.overwriteDefinition.sequence = incrementSequence()
                 } else {
                   incrementSequence(fieldElement.overwriteDefinition.sequence)
@@ -128,6 +128,12 @@ export default class MixinForm extends Vue {
                 fieldElement.overwriteDefinition = {}
                 fieldElement.overwriteDefinition.sequence = incrementSequence()
               }
+
+              console.warn('add item to fieldsListFromDictionary')
+              console.warn({
+                ...fieldElement,
+                ...additionalAttributes
+              })
 
               fieldsListFromDictionary.push(
                 this.createFieldFromDictionary({
@@ -138,7 +144,7 @@ export default class MixinForm extends Vue {
             } else {
               // set sequence
               if (fieldElement.overwriteDefinition) {
-                if (!fieldElement.overwriteDefinition.sequence) {
+                if (isEmptyValue(fieldElement.overwriteDefinition.sequence)) {
                   fieldElement.overwriteDefinition.sequence = incrementSequence()
                 } else {
                   incrementSequence(fieldElement.overwriteDefinition.sequence)
@@ -160,9 +166,14 @@ export default class MixinForm extends Vue {
               )
             }
           })
+
+          console.log('currentFieldsList')
+          console.log(this.fieldsList)
+          console.log('fieldsListFromDictionary empty')
+          console.log(fieldsListFromDictionary)
           let fieldsList: any = fieldsListFromMetadata
 
-          if (!fieldsListFromDictionary) {
+          if (isEmptyValue(fieldsListFromDictionary)) {
             this.fieldsList = fieldsList
             resolve(fieldsList)
             this.isLoaded = true

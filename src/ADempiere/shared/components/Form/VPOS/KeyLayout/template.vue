@@ -29,8 +29,9 @@
           <template v-for="(keyValue, key) in getKeyList">
             <el-col :key="key" :span="size">
               <el-card
-                :body-style="{padding: '0px'}"
-                shadow="always"
+                shadow="never"
+                class="custom-card"
+                :body-style="{padding: '10px'}"
               >
                 <span>
                   <p style="padding-left: 10px; font-size: 12px; color: #0e2ea4">
@@ -137,5 +138,16 @@
     padding-bottom: 5px !important;
     padding-left: 5px !important;
     padding-right: 5px !important;
+  }
+</style>
+
+<style lang="scss">
+  .custom-card {
+    margin: 10px;
+    cursor: pointer;
+  }
+  .custom-card:hover {
+    background-color: #eaf5fe;
+    border: 1px solid #36a3f7;
   }
 </style>
