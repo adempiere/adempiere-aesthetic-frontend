@@ -277,12 +277,15 @@ export default class FieldSelect extends Mixins(MixinField) {
                 directQuery: this.metadata.reference.directQuery,
                 value: this.value
             })
-            .then(responseLookupItem => {
-                this.displayedValue = responseLookupItem?.label
-                this.uuidValue = responseLookupItem?.uuid
-                this.$nextTick(() => {
-                    this.optionsList = this.getterLookupAll
-                })
+            .then((responseLookupItem?: Required<ILookupOptions>) => {
+                // with value response update local component list
+                if(!isEmptyValue(responseLookupItem)){
+                    this.displayedValue = responseLookupItem!.label
+                    this.uuidValue = responseLookupItem!.uuid
+                    this.$nextTick(() => {
+                        this.optionsList = this.getterLookupAll
+                    })
+                }
             })
             .finally(() => {
                 this.isLoading = false
