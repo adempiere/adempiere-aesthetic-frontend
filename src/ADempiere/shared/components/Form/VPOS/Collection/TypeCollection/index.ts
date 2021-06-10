@@ -20,7 +20,7 @@ export default class TypeCollection extends Mixins(MixinPOS) {
 
   public conevertion = 0
   public loginCovertion = false
-  public labelTypesPayment: any[] = []
+  public labelTypesPayment: any[] | Partial<IFieldLocation> = []
 
   // Computed properties
   get typesPayment() {
@@ -42,7 +42,7 @@ export default class TypeCollection extends Mixins(MixinPOS) {
   // Hooks
   created() {
     this.convertingPaymentMethods()
-    if (isEmptyValue(this.labelTypesPayment)) {
+    if (isEmptyValue((this.labelTypesPayment as IFieldLocation).reference) && !isEmptyValue(this.listPaymentType?.reference)) {
       this.tenderTypeDisplaye({
         tableName: this.listPaymentType!.reference.tableName,
         query: this.listPaymentType!.reference.query
@@ -79,6 +79,7 @@ export default class TypeCollection extends Mixins(MixinPOS) {
         .then(response => {
           this.isAddTypePay!.forEach(element => {
             if (element.currencyUuid !== this.pointOfSalesCurrency.uuid) {
+              element.amount = element.amount / response.multiplyRate!
               element.amountConvertion = element.amount / response.divideRate!
               element.currencyConvertion = response.currencyTo
             } else {

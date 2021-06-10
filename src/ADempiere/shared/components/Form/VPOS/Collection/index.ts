@@ -382,7 +382,10 @@ export default class Collection extends Mixins(MixinPOS) {
         columnName: 'DisplayColumn_PaymentType'
       })
       if (!isEmptyValue(value.reference) && isEmptyValue(displayPaymentType)) {
-        value.reference.directQuery = value.reference.query
+        this.$store.dispatch(Namespaces.Lookup + '/' + 'getLookupListFromServer', {
+          tableName: value.reference.tableName,
+          query: value.reference.query
+        })
       }
     }
 

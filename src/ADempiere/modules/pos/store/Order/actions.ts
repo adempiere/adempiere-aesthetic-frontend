@@ -99,7 +99,6 @@ export const actions: OrderActionTree = {
         context.dispatch(Namespaces.OrderLines + '/' + 'updateOrderLines', orderLine, {
           root: true
         })
-        // this.fillOrderLine(orderLine)
         context.dispatch('reloadOrder', orderUuid)
       })
       .catch(error => {

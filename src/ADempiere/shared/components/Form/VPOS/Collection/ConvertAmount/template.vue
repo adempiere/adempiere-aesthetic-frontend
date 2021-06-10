@@ -4,7 +4,7 @@
       <span>
         <b>
           {{ $t('form.pos.collect.convertAmount') }}:
-          {{ formatPrice(amount * convert, displayCurrency) }}
+          {{ formatPrice(amountConvertionTotal) }}
         </b>
       </span>
     </div>
