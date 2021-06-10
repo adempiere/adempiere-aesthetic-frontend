@@ -1,6 +1,7 @@
 <template>
   <el-main
     v-shortkey="shortsKey"
+    style="height: 90vh;"
   >
     <el-form
       v-shortkey="shortsKey"
@@ -21,7 +22,7 @@
       :data="listWithPrice"
       border
       fit
-      :height="isMobile ? '300' : '550'"
+      class="table-product-info"
       highlight-current-row
       @row-click="findlistProductWithRow"
       @current-change="handleCurrentChange"
@@ -124,3 +125,11 @@
     />
   </el-main>
 </template>
+
+<style>
+.table-product-info {
+  max-height: 80%;
+  min-height: 80%;
+  overflow: auto
+}
+</style>
