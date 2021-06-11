@@ -439,6 +439,7 @@ export default {
         change: 'Cambio',
         convertAmount: 'Convertir Cantidad',
         fullPayment: 'Cobro Completo',
+        dayRate: 'Tasa del Día',
         TenderType: {
           directDeposit: 'Depósito Directo',
           creditCard: 'Tarjeta de Crédito',

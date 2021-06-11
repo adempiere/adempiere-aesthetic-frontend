@@ -25,7 +25,6 @@ import {
   IEntityData,
   IEntityListData,
   IPrivateAccessDataExtended,
-  IRecordObjectListFromCriteria,
   IRecordSelectionData,
   KeyValueData
 } from '../../PersistenceType'

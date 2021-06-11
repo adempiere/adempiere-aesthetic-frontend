@@ -70,9 +70,9 @@ export default class Order extends Mixins(MixinOrderLine) {
       return 12
     }
     if (isEmptyValue(this.currentOrder)) {
-      return 14
+      return 9
     }
-    return 11
+    return 7
   }
 
   get colFieldProductCode(): number {
@@ -80,9 +80,9 @@ export default class Order extends Mixins(MixinOrderLine) {
       return 12
     }
     if (isEmptyValue(this.currentOrder)) {
-      return 9
+      return 14
     }
-    return 7
+    return 11
   }
 
   get labelButtonCollections(): TranslateResult {

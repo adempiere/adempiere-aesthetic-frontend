@@ -419,7 +419,11 @@ export default class Collection extends Mixins(MixinPOS) {
       let sum = 0
       if (cash) {
         cash.forEach((pay) => {
-          sum += pay.amount
+          if (!isEmptyValue(pay.divideRate)) {
+            sum += pay.amountConvertion / pay.divideRate
+          } else {
+            sum += pay.amount
+          }
         })
       }
       return sum

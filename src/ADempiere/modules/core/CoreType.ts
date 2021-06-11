@@ -120,7 +120,13 @@ export interface ICurrencyData {
     amountConvertion?: number
 }
 
-export interface IConversionRateData {
+export interface IRateData {
+    multiplyRate: number
+    divideRate: number
+    amountConvertion?: number
+}
+
+export interface IConversionRateData extends IRateData {
     uuid: string
     id: number
     conversionTypeUuid: string
@@ -128,9 +134,6 @@ export interface IConversionRateData {
     validTo: number
     currencyFrom: ICurrencyData
     currencyTo: ICurrencyData
-    multiplyRate: number
-    divideRate: number
-    amountConvertion?: number
 }
 
 export interface ICountryData {

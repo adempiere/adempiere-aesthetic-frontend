@@ -6,7 +6,6 @@ import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IListOrderItemData, ListProductPriceState } from '@/ADempiere/modules/pos/POSType'
 import {
   cashClosing, createNewReturnOrder, withdrawal, generateImmediateInvoice, printOrder,
-  // requestReverseSalesTransaction,
   requestDeleteOrder,
   requestCreateOrder,
   processOrder
@@ -110,8 +109,8 @@ export default class Options extends Mixins(MixinOrderLine, MixinPOS) {
       processOrder({
         posUuid,
         orderUuid: this.$route.query.action as string,
-        createPayments: !isEmptyValue(this.currentOrder.listPayments),
-        payments: this.currentOrder.listPayments!.payments!
+        createPayments: false,
+        payments: []
       }).then(response => {
         this.$store.dispatch(Namespaces.Order + '/' + 'reloadOrder', response.uuid)
         this.$message({
