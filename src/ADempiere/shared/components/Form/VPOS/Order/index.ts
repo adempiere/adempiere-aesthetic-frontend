@@ -10,6 +10,8 @@ import FieldLine from '@/ADempiere/shared/components/Form/VPOS/Order/Line'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { ICurrentOrderData, ICurrentPointOfSalesData, IOrderLineDataExtended, IPOSAttributesData, OrderLinesState } from '@/ADempiere/modules/pos'
 import { ICurrencyData } from '@/ADempiere/modules/core'
+import { DeviceType, IAppState } from '@/ADempiere/modules/app/AppType'
+import { TranslateResult } from 'vue-i18n'
 
 @Component({
   name: 'Order',
@@ -42,7 +44,48 @@ export default class Order extends Mixins(MixinOrderLine) {
     console.log(this.orderLineDefinition)
   }
 
-  get labelButtonCollections() {
+  get isMobile(): boolean {
+    return (this.$store.state.app as IAppState).device === DeviceType.Mobile
+  }
+
+  get classOrderFooter(): string {
+    if (this.isMobile) {
+      return 'footer-mobile'
+    }
+    return 'footer-table'
+  }
+
+  get classButtomRight(): string {
+    if (this.isMobile) {
+      if (this.$store.getters[Namespaces.PointOfSales + '/' + 'getIsShowPOSOptions']) {
+        return 'position: fixed'
+      }
+      return 'position: absolute;top: 34%;z-index: 100;right: 0;'
+    }
+    return 'position: relative;padding-top: 30vh; z-index: 100;'
+  }
+
+  get colFieldBusinessPartner(): number {
+    if (this.isMobile) {
+      return 12
+    }
+    if (isEmptyValue(this.currentOrder)) {
+      return 14
+    }
+    return 11
+  }
+
+  get colFieldProductCode(): number {
+    if (this.isMobile) {
+      return 12
+    }
+    if (isEmptyValue(this.currentOrder)) {
+      return 9
+    }
+    return 7
+  }
+
+  get labelButtonCollections(): TranslateResult {
     return this.isDisabled ? this.$t('form.pos.order.collections') : this.$t('form.pos.order.collect')
   }
 
@@ -210,7 +253,7 @@ export default class Order extends Mixins(MixinOrderLine) {
 
   // Methods
   openCollectionPanel(): void {
-    this.isShowedPOSKeyLayout = true
+    this.isShowedPOSKeyLayout = this.isMobile ? !this.isShowedPOSKeyLayout : true
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', true)
     const orderUuid = this.$route.query.action
     this.$store.dispatch(Namespaces.Payments + '/' + 'listPayments', { orderUuid })

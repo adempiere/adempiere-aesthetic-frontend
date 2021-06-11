@@ -1,54 +1,8 @@
 <template>
-  <el-container style="height: 100% !important;">
-    <el-main style="padding-right: 0px;padding-bottom: 0px;">
-
-      <Split :gutter-size="isShowedPOSOptions ? 10 : 0" @onDrag="onDragOption">
-        <SplitArea :size="isShowedPOSOptions ? 20 : 1" :min-size="400">
-          <el-container style="height: 100% !important;">
-            <el-aside :width="isShowedPOSOptions ? '100%' : '0%'" style="background: white; padding: 0px !important; margin-bottom: 0px">
-              <Options
-                :metadata="metadata"
-              />
-            </el-aside>
-            <div style="width: 36px;padding-top: 30vh; z-index: 100;">
-              <el-button
-                :circle="true"
-                type="primary"
-                :icon="isShowedPOSOptions ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"
-                :style="isShowedPOSOptions ? 'position: absolute;': 'position: absolute;left: 0.8%;'"
-                @click="isShowedPOSOptions = !isShowedPOSOptions"
-              />
-            </div>
-          </el-container>
-        </SplitArea>
-
-        <SplitArea :size="isShowedPOSOptions ? 80 : 99" :min-size="990">
-          <Split :gutter-size="isShowedPOSKeyLaout ? 10 : 0" @onDrag="onDragKeyLayout">
-            <SplitArea :size="isShowedPOSKeyLaout ? 69 : 99" :min-size="900" style="overflow: hidden">
-              <Order
-                :metadata="metadata"
-              />
-            </SplitArea>
-            <SplitArea
-              v-show="isShowedPOSKeyLaout"
-              :size="isShowedPOSKeyLaout ? 31: 1"
-              :min-size="300"
-              style="overflow: auto"
-            >
-              <KeyLayout
-                v-if="!showCollection"
-                key="layout-component"
-              />
-              <Collection
-                v-else
-                key="collection-component"
-              />
-            </SplitArea>
-          </Split>
-        </SplitArea>
-      </Split>
-    </el-main>
-  </el-container>
+  <component
+    :is="templateDevice"
+    :metadata="metadata"
+  />
 </template>
 
 <style scoped>

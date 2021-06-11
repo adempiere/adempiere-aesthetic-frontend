@@ -1,29 +1,29 @@
 <template>
-  <el-row
+  <div
     v-if="isLoaded"
-    style="height: 100%;"
+    id="headerContainer"
+    style="display: -webkit-box; height: 100%"
   >
-  <el-col :span="23" class="grid-content" style="height: 100%;">
-        <el-container style="background: white; height: 100%!important;">
+    <el-container style="background: white; height: 100%!important;">
       <el-header
         height="auto"
         :style="isShowedPOSKeyLayout ? 'padding-right: 20px; padding-left: 0px;' : 'padding-right: 0px; padding-left: 0px;'"
       >
         <el-form label-position="top" label-width="10px" @submit.native.prevent="notSubmitForm">
           <el-row :gutter="24" style="display: flex;">
-            <el-col :span="isEmptyValue(currentOrder) ? 14 : 11" style="padding-left: 0px; padding-right: 0px;">
+            <el-col :span="colFieldProductCode" style="padding-left: 0px; padding-right: 0px;">
               <template
                 v-for="(field) in fieldsList"
               >
-                <ProductInfo
+                <product-info
                   v-if="field.columnName === 'ProductValue'"
                   :key="field.columnName"
                   :metadata="field"
                 />
               </template>
             </el-col>
-            <el-col :span="isEmptyValue(currentOrder) ? 9 : 7" style="padding-left: 0px; padding-right: 0px;">
-              <BusinessPartner
+            <el-col :span="colFieldBusinessPartner" style="padding-left: 0px; padding-right: 0px;">
+              <business-partner
                 :parent-metadata="{
                   name: panelMetadata.name,
                   containerUuid: panelMetadata.containerUuid,
@@ -33,7 +33,7 @@
                 :is-disabled="isDisabled"
               />
             </el-col>
-             <el-col :span="isEmptyValue(currentOrder) ? 1 : 4" :style="isShowedPOSKeyLayout ? 'padding: 0px;' : 'padding: 0px;margin-top: 2.9%;'">
+            <el-col v-if="!isMobile" :span="isEmptyValue(currentOrder) ? 1 : 4" :style="isShowedPOSKeyLayout ? 'padding: 0px;' : 'padding: 0px;margin-top: 2.9%;'">
               <el-form-item>
                 <el-row :gutter="24">
                   <el-col :span="10" style="padding-left: 0px; padding-right: 0px;">
@@ -65,9 +65,9 @@
               v-shortkey="shortsKey"
               :data="listOrderLine"
               border
-              style="width: 100%; max-width: 100%; background-color: #FFFFFF; font-size: 14px; overflow: auto; color: #606266;"
               highlight-current-row
               fit
+              style="overflow: auto;"
               @current-change="handleCurrentLineChange"
               @shortkey.native="shortcutKeyMethod"
             >
@@ -108,7 +108,7 @@
                                 <div slot="error" class="image-slot">
                                   <i class="el-icon-picture-outline" />
                                 </div>
-                                                              </el-image>
+                              </el-image>
                             </el-avatar>
                           </div>
                         </el-col>
@@ -153,7 +153,7 @@
             </el-table>
           </el-main>
 
-          <el-footer class="footer-table">
+          <el-footer :class="classOrderFooter">
             <div class="keypad">
               <el-button type="primary" icon="el-icon-top" :disabled="isDisabled" @click="arrowTop" />
               <el-button type="primary" icon="el-icon-bottom" :disabled="isDisabled" @click="arrowBottom" />
@@ -182,13 +182,35 @@
                     <el-dropdown-item
                       v-for="item in listPointOfSales"
                       :key="item.uuid"
-                      :command="item">
+                      :command="item"
+                    >
                       {{ item.name }}
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </p>
             </div>
+            <span v-if="isMobile" style="float: right;padding-right: 3%;">
+              <p class="total">{{ $t('form.pos.order.order') }}: <b class="order-info">{{ currentOrder.documentNo }}</b></p>
+              <p class="total">
+                {{ $t('form.pos.order.date') }}:
+                <b class="order-info">
+                  {{ orderDate }}
+                </b>
+              </p>
+              <p class="total">{{ $t('form.pos.order.type') }}:<b class="order-info">{{ currentOrder.documentType.name }}</b></p>
+              <p class="total">
+                {{ $t('form.pos.order.itemQuantity') }}
+                <b class="order-info">
+                  {{ getItemQuantity }}
+                </b>
+              </p>
+              <p class="total">
+                {{ $t('form.pos.order.numberLines') }}
+                <b class="order-info">
+                  {{ numberOfLines }}
+                </b></p>
+            </span>
             <span style="float: right;">
               <p class="total">{{ $t('form.pos.order.seller') }}:<b style="float: right;">
                 {{ currentOrder.salesRepresentative.name }}
@@ -205,7 +227,7 @@
                     :v-model="seeConversion"
                     placement="top-start"
                   >
-                    <ConvertAmount
+                    <convert-amount
                       v-show="seeConversion"
                       :convert="multiplyRate"
                       :amount="currentOrder.grandTotal"
@@ -219,7 +241,7 @@
                 </b>
               </p>
             </span>
-            <span style="float: right;padding-right: 3%;">
+            <span v-if="!isMobile" style="float: right;padding-right: 3%;">
               <p class="total">{{ $t('form.pos.order.order') }}: <b class="order-info">{{ currentOrder.documentNo }}</b></p>
               <p class="total">
                 {{ $t('form.pos.order.date') }}:
@@ -244,9 +266,15 @@
         </el-container>
       </el-main>
     </el-container>
-  </el-col>
-    <el-col :span="1" class="grid-content" style="height: 100%;">
-      <div style="position: relative; padding-top: 30vh; z-index: 100;">
+    <div v-if="isMobile && isShowedPOSKeyLayout" :style="classButtomRight">
+      <el-button
+        :circle="true"
+        type="primary"
+        :icon="isShowedPOSKeyLayout ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"
+        @click="isShowedPOSKeyLayout = !isShowedPOSKeyLayout"
+      />
+    </div>
+    <div v-if="!isMobile" :style="classButtomRight">
       <el-button
         :circle="true"
         type="primary"
@@ -254,8 +282,7 @@
         @click="isShowedPOSKeyLayout = !isShowedPOSKeyLayout"
       />
     </div>
-    </el-col>
-  </el-row>
+  </div>
   <div
     v-else
     key="form-loading"
@@ -281,6 +308,12 @@
   .el-col-6 {
     padding-right: 0px !important;
     padding-left: 0px !important;
+  }
+  .footer-mobile {
+    padding: 0px;
+    height: auto !important;
+    overflow: auto;
+    display: contents;
   }
   .footer-table {
     padding-top: 0px;
