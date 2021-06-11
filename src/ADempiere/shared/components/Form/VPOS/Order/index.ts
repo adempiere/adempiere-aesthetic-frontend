@@ -193,9 +193,9 @@ export default class Order extends Mixins(MixinOrderLine) {
   get styleTab() {
     const isShowedPOSOptions: boolean = this.$store.getters[Namespaces.PointOfSales + '/' + 'getIsShowPOSOptions']
     if (this.isShowedPOSKeyLayout || isShowedPOSOptions) {
-      return 'adding-left: 0px; padding-right: 0px; padding-top: 2.5%;margin-right: 1%;'
+      return 'adding-left: 0px; padding-left: 0px; padding-right: 0px; padding: 0px; '
     }
-    return 'padding-left: 0px; padding-right: 0px; padding-top: 2.2%;margin-right: 1%;'
+    return 'padding-left: 0px; padding-right: 0px; '
   }
 
   get orderDate(): string | undefined {

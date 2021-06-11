@@ -22,7 +22,7 @@
                 />
               </template>
             </el-col>
-            <el-col :span="colFieldBusinessPartner" style="padding-left: 0px; padding-right: 0px;">
+            <el-col :span="isEmptyValue(currentOrder) ? 9 : 7" :style="styleTab">
               <business-partner
                 :parent-metadata="{
                   name: panelMetadata.name,
@@ -33,7 +33,7 @@
                 :is-disabled="isDisabled"
               />
             </el-col>
-            <el-col v-if="!isMobile" :span="isEmptyValue(currentOrder) ? 1 : 4" :style="isShowedPOSKeyLayout ? 'padding: 0px;' : 'padding: 0px;margin-top: 2.9%;'">
+            <el-col :span="isEmptyValue(currentOrder) ? 1 : 4" :style="isShowedPOSKeyLayout ? 'padding: 0px; margin-top: 3.%;' : 'padding: 0px; margin-top: 2.4%;'">
               <el-form-item>
                 <el-row :gutter="24">
                   <el-col :span="10" style="padding-left: 0px; padding-right: 0px;">
