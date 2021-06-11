@@ -252,6 +252,10 @@ export default class Order extends Mixins(MixinOrderLine) {
   }
 
   // Methods
+  closeConvertion() {
+    this.seeConversion = false
+  }
+
   openCollectionPanel(): void {
     this.isShowedPOSKeyLayout = this.isMobile ? !this.isShowedPOSKeyLayout : true
     this.$store.commit(Namespaces.PointOfSales + '/' + 'setShowPOSCollection', true)

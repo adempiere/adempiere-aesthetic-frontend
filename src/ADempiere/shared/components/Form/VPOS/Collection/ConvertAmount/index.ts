@@ -19,7 +19,7 @@ import { IConversionRateData } from '@/ADempiere/modules/core'
 export default class ConvertAmount extends Mixins(MixinForm) {
   @Prop({ type: Array, default: undefined }) isAddTypePay?: any[]
   @Prop({ type: Object, default: undefined }) currency?: any
-  @Prop({ type: Number, default: undefined }) amount?: number
+  @Prop({ type: Number, default: undefined }) amount!: number
   @Prop({ type: Number, default: undefined }) convert?: number
   @Prop({
     type: Object,
@@ -36,7 +36,7 @@ export default class ConvertAmount extends Mixins(MixinForm) {
 
   // public fieldsList: IFieldLocation[] = fieldListConvertAmountCollection
   fieldsList = fieldListConvertAmountCollection
-  amountConvertionTotal = 0
+  public amountConvertionTotal = this.amount
 
   // Computed properties
   get displayCurrency() {
