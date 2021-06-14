@@ -367,13 +367,11 @@ export default class DataTable extends Mixins(MixinTable, MixinTableSort) {
         })
       }
 
-      headerLabel(field: any) {
-        if (field.isMandatory || (field.isMandatoryFromLogic && field.isDisplayedGrid)) {
+      headerLabel(field: IFieldDataExtendedUtils): string {
+        if (field.isMandatory || field.isMandatoryFromLogic) {
           return '* ' + field.name
         }
-        if (field.isDisplayedGrid) {
-          return field.name
-        }
+        return field.name
       }
 
       /**

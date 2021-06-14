@@ -2,7 +2,6 @@
 import { request } from '@/ADempiere/shared/utils/request'
 import { convertEntityList } from '@/ADempiere/modules/persistence'
 import {
-  FilterType,
   IBrowserSearchParams,
   IEntityListData, ParamType
 } from '../PersistenceType'
@@ -39,18 +38,19 @@ export function requestBrowserSearch(
     orderByClause,
     parametersList
   } = data
-  const filters: FilterType[] = parametersList.map(
+  const filters = parametersList.map(
     (parameter: ParamType) => {
       return {
-        key: parameter.columnName,
+        column_name: parameter.columnName,
         value: parameter.value,
-        values: parameter.values
+        value_to: parameter.values
       }
     }
   )
 
   return request({
     url: '/user-interface/smart-browser/browser-items',
+    method: 'POST',
     data: {
       // Running Parameters
       uuid,
