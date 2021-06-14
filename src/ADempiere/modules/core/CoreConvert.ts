@@ -57,20 +57,6 @@ export function convertMessageText(
   }
 }
 
-export function convertCriteria(criteriaToConvert: any): ICriteriaData {
-  return {
-    tableName: criteriaToConvert.table_name,
-    query: criteriaToConvert.query,
-    whereClause: criteriaToConvert.where_clause,
-    orderByClause: criteriaToConvert.order_by_clause,
-    referenceUuid: criteriaToConvert.reference_uuid,
-    // conditionsList: criteriaToConvert.conditions,
-    valuesList: criteriaToConvert.values,
-    orderByColumnList: criteriaToConvert.order_by_columns,
-    limit: criteriaToConvert.limit
-  }
-}
-
 export function convertOrganization(
   organization: any
 ): IOrganizationData {

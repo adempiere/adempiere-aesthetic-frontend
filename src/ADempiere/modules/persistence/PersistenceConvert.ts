@@ -1,36 +1,23 @@
+import { camelizeObjectKeys } from '@/ADempiere/shared/utils/transformObject'
 import { IEntityListData, IEntityData, ITranslationData } from '.'
 import { IValueData } from '../core'
 import { KeyValueData } from './PersistenceType'
 
-export function convertEntityList(entityListToConvert: any): IEntityListData {
-  return {
-    nextPageToken: entityListToConvert.next_page_token,
-    recordCount: entityListToConvert.record_count,
-    recordsList: entityListToConvert.records.map((record: any) => {
-      return convertEntity(record)
-    })
-  }
+export function convertEntityList(entityList: any): IEntityListData {
+  const convertedEntityList = camelizeObjectKeys(entityList)
+  convertedEntityList.recordsList = entityList.records.map((record: any) => convertEntity(record))
+  delete convertedEntityList.records
+  return convertedEntityList as IEntityListData
 }
 
-export function convertEntity(entityToConvert: any): IEntityData {
-  return {
-    id: entityToConvert.id,
-    uuid: entityToConvert.uuid,
-    tableName: entityToConvert.table_name,
-    attributes: <KeyValueData<IValueData>[]>entityToConvert.attributes
-    // attributes: convertArrayKeyValueToObject({
-    //   array: entityToConvert.attributes,
-    //   keyName: 'key'
-    // })
-  }
+export function convertEntity(entity: any): IEntityData {
+  const convertedEntity = camelizeObjectKeys(entity)
+  convertedEntity.attributes = <KeyValueData<IValueData>[]>entity.atttributes
+  return convertedEntity as IEntityData
 }
 
 export function convertTranslation(
-  translationToConvert: any
+  translation: any
 ): ITranslationData {
-  return {
-    language: translationToConvert.language,
-    uuid: translationToConvert.uuid,
-    values: translationToConvert.values
-  }
+  return camelizeObjectKeys(translation) as ITranslationData
 }

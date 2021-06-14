@@ -12,7 +12,6 @@ import {
   IReferenceListData,
   IReferencesListParams
 } from '../UITypes'
-import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 /**
  * Request a Lookup data from Reference
