@@ -34,15 +34,18 @@ import {
   UpdateOrderLineParams
 } from './POSType'
 import { AxiosPromise } from 'axios'
-import { IResponseList } from '@/ADempiere/shared/utils/types'
+import { IConfigData, IResponseList } from '@/ADempiere/shared/utils/types'
+import { getConfig } from '@/ADempiere/shared/utils/config'
+
+const config: IConfigData = getConfig()
 
 // List Point of sales
-export function requestGetPointOfSales(
+export function getPointOfSales(
   data: IGetPointOfSalesParams
 ): Promise<IPointOfSalesData> {
   const { posUuid } = data
   return request({
-    url: '/form/addons/point-of-sales/point-of-sales',
+    url: `${config.pointOfSales.endpoint}/point-of-sales`,
     method: 'GET',
     params: {
       point_of_sales_uuid: posUuid
@@ -53,12 +56,12 @@ export function requestGetPointOfSales(
     })
 }
 
-export function requestListPointOfSales(
+export function listPointOfSales(
   data: IListPointOfSalesParams
 ): Promise<IListPointOfSalesResponse> {
   const { userUuid, pageToken, pageSize } = data
   return request({
-    url: '/form/addons/point-of-sales/selling-points',
+    url: `${config.pointOfSales.endpoint}/selling-points`,
     method: 'GET',
     params: {
       user_uuid: userUuid,
@@ -77,7 +80,7 @@ export function requestListPointOfSales(
     })
 }
 
-export function requestCreateOrder(
+export function createOrder(
   data: ICreateOrderParams
 ): Promise<IOrderData> {
   const {
@@ -87,7 +90,7 @@ export function requestCreateOrder(
     salesRepresentativeUuid
   } = data
   return request({
-    url: '/form/addons/point-of-sales/create-order',
+    url: `${config.pointOfSales.endpoint}/create-order`,
     method: 'POST',
     data: {
       pos_uuid: posUuid,
@@ -102,12 +105,12 @@ export function requestCreateOrder(
 }
 
 // Update order from POS
-export function requestUpdateOrder(
+export function updateOrder(
   data: IUpdateOrderParams
 ): Promise<IOrderData> {
   const { orderUuid, posUuid, customerUuid, description } = data
   return request({
-    url: '/form/addons/point-of-sales/update-order',
+    url: `${config.pointOfSales.endpoint}/update-order`,
     method: 'POST',
     data: {
       order_uuid: orderUuid,
@@ -121,9 +124,9 @@ export function requestUpdateOrder(
     })
 }
 
-export function requestGetOrder(orderUuid: string): Promise<IOrderData> {
+export function getOrder(orderUuid: string): Promise<IOrderData> {
   return request({
-    url: '/form/addons/point-of-sales/order',
+    url: `${config.pointOfSales.endpoint}/order`,
     method: 'GET',
     params: {
       order_uuid: orderUuid
@@ -134,7 +137,7 @@ export function requestGetOrder(orderUuid: string): Promise<IOrderData> {
     })
 }
 
-export function requestDeleteOrder(
+export function deleteOrder(
   data: IDeleteOrderParams
 ): AxiosPromise<any> {
   console.warn('change posUUid to orderUuid')
@@ -145,7 +148,7 @@ export function requestDeleteOrder(
     // salesRepresentativeUuid
   } = data
   return request({
-    url: '/form/addons/point-of-sales/delete-order',
+    url: `${config.pointOfSales.endpoint}/delete-order`,
     method: 'POST',
     data: {
       pos_uuid: posUuid
@@ -159,7 +162,7 @@ export function requestDeleteOrder(
 }
 
 // List orders from pos uuid
-export function requestListOrders(
+export function listOrders(
   data: IListOrdersParams
 ): Promise<IListOrdersResponse> {
   const {
@@ -221,7 +224,7 @@ export function requestListOrders(
     */
 
   return request({
-    url: '/form/addons/point-of-sales/orders',
+    url: `${config.pointOfSales.endpoint}/orders`,
     method: 'GET',
     params: {
       pos_uuid: posUuid,
@@ -253,7 +256,7 @@ export function requestListOrders(
     })
 }
 
-export function requestCreateOrderLine(
+export function createOrderLine(
   data: ICreateOrderLineParams
 ): Promise<IOrderLineData> {
   const {
@@ -267,7 +270,7 @@ export function requestCreateOrderLine(
     discountRate
   } = data
   return request({
-    url: '/form/addons/point-of-sales/create-order-line',
+    url: `${config.pointOfSales.endpoint}/create-order-line`,
     method: 'POST',
     data: {
       order_uuid: orderUuid,
@@ -285,12 +288,12 @@ export function requestCreateOrderLine(
     })
 }
 
-export function requestUpdateOrderLine(
+export function updateOrderLine(
   data: UpdateOrderLineParams
 ): Promise<IOrderLineData> {
   const { orderLineUuid, description, quantity, price, discountRate } = data
   return request({
-    url: '/form/addons/point-of-sales/update-order-line',
+    url: `${config.pointOfSales.endpoint}/update-order-line`,
     method: 'POST',
     data: {
       // is_add_quantity: true,
@@ -306,12 +309,12 @@ export function requestUpdateOrderLine(
     })
 }
 
-export function requestDeleteOrderLine(
+export function deleteOrderLine(
   data: IDeleteOrderLineParams
 ): Promise<any> {
   const { orderLineUuid } = data
   return request({
-    url: '/form/addons/point-of-sales/delete-order-line',
+    url: `${config.pointOfSales.endpoint}/delete-order-line`,
     method: 'POST',
     data: {
       order_line_uuid: orderLineUuid
@@ -321,12 +324,12 @@ export function requestDeleteOrderLine(
   })
 }
 
-export function requestListOrderLines(
+export function listOrderLines(
   data: IListOrderLinesParams
 ): Promise<IListOrderLinesResponse> {
   const { orderUuid, pageSize, pageToken } = data
   return request({
-    url: '/form/addons/point-of-sales/order-lines',
+    url: `${config.pointOfSales.endpoint}/order-lines`,
     method: 'GET',
     params: {
       order_uuid: orderUuid,
@@ -352,7 +355,7 @@ export function getKeyLayout(
 ): Promise<IKeyLayoutData> {
   const { keyLayoutUuid } = data
   return request({
-    url: '/form/addons/point-of-sales/key-layout',
+    url: `${config.pointOfSales.endpoint}/key-layout`,
     method: 'GET',
     params: {
       key_layout_uuid: keyLayoutUuid
@@ -376,7 +379,7 @@ export function getProductPriceList(
     pageSize
   } = data
   return request({
-    url: '/form/addons/point-of-sales/product-prices',
+    url: `${config.pointOfSales.endpoint}/product-prices`,
     method: 'GET',
     params: {
       price_list_uuid: priceListUuid,
@@ -454,7 +457,7 @@ export function createPayment(data: {
 }) {
   const { posUuid, orderUuid, invoiceUuid, bankUuid, referenceNo, description, amount, paymentDate, tenderTypeCode, currencyUuid } = data
   return request({
-    url: '/form/addons/point-of-sales/create-payment',
+    url: `${config.pointOfSales.endpoint}/create-payment`,
     method: 'POST',
     data: {
       pos_uuid: posUuid,
@@ -487,7 +490,7 @@ export function updatePayment(data: {
 }) {
   const { paymentDate, paymentUuid, bankUuid, referenceNo, description, amount, tenderTypeCode } = data
   return request({
-    url: '/form/addons/point-of-sales/update-payment',
+    url: `${config.pointOfSales.endpoint}/update-payment`,
     method: 'POST',
     data: {
       payment_uuid: paymentUuid,
@@ -511,7 +514,7 @@ export function deletePayment(data: {
 }) {
   const { paymentUuid } = data
   return request({
-    url: '/form/addons/point-of-sales/delete-payment',
+    url: `${config.pointOfSales.endpoint}/delete-payment`,
     method: 'POST',
     data: {
       payment_uuid: paymentUuid
@@ -530,7 +533,7 @@ export function getPaymentsList(data: {
 }):Promise<IResponseList<IPaymentsData>> {
   const { posUuid, orderUuid } = data
   return request({
-    url: '/form/addons/point-of-sales/payments',
+    url: `${config.pointOfSales.endpoint}/payments`,
     method: 'GET',
     params: {
       pos_uuid: posUuid,
@@ -597,7 +600,7 @@ export function processOrder(data: {
     })
   }
   return request({
-    url: '/form/addons/point-of-sales/process-order',
+    url: `${config.pointOfSales.endpoint}/process-order`,
     method: 'POST',
     data: {
       pos_uuid: posUuid,
@@ -623,7 +626,7 @@ export function validatePin(data: {
 }): Promise<string> {
   const { posUuid, pin } = data
   return request({
-    url: '/form/addons/point-of-sales/validate-pin',
+    url: `${config.pointOfSales.endpoint}/validate-pin`,
     method: 'post',
     data: {
       pos_uuid: posUuid,

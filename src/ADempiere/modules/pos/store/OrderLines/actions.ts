@@ -1,7 +1,7 @@
 import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { ActionTree, ActionContext } from 'vuex'
-import { requestListOrderLines } from '../../POSService'
+import { listOrderLines } from '../../POSService'
 import {
   IListOrderLinesResponse,
   IOrderLineData,
@@ -26,7 +26,7 @@ export const actions: OrderLinesActionTree = {
     if (isEmptyValue(orderUuid)) {
       return
     }
-    requestListOrderLines({
+    listOrderLines({
       orderUuid
     })
       .then((response: IListOrderLinesResponse) => {

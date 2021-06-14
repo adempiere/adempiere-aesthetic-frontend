@@ -2,7 +2,7 @@ import {
   IBusinessPartnerData,
   ICurrencyData,
   IProductPriceData,
-  requestGetProductPrice as findProduct
+  getProductPrice as findProduct
 } from '@/ADempiere/modules/core'
 import {
   ICurrentOrderData,
@@ -12,8 +12,8 @@ import {
   IOrderLineData,
   IOrderLineDataExtended,
   OrderLinesState,
-  requestCreateOrderLine,
-  requestUpdateOrderLine
+  createOrderLine,
+  updateOrderLine
 } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Prop, Ref, Watch, Mixins } from 'vue-property-decorator'
@@ -478,7 +478,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
 
     createOrderLine(orderUuid: string) {
       const productUuid = this.product.uuid
-      requestCreateOrderLine({
+      createOrderLine({
         orderUuid,
         productUuid
       })
@@ -540,7 +540,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
           break
       }
 
-      requestUpdateOrderLine({
+      updateOrderLine({
         orderLineUuid: this.currentOrderLine.uuid,
         quantity,
         price,
@@ -574,7 +574,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
           this.arrowBottom()
           break
         case 'plus':
-          requestUpdateOrderLine({
+          updateOrderLine({
             orderLineUuid: this.currentOrderLine.uuid,
             quantity: this.listOrderLine[this.currentTable].quantity + 1
           })
@@ -593,7 +593,7 @@ export default class MixinPOS extends Mixins(MixinForm) {
 
           break
         case 'minus':
-          requestUpdateOrderLine({
+          updateOrderLine({
             orderLineUuid: this.currentOrderLine.uuid,
             quantity: this.listOrderLine[this.currentTable].quantity - 1
           })

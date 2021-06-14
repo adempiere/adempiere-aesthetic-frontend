@@ -6,8 +6,8 @@ import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { IListOrderItemData, ListProductPriceState } from '@/ADempiere/modules/pos/POSType'
 import {
   cashClosing, createNewReturnOrder, withdrawal, generateImmediateInvoice, printOrder,
-  requestDeleteOrder,
-  requestCreateOrder,
+  deleteOrder,
+  createOrder,
   processOrder
 } from '@/ADempiere/modules/pos/POSService'
 import ModalDialog from '@/ADempiere/shared/components/Dialog'
@@ -200,7 +200,7 @@ export default class Options extends Mixins(MixinOrderLine, MixinPOS) {
       this.$store.dispatch(Namespaces.Utils + '/' + 'addParametersProcessPos', parametersList)
       const salesRepresentative = this.currentOrder.salesRepresentative
       const customer = this.currentOrder.businessPartner
-      requestCreateOrder({
+      createOrder({
         posUuid: posUuid!,
         customerUuid: customer!.uuid || '',
         salesRepresentativeUuid: salesRepresentative!.uuid! || ''
@@ -254,7 +254,7 @@ export default class Options extends Mixins(MixinOrderLine, MixinPOS) {
 
     deleteOrder() {
       this.$store.dispatch(Namespaces.Utils + '/' + 'updateOrderPos', true)
-      requestDeleteOrder({
+      deleteOrder({
         posUuid: <string> this.$route.query.action
       })
         .then(response => {

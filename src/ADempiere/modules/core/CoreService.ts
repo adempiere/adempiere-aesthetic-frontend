@@ -28,9 +28,13 @@ import {
   IWarehousesListResponse
 } from './CoreType'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
+import { getConfig } from '@/ADempiere/shared/utils/config'
+import { IConfigData } from '@/ADempiere/shared/utils/types'
+
+const config: IConfigData = getConfig()
 
 // List Point of sales
-export function requestGetProductPrice(
+export function getProductPrice(
   data: IGetProductPriceParams
 ): Promise<IProductPriceData> {
   const {
@@ -43,7 +47,7 @@ export function requestGetProductPrice(
     validFrom
   } = data
   return request({
-    url: '/form/addons/point-of-sales/product-price',
+    url: `${config.priceChecking.endpoint}/product-price`,
     method: 'GET',
     params: {
       search_value: searchValue,

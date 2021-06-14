@@ -1,7 +1,7 @@
 import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { ActionContext, ActionTree } from 'vuex'
-import { requestListPointOfSales } from '../../POSService'
+import { listPointOfSales } from '../../POSService'
 import {
   IListPointOfSalesResponse,
   IPointOfSalesData,
@@ -26,7 +26,7 @@ export const actions: PointOfSalesActionTree = {
   ) {
     const userUuid: string = context.rootState.user.userUuid
     let pos: IPointOfSalesData | undefined, listPos: IPointOfSalesData[]
-    requestListPointOfSales({
+    listPointOfSales({
       userUuid
     })
       .then((response: IListPointOfSalesResponse) => {

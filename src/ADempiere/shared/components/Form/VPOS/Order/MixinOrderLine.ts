@@ -1,5 +1,5 @@
 import { ICurrencyData } from '@/ADempiere/modules/core/CoreType'
-import { IOrderLineData, IPOSAttributesData, OrderLinesState, requestDeleteOrderLine, requestUpdateOrderLine } from '@/ADempiere/modules/pos'
+import { IOrderLineData, IPOSAttributesData, OrderLinesState, deleteOrderLine, updateOrderLine } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatPercent, formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
@@ -108,7 +108,7 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
             break
         }
 
-        requestUpdateOrderLine({
+        updateOrderLine({
           orderLineUuid: currentLine.uuid,
           quantity,
           price,
@@ -138,7 +138,7 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
       }
 
       deleteOrderLine(lineSelection: any) {
-        requestDeleteOrderLine({
+        deleteOrderLine({
           orderLineUuid: lineSelection.uuid
         })
           .then(() => {

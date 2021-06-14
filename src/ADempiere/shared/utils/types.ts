@@ -16,6 +16,12 @@ export interface IConfigData {
             fullPath?: string
         }
     }
+    pointOfSales: {
+        endpoint?: string
+    }
+    priceChecking: {
+        endpoint?: string
+    }
 }
 
 // Resource types
