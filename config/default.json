@@ -5,11 +5,17 @@
   },
   "adempiere": {
     "api": {
-      "url": "http://localhost:8085/api/adempiere/",
+      "url": "http://209.50.60.121:8085/api/adempiere/",
       "timeout": 10000
     },
     "images": {
-      "url": "http://localhost:8085/adempiere-api/img/"
+      "url": "http://209.50.60.121:8085/adempiere-api/img/"
     }
+  },
+  "pointOfSales": {
+    "endpoint": "/form/addons/point-of-sales"
+  },
+  "priceChecking": {
+    "endpoint": "/form/addons/point-of-sales"
   }
 }
