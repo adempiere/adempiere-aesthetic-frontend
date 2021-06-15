@@ -10,6 +10,7 @@ import language from '@/ADempiere/shared/lang'
 import { WindowProcessAsociatedAction } from '@/ADempiere/modules/window'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import router from '@/router'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 
 type BrowserDefinitionActionTree = ActionTree<BrowserDefinitionState, IRootState>
 type BrowserDefinitionActionContext = ActionContext<BrowserDefinitionState, IRootState>
@@ -41,8 +42,7 @@ export const actions: BrowserDefinitionActionTree = {
           }
           const {
             query,
-            whereClause,
-            process
+            whereClause
           } = browserResponse
 
           //  Convert from gRPC
@@ -123,7 +123,8 @@ export const actions: BrowserDefinitionActionTree = {
 
           // Convert from gRPC process list
           const actions: WindowProcessAsociatedAction[] = []
-          if (process) {
+          if (!isEmptyValue(browserResponse.process)) {
+            const { process } = browserResponse
             actions.push({
               type: ActionContextType.Process,
               panelType: PanelContextType.Process,

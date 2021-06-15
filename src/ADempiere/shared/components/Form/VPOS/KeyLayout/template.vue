@@ -143,7 +143,7 @@
 
 <style lang="scss">
   .custom-card {
-    margin: 10px;
+    margin: 1px;
     cursor: pointer;
   }
   .custom-card:hover {

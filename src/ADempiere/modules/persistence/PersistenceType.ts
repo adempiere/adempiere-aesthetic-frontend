@@ -125,12 +125,6 @@ export interface IBrowserSearchParams {
     pageToken: string
 }
 
-export type FilterType = {
-    key: string
-    value: any
-    values: any
-}
-
 export type ParamType = {
     columnName: string
     value: any

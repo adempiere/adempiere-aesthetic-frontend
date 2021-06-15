@@ -38,8 +38,11 @@
 
         <div class="right-menu">
             <template v-if="this.device !== 'mobile'">
+                <el-tooltip v-if="showGuide" content="Guia" placement="top-start">
+                <el-button icon="el-icon-info" type="text" style="color: black;font-size: larger" @click.prevent.stop="guide" />
+                </el-tooltip>
                 <header-search id="header-search" class="right-menu-item" />
-                <badge />
+                <badge id="badge-navar" />
                 <error-log
                     class="errLog-container right-menu-item hover-effect"
                 />
@@ -111,7 +114,13 @@ import ProfilePreview from '@/layout/components/ProfilePreview'
 import Badge from '@/ADempiere/shared/components/Badge/component'
 import { getImagePath } from '@/ADempiere/shared/utils/resource'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
-import { DeviceType } from '@/ADempiere/modules/app/AppType'
+import { DeviceType, IAppState } from '@/ADempiere/modules/app/AppType'
+import Driver from 'driver.js'
+import 'driver.js/dist/driver.min.css' // import driver.js css
+import steps, { IStepData } from '@/ADempiere/shared/components/Form/VPOS/Guide/steps'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
+import { IUserData } from '@/api/types'
+import { IUserState } from '@/ADempiere/modules/user'
 
 @Component({
   name: 'Navbar',
@@ -130,13 +139,30 @@ import { DeviceType } from '@/ADempiere/modules/app/AppType'
 export default class extends Vue {
     public user: any = {}
     public isMenuMobile = false
+    public driver: Driver | null = null
 
     get isMobile(): boolean {
-      return this.$store.state.app.device === DeviceType.Mobile
+      return (this.$store.state.app as IAppState).device === DeviceType.Mobile
+    }
+
+    get isShowedPOSKeyLaout(): boolean {
+      return this.$store.getters[Namespaces.PointOfSales + '/' + 'getShowPOSKeyLayout']
+    }
+
+    get showCollection(): boolean {
+      return this.$store.getters[Namespaces.PointOfSales + '/' + 'getShowCollectionPos']
+    }
+
+    get showGuide(): boolean {
+      const typeViews = this.$route.meta.type
+      if (!isEmptyValue(typeViews) && typeViews === 'form') {
+        return true
+      }
+      return false
     }
 
     get sidebar() {
-      return this.$store.state.app.sidebar
+      return (this.$store.state.app as IAppState).sidebar
     }
 
     get device(): string {
@@ -147,7 +173,7 @@ export default class extends Vue {
     }
 
     get avatar() {
-      return this.$store.state.user.avatar
+      return (this.$store.state.user as IUserState).avatar
     }
 
     get avatarResize(): string {
@@ -195,10 +221,22 @@ export default class extends Vue {
       // })
     }
 
+    private guide(value: any) {
+      const stepsPos: IStepData[] = steps.filter(steps => isEmptyValue(steps.panel))
+      value = this.showCollection && this.isShowedPOSKeyLaout ? steps : stepsPos
+      this.driver!.defineSteps(value)
+      this.driver!.start()
+    }
+
     public handleClick() {
       this.$router.push({
         name: 'Profile'
       })
+    }
+
+    // Hooks
+    mounted() {
+      this.driver = new Driver()
     }
 }
 </script>

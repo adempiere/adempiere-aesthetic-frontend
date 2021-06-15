@@ -21,7 +21,7 @@ export default class Preference extends Mixins(MixinForm) {
       type: [Object],
       required: true,
       default: null
-    }) sourceField?: any
+    }) fieldAttributes?: any
 
     @Prop({
       type: [String, Number, Boolean, Date, Array, Object],
@@ -110,7 +110,7 @@ export default class Preference extends Mixins(MixinForm) {
         this.setFieldsList()
       }
       if (!isEmptyValue(preferenceValue)) {
-        if ((typeof preferenceValue !== 'string') && (this.sourceField.componentPath !== 'FieldYesNo')) {
+        if ((typeof preferenceValue !== 'string') && (this.fieldAttributes.componentPath !== 'FieldYesNo')) {
           this.code = preferenceValue
         } else {
           this.code = preferenceValue
@@ -144,8 +144,8 @@ export default class Preference extends Mixins(MixinForm) {
       const isForCurrentOrganization = this.metadataList.find(field => field.columnName === 'AD_Org_ID')?.value
       const isForCurrentContainer = this.metadataList.find(field => field.columnName === 'AD_Window_ID')?.value
       deletePreference({
-        parentUuid: this.sourceField.parentUuid,
-        attribute: this.sourceField.columnName,
+        parentUuid: this.fieldAttributes.parentUuid,
+        attribute: this.fieldAttributes.columnName,
         isForCurrentUser,
         isForCurrentClient,
         isForCurrentOrganization,
@@ -198,8 +198,8 @@ export default class Preference extends Mixins(MixinForm) {
       const isForCurrentContainer = this.metadataList.find(field => field.columnName === 'AD_Window_ID')?.value
       //
       setPreference({
-        parentUuid: this.sourceField.parentUuid,
-        attribute: this.sourceField.columnName,
+        parentUuid: this.fieldAttributes.parentUuid,
+        attribute: this.fieldAttributes.columnName,
         value: this.fieldValue,
         isForCurrentUser,
         isForCurrentClient,

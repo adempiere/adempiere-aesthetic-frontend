@@ -11,7 +11,7 @@ const fieldListConvertAmountCollection: IFieldLocation[] = [
       size: 24,
       handleActionKeyPerformed: true,
       handleActionPerformed: true,
-      validationCode: 'C_Currency.C_Currency_ID = 100',
+      validationCode: 'C_Currency.C_Currency_ID = 100 OR C_Currency.C_Currency_ID = 50001',
       isActiveLogics: true,
       isMandatory: true
     }

@@ -42,14 +42,22 @@
                 </b>
               </p>
               <p class="total">
-                <b>Tasa del Día: </b>
+                <b>{{ $t('form.pos.collect.dayRate') }}:</b>
+                <!-- Conversion rate to date -->
                 <b v-if="!isEmptyValue(dateRate)" style="float: right;">
-                  {{
-                    dateRate.iSOCode
-                  }}
-                  {{
-                    formatConversionCurrenty(dateRate.amountConvertion)
-                  }}
+                  <span v-if="formatConversionCurrenty(dateRate.amountConvertion) > 100">
+                    {{
+                      formatPrice(formatConversionCurrenty(dateRate.amountConvertion), dateRate.iSOCode)
+                    }}
+                  </span>
+                  <span v-else>
+                    {{
+                      dateRate.iSOCode
+                    }}
+                    {{
+                      formatConversionCurrenty(dateRate.amountConvertion)
+                    }}
+                  </span>
                 </b>
               </p>
             </div>
@@ -63,13 +71,14 @@
                 style="float: right; display: flex; line-height: 10px;"
                 :disabled="isDisabled"
               >
-                <el-row>
+                <el-row id="fieldListCollection">
                   <el-col v-for="(field, index) in fieldsList" :key="index" :span="8">
+                    <!-- Add selected currency symbol -->
                     <field-definition
                       :key="field.columnName"
                       :metadata-field="field.columnName === 'PayAmt' ? {
                         ...field,
-                        labelCurrency: isEmptyValue($store.getters['paymentsModule/' + 'getFieldCuerrency']) ? pointOfSalesCurrency : $store.getters['paymentsModule/' + 'getFieldCuerrency']
+                        labelCurrency: dateRate
                       } : field"
                     />
                   </el-col>
@@ -77,16 +86,18 @@
               </el-form>
             </div>
           </el-card>
-          <samp style="float: right;padding-right: 10px;">
+          <samp id="buttonCollection" style="float: right;padding-right: 10px;">
             <el-button type="danger" icon="el-icon-close" @click="exit" />
             <el-button type="info" icon="el-icon-minus" :disabled="isDisabled" @click="undoPatment" />
             <el-button type="primary" :disabled="validPay || addPay || isDisabled" icon="el-icon-plus" @click="addCollectToList(paymentBox)" />
             <el-button type="success" :disabled="validateCompleteCollection || isDisabled" icon="el-icon-shopping-cart-full" @click="completePreparedOrder(listPayments)" />
           </samp>
         </el-header>
+        <!-- Panel where they show the payments registered from the collection container -->
         <el-main style="padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px;">
           <type-collection
             v-if="!updateOrderPaymentPos"
+            id="cardCollection"
             :is-add-type-pay="listPayments"
             :currency="pointOfSalesCurrency"
             :list-types-payment="fieldsList[2]"
@@ -103,8 +114,8 @@
             class="view-loading"
           />
         </el-main>
-
-        <el-footer height="auto" style="padding-left: 0px; padding-right: 0px;">
+        <!-- Collection container bottom panel -->
+        <el-footer id="infoInvoce" height="auto" style="padding-left: 0px; padding-right: 0px;">
           <el-row :gutter="24" style="background-color: rgb(245, 247, 250);">
             <el-col :span="24">
               <span>

@@ -58,10 +58,6 @@ export const actions: LookupActionTree = {
       }).value
     }
 
-    if (parsedDirectQuery.includes('?')) {
-      parsedDirectQuery = directQuery.replace('?', (value as string))
-    }
-
     return requestLookup({
       tableName,
       directQuery: parsedDirectQuery,

@@ -1,4 +1,5 @@
-import { camelizeObjectKeys } from '@/ADempiere/shared/utils/transformObject'
+import { camelizeObjectKeys, renameObjectKey } from '@/ADempiere/shared/utils/transformObject'
+import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import {
   IProductPriceData,
   IContextInfoData,
@@ -20,28 +21,15 @@ import {
 } from '.'
 
 export function convertContextInfo(
-  contextInfoToConvert: any
+  contextInfo: any
 ): IContextInfoData {
-  if (contextInfoToConvert) {
-    return {
-      id: contextInfoToConvert.id,
-      uuid: contextInfoToConvert.uuid,
-      name: contextInfoToConvert.name,
-      description: contextInfoToConvert.description,
-      sqlStatement: contextInfoToConvert.sql_statement,
-      isActive: contextInfoToConvert.is_active,
-      messageText: convertMessageText(contextInfoToConvert.message_text)
-    }
+  if (!contextInfo) {
+    return { messageText: {} }
   }
-  return {
-    id: undefined,
-    uuid: undefined,
-    name: undefined,
-    description: undefined,
-    sqlStatement: undefined,
-    isActive: undefined,
-    messageText: convertMessageText(undefined)
-  }
+  const convertedContextInfo = camelizeObjectKeys(contextInfo)
+  const messageText = contextInfo.message_text ? camelizeObjectKeys(contextInfo.message_text) : {}
+  convertedContextInfo.messageText = messageText
+  return convertedContextInfo as IContextInfoData
 }
 
 export function convertMessageText(
@@ -69,86 +57,27 @@ export function convertMessageText(
   }
 }
 
-export function convertCriteria(criteriaToConvert: any): ICriteriaData {
-  return {
-    tableName: criteriaToConvert.table_name,
-    query: criteriaToConvert.query,
-    whereClause: criteriaToConvert.where_clause,
-    orderByClause: criteriaToConvert.order_by_clause,
-    referenceUuid: criteriaToConvert.reference_uuid,
-    // conditionsList: criteriaToConvert.conditions,
-    valuesList: criteriaToConvert.values,
-    orderByColumnList: criteriaToConvert.order_by_columns,
-    limit: criteriaToConvert.limit
-  }
-}
-
 export function convertOrganization(
-  organizationToConvert: any
+  organization: any
 ): IOrganizationData {
-  const { id, uuid, name, description } = organizationToConvert
-
-  return {
-    id,
-    uuid,
-    name,
-    description,
-    isReadOnly: organizationToConvert.is_read_only,
-    duns: organizationToConvert.duns,
-    taxId: organizationToConvert.tax_id,
-    phone: organizationToConvert.phone,
-    phone2: organizationToConvert.phone2,
-    fax: organizationToConvert.fax,
-    corporateBrandingImage: organizationToConvert.corporateBrandingImage
-  }
+  return camelizeObjectKeys(organization) as IOrganizationData
 }
 
-export function convertLanguage(languageToConvert: any): ILanguageData {
-  return {
-    language: languageToConvert.language,
-    languageName: languageToConvert.language_name,
-    languageISO: languageToConvert.language_iso,
-    countryCode: languageToConvert.country_code,
-    isBaseLanguage: languageToConvert.is_base_language,
-    isSystemLanguage: languageToConvert.is_system_language,
-    isDecimalPoint: languageToConvert.is_decimal_point,
-    datePattern: languageToConvert.date_pattern,
-    timePattern: languageToConvert.time_pattern
-  }
+export function convertLanguage(language: any): ILanguageData {
+  const convertedLanguage = camelizeObjectKeys(language)
+  renameObjectKey(convertedLanguage, 'languageIso', 'languageISO')
+  return convertedLanguage as ILanguageData
 }
 
-export function convertCountry(countryToConvert: any): ICountryData {
-  const { id, uuid, name, description } = countryToConvert
-
-  return {
-    id,
-    uuid,
-    countryCode: countryToConvert.country_code,
-    name,
-    description,
-    hasRegion: countryToConvert.has_region,
-    regionName: countryToConvert.region_name,
-    displaySequence: countryToConvert.display_sequence,
-    isAddressLinesReverse: countryToConvert.is_address_lines_reverse,
-    captureSequence: countryToConvert.capture_sequence,
-    displaySequenceLocal: countryToConvert.display_sequence_local,
-    isAddressLinesLocalReverse:
-            countryToConvert.is_address_lines_local_reverse,
-    expressionPostal: countryToConvert.expression_postal,
-    hasPostalAdd: countryToConvert.has_postal_add,
-    expressionPhone: countryToConvert.expression_phone,
-    mediaSize: countryToConvert.media_size,
-    expressionBankRoutingNo: countryToConvert.expression_bank_routing_no,
-    expressionBankAccountNo: countryToConvert.expression_bank_account_no,
-    language: countryToConvert.language,
-    allowCitiesOutOfList: countryToConvert.allow_cities_out_of_list,
-    isPostcodeLookup: countryToConvert.is_post_code_lookup,
-    currency: convertCurrency(countryToConvert.currency)
-  }
+export function convertCountry(country: any): ICountryData {
+  const convertedCountry = camelizeObjectKeys(country)
+  renameObjectKey(convertedCountry, 'isPostCodeLookup', 'isPostcodeLookup')
+  convertedCountry.currency = convertCurrency(country.currency)
+  return (convertedCountry as ICountryData)
 }
 
-export function convertCurrency(currencyToConvert: any): ICurrencyData {
-  if (!currencyToConvert) {
+export function convertCurrency(currency: any): ICurrencyData {
+  if (isEmptyValue(currency)) {
     return {
       id: 0,
       uuid: '',
@@ -159,15 +88,10 @@ export function convertCurrency(currencyToConvert: any): ICurrencyData {
       costingPrecision: 0
     }
   }
-  return {
-    id: currencyToConvert.id,
-    uuid: currencyToConvert.uuid,
-    iSOCode: currencyToConvert.iso_code,
-    curSymbol: currencyToConvert.currency_symbol,
-    description: currencyToConvert.description,
-    standardPrecision: currencyToConvert.standard_precision,
-    costingPrecision: currencyToConvert.costing_precision
-  }
+  const convertedCurrency = camelizeObjectKeys(currency)
+  renameObjectKey(convertedCurrency, 'isoCode', 'iSOCode')
+  renameObjectKey(convertedCurrency, 'currencySymbol', 'curSymbol')
+  return convertedCurrency as ICurrencyData
 }
 
 export function convertBusinessPartner(
@@ -183,48 +107,25 @@ export function convertSalesRepresentative(
 }
 
 export function convertBankAccount(
-  bankAccountToConvert: any
+  bankAccount: any
 ): IBankAccountData | undefined {
-  if (!bankAccountToConvert) {
+  if (!bankAccount) {
     return undefined
   }
 
-  const { uuid, id, name, description } = bankAccountToConvert
-  return {
-    uuid,
-    id,
-    name,
-    accountNo: bankAccountToConvert.account_no,
-    description,
-    currency: convertCurrency(bankAccountToConvert.currency),
-    bban: bankAccountToConvert.bban,
-    iban: bankAccountToConvert.iban,
-    creditLimit: bankAccountToConvert.credit_limit,
-    currentBalance: bankAccountToConvert.current_balance,
-    isDefault: bankAccountToConvert.is_default,
-    businessPartner: convertBusinessPartner(
-      bankAccountToConvert.business_partner
-    ),
-    bankAccountType: bankAccountToConvert.bank_account_type,
-    bankAccountTypeName: bankAccountToConvert.bank_account_type_name
-  }
+  const convertedBankAccount = camelizeObjectKeys(bankAccount) as Partial<IBankAccountData>
+  convertedBankAccount.currency = convertCurrency(bankAccount.currency)
+  convertedBankAccount.businessPartner = convertBusinessPartner(bankAccount.business_partner)
+  return convertedBankAccount as IBankAccountData
 }
 
 export function convertDocumentType(
-  documentTypeToConvert: any
+  documentType: any
 ): IDocumentTypeData | undefined {
-  if (!documentTypeToConvert) {
+  if (!documentType) {
     return undefined
   }
-  const { uuid, id, name, description } = documentTypeToConvert
-
-  return {
-    uuid,
-    id,
-    name,
-    description,
-    printName: documentTypeToConvert.print_name
-  }
+  return camelizeObjectKeys(documentType) as IDocumentTypeData
 }
 
 export function convertDocumentStatus(
@@ -233,118 +134,41 @@ export function convertDocumentStatus(
   return camelizeObjectKeys(documentStatus) as IDocumentStatusData
 }
 
-export function convertPriceList(priceListToConvert: any): IPriceListData {
-  const { uuid, id, name, description } = priceListToConvert
-
-  return {
-    uuid,
-    id,
-    name,
-    description,
-    currency: convertCurrency(priceListToConvert.currency),
-    isDefault: priceListToConvert.is_default,
-    isTaxIncluded: priceListToConvert.is_tax_included,
-    isEnforcePriceLimit: priceListToConvert.is_enforce_price_limit,
-    isNetPrice: priceListToConvert.is_net_price,
-    pricePrecision: priceListToConvert.price_precision
-  }
+export function convertPriceList(priceList: any): IPriceListData {
+  const convertedPriceList = camelizeObjectKeys(priceList) as Partial<IPriceListData>
+  convertedPriceList.currency = convertCurrency(priceList.currency)
+  return convertedPriceList as IPriceListData
 }
 
 export function convertProductPrice(
-  productPriceToConvert: any
+  productPrice: any
 ): IProductPriceData {
-  return {
-    currency: convertCurrency(productPriceToConvert.currency),
-    taxRate: convertTaxRate(productPriceToConvert.tax_rate),
-    product: convertProduct(productPriceToConvert.product),
-    priceList: productPriceToConvert.price_list,
-    priceStandard: productPriceToConvert.price_standard,
-    priceLimit: productPriceToConvert.price_limit,
-    priceListName: productPriceToConvert.price_list_name,
-    isTaxIncluded: productPriceToConvert.is_tax_included,
-    validFrom: productPriceToConvert.valid_from,
-    pricePrecision: productPriceToConvert.price_precision,
-    quantityOnHand: productPriceToConvert.quantity_on_hand,
-    quantityReserved: productPriceToConvert.quantity_reserved,
-    quantityOrdered: productPriceToConvert.quantity_ordered,
-    quantityAvailable: productPriceToConvert.quantity_available,
-    // Schema
-    schemaCurrency: convertCurrency(productPriceToConvert.schemaCurrency),
-    schemaGrandTotal: productPriceToConvert.schemaGrandTotal,
-    schemaPriceStandard: productPriceToConvert.schemaPriceStand,
-    schemaPriceList: productPriceToConvert.schemaPriceList,
-    schemaPriceLimit: productPriceToConvert.schemaPriceLimit
-  }
+  const convertedProductPrice = camelizeObjectKeys(productPrice)
+  convertedProductPrice.currency = convertCurrency(productPrice.currency)
+  convertedProductPrice.taxRate = convertTaxRate(productPrice.tax_rate)
+  convertedProductPrice.product = convertProduct(productPrice.product)
+  convertedProductPrice.schemaCurrency = convertCurrency(productPrice.schema_currency)
+  return convertedProductPrice as IProductPriceData
 }
 
 export function convertConversionRate(
-  conversionRateToConvert: any
+  conversionRate: any
 ): IConversionRateData | Partial<IConversionRateData> {
-  const { id, uuid } = conversionRateToConvert
-  if (!conversionRateToConvert.currency_from) {
-    return {
-      uuid,
-      id,
-      multiplyRate: conversionRateToConvert.multiply_rate,
-      divideRate: conversionRateToConvert.divide_rate
-    }
+  const convertedRate = camelizeObjectKeys(conversionRate) as Partial<IConversionRateData>
+  if (isEmptyValue(conversionRate.currency_from) && isEmptyValue(conversionRate.currency_to)) {
+    delete convertedRate.validFrom
+    delete convertedRate.conversionTypeUuid
+    return convertedRate
   }
-
-  return {
-    uuid,
-    id,
-    conversionTypeUuid: conversionRateToConvert.conversion_type_uuid,
-    validFrom: conversionRateToConvert.valid_from,
-    currencyFrom: convertCurrency(conversionRateToConvert.currency_from),
-    currencyTo: convertCurrency(conversionRateToConvert.currency_to),
-    multiplyRate: conversionRateToConvert.multiply_rate,
-    divideRate: conversionRateToConvert.divide_rate
-  }
+  convertedRate.currencyFrom = convertCurrency(conversionRate.currency_from)
+  convertedRate.currencyTo = convertCurrency(conversionRate.currency_to)
+  return convertedRate as IConversionRateData
 }
 
-export function convertTaxRate(taxRateToConvert: any): ITaxRateData {
-  return {
-    name: taxRateToConvert.name,
-    description: taxRateToConvert.description,
-    taxIndicator: taxRateToConvert.tax_indicator,
-    rate: taxRateToConvert.rate
-  }
+export function convertTaxRate(taxRate: any): ITaxRateData {
+  return camelizeObjectKeys(taxRate) as ITaxRateData
 }
 
-export function convertProduct(productToConvert: any): IProductData {
-  const { uuid, id, name, description, help } = productToConvert
-
-  return {
-    uuid,
-    id,
-    value: productToConvert.value,
-    name,
-    help,
-    documentNote: productToConvert.document_note,
-    uomName: productToConvert.uom_name,
-    productType: productToConvert.product_type,
-    isStocked: productToConvert.is_stocked,
-    isDropShip: productToConvert.is_drop_ship,
-    isPurchased: productToConvert.is_purchased,
-    isSold: productToConvert.is_sold,
-    imageUrl: productToConvert.image_url,
-    productCategoryName: productToConvert.product_category_name,
-    productGroupName: productToConvert.product_group_name,
-    productClassName: productToConvert.product_class_name,
-    productClassificationName: productToConvert.product_classification_name,
-    weight: productToConvert.weight,
-    volume: productToConvert.volume,
-    upc: productToConvert.upc,
-    sku: productToConvert.sku,
-    shelfWidth: productToConvert.shelf_width,
-    shelfHeight: productToConvert.shelf_height,
-    shelfDepth: productToConvert.shelf_depth,
-    unitsPerPack: productToConvert.units_per_pack,
-    unitsPerPallet: productToConvert.units_per_pallet,
-    guaranteeDays: productToConvert.guarantee_days,
-    descriptionUrl: productToConvert.description_url,
-    versionNo: productToConvert.version_no,
-    taxCategory: productToConvert.tax_category,
-    description
-  }
+export function convertProduct(product: any): IProductData {
+  return camelizeObjectKeys(product) as IProductData
 }

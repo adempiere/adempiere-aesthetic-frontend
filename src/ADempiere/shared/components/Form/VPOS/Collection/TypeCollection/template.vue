@@ -51,7 +51,10 @@
                         style="padding-bottom: 20px;"
                       >
                         <p class="total">
-                          <b style="float: right;">
+                           <b v-if="!isEmptyValue(value.multiplyRate)" style="float: right;">
+                            {{ formatPrice(value.multiplyRate, currency.iSOCode) }}
+                          </b>
+                          <b v-else style="float: right;">
                             {{ formatPrice(value.amount, currency.iSOCode) }}
                           </b>
                         </p>

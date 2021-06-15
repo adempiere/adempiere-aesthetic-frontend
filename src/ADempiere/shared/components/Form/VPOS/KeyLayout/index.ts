@@ -159,7 +159,7 @@ export default class KeyLayout extends Vue {
 
       const image = getImagePath({
         file: fileName!,
-        width: 200,
+        width: 300,
         height: 300
       })
 

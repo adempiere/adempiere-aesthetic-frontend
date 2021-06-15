@@ -21,7 +21,7 @@ export interface IProcessLogData {
     logsList: IProcessInfoLogData[]
     // parametersList?: any
     parameters?: KeyValueData[] | IPanelParameters[]
-    output: IReportOutputData
+    output: IReportOutputData | Partial<IReportOutputData>
     //
     processUuid?: string
 }

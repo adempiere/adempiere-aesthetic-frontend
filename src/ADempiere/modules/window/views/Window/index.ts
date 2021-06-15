@@ -70,7 +70,7 @@ export default class WindowView extends Vue {
     public isShowedRecordPanel = false
 
     // Computed properties
-    get contextMenuField() {
+    get currentFieldOption() {
       return this.$store.getters[Namespaces.ContextMenu + '/' + 'getFieldContextMenu']
     }
 
@@ -80,21 +80,24 @@ export default class WindowView extends Vue {
 
     get componentRender() {
       let component
-      switch (this.contextMenuField.name) {
+      switch (this.currentFieldOption.name) {
         case this.$t('field.info'):
-          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/ContextInfo')
+          component = () => import('@/ADempiere/shared/components/Field/FieldOptions/ContextInfo')
           break
         case this.$t('language'):
-          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Translated')
+          component = () => import('@/ADempiere/shared/components/Field/FieldOptions/Translated')
           break
         case this.$t('field.calculator'):
-          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Calculator')
+          component = () => import('@/ADempiere/shared/components/Field/FieldOptions/Calculator')
           break
         case this.$t('field.preference'):
-          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/Preference')
+          component = () => import('@/ADempiere/shared/components/Field/FieldOptions/Preference')
           break
         case this.$t('field.logsField'):
-          component = () => import('@/ADempiere/shared/components/Field/ContextMenuField/ChangeLogs')
+          component = () => import('@/ADempiere/shared/components/Field/FieldOptions/ChangeLogs')
+          break
+        case this.$t('operators.operator'):
+          component = () => import('@/ADempiere/shared/components/Field/FieldOptions/OperatorComparison')
           break
       }
       return component

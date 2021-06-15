@@ -1,3 +1,4 @@
+import { camelizeObjectKeys, renameObjectKey } from '@/ADempiere/shared/utils/transformObject'
 import {
   IDrillTablesData,
   IListPrintsFormatsData,
@@ -7,77 +8,34 @@ import {
 } from '.'
 
 export function convertListPrintFormats(
-  listPrintFormatsToConvert: any
+  printFormats: any
 ): IListPrintsFormatsData {
-  return {
-    recordCount: listPrintFormatsToConvert.record_count,
-    list: listPrintFormatsToConvert.records.map((record: any) => {
-      return convertPrintFormat(record)
-    }),
-    nextPageToken: listPrintFormatsToConvert.next_page_token
-  }
+  const convertedPrintFormats = camelizeObjectKeys(printFormats) as Partial<IListPrintsFormatsData>
+  convertedPrintFormats.list = printFormats.records.map((record: any) => convertPrintFormat(record))
+  return convertedPrintFormats as IListPrintsFormatsData
 }
 
 export function convertPrintFormat(
-  printFormatToConvert: any
+  printFormat: any
 ): IPrintFormatData {
-  const { name, description } = printFormatToConvert
-
-  return {
-    name,
-    description,
-    tableName: printFormatToConvert.table_name,
-    isDefault: printFormatToConvert.is_default,
-    reportViewUuid: printFormatToConvert.report_view_uuid,
-    printFormatUuid: printFormatToConvert.print_format_uuid
-  }
+  return camelizeObjectKeys(printFormat) as IPrintFormatData
 }
 
 export function convertReportOutput(
-  reportOutputToConvert: any
+  reportOutput: any
 ): IReportOutputData {
-  const { uuid, name, description } = reportOutputToConvert
-
-  return {
-    uuid,
-    name,
-    description,
-    fileName: reportOutputToConvert.file_name,
-    output: reportOutputToConvert.output,
-    mimeType: reportOutputToConvert.mime_type,
-    dataCols: reportOutputToConvert.data_cols,
-    dataRows: reportOutputToConvert.data_rows,
-    headerName: reportOutputToConvert.header_name,
-    footerName: reportOutputToConvert.footer_name,
-    printFormatUuid: reportOutputToConvert.print_format_uuid,
-    reportViewUuid: reportOutputToConvert.report_view_uuid,
-    tableName: reportOutputToConvert.table_name,
-    outputStream: reportOutputToConvert.output_stream,
-    // outputStreamAsB64
-    outputStreamAsB64: reportOutputToConvert.output_stream_asB64,
-    // outputStreamAsU8
-    outputStreamAsU8: reportOutputToConvert.output_stream_asU8,
-    reportType: reportOutputToConvert.report_type
-  }
+  const convertedReportOutput = camelizeObjectKeys(reportOutput) as Partial<IReportOutputData>
+  renameObjectKey(convertedReportOutput, 'outputStreamAsB64', 'outputStream_asB64')
+  renameObjectKey(convertedReportOutput, 'outputStreamAsU8', 'outputStream_asU8')
+  return convertedReportOutput as IReportOutputData
 }
 
 export function convertDrillTables(
-  drillTablesToConvert: any
+  drillTables: any
 ): IDrillTablesData {
-  return {
-    tableName: drillTablesToConvert.table_name,
-    printName: drillTablesToConvert.print_name
-  }
+  return camelizeObjectKeys(drillTables) as IDrillTablesData
 }
 
-export function convertReportView(reportViewToConvert: any): IReportViewData {
-  const { uuid, name, description } = reportViewToConvert
-
-  return {
-    uuid,
-    name,
-    description,
-    tableName: reportViewToConvert.table_name,
-    reportViewUuid: reportViewToConvert.report_view_uuid
-  }
+export function convertReportView(reportView: any): IReportViewData {
+  return camelizeObjectKeys(reportView) as IReportViewData
 }

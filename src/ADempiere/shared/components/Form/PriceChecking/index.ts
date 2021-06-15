@@ -6,7 +6,7 @@ import Template from './template.vue'
 import { requestImage } from '@/ADempiere/modules/persistence/PersistenceService/persistence'
 import { buildImageFromArrayBuffer } from '@/ADempiere/shared/utils/resource'
 import { AxiosResponse } from 'axios'
-import { requestGetProductPrice } from '@/ADempiere/modules/core/CoreService'
+import { getProductPrice } from '@/ADempiere/modules/core/CoreService'
 import {
   formatPercent,
   formatPrice
@@ -122,7 +122,7 @@ export default class PriceChecking extends Mixins(MixinForm) {
         // cleans all values except column name 'ProductValue'
         this.search = mutation.payload.value
         if (this.search && this.search.length >= 4) {
-          requestGetProductPrice({
+          getProductPrice({
             searchValue: mutation.payload.value,
             priceListUuid: this.currentPoint!.priceList.uuid
           })
@@ -197,7 +197,7 @@ export default class PriceChecking extends Mixins(MixinForm) {
           if (typeof value[value.length - 1] === 'string') {
             value = mutation.payload.value.slice(0, -1)
           }
-          requestGetProductPrice({
+          getProductPrice({
             searchValue: mutation.payload.value,
             priceListUuid: this.currentPoint?.priceList.uuid
           })

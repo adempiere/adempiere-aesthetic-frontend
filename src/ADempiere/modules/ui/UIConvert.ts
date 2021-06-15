@@ -2,48 +2,29 @@ import { convertResourceReference } from '@/ADempiere/modules/pos'
 import { IAttachmentData, ILookupItemData } from './UITypes'
 
 import { IReferenceListData, IReferenceData } from '.'
+import { camelizeObjectKeys } from '@/ADempiere/shared/utils/transformObject'
 
 export const convertAttachment = (data: any): IAttachmentData => {
-  const { title } = data
-  return {
-    attachmentUuid: data.attachment_uuid,
-    title,
-    textMsg: data.text_msg,
-    resourceReferences: data.resource_reference.map((e: any) => {
-      return convertResourceReference(e)
-    })
-  }
+  const convertedAttachment = camelizeObjectKeys(data) as Partial<IAttachmentData>
+  convertedAttachment.resourceReferences = data.resource_reference.map((e: any) => {
+    return convertResourceReference(e)
+  })
+  return convertedAttachment as IAttachmentData
 }
 
 export function convertReferencesList(
-  listReferencesToConvert: any
+  references: any
 ): IReferenceListData {
-  return {
-    recordCount: listReferencesToConvert.record_count,
-    list: listReferencesToConvert.records.map((record: any) => {
-      return convertReference(record)
-    }),
-    nextPageToken: listReferencesToConvert.next_page_token
-  }
+  const convertedReferences = camelizeObjectKeys(references)
+  convertedReferences.list = references.records.map((record: any) => convertReference(record))
+  delete convertedReferences.records
+  return convertedReferences as IReferenceListData
 }
 
-export function convertReference(referenceToConvert: any): IReferenceData {
-  const { uuid } = referenceToConvert
-
-  return {
-    uuid,
-    tableName: referenceToConvert.table_name,
-    windowUuid: referenceToConvert.window_uuid,
-    displayName: referenceToConvert.display_name,
-    whereClause: referenceToConvert.where_clause,
-    recordCount: referenceToConvert.record_count
-  }
+export function convertReference(reference: any): IReferenceData {
+  return camelizeObjectKeys(reference) as IReferenceData
 }
+
 export function convertLookupItem(item: any): ILookupItemData {
-  return {
-    id: item.id,
-    tableName: item.table_name,
-    uuid: item.uuid,
-    values: item.values
-  }
+  return camelizeObjectKeys(item) as ILookupItemData
 }

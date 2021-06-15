@@ -75,7 +75,8 @@ export const actions: PaymentsActionTree = {
         if (!isEmptyValue(response.currencyTo)) {
           const currency: Partial<IConversionRateData> = {
             ...response.currencyTo,
-            amountConvertion: response.divideRate
+            amountConvertion: response.divideRate,
+            multiplyRate: response.multiplyRate
           }
           context.dispatch('addRateConvertion', currency)
         }

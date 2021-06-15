@@ -2,7 +2,7 @@ import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { convertValuesToSend, extractPagingToken, isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { ActionContext, ActionTree } from 'vuex'
-import { requestCreateOrder, requestCreateOrderLine, requestGetOrder, requestListOrders, requestUpdateOrder } from '../../POSService'
+import { createOrder, createOrderLine, getOrder, listOrders, updateOrder } from '../../POSService'
 import { IListOrdersResponse, IOrderData, OrderState } from '../../POSType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 
@@ -22,7 +22,7 @@ export const actions: OrderActionTree = {
     salesRepresentativeUuid: string
   }) {
     const { posUuid, customerUuid, salesRepresentativeUuid } = payload
-    return requestCreateOrder({
+    return createOrder({
       posUuid,
       customerUuid,
       salesRepresentativeUuid
@@ -54,7 +54,7 @@ export const actions: OrderActionTree = {
     customerUuid: string
   }): void {
     const { orderUuid, posUuid, customerUuid } = payload
-    requestUpdateOrder({
+    updateOrder({
       orderUuid,
       posUuid,
       customerUuid
@@ -91,7 +91,7 @@ export const actions: OrderActionTree = {
     discountRate?: number
   }) {
     const { orderUuid, productUuid } = payload
-    requestCreateOrderLine({
+    createOrderLine({
       orderUuid,
       productUuid
     })
@@ -99,7 +99,6 @@ export const actions: OrderActionTree = {
         context.dispatch(Namespaces.OrderLines + '/' + 'updateOrderLines', orderLine, {
           root: true
         })
-        // this.fillOrderLine(orderLine)
         context.dispatch('reloadOrder', orderUuid)
       })
       .catch(error => {
@@ -121,7 +120,7 @@ export const actions: OrderActionTree = {
       orderUuid = context.rootGetters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales.currentOrder.uuid
     }
     if (!isEmptyValue(orderUuid)) {
-      requestGetOrder(orderUuid)
+      getOrder(orderUuid)
         .then((orderResponse: IOrderData) => {
           context.dispatch('fillOrder', {
             attribute: orderResponse,
@@ -207,7 +206,7 @@ export const actions: OrderActionTree = {
       salesRepresentativeUuid,
       pageToken
     })
-    requestListOrders({
+    listOrders({
       posUuid: posUuid!,
       documentNo: documentNo?.toString(),
       businessPartnerUuid: businessPartnerUuid!,
@@ -254,7 +253,7 @@ export const actions: OrderActionTree = {
   },
   findOrderServer(context: OrderActionContext, orderUuid: string) {
     if (typeof orderUuid === 'string' && !isEmptyValue(orderUuid)) {
-      requestGetOrder(orderUuid)
+      getOrder(orderUuid)
         .then((responseOrder: IOrderData) => {
           context.commit('findOrder', responseOrder)
         })

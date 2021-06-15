@@ -2,11 +2,13 @@ import {
   IBankAccountData,
   IBusinessPartnerData,
   IConversionRateData,
+  ICurrencyData,
   IDocumentStatusData,
   IDocumentTypeData,
   IPriceListData,
   IProductData,
   IProductPriceData,
+  IRateData,
   ISalesRepresentativeData,
   ITaxRateData
 } from '@/ADempiere/modules/core'
@@ -55,7 +57,7 @@ export interface IPointOfSalesData {
   keyLayoutUuid: string
 }
 
-export interface IPaymentsData {
+export interface IPaymentsData extends Partial<IRateData> {
   amount: number
   bankUuid: string
   businessPartner: IBusinessPartnerData
@@ -69,6 +71,8 @@ export interface IPaymentsData {
   referenceNo: string
   tenderTypeCode: any
   uuid: string
+  // Optional
+  currencyConvertion?: ICurrencyData
 }
 
 export interface IOrderData {

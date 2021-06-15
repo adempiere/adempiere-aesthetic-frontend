@@ -1,4 +1,5 @@
-import { requestGetConversionRate } from '@/ADempiere/modules/core'
+import { IConversionRateData, requestGetConversionRate } from '@/ADempiere/modules/core'
+import { IPaymentsData, IPOSAttributesData } from '@/ADempiere/modules/pos'
 import { IFieldLocation } from '@/ADempiere/shared/components/Field/FieldLocation/fieldList'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatDate, formatPrice } from '@/ADempiere/shared/utils/valueFormat'
@@ -20,7 +21,7 @@ export default class TypeCollection extends Mixins(MixinPOS) {
 
   public conevertion = 0
   public loginCovertion = false
-  public labelTypesPayment: any[] = []
+  public labelTypesPayment: any[] | Partial<IFieldLocation> = []
 
   // Computed properties
   get typesPayment() {
@@ -39,10 +40,15 @@ export default class TypeCollection extends Mixins(MixinPOS) {
     ]
   }
 
+  // Validate if there is a payment in a different type of currency to the point
+  get paymentCurrency(): IPaymentsData | undefined {
+    return (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.currentOrder.listPayments.payments.find(pay => pay.currencyUuid !== this.currency.uuid)
+  }
+
   // Hooks
   created() {
     this.convertingPaymentMethods()
-    if (isEmptyValue(this.labelTypesPayment)) {
+    if (isEmptyValue((this.labelTypesPayment as IFieldLocation).reference) && !isEmptyValue(this.listPaymentType?.reference)) {
       this.tenderTypeDisplaye({
         tableName: this.listPaymentType!.reference.tableName,
         query: this.listPaymentType!.reference.query
@@ -66,25 +72,27 @@ export default class TypeCollection extends Mixins(MixinPOS) {
 
   formatPrice = formatPrice
 
+  // If there are payments in another currency, search for conversion
   convertingPaymentMethods() {
-    const currencyUuid = this.isAddTypePay!.find(
-      pay => pay.currencyUuid !== this.currency.uuid
-    )
-    if (!isEmptyValue(currencyUuid)) {
+    if (!isEmptyValue(this.paymentCurrency)) {
       requestGetConversionRate({
         conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid!,
         currencyFromUuid: this.currency.uuid,
-        currencyToUuid: currencyUuid.currencyUuid
+        currencyToUuid: this.paymentCurrency!.currencyUuid
       })
         .then(response => {
-          this.isAddTypePay!.forEach(element => {
-            if (element.currencyUuid !== this.pointOfSalesCurrency.uuid) {
-              element.amountConvertion = element.amount / response.divideRate!
-              element.currencyConvertion = response.currencyTo
-            } else {
-              element.currencyConvertion = {}
-            }
-          })
+          return (response as IConversionRateData)
+        })
+        .then((response: IConversionRateData) => {
+          (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales
+            .currentOrder.listPayments.payments.forEach((element: IPaymentsData) => {
+              if (element.currencyUuid !== this.pointOfSalesCurrency.uuid) {
+                element.multiplyRate = element.amount / response.multiplyRate
+                element.amountConvertion = element.multiplyRate / response.divideRate
+                element.divideRate = response.multiplyRate
+                element.currencyConvertion = response.currencyTo
+              }
+            })
           this.$store.commit(Namespaces.Payments + '/' + 'setListPayments', {
             payments: this.isAddTypePay
           })
@@ -96,6 +104,7 @@ export default class TypeCollection extends Mixins(MixinPOS) {
     this.loginCovertion = true
   }
 
+  // Payment card label
   tenderTypeDisplaye(value: { tableName: string, query: string }) {
     const { tableName, query } = value
     if (!isEmptyValue(tableName)) {
