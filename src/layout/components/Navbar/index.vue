@@ -38,7 +38,7 @@
 
         <div class="right-menu">
             <template v-if="this.device !== 'mobile'">
-                <el-tooltip v-if="showGuide" content="Guia" placement="top-start">
+                <el-tooltip :content="$t('route.guide')" placement="top-start">
                 <el-button icon="el-icon-info" type="text" style="color: black;font-size: larger" @click.prevent.stop="guide" />
                 </el-tooltip>
                 <header-search id="header-search" class="right-menu-item" />
@@ -115,12 +115,14 @@ import Badge from '@/ADempiere/shared/components/Badge/component'
 import { getImagePath } from '@/ADempiere/shared/utils/resource'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { DeviceType, IAppState } from '@/ADempiere/modules/app/AppType'
-import Driver from 'driver.js'
+import Driver, { Step } from 'driver.js'
 import 'driver.js/dist/driver.min.css' // import driver.js css
 import steps, { IStepData } from '@/ADempiere/shared/components/Form/VPOS/Guide/steps'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
-import { IUserData } from '@/api/types'
 import { IUserState } from '@/ADempiere/modules/user'
+import { PanelContextType } from '@/ADempiere/shared/utils/DictionaryUtils/ContextMenuType'
+import { IFieldDataExtendedUtils } from '@/ADempiere/shared/utils/DictionaryUtils/type'
+import { IWindowDataExtended } from '@/ADempiere/modules/dictionary'
 
 @Component({
   name: 'Navbar',
@@ -155,7 +157,7 @@ export default class extends Vue {
 
     get showGuide(): boolean {
       const typeViews = this.$route.meta.type
-      if (!isEmptyValue(typeViews) && typeViews === 'form') {
+      if (!isEmptyValue(typeViews) && typeViews !== PanelContextType.Window) {
         return true
       }
       return false
@@ -190,15 +192,20 @@ export default class extends Vue {
       return uri
     }
 
+    get fieldPanel(): IFieldDataExtendedUtils[] {
+      return (this.$store.getters[Namespaces.Panel + '/' + 'getFieldsListFromPanel'](this.$route.meta.uuid) as IFieldDataExtendedUtils[]).filter(field => field.isShowedFromUser)
+    }
+
+    get fieldWindow(): IFieldDataExtendedUtils[] {
+      const windowUuid: string = (this.$store.getters[Namespaces.WindowDefinition + '/' + 'getWindow'](this.$route.meta.uuid) as IWindowDataExtended).currentTab.uuid
+      const list: IFieldDataExtendedUtils[] = this.$store.getters[Namespaces.Payments + '/' + 'getFieldsListFromPanel'](windowUuid) as IFieldDataExtendedUtils[]
+      if (!isEmptyValue(list)) {
+        return list.filter(field => field.isShowedFromUserDefault)
+      }
+      return []
+    }
+
     // Methods
-    private handleOpen(key: any, keyPath: any) {
-      console.log(key, keyPath)
-    }
-
-    private handleClose(key: any, keyPath: any) {
-      console.log(key, keyPath)
-    }
-
     private isMenuOption() {
       this.isMenuMobile = !this.isMenuMobile
     }
@@ -221,11 +228,56 @@ export default class extends Vue {
       // })
     }
 
-    private guide(value: any) {
-      const stepsPos: IStepData[] = steps.filter(steps => isEmptyValue(steps.panel))
-      value = this.showCollection && this.isShowedPOSKeyLaout ? steps : stepsPos
+    private guide() {
+      const value: Step[] = this.formatGuide(this.$route.meta.type)!
       this.driver!.defineSteps(value)
       this.driver!.start()
+    }
+
+    private formatGuide(type: PanelContextType): Step[] | undefined {
+      let field
+      switch (type) {
+        case 'report':
+          field = this.fieldPanel.map(steps => {
+            return {
+              element: '#' + steps.columnName,
+              popover: {
+                title: steps.name,
+                description: steps.description,
+                position: 'top'
+              }
+            }
+          })
+          break
+        case 'process':
+          field = this.fieldPanel.map(steps => {
+            return {
+              element: '#' + steps.columnName,
+              popover: {
+                title: steps.name,
+                description: steps.description,
+                position: 'top'
+              }
+            }
+          })
+          break
+        case 'window':
+          field = this.fieldWindow.map(steps => {
+            return {
+              element: '#' + steps.columnName,
+              popover: {
+                title: steps.name,
+                description: steps.description,
+                position: 'top'
+              }
+            }
+          })
+          break
+        case 'form':
+          field = this.showCollection && this.isShowedPOSKeyLaout ? steps : steps.filter(steps => isEmptyValue(steps.panel))
+          break
+      }
+      return field
     }
 
     public handleClick() {
