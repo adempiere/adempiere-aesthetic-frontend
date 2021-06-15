@@ -393,7 +393,7 @@ export default class WindowView extends Vue {
     }
 
     get isDocumentTab(): boolean {
-      const panel = this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](this.windowMetadata.currentTabUuid)
+      const panel = isEmptyValue(this.windowMetadata.currentTabUuid) ? '' : this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](this.windowMetadata.currentTabUuid)
       if (!isEmptyValue(panel)) {
         return panel.isDocument
       }
@@ -402,7 +402,7 @@ export default class WindowView extends Vue {
     }
 
     get isWorkflowBarStatus(): boolean {
-      const panel = this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](
+      const panel = isEmptyValue(this.windowMetadata.currentTabUuid) ? '' : this.$store.getters[Namespaces.Panel + '/' + 'getPanel'](
         this.windowMetadata.currentTabUuid
       )
       if (
