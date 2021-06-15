@@ -2,8 +2,7 @@
   <el-switch
     :ref="metadata.columnName"
     v-model="value"
-    :inactive-text="$t('components.switchInactiveText')"
-    :active-text="$t('components.switchActiveText')"
+    :active-text="value ? $t('components.switchActiveText') : $t('components.switchInactiveText')"
     :class="cssClassStyle"
     :true-value="true"
     :false-value="false"

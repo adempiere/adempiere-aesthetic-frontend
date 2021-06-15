@@ -32,6 +32,7 @@ export default class FieldYesNo extends Mixins(MixinField) {
   }
 
   preHandleChange(value: any) {
+    this.metadata.value = value
     this.handleFieldChange({ value })
     if (!this.metadata.inTable && !this.metadata.isAdvancedQuery) {
       this.isReadOnlyForm(this.value)

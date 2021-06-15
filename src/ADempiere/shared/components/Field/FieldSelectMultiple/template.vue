@@ -4,7 +4,7 @@
     multiple
     filterable
     allow-create
-    :placeholder="metadata.help"
+    :placeholder="metadata.placeholder"
     :class="'custom-field-select custom-field-select-multiple ' + metadata.cssClassName"
     @change="preHandleChange"
   >

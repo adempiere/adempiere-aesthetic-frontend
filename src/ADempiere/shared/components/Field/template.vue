@@ -7,11 +7,11 @@
     <el-col
       v-if="isDisplayed"
       key="is-panel-template"
-      :xs="sizeFieldResponsive.xs"
-      :sm="sizeFieldResponsive.sm"
-      :md="sizeFieldResponsive.md"
-      :lg="sizeFieldResponsive.lg"
-      :xl="sizeFieldResponsive.xl"
+      :xs="24"
+      :sm="12"
+      :md="8"
+      :lg="8"
+      :xl="8"
       :class="classField"
     >
       <el-form-item>
@@ -90,5 +90,11 @@
   }
   .pre-formatted {
     white-space: pre;
+  }
+  .el-submenu__title {
+    padding: 0;
+  }
+  .el-submenu .el-submenu__icon-arrow  {
+    visibility: hidden;
   }
 </style>
