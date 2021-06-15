@@ -438,6 +438,7 @@ export default {
         payment: 'Pago',
         change: 'Cambio',
         convertAmount: 'Convertir Cantidad',
+        convertedAmount: 'Monto Convertido',
         fullPayment: 'Cobro Completo',
         dayRate: 'Tasa del Día',
         TenderType: {

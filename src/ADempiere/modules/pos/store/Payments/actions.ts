@@ -1,4 +1,4 @@
-import { IConversionRateData, IGetConversionRateParams, requestGetConversionRate } from '@/ADempiere/modules/core'
+import { IConversionRateData, ICurrencyData, IGetConversionRateParams, requestGetConversionRate } from '@/ADempiere/modules/core'
 import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { ActionContext, ActionTree } from 'vuex'
@@ -64,7 +64,7 @@ export const actions: PaymentsActionTree = {
     payment.splice(0)
   },
   conversionDivideRate(context: PaymentsActionContext, params: IGetConversionRateParams) {
-    requestGetConversionRate({
+    return requestGetConversionRate({
       conversionTypeUuid: params.conversionTypeUuid,
       currencyFromUuid: params.currencyFromUuid,
       currencyToUuid: params.currencyToUuid,
@@ -73,10 +73,10 @@ export const actions: PaymentsActionTree = {
       .then((response: IConversionRateData | Partial<IConversionRateData>) => {
         context.commit('setFieldCurrency', response.currencyTo)
         if (!isEmptyValue(response.currencyTo)) {
-          const currency: Partial<IConversionRateData> = {
+          const currency: Partial<ICurrencyData> & Pick<IConversionRateData, 'amountConvertion' | 'multiplyRate'> = {
             ...response.currencyTo,
             amountConvertion: response.divideRate,
-            multiplyRate: response.multiplyRate
+            multiplyRate: response.multiplyRate!
           }
           context.dispatch('addRateConvertion', currency)
         }
@@ -89,6 +89,7 @@ export const actions: PaymentsActionTree = {
           context.commit('currencyMultiplyRate', multiplyRate)
           context.commit('currencyDivideRateCollection', divideRate)
         }
+        return response
       })
       .catch(error => {
         console.warn(`conversionDivideRate: ${error.message}. Code: ${error.code}.`)
