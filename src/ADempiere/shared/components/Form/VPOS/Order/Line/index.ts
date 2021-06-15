@@ -9,6 +9,7 @@ import Template from './template.vue'
 import { validatePin } from '@/ADempiere/modules/pos/POSService'
 import { IFieldLocation } from '@/ADempiere/shared/components/Field/FieldLocation/fieldList'
 import { ICurrentPointOfSalesData, IPOSAttributesData, OrderLinesState } from '@/ADempiere/modules/pos'
+import { ICurrencyData } from '@/ADempiere/modules/core'
 
 @Component({
   name: 'FieldLine',
@@ -62,6 +63,13 @@ export default class FieldLine extends Vue {
 
       get validatePin() {
         return (this.$store.state[Namespaces.OrderLines] as OrderLinesState).validatePin
+      }
+
+      get currencyPointOfSales(): Partial<ICurrencyData> {
+        if (!isEmptyValue(this.currentPointOfSales)) {
+          return this.currentPointOfSales.priceList!.currency
+        }
+        return {}
       }
 
       get isPosRequiredPin(): boolean {
