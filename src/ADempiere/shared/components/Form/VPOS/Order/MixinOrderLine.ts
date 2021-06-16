@@ -1,5 +1,6 @@
-import { ICurrencyData } from '@/ADempiere/modules/core/CoreType'
+import { IConversionRateData, ICurrencyData, IGetConversionRateParams } from '@/ADempiere/modules/core/CoreType'
 import { IOrderLineData, IPOSAttributesData, OrderLinesState, deleteOrderLine, updateOrderLine } from '@/ADempiere/modules/pos'
+import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatPercent, formatPrice, formatQuantity } from '@/ADempiere/shared/utils/valueFormat'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
@@ -41,8 +42,16 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
         label: 'Total',
         isNumeric: true,
         size: 'auto'
+      },
+      convertedAmount: {
+        columnName: 'ConvertedAmount',
+        label: this.$t('form.pos.collect.convertedAmount'),
+        isNumeric: true,
+        size: 'auto'
       }
     }
+
+    public totalAmountConvertedLine: Partial<Partial<ICurrencyData> & Pick<IConversionRateData, 'amountConvertion' | 'multiplyRate'>> = {}
 
     // Computed properties
 
@@ -176,6 +185,8 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
           return this.formatPercent(row.discount / 100)
         } else if (columnName === 'GrandTotal') {
           return this.formatPrice(row.grandTotal, currency)
+        } else if (columnName === 'ConvertedAmount') {
+          return this.formatPrice(this.getTotalAmount(row.grandTotal, this.totalAmountConvertedLine.multiplyRate!), this.totalAmountConvertedLine.iSOCode)
         }
       }
 
@@ -219,5 +230,48 @@ export default class MixinOrderLine extends Mixins(MixinPOS) {
           this.currentOrderLine = this.orderLines[0]
         }
         return !isEmptyValue(line)
+      }
+
+      convertedAmountAsTotal(value: Partial<ICurrencyData>) {
+        this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
+          conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
+          currencyFromUuid: this.pointOfSalesCurrency.uuid,
+          currencyToUuid: value.uuid
+        })
+          .then((response: Partial<IConversionRateData>) => {
+            if (!isEmptyValue(response.currencyTo)) {
+              const currency: Partial<ICurrencyData> & Pick<IConversionRateData, 'amountConvertion' | 'multiplyRate'> = {
+                ...response.currencyTo,
+                amountConvertion: response.divideRate,
+                multiplyRate: response.multiplyRate!
+              }
+              this.totalAmountConvertedLine = currency
+            } else {
+              this.totalAmountConvertedLine.multiplyRate = ('1') as any
+              this.totalAmountConvertedLine.iSOCode = value.iSOCode
+            }
+          })
+          .catch(error => {
+            console.warn(`conversionDivideRate: ${error.message}. Code: ${error.code}.`)
+            showMessage({
+              type: 'error',
+              message: error.message,
+              showClose: true
+            })
+          })
+      }
+
+      getTotalAmount(basePrice: number, multiplyRate: number) {
+        if (isEmptyValue(basePrice) || isEmptyValue(multiplyRate)) {
+          return 0
+        }
+        return (basePrice * multiplyRate)
+      }
+
+      // Hooks
+      created() {
+        const currentCurrency = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).listPointOfSales.find((pos: any) =>
+          pos.priceList.currency.uuid !== (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.priceList!.currency.uuid)
+        this.convertedAmountAsTotal(currentCurrency.priceList.currency)
       }
 }

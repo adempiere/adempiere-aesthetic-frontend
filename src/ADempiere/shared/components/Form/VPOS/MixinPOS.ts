@@ -31,7 +31,7 @@ import MixinForm from '../MixinForm'
   mixins: [MixinForm]
 })
 export default class MixinPOS extends Mixins(MixinForm) {
-    @Prop({ type: Object, required: false }) metadata?: any
+    // @Prop({ type: Object, required: false }) metadata?: any
     @Ref() readonly linesTable?: Table
     // eslint-disable-next-line
     public unsubscribe: Function = () => {}

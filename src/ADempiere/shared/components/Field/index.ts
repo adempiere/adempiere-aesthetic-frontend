@@ -101,7 +101,6 @@ export default class FieldDefinition extends Vue {
           break
       }
       return field
-      // return () => import(`@/components/ADempiere/Field/${this.field.componentPath}`)
     }
 
     get isPanelWindow() {
@@ -126,7 +125,8 @@ export default class FieldDefinition extends Vue {
         readonly: this.isReadOnly,
         displayed: this.isDisplayed,
         disabled: !this.field.isActive,
-        isSelectCreated: this.isSelectCreated
+        isSelectCreated: this.isSelectCreated,
+        placeholder: this.field.help ? this.field.help.slice(0, 40) + '...' : ''
       }
     }
 
@@ -227,87 +227,6 @@ export default class FieldDefinition extends Vue {
         return 'in-table'
       }
       return ''
-    }
-
-    get sizeFieldResponsive(): ISizeData {
-      if (!this.isDisplayed) {
-        return DEFAULT_SIZE
-      }
-
-      let sizeField: ISizeData | undefined
-      if (this.field.size) {
-        // set field size property
-        sizeField = this.field.size
-      }
-      if (isEmptyValue(sizeField)) {
-        // set default size
-        sizeField = DEFAULT_SIZE
-      }
-
-      let newSizes: Partial<ISizeData> | undefined
-
-      // in table set max width, used by browser result and tab children of window
-      if (this.inTable) {
-        newSizes = {
-          xs: 24,
-          sm: 24,
-          md: 24,
-          lg: 24,
-          xl: 24
-        }
-        return <ISizeData>newSizes
-      }
-      if (this.isAdvancedQuery) {
-        newSizes = {
-          xs: 24,
-          sm: 24,
-          md: 12,
-          lg: 12,
-          xl: 12
-        }
-        return <ISizeData>newSizes
-      }
-
-      if (this.isPanelWindow) {
-        // TODO: Add FieldYesNo and name.length > 12 || 14
-        if (this.field.componentPath === 'FieldTextLong') {
-          return <ISizeData>sizeField
-        }
-        // two columns if is mobile or desktop and show record navigation
-        if (
-          this.getWidth <= 768 ||
-                (this.getWidth >= 768 && this.field.isShowedRecordNavigation)
-        ) {
-          newSizes = {
-            xs: 12,
-            sm: 12,
-            md: 12,
-            lg: 12,
-            xl: 12
-          }
-          return <ISizeData>newSizes
-        } else if (this.inGroup && this.getWidth >= 992) {
-          newSizes = {
-            xs: sizeField!.xs,
-            sm: sizeField!.sm * 2
-          }
-          if (this.getWidth <= 1199) {
-            newSizes.md = sizeField!.md
-          } else {
-            newSizes.md = sizeField!.md! * 2
-          }
-          if (this.field.groupAssigned !== '') {
-            newSizes.lg = sizeField!.lg! * 2
-            newSizes.xl = sizeField!.xl! * 2
-          } else {
-            newSizes.lg = sizeField!.lg
-            newSizes.xl = sizeField!.xl
-          }
-          return <ISizeData>newSizes
-        }
-        return <ISizeData>sizeField
-      }
-      return <ISizeData>sizeField
     }
 
     @Watch('metadataField')

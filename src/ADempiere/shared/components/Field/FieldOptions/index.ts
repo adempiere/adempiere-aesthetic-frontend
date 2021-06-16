@@ -24,6 +24,8 @@ import {
   zoomInOptionItem
 } from './fieldOptionsList'
 import Template from './template.vue'
+import LabelField from './LabelField'
+import LabelPopoverOption from './LabelPopoverOption'
 
 export default defineComponent({
   name: 'FieldOptions',
@@ -32,6 +34,10 @@ export default defineComponent({
     metadata: {
       type: Object as any
     }
+  },
+  components: {
+    LabelField,
+    LabelPopoverOption
   },
   setup(props, { root }) {
     const visibleForDesktop: Ref<boolean> = ref(false)

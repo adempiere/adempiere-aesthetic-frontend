@@ -14,6 +14,7 @@
               :ref="field.columnName"
               :metadata-field="{
                 ...field,
+                labelCurrency: currencyPointOfSales,
                 isReadOnly: !isModifyPrice
               }"
             />
