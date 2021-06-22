@@ -35,14 +35,14 @@ export default class FieldSelect extends Mixins(MixinField) {
       if (this.isSelectMultiple) {
         styleClass += ' custom-field-select-multiple '
       }
-      if (this.metadata.cssClassName) {
+      if (!isEmptyValue(this.metadata.cssClassName)) {
         styleClass += this.metadata.cssClassName
       }
       return styleClass
     }
 
     get getterLookupList(): ILookupOptions[] {
-      if (!this.metadata.reference.query || !this.metadata.displayed) {
+      if (isEmptyValue(this.metadata.reference.query) || !this.metadata.displayed) {
         return [<ILookupOptions> this.blankOption]
       }
       return this.$store.getters[Namespaces.Lookup + '/' + 'getLookupList']({
@@ -366,14 +366,14 @@ export default class FieldSelect extends Mixins(MixinField) {
         if (this.metadata.displayed) {
             this.optionsList = this.getterLookupAll
             const value = this.value
-            if (value && !this.metadata.isAdvancedQuery) {
+            if (!isEmptyValue(value) && !this.metadata.isAdvancedQuery) {
                 const option = this.findOption(value)
                 if (option.label) {
                     this.displayedValue = option.label
                     this.uuidValue = option.uuid
                 } else {
                     // TODO: Property displayColumn is @deprecated
-                    if (this.metadata.displayColumn) {
+                    if (!isEmptyValue(this.metadata.displayColumn)) {
                         // verify if exists to add
                         this.optionsList.push({
                             id: value,
@@ -384,7 +384,7 @@ export default class FieldSelect extends Mixins(MixinField) {
                         if (
                             !this.isPanelWindow ||
                             (this.isPanelWindow &&
-                                this.$route.query && this.$route.query.action === 'create-new')
+                                !isEmptyValue(this.$route.query) && this.$route.query.action === 'create-new')
                         ) {
                             this.getDataLookupItem()
                         }

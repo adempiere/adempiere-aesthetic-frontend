@@ -12,7 +12,7 @@ export function convertEntityList(entityList: any): IEntityListData {
 
 export function convertEntity(entity: any): IEntityData {
   const convertedEntity = camelizeObjectKeys(entity)
-  convertedEntity.attributes = <KeyValueData<IValueData>[]>entity.atttributes
+  convertedEntity.attributes = <KeyValueData<IValueData>[]>entity.attributes
   return convertedEntity as IEntityData
 }
 
