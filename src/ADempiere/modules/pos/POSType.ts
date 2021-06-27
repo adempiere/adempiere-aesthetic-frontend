@@ -146,6 +146,7 @@ export interface ICreateOrderParams {
   customerUuid: string
   documentTypeUuid?: string
   salesRepresentativeUuid: string
+  warehouseUuid: string
 }
 
 export interface IUpdateOrderParams {
@@ -153,6 +154,7 @@ export interface IUpdateOrderParams {
   posUuid: string
   customerUuid: string
   description?: string
+  warehouseUuid: string
 }
 
 export interface IDeleteOrderParams {
@@ -271,6 +273,12 @@ export interface PointOfSalesState {
   pointOfSales: IPOSData
   currentPOS: Partial<IPointOfSalesData>
   listPointOfSales: any
+  listWarehouses: any
+  listPrices: Partial<IPriceListData>
+  currentlistPrices: Partial<IPriceListData>
+  currentWarehouse: any
+  listCurrency: any[]
+  conversionList: Partial<IConversionRateData>[]
 }
 
 // Collection Module
@@ -378,6 +386,8 @@ export type ICurrentOrderData = Partial<IOrderData> & {
 export type ICurrentPointOfSalesData = Partial<IPointOfSalesData> & {
   listOrder: IListOrderItemData
   currentOrder: ICurrentOrderData
+  listWarehouses: any
+  listPrices: any
 }
 
 export interface IPOSAttributesData {

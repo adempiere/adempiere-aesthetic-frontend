@@ -1,5 +1,5 @@
-import { IConversionRateData } from '@/ADempiere/modules/core'
-import { IPaymentsData, processOrder } from '@/ADempiere/modules/pos'
+import { IConversionRateData, ICurrencyData, IGetConversionRateParams } from '@/ADempiere/modules/core'
+import { IPaymentsData, PointOfSalesState, processOrder } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { formatPrice } from '@/ADempiere/shared/utils/valueFormat'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
@@ -23,15 +23,15 @@ import { FIELDS_DECIMALS } from '@/ADempiere/shared/utils/references'
 export default class Collection extends Mixins(MixinPOS) {
     @Prop({ type: Boolean, required: false }) isLoadedPanel!: boolean
     @Prop({ type: Object, default: undefined }) amount?: any
-    @Prop({
-      type: Object,
-      default: () => {
-        return {
-          uuid: 'Collection',
-          containerUuid: 'Collection'
-        }
-      }
-    }) metadata: any
+    // @Prop({
+    //   type: Object,
+    //   default: () => {
+    //     return {
+    //       uuid: 'Collection',
+    //       containerUuid: 'Collection'
+    //     }
+    //   }
+    // }) metadata: any
 
     public isCustomForm = true
     public checked = false
@@ -42,7 +42,17 @@ export default class Collection extends Mixins(MixinPOS) {
     public defaultLabel = ''
     fieldsList = fieldListCollection
     public sendToServer = false
+    private value = ''
     amontSend= 0
+    private currentFieldCurrency = ''
+
+    get listCurrency() {
+      return (this.$store.state[Namespaces.PointOfSales] as PointOfSalesState).listCurrency
+    }
+
+    get convertionList(): Partial<IConversionRateData>[] {
+      return (this.$store.state[Namespaces.PointOfSales] as PointOfSalesState).conversionList
+    }
 
     // Computed properties
     get validateCompleteCollection(): boolean {
@@ -250,13 +260,17 @@ export default class Collection extends Mixins(MixinPOS) {
       return this.$store.getters[Namespaces.Utils + '/' + 'getUpdatePaymentPos']
     }
 
-    get dateRate(): Partial<IConversionRateData> | undefined {
-      const convertionRate = this.$store.getters[Namespaces.Payments + '/' + 'getConvertionRate'] as Partial<IConversionRateData>[]
-      return convertionRate.find(currency => {
-        if (currency.id === this.typeCurrency) {
+    get dateRate(): Partial<ICurrencyData> | undefined {
+      const convertion = this.convertionList.find(currency => {
+        if ((currency!.currencyTo!.iSOCode === this.currentFieldCurrency) && (this.pointOfSalesCurrency.iSOCode !== currency.currencyTo!.iSOCode)) {
           return currency
         }
       })
+      // const convertionRate = this.$store.getters[Namespaces.Payments + '/' + 'getConvertionRate'] as Partial<IConversionRateData>[]
+      if (!isEmptyValue(convertion)) {
+        return convertion
+      }
+      return this.pointOfSalesCurrency
     }
 
     get typeCurrency() {
@@ -321,23 +335,23 @@ export default class Collection extends Mixins(MixinPOS) {
       })
     }
 
-    @Watch('currencyUuid')
-    handleCurrencyUuidChange(value: string) {
-      const convertionRate = this.$store.getters[Namespaces.Payments + '/' + 'getConvertionRate'] as Partial<IConversionRateData>[]
-      const listCurrency = convertionRate.find(currency => {
-        if (currency.uuid === value) {
-          return currency
-        }
-      })
-      if (listCurrency === undefined) {
-        this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
-          conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
-          currencyFromUuid: this.pointOfSalesCurrency.uuid,
-          conversionDate: this.formatDateCollection(new Date()),
-          currencyToUuid: value
-        })
-      }
-    }
+    // @Watch('currencyUuid')
+    // handleCurrencyUuidChange(value: string) {
+    //   const convertionRate = this.$store.getters[Namespaces.Payments + '/' + 'getConvertionRate'] as Partial<IConversionRateData>[]
+    //   const listCurrency = convertionRate.find(currency => {
+    //     if (currency.uuid === value) {
+    //       return currency
+    //     }
+    //   })
+    //   if (listCurrency === undefined) {
+    //     this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
+    //       conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
+    //       currencyFromUuid: this.pointOfSalesCurrency.uuid,
+    //       conversionDate: this.formatDateCollection(new Date()),
+    //       currencyToUuid: value
+    //     })
+    //   }
+    // }
 
     @Watch('convertAllPayment')
     handleConvertAllPaymentChange(value: number) {
@@ -360,11 +374,11 @@ export default class Collection extends Mixins(MixinPOS) {
 
     @Watch('dateRate')
     handleDateRateChange(value: any) {
-      if (value && !isEmptyValue(value.amountConvertion)) {
+      if (value && !isEmptyValue(value.divideRate)) {
         this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
           containerUuid: this.containerUuid,
           columnName: 'PayAmt',
-          value: this.pending / value.amountConvertion
+          value: this.pending / value.divideRate
         })
       } else {
         this.$store.commit(Namespaces.FieldValue + '/' + 'updateValueOfField', {
@@ -567,6 +581,7 @@ export default class Collection extends Mixins(MixinPOS) {
       this.defaultValueCurrency()
       this.$store.commit(Namespaces.Payments + '/' + 'currencyDivideRateCollection', 1)
       this.$store.commit(Namespaces.Payments + '/' + 'currencyMultiplyRate', 1)
+      this.currentFieldCurrency = this.pointOfSalesCurrency.iSOCode!
     }
 
     exit() {
@@ -710,8 +725,24 @@ export default class Collection extends Mixins(MixinPOS) {
         })
     }
 
+    changeCurrency(value: string) {
+      this.currentFieldCurrency = value
+      const currency = this.listCurrency.find(currency => currency.key === value)
+      const findCoventionList = this.convertionList.find(convertion => convertion.currencyTo!.iSOCode === value)
+      if (!isEmptyValue(currency) && isEmptyValue(findCoventionList) && (value !== this.pointOfSalesCurrency.iSOCode)) {
+        const searchConvertionParams: IGetConversionRateParams = {
+          conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid!,
+          currencyFromUuid: this.pointOfSalesCurrency.uuid!,
+          conversionDate: this.formatDate(new Date()),
+          currencyToUuid: currency.uuid
+        }
+        this.$store.dispatch(Namespaces.Payments + '/' + 'searchConversion', searchConvertionParams)
+      }
+    }
+
     // Hooks
     created() {
+      this.currentFieldCurrency = this.pointOfSalesCurrency.iSOCode!
       this.$store.dispatch(Namespaces.Payments + '/' + 'addRateConvertion', this.pointOfSalesCurrency)
       this.unsubscribe = this.subscribeChanges()
       this.defaultValueCurrency()

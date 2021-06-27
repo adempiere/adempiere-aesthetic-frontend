@@ -118,6 +118,7 @@ export interface ICurrencyData {
     standardPrecision: number
     costingPrecision: number
     amountConvertion?: number
+    divideRate?: number
 }
 
 export interface IRateData {

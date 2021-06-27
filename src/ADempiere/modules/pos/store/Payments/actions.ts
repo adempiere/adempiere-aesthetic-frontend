@@ -63,6 +63,25 @@ export const actions: PaymentsActionTree = {
     const payment: any[] = context.state.paymentBox
     payment.splice(0)
   },
+  searchConversion(context: PaymentsActionContext, params: IGetConversionRateParams): void {
+    requestGetConversionRate({
+      conversionTypeUuid: params.conversionTypeUuid,
+      currencyFromUuid: params.currencyFromUuid,
+      currencyToUuid: params.currencyToUuid,
+      conversionDate: params.conversionDate
+    })
+      .then((response: IConversionRateData | Partial<IConversionRateData>) => {
+        context.commit(Namespaces.PointOfSales + '/' + 'conversionList', response, { root: true })
+      })
+      .catch(error => {
+        console.warn(`conversionDivideRate: ${error.message}. Code: ${error.code}.`)
+        showMessage({
+          type: 'error',
+          message: error.message,
+          showClose: true
+        })
+      })
+  },
   conversionDivideRate(context: PaymentsActionContext, params: IGetConversionRateParams) {
     return requestGetConversionRate({
       conversionTypeUuid: params.conversionTypeUuid,

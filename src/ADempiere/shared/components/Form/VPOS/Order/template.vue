@@ -333,11 +333,15 @@
   .keypad {
     float: left;
     height: 20%;
-    padding-top: 25px;
+    padding-top: 10px;
   }
   .total {
     margin-top: 10px;
     margin-bottom: 10px
+  }
+  .info-pos {
+    padding-top: 10px;
+    color: black;
   }
   .split {
     -webkit-box-sizing: border-box;

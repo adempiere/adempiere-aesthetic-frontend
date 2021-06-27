@@ -21,16 +21,16 @@ export default class ConvertAmount extends Mixins(MixinForm) {
   @Prop({ type: Object, default: undefined }) currency?: any
   @Prop({ type: Number, default: undefined }) amount!: number
   @Prop({ type: Number, default: undefined }) convert?: number
-  @Prop({
-    type: Object,
-    default: () => {
-      return {
-        uuid: 'Collection-Convert-Amount',
-        containerUuid: 'Collection-Convert-Amount'
-      }
-    }
-  })
-  metadata: any
+  // @Prop({
+  //   type: Object,
+  //   default: () => {
+  //     return {
+  //       uuid: 'Collection-Convert-Amount',
+  //       containerUuid: 'Collection-Convert-Amount'
+  //     }
+  //   }
+  // })
+  // metadata: any
 
   @Prop({ type: Boolean, default: false }) isOpen!: boolean
 
@@ -103,22 +103,22 @@ export default class ConvertAmount extends Mixins(MixinForm) {
     }
   }
 
-  @Watch('currencyUuid')
-  handleCurrencyUuidChange(value: string | undefined) {
-    const listCurrency = (this.$store.getters[Namespaces.Payments + '/' + 'getConvertionRate'] as Partial<IConversionRateData>[]).find(currency => {
-      if (currency.uuid === value) {
-        return currency
-      }
-    })
-    if (listCurrency === undefined) {
-      this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
-        conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
-        currencyFromUuid: this.pointOfSalesCurrency.uuid,
-        conversionDate: this.formatDate(new Date()),
-        currencyToUuid: value
-      })
-    }
-  }
+  // @Watch('currencyUuid')
+  // handleCurrencyUuidChange(value: string | undefined) {
+  //   const listCurrency = (this.$store.getters[Namespaces.Payments + '/' + 'getConvertionRate'] as Partial<IConversionRateData>[]).find(currency => {
+  //     if (currency.uuid === value) {
+  //       return currency
+  //     }
+  //   })
+  //   if (listCurrency === undefined) {
+  //     this.$store.dispatch(Namespaces.Payments + '/' + 'conversionDivideRate', {
+  //       conversionTypeUuid: this.currentPointOfSales.conversionTypeUuid,
+  //       currencyFromUuid: this.pointOfSalesCurrency.uuid,
+  //       conversionDate: this.formatDate(new Date()),
+  //       currencyToUuid: value
+  //     })
+  //   }
+  // }
 
   // Methods
   formatPrice = formatPrice

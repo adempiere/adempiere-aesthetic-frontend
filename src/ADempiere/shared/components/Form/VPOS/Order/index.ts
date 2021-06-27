@@ -9,7 +9,7 @@ import Template from './template.vue'
 import FieldLine from '@/ADempiere/shared/components/Form/VPOS/Order/Line'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { ICurrentOrderData, ICurrentPointOfSalesData, IOrderLineDataExtended, IPOSAttributesData, OrderLinesState } from '@/ADempiere/modules/pos'
-import { ICurrencyData } from '@/ADempiere/modules/core'
+import { ICurrencyData, IPriceListData } from '@/ADempiere/modules/core'
 import { DeviceType, IAppState } from '@/ADempiere/modules/app/AppType'
 import { TranslateResult } from 'vue-i18n'
 
@@ -175,6 +175,35 @@ export default class Order extends Mixins(MixinOrderLine) {
     return line
   }
 
+  get curretnPriceList(): Partial<IPriceListData> {
+    if (!isEmptyValue((this.$store.getters[Namespaces.PointOfSales + '/' + 'currentPriceList'] as Partial<IPriceListData>))) {
+      return (this.$store.getters[Namespaces.PointOfSales + '/' + 'currentPriceList'] as Partial<IPriceListData>)
+    }
+    return {}
+  }
+
+  get pointPriceList() {
+    const list = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.listPrices
+    if (isEmptyValue(list)) {
+      return []
+    }
+    return list
+  }
+
+  get curretnWarehouse() {
+    if (!isEmptyValue(this.$store.getters[Namespaces.User + '/' + 'getWarehouse'])) {
+      return this.$store.getters[Namespaces.User + '/' + 'getWarehouse']
+    }
+    return {}
+  }
+
+  get listWarehouse() {
+    if (!isEmptyValue(this.$store.getters[Namespaces.PointOfSales + '/' + 'currentWarehouse'])) {
+      return this.$store.getters[Namespaces.PointOfSales + '/' + 'currentWarehouse']
+    }
+    return []
+  }
+
   get listOrderLine(): IOrderLineDataExtended[] {
     if (isEmptyValue(this.currentOrder)) {
       return []
@@ -338,6 +367,14 @@ export default class Order extends Mixins(MixinOrderLine) {
   changePos(posElement: ICurrentPointOfSalesData) {
     this.$store.dispatch(Namespaces.PointOfSales + '/' + 'setCurrentPOS', posElement)
     this.newOrder()
+  }
+
+  changeWarehouse(warehouse: any) {
+    this.$store.commit(Namespaces.PointOfSales + '/' + 'currentWarehouse', warehouse)
+  }
+
+  changePriceList(priceList: any) {
+    this.$store.commit(Namespaces.PointOfSales + '/' + 'currentListPrices', priceList)
   }
 
   arrowTop() {

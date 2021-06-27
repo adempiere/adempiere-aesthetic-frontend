@@ -1,7 +1,14 @@
+import { IPriceListData } from '@/ADempiere/modules/core'
 import { isEmptyValue } from '@/ADempiere/shared/utils/valueUtils'
 import { IRootState } from '@/store'
 import { GetterTree } from 'vuex'
-import { ICurrentOrderData, IKeyLayoutOrWithoutResponse, IOrderData, IPOSAttributesData, PointOfSalesState } from '../../POSType'
+import {
+  ICurrentOrderData,
+  IKeyLayoutOrWithoutResponse,
+  IOrderData,
+  IPOSAttributesData,
+  PointOfSalesState
+} from '../../POSType'
 
 type PointOfSalesGetterTree = GetterTree<PointOfSalesState, IRootState>
 
@@ -13,11 +20,13 @@ const withoutResponse = {
 }
 
 const isProcessed = (order?: Partial<IOrderData>): boolean => {
-  if (!isEmptyValue(order?.documentStatus?.value) &&
+  if (
+    !isEmptyValue(order?.documentStatus?.value) &&
     (order?.documentStatus?.value === 'CO' ||
-     order?.documentStatus?.value === 'VO' ||
-     order?.documentStatus?.value === 'IP' ||
-     order?.documentStatus?.value === 'IP')) {
+      order?.documentStatus?.value === 'VO' ||
+      order?.documentStatus?.value === 'IP' ||
+      order?.documentStatus?.value === 'IP')
+  ) {
     return true
   }
   return false
@@ -33,7 +42,11 @@ export const getters: PointOfSalesGetterTree = {
    * List Payment Order
    * Lst Order
    */
-  posAttributes: (state: PointOfSalesState, getters, rootState): IPOSAttributesData => {
+  posAttributes: (
+    state: PointOfSalesState,
+    getters,
+    rootState
+  ): IPOSAttributesData => {
     // Assign Types
     const currentOrder: ICurrentOrderData = {
       ...rootState.orderModule.order,
@@ -46,6 +59,8 @@ export const getters: PointOfSalesGetterTree = {
       currentPointOfSales: {
         ...state.currentPOS,
         listOrder: rootState.orderModule.listOrder,
+        listWarehouses: state.listWarehouses,
+        listPrices: state.listPrices,
         currentOrder: currentOrder
       }
     }
@@ -85,5 +100,23 @@ export const getters: PointOfSalesGetterTree = {
       }
     }
     return rootState.keyLayoutModule.keyLayout
+  },
+  /**
+   * Current Price List
+   */
+  currentPriceList: (state: PointOfSalesState): Partial<IPriceListData> => {
+    if (!isEmptyValue(state.currentlistPrices)) {
+      return state.currentlistPrices
+    }
+    return {}
+  },
+  /**
+   * Current Warehouse
+   */
+  currentWarehouse: (state: PointOfSalesState): any => {
+    if (!isEmptyValue(state.currentWarehouse)) {
+      return state.currentWarehouse
+    }
+    return {}
   }
 }

@@ -1,6 +1,6 @@
 // Get Instance for connection
 import { request } from '@/ADempiere/shared/utils/request'
-import { convertProductPrice } from '@/ADempiere/modules/core'
+import { convertProductPrice, IPriceListData, IWarehousesListResponse } from '@/ADempiere/modules/core'
 import {
   convertKeyLayout,
   convertOrder,
@@ -87,7 +87,8 @@ export function createOrder(
     posUuid,
     customerUuid,
     documentTypeUuid,
-    salesRepresentativeUuid
+    salesRepresentativeUuid,
+    warehouseUuid
   } = data
   return request({
     url: `${config.pointOfSales.endpoint}/create-order`,
@@ -96,7 +97,8 @@ export function createOrder(
       pos_uuid: posUuid,
       customer_uuid: customerUuid,
       document_type_uuid: documentTypeUuid,
-      sales_representative_uuid: salesRepresentativeUuid
+      sales_representative_uuid: salesRepresentativeUuid,
+      warehouse_uuid: warehouseUuid
     }
   })
     .then(createOrderResponse => {
@@ -108,7 +110,7 @@ export function createOrder(
 export function updateOrder(
   data: IUpdateOrderParams
 ): Promise<IOrderData> {
-  const { orderUuid, posUuid, customerUuid, description } = data
+  const { orderUuid, posUuid, customerUuid, description, warehouseUuid } = data
   return request({
     url: `${config.pointOfSales.endpoint}/update-order`,
     method: 'POST',
@@ -116,7 +118,8 @@ export function updateOrder(
       order_uuid: orderUuid,
       pos_uuid: posUuid,
       customer_uuid: customerUuid,
-      description
+      description,
+      warehouse_uuid: warehouseUuid
     }
   })
     .then(updateOrderResponse => {
@@ -635,5 +638,95 @@ export function validatePin(data: {
   })
     .then(pinResponse => {
       return pinResponse
+    })
+}
+
+/**
+ * list Warehouse
+ * @param {string} posUuidd - POS UUID reference
+ */
+export function listWarehouse(data: {
+  posUuid: string
+}) {
+  const { posUuid } = data
+  return request({
+    url: `${config.pointOfSales.endpoint}/available-warehouses`,
+    method: 'get',
+    params: {
+      pos_uuid: posUuid
+    }
+  })
+    .then(listWarehouseResponse => {
+      console.warn('listWarehouseResponse')
+      console.warn(listWarehouseResponse)
+      return listWarehouseResponse
+    })
+}
+
+/**
+ * List Prices
+ * @param {string} posUuidd - POS UUID reference
+ */
+export function listPrices(data: {
+  posUuid: string
+}): Promise<IResponseList<IPriceListData>> {
+  const { posUuid } = data
+  return request({
+    url: `${config.pointOfSales.endpoint}/available-price-list`,
+    method: 'get',
+    params: {
+      pos_uuid: posUuid
+    }
+  })
+    .then(listPricesResponse => {
+      const responseList: IResponseList<IPriceListData> = {
+        recordCount: listPricesResponse.recordCount,
+        list: listPricesResponse.record,
+        nextPageToken: listPricesResponse.nextPageToken
+
+      }
+      return responseList
+    })
+}
+
+/**
+ * Currencies
+ * @param {string} posUuidd - POS UUID reference
+ */
+export function listCurrencies(data: {
+  posUuid: string
+}) {
+  const { posUuid } = data
+  return request({
+    url: `${config.pointOfSales.endpoint}/available-currencies`,
+    method: 'get',
+    params: {
+      pos_uuid: posUuid
+    }
+  })
+    .then(listCurrencies => {
+      console.warn('listCurrencies')
+      console.warn(listCurrencies)
+      return listCurrencies
+    })
+}
+
+/**
+ * Tender Type
+ * @param {string} posUuidd - POS UUID reference
+ */
+export function listTenderType(data: {
+  posUuid: string
+}) {
+  const { posUuid } = data
+  return request({
+    url: `${config.pointOfSales.endpoint}/available-tender-types`,
+    method: 'get',
+    params: {
+      pos_uuid: posUuid
+    }
+  })
+    .then(listTenderType => {
+      return listTenderType
     })
 }

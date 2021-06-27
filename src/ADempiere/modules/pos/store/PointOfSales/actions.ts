@@ -1,7 +1,12 @@
 import { IRootState } from '@/store'
 import { showMessage } from '@/ADempiere/shared/utils/notifications'
 import { ActionContext, ActionTree } from 'vuex'
-import { listPointOfSales } from '../../POSService'
+import {
+  listPointOfSales,
+  listWarehouse,
+  listPrices,
+  listCurrencies
+} from '../../POSService'
 import {
   IListPointOfSalesResponse,
   IPointOfSalesData,
@@ -54,6 +59,54 @@ export const actions: PointOfSalesActionTree = {
         })
       })
   },
+  listWarehouseFromServer(context: PointOfSalesActionContext, posUuid: string) {
+    listWarehouse({
+      posUuid
+    })
+      .then(response => {
+        context.commit('listWarehouses', response.records)
+      })
+      .catch(error => {
+        console.warn(`listWarehouseFromServer: ${error.message}. Code: ${error.code}.`)
+        showMessage({
+          type: 'error',
+          message: error.message,
+          showClose: true
+        })
+      })
+  },
+  listPricesFromServer(context: PointOfSalesActionContext, point: IPointOfSalesData) {
+    listPrices({
+      posUuid: point.uuid!
+    })
+      .then(response => {
+        context.commit('listPrices', response.list)
+      })
+      .catch(error => {
+        console.warn(`listPricesFromServer: ${error.message}. Code: ${error.code}.`)
+        showMessage({
+          type: 'error',
+          message: error.message,
+          showClose: true
+        })
+      })
+  },
+  listCurrenciesFromServer(context: PointOfSalesActionContext, posUuid: string) {
+    listCurrencies({
+      posUuid
+    })
+      .then(response => {
+        context.commit('listCurrencies', response.records)
+      })
+      .catch(error => {
+        console.warn(`listPricesFromServer: ${error.message}. Code: ${error.code}.`)
+        showMessage({
+          type: 'error',
+          message: error.message,
+          showClose: true
+        })
+      })
+  },
   setCurrentPOS(
     context: PointOfSalesActionContext,
     posToSet: IPointOfSalesData
@@ -73,6 +126,11 @@ export const actions: PointOfSalesActionTree = {
       /* eslint-disable-next-line @typescript-eslint/no-empty-function */
       () => {})
 
+    context.dispatch('listWarehouseFromServer', posToSet.uuid)
+    context.dispatch('listCurrenciesFromServer', posToSet.uuid)
+    context.dispatch('listPricesFromServer', posToSet)
+    context.commit('currentListPrices', posToSet.priceList)
+    context.commit('currentWarehouse', context.rootGetters[Namespaces.User + '/' + 'getWarehouse'])
     context.commit(Namespaces.Payments + '/' + 'resetConversionRate', [], { root: true })
     context.commit(Namespaces.KeyLayout + '/' + 'setIsReloadKeyLayout', undefined, { root: true })
     context.commit(Namespaces.ProductPrice + '/' + 'setIsReloadProductPrice', undefined, { root: true })

@@ -27,12 +27,12 @@ import MixinPOS from '../MixinPOS'
   mixins: [Template, MixinOrderLine, MixinPOS]
 })
 export default class Options extends Mixins(MixinOrderLine, MixinPOS) {
-    @Prop({
-      type: Object,
-      default: () => {
-        return {}
-      }
-    }) metadata: any
+  // @Prop({
+  //   type: Object,
+  //   default: () => {
+  //     return {}
+  //   }
+  // }) metadata: any
 
     activeName = ''
     public processPos = ''
@@ -65,9 +65,9 @@ export default class Options extends Mixins(MixinOrderLine, MixinPOS) {
 
     get blockOption() {
       if (!isEmptyValue(this.$route.query.pos)) {
-        return 'cursor: pointer; text-align: center !important; color: black'
+        return 'cursor: pointer; text-align: center !important; color: black; min-height: 50px;'
       }
-      return 'cursor: not-allowed; text-align: center !important; color: gray;'
+      return 'cursor: not-allowed; text-align: center !important; color: gray; min-height: 50px;'
     }
 
     get size(): number {
@@ -203,7 +203,8 @@ export default class Options extends Mixins(MixinOrderLine, MixinPOS) {
       createOrder({
         posUuid: posUuid!,
         customerUuid: customer!.uuid || '',
-        salesRepresentativeUuid: salesRepresentative!.uuid! || ''
+        salesRepresentativeUuid: salesRepresentative!.uuid! || '',
+        warehouseUuid: this.$store.getters[Namespaces.PointOfSales + '/' + 'currentWarehouse'].uuid
       })
         .then(order => {
           this.$store.dispatch(Namespaces.Order + '/' + 'currentOrder', order)

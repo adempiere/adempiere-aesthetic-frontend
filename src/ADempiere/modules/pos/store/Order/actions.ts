@@ -25,7 +25,8 @@ export const actions: OrderActionTree = {
     return createOrder({
       posUuid,
       customerUuid,
-      salesRepresentativeUuid
+      salesRepresentativeUuid,
+      warehouseUuid: context.rootGetters[Namespaces.PointOfSales + '/' + 'currentWarehouse'].uuid
     })
       .then((order: IOrderData) => {
         context.commit('setOrder', order)
@@ -57,7 +58,8 @@ export const actions: OrderActionTree = {
     updateOrder({
       orderUuid,
       posUuid,
-      customerUuid
+      customerUuid,
+      warehouseUuid: context.rootGetters[Namespaces.PointOfSales + '/' + 'currentWarehouse'].uuid
     })
       .then((response: IOrderData) => {
         context.dispatch('reloadOrder', { orderUuid: response.uuid })
