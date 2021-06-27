@@ -6,6 +6,7 @@ import { getProductPriceList } from '../../POSService'
 import { IListProductPriceResponse, IPointOfSalesData, ListProductPriceState } from '../../POSType'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import language from '@/lang'
+import { IPriceListData } from '@/ADempiere/modules/core'
 
 type ListProductPriceActionContext = ActionContext<ListProductPriceState, IRootState>
 type ListProductPriceActionTree = ActionTree<ListProductPriceState, IRootState>
@@ -51,9 +52,8 @@ export const actions: ListProductPriceActionTree = {
       pageToken = token + '-' + pageNumber
     }
 
-    const { priceList, templateBusinessPartner } = <IPointOfSalesData>context.rootGetters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales
+    const { templateBusinessPartner } = <IPointOfSalesData>context.rootGetters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales
     const { uuid: businessPartnerUuid } = templateBusinessPartner
-    const { uuid: priceListUuid } = priceList
     const { uuid: warehouseUuid } = context.rootGetters['user/getWarehouse']
 
     if (isEmptyValue(searchValue)) {
@@ -66,9 +66,9 @@ export const actions: ListProductPriceActionTree = {
     return new Promise<IListProductPriceResponse>(resolve => {
       getProductPriceList({
         searchValue,
-        priceListUuid,
+        priceListUuid: (context.rootGetters[Namespaces.PointOfSales + '/' + 'currentPriceList'] as Partial<IPriceListData>).uuid!,
         businessPartnerUuid,
-        warehouseUuid,
+        warehouseUuid: context.rootGetters[Namespaces.PointOfSales + '/' + 'currentWarehouse'].uuid,
         pageToken
       }).then((responseProductPrice: IListProductPriceResponse) => {
         if (isEmptyValue(token) || isEmptyValue(pageToken)) {
@@ -130,9 +130,8 @@ export const actions: ListProductPriceActionTree = {
     }
 
     const getCurrentPOSData: IPointOfSalesData = context.rootGetters[Namespaces.PointOfSales + '/' + 'posAttributes'].currentPointOfSales
-    const { priceList, templateBusinessPartner } = getCurrentPOSData
+    const { templateBusinessPartner } = getCurrentPOSData
     const { uuid: businessPartnerUuid } = templateBusinessPartner
-    const { uuid: priceListUuid } = priceList
     const { uuid: warehouseUuid } = context.rootGetters['user/getWarehouse']
 
     if (isEmptyValue(searchValue)) {
@@ -144,7 +143,7 @@ export const actions: ListProductPriceActionTree = {
     return new Promise<IListProductPriceResponse>(resolve => {
       getProductPriceList({
         searchValue: searchValue!,
-        priceListUuid,
+        priceListUuid: (context.rootGetters[Namespaces.PointOfSales + '/' + 'currentPriceList'] as Partial<IPriceListData>).uuid!,
         businessPartnerUuid,
         warehouseUuid,
         pageToken

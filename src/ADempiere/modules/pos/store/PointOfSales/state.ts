@@ -6,6 +6,12 @@ export const state: PointOfSalesState = {
   showPOSCollection: false,
   currentPOS: {},
   listPointOfSales: {},
+  listWarehouses: {},
+  listPrices: {},
+  currentlistPrices: {},
+  currentWarehouse: {},
+  listCurrency: [],
+  conversionList: [],
   pointOfSales: {
     isLoaded: false,
     isReload: true,

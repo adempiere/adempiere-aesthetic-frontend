@@ -377,6 +377,7 @@ export default {
   form: {
     pos: {
       title: 'Punto de Venta',
+      priceList: 'Lista de Precio',
       optionsPoinSales: {
         title: 'Opciones Rápidas del Punto de Ventas',
         salesOrder: {
@@ -401,7 +402,9 @@ export default {
         generalOptions: {
           title: 'Opciones Generales',
           changePos: 'Cambiar Punto de Venta',
-          listProducts: 'Lista de Productos y Precios'
+          listProducts: 'Lista de Productos y Precios',
+          changeWarehouseList: 'Cambiar de Almacén',
+          changePriceList: 'Cambiar Lista de Precio'
         }
       },
       tableProduct: {
@@ -494,7 +497,7 @@ export default {
         description: 'Despliega el panel de Opciones del Punto de Venta'
       },
       point: {
-        description: 'Muestra el punto de venta actual'
+        description: 'Informacion del punto de venta actual'
       },
       buttonPanelRightPos: {
         title: 'Mostrar Panel Derecho',

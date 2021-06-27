@@ -2,7 +2,8 @@ import {
   IBusinessPartnerData,
   ICurrencyData,
   IProductPriceData,
-  getProductPrice as findProduct
+  getProductPrice as findProduct,
+  IPriceListData
 } from '@/ADempiere/modules/core'
 import {
   ICurrentOrderData,
@@ -13,7 +14,8 @@ import {
   IOrderLineDataExtended,
   OrderLinesState,
   createOrderLine,
-  updateOrderLine
+  updateOrderLine,
+  IPOSAttributesData
 } from '@/ADempiere/modules/pos'
 import { Namespaces } from '@/ADempiere/shared/utils/types'
 import { Component, Prop, Ref, Watch, Mixins } from 'vue-property-decorator'
@@ -82,12 +84,36 @@ export default class MixinPOS extends Mixins(MixinForm) {
       uuid: '',
       iSOCode: '',
       curSymbol: '',
-      amountConvertion: 1
+      amountConvertion: 1,
+      divideRate: 1
     }
   }
 
   get listPointOfSales() {
     return this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'].listPointOfSales
+  }
+
+  get curretnPriceList(): Partial<IPriceListData> {
+    if (!isEmptyValue((this.$store.getters[Namespaces.PointOfSales + '/' + 'currentPriceList'] as Partial<IPriceListData>))) {
+      return (this.$store.getters[Namespaces.PointOfSales + '/' + 'currentPriceList'] as Partial<IPriceListData>)
+    }
+    return {}
+  }
+
+  get priceListPointOfSales() {
+    const list = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.listPrices
+    if (isEmptyValue(list)) {
+      return []
+    }
+    return list
+  }
+
+  get warehousesListPointOfSales() {
+    const list = (this.$store.getters[Namespaces.PointOfSales + '/' + 'posAttributes'] as IPOSAttributesData).currentPointOfSales.listWarehouses
+    if (isEmptyValue(list)) {
+      return []
+    }
+    return list
   }
 
   get ordersList(): IListOrderItemData | IOrderData[] {
@@ -282,12 +308,14 @@ export default class MixinPOS extends Mixins(MixinForm) {
         return
       }
 
-      const searchProduct =
-            typeof searchValue === 'object' ? searchValue.value : searchValue
+      const searchProduct = typeof searchValue === 'object' ? searchValue.value : searchValue
+      if (isEmptyValue(this.curretnPriceList)) {
+        return
+      }
 
       findProduct({
         searchValue: searchProduct,
-        priceListUuid: this.currentPointOfSales.priceList?.uuid
+        priceListUuid: this.curretnPriceList.uuid
       })
         .then((productPrice: IProductPriceData) => {
           this.product = productPrice.product
